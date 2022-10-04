@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+>      
+    <testsuites> 
+        <testsuite name="API">
+            <directory suffix="Test.php">./vendor/hasob/tetfund-beneficiary-mgt-module/tests/APIs</directory>
+        </testsuite>
+        <testsuite name="Unit">
+            <directory suffix="Test.php">./vendor/hasob/tetfund-beneficiary-mgt-module/tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory suffix="Test.php">./vendor/hasob/tetfund-beneficiary-mgt-module/tests/Feature</directory>
+        </testsuite>
+        <testsuite name="FormRequest">
+            <directory suffix="Test.php">./vendor/hasob/tetfund-beneficiary-mgt-module/tests/FormRequest</directory>
+        </testsuite> 
+         <testsuite name="APIs">
+            <directory suffix="Test.php">./vendor/hasob/tetfund-intervention-module/tests/APIs</directory>
+        </testsuite>
+        <testsuite name="Features">
+            <directory suffix="Test.php">./vendor/hasob/tetfund-intervention-module/tests/Features</directory>
+        </testsuite>
+         <testsuite name="FormRequest">
+            <directory suffix="Test.php">./vendor/hasob/tetfund-intervention-module/tests/FormRequest</directory>
+        </testsuite>
+
+        <testsuite name="API">
+            <directory suffix="Test.php">./vendor/hasob/tetfund-me-module/tests/APIs</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory suffix="Test.php">./vendor/hasob/tetfund-me-module/tests/Feature</directory>
+        </testsuite>
+       <testsuite name="FormRequest">
+            <directory suffix="Test.php">./vendor/hasob/tetfund-me-module/tests/FormRequest</directory>
+        </testsuite> 
+
+        <testsuite name="API">
+            <directory suffix="Test.php">./vendor/hasob/tetfund-fa-module/tests/APIs</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory suffix="Test.php">./vendor/hasob/tetfund-fa-module/tests/Feature</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory suffix="Test.php">./vendor/hasob/tetfund-fa-module/tests/FormRequest</directory>
+        </testsuite>
+
+    </testsuites>
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">./app</directory>
+        </include>
+    </coverage>
+    <php>
+        <server name="APP_ENV" value="testing"/>
+        <server name="BCRYPT_ROUNDS" value="4"/>
+        <server name="CACHE_DRIVER" value="array"/>
+        
+            <server name="DB_CONNECTION" value="sqlite"/>
+            <server name="DB_DATABASE" value=":memory:"/> 
+       
+        <server name="MAIL_MAILER" value="array"/>
+        <server name="QUEUE_CONNECTION" value="sync"/>
+        <server name="SESSION_DRIVER" value="array"/>
+        <server name="TELESCOPE_ENABLED" value="false"/>
+    </php>
+</phpunit>
