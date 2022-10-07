@@ -1524,6 +1524,17 @@ p {
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
+.gradient-green-btn {
+  background-image: linear-gradient(to right, #45f400 0%, #448b01 50%, #1cf400 100%);
+  background-size: 200% auto;
+  overflow: hidden;
+}
+
+.gradient-green-btn:hover {
+  background-position: right center;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
 .title {
   line-height: 55px;
   margin-bottom: 1rem;

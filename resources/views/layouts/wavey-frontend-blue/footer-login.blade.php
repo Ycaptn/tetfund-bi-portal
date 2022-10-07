@@ -9,7 +9,7 @@
                     <!-- <div class="w-full"> -->
                         <div class="py-2 text-center">
                             <p class="text-white text-sm">
-                              <a class="text-xs text-white duration-300 hover:text-blue-700" rel="nofollow" target="_blank" href="http://www.tetfund.gov.ng">TETFund Staff Portal</a> <br/>
+                              <a class="text-xs text-white duration-300 hover:text-blue-700" rel="nofollow" target="_blank" href="http://www.tetfund.gov.ng">TETFUND</a> <br/>
                             </p>
                         </div>
                     <!-- </div> -->

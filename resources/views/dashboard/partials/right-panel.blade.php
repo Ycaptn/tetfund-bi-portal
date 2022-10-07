@@ -28,13 +28,10 @@
         </div>
 
         <p>
-            <i class="bx bx-right-arrow-alt mx-1"></i>My Inflow files <br/>
-            <i class="bx bx-right-arrow-alt mx-1"></i>Files & Memos <br/>
-            <i class="bx bx-right-arrow-alt mx-1"></i>Staff Directory <br/>
-            <i class="bx bx-right-arrow-alt mx-1"></i>Department Directory <br/>
-            <i class="bx bx-right-arrow-alt mx-1"></i>Employee Shared Services <br/>
+            <i class="bx bx-right-arrow-alt mx-1"></i>My Submissions <br/>
+            <i class="bx bx-right-arrow-alt mx-1"></i>Fund Availability <br/>
+            <i class="bx bx-right-arrow-alt mx-1"></i>ASTD Nominations <br/>
             <i class="bx bx-right-arrow-alt mx-1"></i>Portal User Guide <br/>
-            <i class="bx bx-right-arrow-alt mx-1"></i>Notice Board<br/>
 
             {{-- <i class="bx bx-right-arrow-alt mx-1"></i>Hosting Services <br/>
             <i class="bx bx-right-arrow-alt mx-1"></i>Technical Support <br/> --}}

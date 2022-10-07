@@ -66,7 +66,7 @@
         </div>
 
         <div class="flex justify-center">      
-            <div class=" bg-white shadow-md border border-blue-300 rounded-md w-full md:w-1/2 z-10 px-8 pt-6 pb-8 mb-4" >
+            <div class=" bg-white shadow-md border border-blue-300 rounded-md w-full md:w-3/4 z-10 px-8 pt-6 pb-8 mb-4" >
                 @if(env('BIMS_CLIENT_ID') && env('BIMS_IS_ENABLED') == true && env('BIMS_REDIRECT_URI') != null)
                     <div class="mb-8" style="width: 100%;">
                         <div class="flex flex-row min-h-screen justify-center items-center mb-16">
@@ -183,6 +183,16 @@
                     </form>
                 </div>
                 <!-- end of login for to be toggled -->
+
+
+                <p class="pt-6 text-sm" style="color:green; font-size:80%">
+                    For <b>National Research Fund (NRF)</b> submissions, please use the <a href="https://nrf.tetfund.gov.ng" style="color:blue;" target="_blank">NRF Portal</a> to process your submissions. 
+                    <span style="color:red;display:inline;">
+                    For technical support, kindly contact <b>TETFund ICT support department on 0803-777-6194 or 0814-014-8722 or 0805-198-4832</b> or by email at portal.support@tetfund.gov.ng
+                    </span>
+                </p>
+    
+
         </div>
     <div>
 

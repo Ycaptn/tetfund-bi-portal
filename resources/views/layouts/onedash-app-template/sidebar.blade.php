@@ -9,25 +9,22 @@
 			<div class="mobile-toggle-icon fs-3">
 				<i class="bi bi-list"></i>
 			</div>
-			@if (FoundationCore::has_feature('edms', $organization))
+
 			<form class="searchbar">
 				<div class="position-absolute top-50 translate-middle-y search-icon ms-3"><i class="bi bi-search"></i></div>
-				<input class="form-control" type="text" placeholder="Type here to search">
+				<input class="form-control" type="text" placeholder="Search for your Submissions">
 				<div class="position-absolute top-50 translate-middle-y search-close-icon"><i class="bi bi-x-lg"></i></div>
 			</form>
-			@endif
+			
 			<div class="top-navbar-right ms-auto">
 				<ul class="navbar-nav align-items-center">
 
-					@if (FoundationCore::has_feature('edms', $organization))
 					<li class="nav-item search-toggle-icon">
 						<a class="nav-link" href="#">
-							<div class="">
-							<i class="bi bi-search"></i>
+							<div class=""> <i class="bi bi-search"></i>
 							</div>
 						</a>
 					</li>
-					@endif
 
 					<li class="nav-item dropdown dropdown-user-setting">
 						<a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown">
@@ -88,8 +85,9 @@
 				</ul>
 			</div>
 		</nav>
-		<marquee width="100%" direction="right" style="margin-top:61px;color:white;font-weight:bold;padding:5px 5px 5px 5px;background-color:#02b863c9;">
-			The Intranet Notice Board is now online. Internal Announcements will be placed on this banner.
+		<marquee width="100%" direction="left" style="margin-top:61px;color:white;font-weight:bold;padding:5px 5px 5px 5px;background-color:#02b863c9;">
+			Welcome to the upgraded TETFund Beneficiary Submission Portal for all our Beneficiary Institutions. 
+			Use this portal to process submissions for <b>Physical Infrastructure, Library, ASTD, Academic Manuscripts, ICT Support, and Special Interventions</b>.
 		</marquee>
   	</header>
 
@@ -128,32 +126,77 @@
 				</a>
 			</li>
 
-			@php
-				$menu_tf_bis = \BISubmission::get_menu_map();
-				$menu_tf_imp = \Impact::get_menu_map();
-				$menu_tf_astd = \ASTD::get_menu_map();
+			<li>
+				<a href="" class="">
+					<div class="parent-icon"><i class='bx bx-layer-plus'></i>
+					</div>
+					<div class="menu-title">Submissions</div>
+				</a>
+			</li>
 
-				$menu_dm = \EDMSEngine::get_menu_map();
-				$menu_wf = \WorkflowEngine::get_menu_map();
+			<li>
+				<a href="" class="">
+					<div class="parent-icon"><i class='bx bx-location-plus'></i>
+					</div>
+					<div class="menu-title">Monitoring</div>
+				</a>
+			</li>
+
+			<li>
+				<a href="" class="">
+					<div class="parent-icon"><i class='bx bx-paper-plane'></i>
+					</div>
+					<div class="menu-title">ASTD Nominations</div>
+				</a>
+			</li>
+
+			<li>
+				<a href="" class="">
+					<div class="parent-icon"><i class='bx bx-wallet'></i>
+					</div>
+					<div class="menu-title">Fund Availability</div>
+				</a>
+			</li>
+
+			<li>
+				<a href="" class="">
+					<div class="parent-icon"><i class='bx bx-devices'></i>
+					</div>
+					<div class="menu-title">Desk Officer</div>
+				</a>
+			</li>
+
+			<li>
+				<a href="" class="">
+					<div class="parent-icon"><i class='bx bx-book-reader'></i>
+					</div>
+					<div class="menu-title">Librarian</div>
+				</a>
+			</li>
+
+			<li>
+				<a href="" class="">
+					<div class="parent-icon"><i class='bx bx-dish'></i>
+					</div>
+					<div class="menu-title">Director ICT</div>
+				</a>
+			</li>
+
+			<li>
+				<a href="" class="">
+					<div class="parent-icon"><i class='bx bx-layer'></i>
+					</div>
+					<div class="menu-title">Director PI & Works</div>
+				</a>
+			</li>
+
+
+			@php
 				$menu_fc = \FoundationCore::get_menu_map();
-				$menu_tf_fa = \FinanceAudit::get_menu_map();
-				$menu_tf_bip = \Intervention::get_menu_map();
-				$menu_tf_bm = \BeneficiaryMgt::get_menu_map();
-				$menu_tf_me = \MonitoringEvaluation::get_menu_map();
 			@endphp
 		
-			@each('layouts.onedash-app-template.menu-group', $menu_dm, 'children')
-			@each('layouts.onedash-app-template.menu-group', $menu_wf, 'children')
-			@each('layouts.onedash-app-template.menu-group', $menu_tf_fa, 'children')
-			@each('layouts.onedash-app-template.menu-group', $menu_tf_bip, 'children')
-			@each('layouts.onedash-app-template.menu-group', $menu_tf_bm, 'children')
-			@each('layouts.onedash-app-template.menu-group', $menu_tf_me, 'children')
+			@each('layouts.default-app-template.menu-group', $menu_fc, 'children')
 
-			@each('layouts.onedash-app-template.menu-group', $menu_tf_bis, 'children')
-			@each('layouts.onedash-app-template.menu-group', $menu_tf_imp, 'children')
-			@each('layouts.onedash-app-template.menu-group', $menu_tf_astd, 'children')
-
-			@each('layouts.onedash-app-template.menu-group', $menu_fc, 'children')
 
 		</ul>
 
