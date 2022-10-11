@@ -85,9 +85,9 @@
 				</ul>
 			</div>
 		</nav>
-		<marquee width="100%" direction="left" style="margin-top:61px;color:white;font-weight:bold;padding:5px 5px 5px 5px;background-color:#02b863c9;">
+		<marquee width="100%" direction="left" style="margin-top:61px;color:white;padding:5px 5px 5px 5px;background-color:#02b863c9;">
 			Welcome to the upgraded TETFund Beneficiary Submission Portal for all our Beneficiary Institutions. 
-			Use this portal to process submissions for <b>Physical Infrastructure, Library, ASTD, Academic Manuscripts, ICT Support, and Special Interventions</b>.
+			Use this portal to process submissions for Physical Infrastructure, Library, ASTD, Academic Manuscripts, ICT Support, and Special Interventions.
 		</marquee>
   	</header>
 
@@ -126,77 +126,103 @@
 				</a>
 			</li>
 
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
 			<li>
-				<a href="" class="">
+				<a href="{{ route('tf-bi-portal.submissionRequests.index') }}" class="">
 					<div class="parent-icon"><i class='bx bx-layer-plus'></i>
 					</div>
 					<div class="menu-title">Submissions</div>
 				</a>
 			</li>
+			@endif
 
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
 			<li>
-				<a href="" class="">
+				<a href="{{ route('tf-bi-portal.monitoring') }}" class="">
 					<div class="parent-icon"><i class='bx bx-location-plus'></i>
 					</div>
 					<div class="menu-title">Monitoring</div>
 				</a>
 			</li>
+			@endif
 
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi','bi-staff']))
 			<li>
-				<a href="" class="">
+				<a href="{{ route('tf-bi-portal.astd') }}" class="">
 					<div class="parent-icon"><i class='bx bx-paper-plane'></i>
 					</div>
 					<div class="menu-title">ASTD Nominations</div>
 				</a>
 			</li>
+			@endif
 
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
 			<li>
-				<a href="" class="">
+				<a href="{{ route('tf-bi-portal.fund-availability') }}" class="">
 					<div class="parent-icon"><i class='bx bx-wallet'></i>
 					</div>
-					<div class="menu-title">Fund Availability</div>
+					<div class="menu-title">Fund Availability Status</div>
 				</a>
 			</li>
+			@endif
 
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer']))
 			<li>
-				<a href="" class="">
+				<a href="{{ route('tf-bi-portal.desk-officer') }}" class="">
 					<div class="parent-icon"><i class='bx bx-devices'></i>
 					</div>
 					<div class="menu-title">Desk Officer</div>
 				</a>
 			</li>
+			@endif
 
+			@if (Auth()->user()->hasAnyRole(['bi-lib']))
 			<li>
-				<a href="" class="">
+				<a href="{{ route('tf-bi-portal.librarian') }}" class="">
 					<div class="parent-icon"><i class='bx bx-book-reader'></i>
 					</div>
 					<div class="menu-title">Librarian</div>
 				</a>
 			</li>
+			@endif
 
+			@if (Auth()->user()->hasAnyRole(['bi-ict']))
 			<li>
-				<a href="" class="">
+				<a href="{{ route('tf-bi-portal.dict') }}" class="">
 					<div class="parent-icon"><i class='bx bx-dish'></i>
 					</div>
 					<div class="menu-title">Director ICT</div>
 				</a>
 			</li>
+			@endif
 
+			@if (Auth()->user()->hasAnyRole(['bi-works']))
 			<li>
-				<a href="" class="">
+				<a href="{{ route('tf-bi-portal.dworks') }}" class="">
 					<div class="parent-icon"><i class='bx bx-layer'></i>
 					</div>
 					<div class="menu-title">Director PI & Works</div>
 				</a>
 			</li>
+			@endif
 
+			@if (Auth()->user()->hasAnyRole(['bi-mgt','admin']))
+				<li>
+					<a href="{{ route('tf-bi-portal.beneficiaries.index') }}" class="">
+						<div class="parent-icon"><i class='bx bx-intersect'></i>
+						</div>
+						<div class="menu-title">Beneficiary Mgt</div>
+					</a>
+				</li>
+			@endif
 
-			@php
-				$menu_fc = \FoundationCore::get_menu_map();
-			@endphp
-		
-			@each('layouts.default-app-template.menu-group', $menu_fc, 'children')
-
+			@if (Auth()->user()->hasAnyRole(['admin']))
+				@php
+					$menu_fc = \FoundationCore::get_menu_map();
+				@endphp
+			
+				@each('layouts.default-app-template.menu-group', $menu_fc, 'children')
+			@endif
 
 		</ul>
 

@@ -16,7 +16,12 @@ $orgRoutes = function() {
         Route::middleware(['auth:sanctum'])->group(function () {
 
             \FoundationCore::api_routes();
-            
+
+            Route::name('tf-bi-portal-api.')->prefix('tf-bi-portal-api')->group(function(){
+                Route::resource('beneficiaries', \App\Http\Controllers\API\BeneficiaryAPIController::class);
+                Route::resource('submission_requests', \App\Http\Controllers\API\SubmissionRequestAPIController::class);
+            });
+
         });
 
     });

@@ -28,6 +28,25 @@ Beneficiary Dashboard
         @include($dashboard->value)
     @endforeach
 
+
+
+    <div class="alert border-0 border-success border-start border-4 bg-light-success alert-dismissible fade show py-2">
+        <div class="d-flex align-items-center">
+            <div class="fs-3 text-success">
+                <i class="fa fa-exclamation-triangle"></i>
+            </div>
+            <div class="ms-3">
+                <div class="text-success">
+                    <ul class="mb-0">
+                        <li class="mb-2">Welcome to the upgraded TETFund Beneficiary Submission Portal for processing of submissions for <b>Physical Infrastructure, Library, ASTD, Academic Manuscripts, ICT Support, and other Special Interventions</b>.</li>
+                        <li>For <b>National Research Fund (NRF)</b> submissions, please use the <a href="https://nrf.tetfund.gov.ng" style="color:blue;" target="_blank">NRF Portal</a> to process your submissions.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="card radius-5 border-top border-0 border-3 border-success">
         <div class="card-body">
             <div class="accordion" id="acc_main">

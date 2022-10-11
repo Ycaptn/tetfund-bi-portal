@@ -23,11 +23,26 @@ $orgRoutes = function() {
 
             //Package Routes
             \FoundationCore::routes();
-            \FinanceAudit::routes();
 
             //Dashboard Routes
             Route::get('/dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'index'])->name('dashboard');
             
+            Route::name('tf-bi-portal.')->prefix('tf-bi-portal')->group(function(){
+
+
+                Route::get('/monitoring', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayMonitoringDashboard'])->name('monitoring');
+                Route::get('/astd', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayASTDNominationsDashboard'])->name('astd');
+                Route::get('/fund-availability', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayFundAvailabilityDashboard'])->name('fund-availability');
+                Route::get('/desk-officer', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayDeskOfficerAdminDashboard'])->name('desk-officer');
+                Route::get('/librarian', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayLibrarianAdminDashboard'])->name('librarian');
+                Route::get('/dict', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayDirectorICTAdminDashboard'])->name('dict');
+                Route::get('/dworks', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayDirectorPIWorksAdminDashboard'])->name('dworks');
+                
+
+                Route::resource('beneficiaries', \App\Http\Controllers\Models\BeneficiaryController::class);
+                Route::resource('submissionRequests', \App\Http\Controllers\Models\SubmissionRequestController::class);
+            });
+
         });
 
     });

@@ -1,5 +1,5 @@
 @if (isset($app_settings['portal_contact_name']) || isset($app_settings['portal_contact_phone']) || isset($app_settings['portal_contact_email']))
-<div class="card radius-5 border-top border-0 border-4 border-primary">
+<div class="card radius-5 border-top border-0 border-4 border-success">
     <div class="card-body">
         <div>
             <h5 class="card-title">Help & Support</h5>

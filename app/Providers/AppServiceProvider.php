@@ -32,7 +32,21 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        
+        //Current Organization
+        $org = \FoundationCore::current_organization();
+
+        //Roles in this application with their permissions.
+        \FoundationCore::register_roles([
+            'bi-admin'           =>  [],
+            'bi-desk-officer'    =>  [],
+            'bi-hoi'             =>  [],
+            'bi-ict'             =>  [],
+            'bi-lib'             =>  [],
+            'bi-works'           =>  [],
+            'bi-ppd'             =>  [],
+            'bi-staff'           =>  [],
+            'bi-student'         =>  [],
+        ]);
 
         Schema::defaultStringLength(125);
     }
