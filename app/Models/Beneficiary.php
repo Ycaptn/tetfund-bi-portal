@@ -51,7 +51,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Beneficiary extends Model
 {
     use GuidId;
-    use OrganizationalConstraint;
+    //use OrganizationalConstraint;
     
     use SoftDeletes;
 

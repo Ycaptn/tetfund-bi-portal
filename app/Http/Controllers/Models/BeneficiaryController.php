@@ -35,8 +35,8 @@ class BeneficiaryController extends BaseController
         $current_user = Auth()->user();
 
         $cdv_beneficiaries = new \Hasob\FoundationCore\View\Components\CardDataView(Beneficiary::class, "pages.beneficiaries.card_view_item");
-        $cdv_beneficiaries->setDataQuery(['organization_id'=>$org->id])
-                        ->addDataGroup('All','delete_at','null')
+        $cdv_beneficiaries->addDataGroup('All','delete_at','null')
+                        //->setDataQuery(['organization_id'=>$org->id])
                         ->addDataGroup('University','type','university')
                         ->addDataGroup('Polytechnic','type','polytechnic')
                         ->addDataGroup('College','type','college')
@@ -44,7 +44,7 @@ class BeneficiaryController extends BaseController
                         ->addDataOrder('full_name','ASC')
                         ->enableSearch(true)
                         ->enablePagination(true)
-                        ->setPaginationLimit(20)
+                        ->setPaginationLimit(10)
                         ->setSearchPlaceholder('Search Beneficiaries');
 
         if (request()->expectsJson()){
@@ -103,10 +103,10 @@ class BeneficiaryController extends BaseController
         if (empty($beneficiary)) {
             //Flash::error('Beneficiary not found');
 
-            return redirect(route('xyz.beneficiaries.index'));
+            return redirect(route('tf-bi-portal.beneficiaries.index'));
         }
 
-        return view('xyz::pages.beneficiaries.show')->with('beneficiary', $beneficiary);
+        return view('tf-bi-portal::pages.beneficiaries.show')->with('beneficiary', $beneficiary);
     }
 
     /**

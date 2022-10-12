@@ -26,7 +26,7 @@ class BeneficiaryDataTable extends DataTable
     {
         $dataTable = new EloquentDataTable($query);
 
-        return $dataTable->addColumn('action', 'xyz::pages.beneficiaries.datatables_actions');
+        return $dataTable->addColumn('action', 'tf-bi-portal::pages.beneficiaries.datatables_actions');
     }
 
     /**

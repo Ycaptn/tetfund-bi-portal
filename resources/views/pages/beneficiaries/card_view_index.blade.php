@@ -23,7 +23,7 @@ Institutions
 @stop
 
 @section('page_title_buttons')
-<a id="btn-sync-mdl-beneficiary-modal" class="btn btn-sm btn-primary btn-sync-mdl-beneficiary-modal">
+<a id="btn-sync-mdl-beneficiary-modal" class="btn btn-sm btn-primary  btn-sync-mdl-beneficiary-modal">
     <i class="bx bx-book-add me-1"></i>Synchronize Beneficiary List
 </a>
 @stop
@@ -35,6 +35,8 @@ Institutions
             {{ $cdv_beneficiaries->render() }}
         </div>
     </div>
+
+    @include('tf-bi-portal::pages.beneficiaries.modal')
 
 @stop
 

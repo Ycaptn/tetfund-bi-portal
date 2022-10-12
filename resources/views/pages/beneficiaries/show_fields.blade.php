@@ -1,7 +1,7 @@
 <!-- Email Field -->
 <div id="div_beneficiary_email" class="col-sm-12 mb-10">
     <p>
-        {!! Form::label('email', 'Email:', ['class'=>'control-label']) !!} 
+        <strong> {!! Form::label('email', 'Email:', ['class'=>'control-label']) !!} </strong>
         <span id="spn_beneficiary_email">
         @if (isset($beneficiary->email) && empty($beneficiary->email)==false)
             {!! $beneficiary->email !!}
@@ -15,7 +15,7 @@
 <!-- Full Name Field -->
 <div id="div_beneficiary_full_name" class="col-sm-12 mb-10">
     <p>
-        {!! Form::label('full_name', 'Full Name:', ['class'=>'control-label']) !!} 
+        <strong> {!! Form::label('full_name', 'Full Name:', ['class'=>'control-label']) !!} </strong>
         <span id="spn_beneficiary_full_name">
         @if (isset($beneficiary->full_name) && empty($beneficiary->full_name)==false)
             {!! $beneficiary->full_name !!}
@@ -29,7 +29,7 @@
 <!-- Short Name Field -->
 <div id="div_beneficiary_short_name" class="col-sm-12 mb-10">
     <p>
-        {!! Form::label('short_name', 'Short Name:', ['class'=>'control-label']) !!} 
+        <strong> {!! Form::label('short_name', 'Short Name:', ['class'=>'control-label']) !!} </strong>
         <span id="spn_beneficiary_short_name">
         @if (isset($beneficiary->short_name) && empty($beneficiary->short_name)==false)
             {!! $beneficiary->short_name !!}
@@ -43,7 +43,7 @@
 <!-- Official Email Field -->
 <div id="div_beneficiary_official_email" class="col-sm-12 mb-10">
     <p>
-        {!! Form::label('official_email', 'Official Email:', ['class'=>'control-label']) !!} 
+        <strong> {!! Form::label('official_email', 'Official Email:', ['class'=>'control-label']) !!} </strong>
         <span id="spn_beneficiary_official_email">
         @if (isset($beneficiary->official_email) && empty($beneficiary->official_email)==false)
             {!! $beneficiary->official_email !!}
@@ -57,7 +57,7 @@
 <!-- Official Website Field -->
 <div id="div_beneficiary_official_website" class="col-sm-12 mb-10">
     <p>
-        {!! Form::label('official_website', 'Official Website:', ['class'=>'control-label']) !!} 
+        <strong> {!! Form::label('official_website', 'Official Website:', ['class'=>'control-label']) !!} </strong>
         <span id="spn_beneficiary_official_website">
         @if (isset($beneficiary->official_website) && empty($beneficiary->official_website)==false)
             {!! $beneficiary->official_website !!}
@@ -71,7 +71,7 @@
 <!-- Official Phone Field -->
 <div id="div_beneficiary_official_phone" class="col-sm-12 mb-10">
     <p>
-        {!! Form::label('official_phone', 'Official Phone:', ['class'=>'control-label']) !!} 
+        <strong> {!! Form::label('official_phone', 'Official Phone:', ['class'=>'control-label']) !!} </strong>
         <span id="spn_beneficiary_official_phone">
         @if (isset($beneficiary->official_phone) && empty($beneficiary->official_phone)==false)
             {!! $beneficiary->official_phone !!}
@@ -85,7 +85,7 @@
 <!-- Address Street Field -->
 <div id="div_beneficiary_address_street" class="col-sm-12 mb-10">
     <p>
-        {!! Form::label('address_street', 'Address Street:', ['class'=>'control-label']) !!} 
+        <strong> {!! Form::label('address_street', 'Address Street:', ['class'=>'control-label']) !!} </strong>
         <span id="spn_beneficiary_address_street">
         @if (isset($beneficiary->address_street) && empty($beneficiary->address_street)==false)
             {!! $beneficiary->address_street !!}
@@ -99,7 +99,7 @@
 <!-- Address Town Field -->
 <div id="div_beneficiary_address_town" class="col-sm-12 mb-10">
     <p>
-        {!! Form::label('address_town', 'Address Town:', ['class'=>'control-label']) !!} 
+        <strong> {!! Form::label('address_town', 'Address Town:', ['class'=>'control-label']) !!} </strong>
         <span id="spn_beneficiary_address_town">
         @if (isset($beneficiary->address_town) && empty($beneficiary->address_town)==false)
             {!! $beneficiary->address_town !!}
@@ -113,7 +113,7 @@
 <!-- Address State Field -->
 <div id="div_beneficiary_address_state" class="col-sm-12 mb-10">
     <p>
-        {!! Form::label('address_state', 'Address State:', ['class'=>'control-label']) !!} 
+        <strong> {!! Form::label('address_state', 'Address State:', ['class'=>'control-label']) !!} </strong>
         <span id="spn_beneficiary_address_state">
         @if (isset($beneficiary->address_state) && empty($beneficiary->address_state)==false)
             {!! $beneficiary->address_state !!}
@@ -127,7 +127,7 @@
 <!-- Head Of Institution Title Field -->
 <div id="div_beneficiary_head_of_institution_title" class="col-sm-12 mb-10">
     <p>
-        {!! Form::label('head_of_institution_title', 'Head Of Institution Title:', ['class'=>'control-label']) !!} 
+        <strong> {!! Form::label('head_of_institution_title', 'Head Of Institution Title:', ['class'=>'control-label']) !!} </strong>
         <span id="spn_beneficiary_head_of_institution_title">
         @if (isset($beneficiary->head_of_institution_title) && empty($beneficiary->head_of_institution_title)==false)
             {!! $beneficiary->head_of_institution_title !!}
@@ -141,7 +141,7 @@
 <!-- Geo Zone Field -->
 <div id="div_beneficiary_geo_zone" class="col-sm-12 mb-10">
     <p>
-        {!! Form::label('geo_zone', 'Geo Zone:', ['class'=>'control-label']) !!} 
+        <strong> {!! Form::label('geo_zone', 'Geo Zone:', ['class'=>'control-label']) !!} </strong>
         <span id="spn_beneficiary_geo_zone">
         @if (isset($beneficiary->geo_zone) && empty($beneficiary->geo_zone)==false)
             {!! $beneficiary->geo_zone !!}
@@ -155,7 +155,7 @@
 <!-- Owner Agency Type Field -->
 <div id="div_beneficiary_owner_agency_type" class="col-sm-12 mb-10">
     <p>
-        {!! Form::label('owner_agency_type', 'Owner Agency Type:', ['class'=>'control-label']) !!} 
+        <strong> {!! Form::label('owner_agency_type', 'Owner Agency Type:', ['class'=>'control-label']) !!} </strong>
         <span id="spn_beneficiary_owner_agency_type">
         @if (isset($beneficiary->owner_agency_type) && empty($beneficiary->owner_agency_type)==false)
             {!! $beneficiary->owner_agency_type !!}
@@ -169,7 +169,7 @@
 <!-- Tf Iterum Portal Beneficiary Status Field -->
 <div id="div_beneficiary_tf_iterum_portal_beneficiary_status" class="col-sm-12 mb-10">
     <p>
-        {!! Form::label('tf_iterum_portal_beneficiary_status', 'Tf Iterum Portal Beneficiary Status:', ['class'=>'control-label']) !!} 
+        <strong> {!! Form::label('tf_iterum_portal_beneficiary_status', 'Tf Iterum Portal Beneficiary Status:', ['class'=>'control-label']) !!} </strong>
         <span id="spn_beneficiary_tf_iterum_portal_beneficiary_status">
         @if (isset($beneficiary->tf_iterum_portal_beneficiary_status) && empty($beneficiary->tf_iterum_portal_beneficiary_status)==false)
             {!! $beneficiary->tf_iterum_portal_beneficiary_status !!}

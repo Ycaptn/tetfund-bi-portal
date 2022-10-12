@@ -16,14 +16,14 @@ Beneficiary
 @stop
 
 @section('page_title_subtext')
-<a class="ms-1" href="{{ route('xyz.beneficiaries.index') }}">
+<a class="ms-1" href="{{ route('tf-bi-portal.beneficiaries.index') }}">
     <i class="fa fa-angle-double-left"></i> Back to Beneficiary List
 </a>
 @stop
 
 @section('page_title_buttons')
 
-    <a data-toggle="tooltip" 
+    {{-- <a data-toggle="tooltip" 
         title="New" 
         data-val='{{$beneficiary->id}}' 
         class="btn btn-sm btn-primary btn-new-mdl-beneficiary-modal" href="#">
@@ -38,8 +38,8 @@ Beneficiary
     </a>
 
     @if (Auth()->user()->hasAnyRole(['','admin']))
-        @include('xyz::pages.beneficiaries.bulk-upload-modal')
-    @endif
+        @include('tf-bi-portal::pages.beneficiaries.bulk-upload-modal')
+    @endif --}}
 @stop
 
 
@@ -48,8 +48,8 @@ Beneficiary
     <div class="card border-top border-0 border-4 border-primary">
         <div class="card-body">
 
-            @include('xyz::pages.beneficiaries.modal') 
-            @include('xyz::pages.beneficiaries.show_fields')
+            @include('tf-bi-portal::pages.beneficiaries.modal') 
+            @include('tf-bi-portal::pages.beneficiaries.show_fields')
             
         </div>
     </div>

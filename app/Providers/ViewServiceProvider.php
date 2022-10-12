@@ -30,6 +30,6 @@ class ViewServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
+        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'tf-bi-portal');
     }
 }

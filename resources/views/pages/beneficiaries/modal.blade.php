@@ -27,14 +27,14 @@
                             <div id="div-show-txt-beneficiary-primary-id">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                    @include('xyz::pages.beneficiaries.show_fields')
+                                    @include('tf-bi-portal::pages.beneficiaries.show_fields')
                                     </div>
                                 </div>
                             </div>
                             <div id="div-edit-txt-beneficiary-primary-id">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                    @include('xyz::pages.beneficiaries.fields')
+                                    @include('tf-bi-portal::pages.beneficiaries.fields')
                                     </div>
                                 </div>
                             </div>
@@ -58,6 +58,66 @@
 $(document).ready(function() {
 
     $('.offline-beneficiaries').hide();
+    
+    //Proceed to process synchronization
+    $(document).on('click', ".btn-sync-mdl-beneficiary-modal", function(e) {
+        e.preventDefault();
+        $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+        //check for internet status 
+        if (!window.navigator.onLine) {
+            $('.offline-beneficiaries').fadeIn(300);
+            return;
+        }else{
+            $('.offline-beneficiaries').fadeOut(300);
+        }
+        swal({
+            title: "Are you sure you want to synchronize beneficiary list with newly updated records?",
+            text: "You will not be able to undo this process once initiated.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, proceed",
+            cancelButtonText: "No, don't proceed",
+            closeOnConfirm: false,
+            closeOnCancel: true
+        }, function(isConfirm) {
+            if (isConfirm) {
+                let endPointUrl = "{{ route('tf-bi-portal-api.synchronize_beneficiary_list') }}";
+                swal({
+                    title: "Please wait...",
+                    text: "Synchronizing beneficiary list !!!",
+                    //imageUrl: "images/ajaxloader.gif",
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                });                   
+                $.ajax({
+                    url:endPointUrl,
+                    type: "GET",
+                    cache: false,
+                    processData:false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function(result){
+                        if(result.errors){
+                            console.log(result.errors)
+                            swal("Error", "Oops an error occurred. Please try again.", "error");
+                        }else{
+                            swal({
+                                title: "Synchronized",
+                                text: result.message,
+                                type: "success",
+                                confirmButtonClass: "btn-success",
+                                confirmButtonText: "OK",
+                                closeOnConfirm: false
+                            });
+                            location.reload(true);
+                        }
+                    },
+                });
+            }
+        });
+    });
 
     //Show Modal for New Entry
     $(document).on('click', ".btn-new-mdl-beneficiary-modal", function(e) {
@@ -72,6 +132,7 @@ $(document).ready(function() {
         $("#spinner-beneficiaries").hide();
         $("#div-save-mdl-beneficiary-modal").attr('disabled', false);
     });
+
 
     //Show Modal for View
     $(document).on('click', ".btn-show-mdl-beneficiary-modal", function(e) {
@@ -97,7 +158,7 @@ $(document).ready(function() {
         $('#div-edit-txt-beneficiary-primary-id').hide();
         let itemId = $(this).attr('data-val');
 
-        $.get( "{{ route('xyz-api.beneficiaries.show','') }}/"+itemId).done(function( response ) {
+        $.get( "{{ route('tf-bi-portal-api.beneficiaries.show','') }}/"+itemId).done(function( response ) {
 			
 			$('#txt-beneficiary-primary-id').val(response.data.id);
             		$('#spn_beneficiary_email').html(response.data.email);
@@ -136,7 +197,7 @@ $(document).ready(function() {
         $('#div-edit-txt-beneficiary-primary-id').show();
         let itemId = $(this).attr('data-val');
 
-        $.get( "{{ route('xyz-api.beneficiaries.show','') }}/"+itemId).done(function( response ) {     
+        $.get( "{{ route('tf-bi-portal-api.beneficiaries.show','') }}/"+itemId).done(function( response ) {     
 
 			$('#txt-beneficiary-primary-id').val(response.data.id);
             		$('#email').val(response.data.email);
@@ -186,7 +247,7 @@ $(document).ready(function() {
             }, function(isConfirm) {
                 if (isConfirm) {
 
-                    let endPointUrl = "{{ route('xyz-api.beneficiaries.destroy','') }}/"+itemId;
+                    let endPointUrl = "{{ route('tf-bi-portal-api.beneficiaries.destroy','') }}/"+itemId;
 
                     let formData = new FormData();
                     formData.append('_token', $('input[name="_token"]').val());
@@ -241,7 +302,7 @@ $(document).ready(function() {
         $("#div-save-mdl-beneficiary-modal").attr('disabled', true);
 
         let actionType = "POST";
-        let endPointUrl = "{{ route('xyz-api.beneficiaries.store') }}";
+        let endPointUrl = "{{ route('tf-bi-portal-api.beneficiaries.store') }}";
         let primaryId = $('#txt-beneficiary-primary-id').val();
         
         let formData = new FormData();
@@ -249,7 +310,7 @@ $(document).ready(function() {
 
         if (primaryId != "0"){
             actionType = "PUT";
-            endPointUrl = "{{ route('xyz-api.beneficiaries.update','') }}/"+primaryId;
+            endPointUrl = "{{ route('tf-bi-portal-api.beneficiaries.update','') }}/"+primaryId;
             formData.append('id', primaryId);
         }
         
