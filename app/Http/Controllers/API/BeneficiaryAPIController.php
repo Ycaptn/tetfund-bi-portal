@@ -47,12 +47,11 @@ class BeneficiaryAPIController extends AppBaseController
             $query->limit($request->get('limit'));
         }
         
-        if ($organization != null){
+        /*if ($organization != null){
             $query->where('organization_id', $organization->id);
-        }
+        }*/
 
         $beneficiaries = $this->showAll($query->get());
-
         return $this->sendResponse($beneficiaries->toArray(), 'Beneficiaries retrieved successfully');
     }
 
@@ -66,13 +65,7 @@ class BeneficiaryAPIController extends AppBaseController
      */
     public function store(CreateBeneficiaryAPIRequest $request, Organization $organization)
     {
-        $input = $request->all();
-
-        /** @var Beneficiary $beneficiary */
-        $beneficiary = Beneficiary::create($input);
         
-        BeneficiaryCreated::dispatch($beneficiary);
-        return $this->sendResponse($beneficiary->toArray(), 'Beneficiary saved successfully');
     }
 
     /**
@@ -85,14 +78,7 @@ class BeneficiaryAPIController extends AppBaseController
      */
     public function show($id, Organization $organization)
     {
-        /** @var Beneficiary $beneficiary */
-        $beneficiary = Beneficiary::find($id);
-
-        if (empty($beneficiary)) {
-            return $this->sendError('Beneficiary not found');
-        }
-
-        return $this->sendResponse($beneficiary->toArray(), 'Beneficiary retrieved successfully');
+        
     }
 
     /**
@@ -106,18 +92,7 @@ class BeneficiaryAPIController extends AppBaseController
      */
     public function update($id, UpdateBeneficiaryAPIRequest $request, Organization $organization)
     {
-        /** @var Beneficiary $beneficiary */
-        $beneficiary = Beneficiary::find($id);
-
-        if (empty($beneficiary)) {
-            return $this->sendError('Beneficiary not found');
-        }
-
-        $beneficiary->fill($request->all());
-        $beneficiary->save();
         
-        BeneficiaryUpdated::dispatch($beneficiary);
-        return $this->sendResponse($beneficiary->toArray(), 'Beneficiary updated successfully');
     }
 
     /**
@@ -132,16 +107,7 @@ class BeneficiaryAPIController extends AppBaseController
      */
     public function destroy($id, Organization $organization)
     {
-        /** @var Beneficiary $beneficiary */
-        $beneficiary = Beneficiary::find($id);
-
-        if (empty($beneficiary)) {
-            return $this->sendError('Beneficiary not found');
-        }
-
-        $beneficiary->delete();
-        BeneficiaryDeleted::dispatch($beneficiary);
-        return $this->sendSuccess('Beneficiary deleted successfully');
+        
     }
 
     public function synchronize_beneficiary_list(Organization $org, Request $request){
@@ -167,6 +133,7 @@ class BeneficiaryAPIController extends AppBaseController
                 $beneficiary_obj->head_of_institution_title = $get_server_beneficiary->head_of_institution_title;
                 $beneficiary_obj->geo_zone = $get_server_beneficiary->geo_zone;
                 $beneficiary_obj->owner_agency_type = $get_server_beneficiary->owner_agency_type;
+                $beneficiary_obj->tf_iterum_portal_key_id = $get_server_beneficiary->id;
                 
                 $beneficiary_obj->save();
             }

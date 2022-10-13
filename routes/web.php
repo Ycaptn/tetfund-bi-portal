@@ -31,13 +31,14 @@ $orgRoutes = function() {
 
 
                 Route::get('/monitoring', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayMonitoringDashboard'])->name('monitoring');
-                Route::get('/astd', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayASTDNominationsDashboard'])->name('astd');
+                //Route::get('/astd', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayASTDNominationsDashboard'])->name('astd');
                 Route::get('/fund-availability', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayFundAvailabilityDashboard'])->name('fund-availability');
                 Route::get('/desk-officer', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayDeskOfficerAdminDashboard'])->name('desk-officer');
                 Route::get('/librarian', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayLibrarianAdminDashboard'])->name('librarian');
                 Route::get('/dict', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayDirectorICTAdminDashboard'])->name('dict');
                 Route::get('/dworks', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayDirectorPIWorksAdminDashboard'])->name('dworks');
-                
+
+                Route::resource('a_s_t_d_nominations', \App\Http\Controllers\Models\ASTDNominationController::class);
 
                 Route::resource('beneficiaries', \App\Http\Controllers\Models\BeneficiaryController::class);
                 Route::resource('submissionRequests', \App\Http\Controllers\Models\SubmissionRequestController::class);

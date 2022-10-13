@@ -10,6 +10,7 @@ use Hasob\FoundationCore\Models\Department;
 use Hasob\FoundationCore\Models\Organization;
 
 use Hasob\FoundationCore\Controllers\BaseController;
+use App\Managers\TETFundServer;
 
 class DashboardController extends BaseController
 {
@@ -35,11 +36,7 @@ class DashboardController extends BaseController
 
     public function displayASTDNominationsDashboard(Organization $org, Request $request){
 
-        $current_user = Auth()->user();
-
-        return view('pages.astd_nominations.index')
-                    ->with('organization', $org)
-                    ->with('current_user', $current_user);
+        
     }
 
     public function displayFundAvailabilityDashboard(Organization $org, Request $request){
