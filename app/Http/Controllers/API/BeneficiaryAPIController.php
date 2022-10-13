@@ -126,6 +126,7 @@ class BeneficiaryAPIController extends AppBaseController
                 $beneficiary_obj->short_name = $get_server_beneficiary->short_name;
                 $beneficiary_obj->official_email = $get_server_beneficiary->official_email;
                 $beneficiary_obj->official_website = $get_server_beneficiary->official_website;
+                $beneficiary_obj->type = $get_server_beneficiary->type;
                 $beneficiary_obj->official_phone = $get_server_beneficiary->official_phone;
                 $beneficiary_obj->address_street = $get_server_beneficiary->address_street;
                 $beneficiary_obj->address_town = $get_server_beneficiary->address_town;

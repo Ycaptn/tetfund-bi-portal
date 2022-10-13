@@ -35,7 +35,7 @@ class BeneficiaryController extends BaseController
         $current_user = Auth()->user();
 
         $cdv_beneficiaries = new \Hasob\FoundationCore\View\Components\CardDataView(Beneficiary::class, "pages.beneficiaries.card_view_item");
-        $cdv_beneficiaries->addDataGroup('All','delete_at','null')
+        $cdv_beneficiaries->addDataGroup('All','deleted_at',null)
                         //->setDataQuery(['organization_id'=>$org->id])
                         ->addDataGroup('University','type','university')
                         ->addDataGroup('Polytechnic','type','polytechnic')

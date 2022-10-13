@@ -68,6 +68,20 @@
     </p>
 </div>
 
+<!-- Type Field -->
+<div id="div_beneficiary_type" class="col-sm-12 mb-10">
+    <p>
+        <strong> {!! Form::label('type', 'Institution Type:', ['class'=>'control-label']) !!} </strong>
+        <span id="spn_beneficiary_type">
+        @if (isset($beneficiary->type) && empty($beneficiary->type)==false)
+            {!! ucwords($beneficiary->type) !!}
+        @else
+            N/A
+        @endif
+        </span>
+    </p>
+</div>
+
 <!-- Official Phone Field -->
 <div id="div_beneficiary_official_phone" class="col-sm-12 mb-10">
     <p>
