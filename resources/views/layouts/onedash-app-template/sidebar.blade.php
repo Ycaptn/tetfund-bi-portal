@@ -136,7 +136,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi','admin']))
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
 			<li>
 				<a href="{{ route('tf-bi-portal.monitoring') }}" class="">
 					<div class="parent-icon"><i class='bx bx-location-plus'></i>
@@ -146,9 +146,9 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi','bi-staff','admin']))
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi','bi-staff']))
 			<li>
-				<a href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}" class="">
+				<a href="{{ route('tf-bi-portal.astd') }}" class="">
 					<div class="parent-icon"><i class='bx bx-paper-plane'></i>
 					</div>
 					<div class="menu-title">ASTD Nominations</div>
@@ -156,7 +156,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi','admin']))
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
 			<li>
 				<a href="{{ route('tf-bi-portal.fund-availability') }}" class="">
 					<div class="parent-icon"><i class='bx bx-wallet'></i>
@@ -166,7 +166,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','admin']))
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer']))
 			<li>
 				<a href="{{ route('tf-bi-portal.desk-officer') }}" class="">
 					<div class="parent-icon"><i class='bx bx-devices'></i>
@@ -176,7 +176,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-lib','admin']))
+			@if (Auth()->user()->hasAnyRole(['bi-lib']))
 			<li>
 				<a href="{{ route('tf-bi-portal.librarian') }}" class="">
 					<div class="parent-icon"><i class='bx bx-book-reader'></i>
@@ -186,7 +186,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-ict','admin']))
+			@if (Auth()->user()->hasAnyRole(['bi-ict']))
 			<li>
 				<a href="{{ route('tf-bi-portal.dict') }}" class="">
 					<div class="parent-icon"><i class='bx bx-dish'></i>
@@ -196,7 +196,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-works','admin']))
+			@if (Auth()->user()->hasAnyRole(['bi-works']))
 			<li>
 				<a href="{{ route('tf-bi-portal.dworks') }}" class="">
 					<div class="parent-icon"><i class='bx bx-layer'></i>
@@ -206,7 +206,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-mgt','admin','admin']))
+			@if (Auth()->user()->hasAnyRole(['bi-mgt','admin']))
 				<li>
 					<a href="{{ route('tf-bi-portal.beneficiaries.index') }}" class="">
 						<div class="parent-icon"><i class='bx bx-intersect'></i>
@@ -216,7 +216,7 @@
 				</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['admin','admin']))
+			@if (Auth()->user()->hasAnyRole(['admin']))
 				@php
 					$menu_fc = \FoundationCore::get_menu_map();
 				@endphp
