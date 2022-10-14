@@ -159,14 +159,14 @@ class TETFundServer {
         return [];
     }
 
-    public static function getASTDNominationList($pay_load = null) {
+    public static function getASTDNominationList() {
         $server_api_url = Config::get('keys.tetfund.server_api_url');
         $token = self::get_auth_token();
-        $ch = self::setup_curl($token, "{$server_api_url}/tetfund-astd-api/a_s_t_d_nominations", $pay_load);
+        $ch = self::setup_curl($token, "{$server_api_url}/tetfund-astd-api/a_s_t_d_nominations", null);
         $api_response = curl_exec($ch);
         $api_response_data = json_decode($api_response);
         curl_close ($ch);
-        return ($api_response != null && $api_response_data !=null) ?  $api_response_data : [];
+        return ($api_response != null && $api_response_data !=null && is_array($api_response_data->data)) ?  $api_response_data->data : [];
     }
 
     public static function get_all_data_list_from_server($endpoint_path, $pay_load) {
@@ -179,17 +179,7 @@ class TETFundServer {
         return ($api_response != null && $api_response_data !=null && is_array($api_response_data->data)) ?  $api_response_data->data : [];
     }
 
-    public static function get_row_records_from_server($endpoint_path, $pay_load) {
-        $server_api_url = Config::get('keys.tetfund.server_api_url');
-        $token = self::get_auth_token();
-        $ch = self::setup_curl($token, "{$server_api_url}/$endpoint_path", $pay_load);
-        $api_response = curl_exec($ch);
-        $api_response_data = json_decode($api_response);
-        curl_close ($ch);
-        return ($api_response != null && $api_response_data !=null && isset($api_response_data->data)) ?  $api_response_data->data : [];
-    }
-
-    public static function storeUpdateAndDestroyDataInServer($endpoint_path, $pay_load) {
+    public static function form_validation_data_response_from_server($endpoint_path, $pay_load) {
 
         $server_api_url = Config::get('keys.tetfund.server_api_url');
         $token = self::get_auth_token();

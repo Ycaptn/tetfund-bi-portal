@@ -61,7 +61,7 @@ class ASTDNominationAPIController extends AppBaseController
         $input = $request->all();
         /*class constructor*/
         $tETFundServer = new TETFundServer();
-        $aSTDNomination = $tETFundServer->storeUpdateAndDestroyDataInServer("tetfund-astd-api/a_s_t_d_nominations", $input);
+        $aSTDNomination = $tETFundServer->form_validation_data_response_from_server("tetfund-astd-api/a_s_t_d_nominations", $input);
         return $aSTDNomination;        
     }
 
@@ -73,13 +73,16 @@ class ASTDNominationAPIController extends AppBaseController
      *
      * @return Response
      */
-    public function show(Request $request, $id, Organization $organization) {
-        $inputs = $request->all();
-        $inputs['id'] = $id;    /* append id to payload */
-        $inputs['_method'] = 'GET';     /* append method to payload */
-        $tETFundServer = new TETFundServer();   /*server class constructor */
-        $data_retrival_response = $tETFundServer->storeUpdateAndDestroyDataInServer("tetfund-astd-api/a_s_t_d_nominations/$id", $inputs);
-        return $data_retrival_response;
+    public function show($id, Organization $organization)
+    {
+        /** @var ASTDNomination $aSTDNomination */
+        $aSTDNomination = ASTDNomination::find($id);
+
+        if (empty($aSTDNomination)) {
+            return $this->sendError('A S T D Nomination not found');
+        }
+
+        return $this->sendResponse($aSTDNomination->toArray(), 'A S T D Nomination retrieved successfully');
     }
 
     /**
@@ -91,12 +94,20 @@ class ASTDNominationAPIController extends AppBaseController
      *
      * @return Response
      */
-    public function update($id, Request $request, Organization $organization)
+    public function update($id, UpdateASTDNominationAPIRequest $request, Organization $organization)
     {
-        $inputs = $request->all();
-        $tETFundServer = new TETFundServer();   /*server class constructor */
-        $data_retrival_response = $tETFundServer->storeUpdateAndDestroyDataInServer("tetfund-astd-api/a_s_t_d_nominations/$id", $inputs);
-        return $data_retrival_response;
+        /** @var ASTDNomination $aSTDNomination */
+        $aSTDNomination = ASTDNomination::find($id);
+
+        if (empty($aSTDNomination)) {
+            return $this->sendError('A S T D Nomination not found');
+        }
+
+        $aSTDNomination->fill($request->all());
+        $aSTDNomination->save();
+        
+        ASTDNominationUpdated::dispatch($aSTDNomination);
+        return $this->sendResponse($aSTDNomination->toArray(), 'ASTDNomination updated successfully');
     }
 
     /**
@@ -109,11 +120,17 @@ class ASTDNominationAPIController extends AppBaseController
      *
      * @return Response
      */
-    public function destroy(Request $request, $id, Organization $organization) {
-        $inputs = $request->all();
-        $inputs['id'] = $id; /* append id to payload */
-        $tETFundServer = new TETFundServer(); /* class constructor */
-        $data_response_on_delete = $tETFundServer->storeUpdateAndDestroyDataInServer("tetfund-astd-api/a_s_t_d_nominations/$id", $inputs);
-        return $data_response_on_delete;
+    public function destroy($id, Organization $organization)
+    {
+        /** @var ASTDNomination $aSTDNomination */
+        $aSTDNomination = ASTDNomination::find($id);
+
+        if (empty($aSTDNomination)) {
+            return $this->sendError('A S T D Nomination not found');
+        }
+
+        $aSTDNomination->delete();
+        ASTDNominationDeleted::dispatch($aSTDNomination);
+        return $this->sendSuccess('A S T D Nomination deleted successfully');
     }
 }

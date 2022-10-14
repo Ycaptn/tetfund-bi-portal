@@ -12,11 +12,11 @@ ASTD Nomination
 @stop
 
 @section('page_title_suffix')
-ASTD Nomination Details {{-- {{$aSTDNomination->title}} --}}
+{{$aSTDNomination->title}}
 @stop
 
 @section('page_title_subtext')
-<a class="ms-1" href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}">
+<a class="ms-1" href="{{ route('tetfund-astd.a_s_t_d_nominations.index') }}">
     <i class="fa fa-angle-double-left"></i> Back to ASTD Nomination List
 </a>
 @stop
@@ -48,8 +48,8 @@ ASTD Nomination Details {{-- {{$aSTDNomination->title}} --}}
     <div class="card border-top border-0 border-4 border-primary">
         <div class="card-body">
 
-            @include('tf-bi-portal::pages.a_s_t_d_nominations.modal') 
-            @include('tf-bi-portal::pages.a_s_t_d_nominations.show_fields')
+            @include('tetfund-astd-module::pages.a_s_t_d_nominations.modal') 
+            @include('tetfund-astd-module::pages.a_s_t_d_nominations.show_fields')
             
         </div>
     </div>

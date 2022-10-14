@@ -190,7 +190,7 @@ $(document).ready(function() {
         $('#div-edit-txt-aSTDNomination-primary-id').show();
         let itemId = $(this).attr('data-val');
 
-        $.get( "{{ route('tf-bi-portal-api.a_s_t_d_nominations.show','') }}/"+itemId+"?_method=GET").done(function( response ) {     
+        $.get( "{{ route('tf-bi-portal-api.a_s_t_d_nominations.show','') }}/"+itemId).done(function( response ) {     
 
 			$('#txt-aSTDNomination-primary-id').val(response.data.id);
             $('#email').val(response.data.email);
@@ -242,9 +242,9 @@ $(document).ready(function() {
                     let html_options = "<option value=''>-- None selected --</option>";
                     $.each(response.data, function( index, value ) {
                         /*determining selected*/
-                        if (initially_selected_beneficiary_institution_id == value.tf_iterum_portal_key_id) {
+                        if (initially_selected_beneficiary_institution_id == value.id) {
                             html_options += "<option  value='" + value.tf_iterum_portal_key_id + "'>" + value.name + ' (' + value.country_code + ')' + "</option>";
-                            html_options += "<option selected='selected' value='" + value.tf_iterum_portal_key_id + "'>" + value.full_name + ' (' + value.short_name + ')' + "</option>";
+                            html_options += "<option selected='selected' value='" + value.id + "'>" + value.full_name + ' (' + value.short_name + ')' + "</option>";
                         } else {
                             html_options += "<option value='" + value.tf_iterum_portal_key_id + "'>" + value.full_name + ' (' + value.short_name + ')' + "</option>";
                         }
