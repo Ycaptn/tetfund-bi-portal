@@ -27,10 +27,17 @@ class ASTDNominationController extends BaseController
         $pay_load = array();
         $pay_load['api_detail_page_url'] = url("tf-bi-portal/a_s_t_d_nominations/");
         $pay_load['_method'] = 'GET';
+        if (isset($request->st)) {
+            $pay_load['st'] = $request->st;
+        }
 
         /*class constructor*/
         $tETFundServer = new TETFundServer();
         $cdv_a_s_t_d_nominations = $tETFundServer->getASTDNominationList($pay_load);
+
+        if (isset($request->json) && $request->json == true) {
+            return $cdv_a_s_t_d_nominations;
+        }
         return view('tf-bi-portal::pages.a_s_t_d_nominations.card_view_index')
             ->with('organization', $org)
             ->with('current_user', $current_user)

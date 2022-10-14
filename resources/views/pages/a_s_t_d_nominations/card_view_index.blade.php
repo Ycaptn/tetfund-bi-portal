@@ -2,7 +2,7 @@
     $control_id = $cdv_a_s_t_d_nominations->control_id;
     $data_set_group_list = [];
     $data_set_enable_search = true;
-    $search_placeholder_text = 'Blabla bla';
+    $search_placeholder_text = 'Search ASTDNomination by first or last name';
     $data_set_enable_pagination = $cdv_a_s_t_d_nominations->paginate ? true : false;
     //$control_obj = new \Hasob\FoundationCore\View\Components\CardDataView();
         // +"paginate": true
@@ -13,13 +13,13 @@
         // +"control_id": "cdv_1665697478"
         // +"cards_html": """
         // +"page_limit": 2
+    $div_id_name = $control_id.'-div-card-view';
 @endphp
 
 @extends('layouts.app')
 
 @section('app_css')
-    @include('hasob-foundation-core::cardview.card-view-css')
-    {{-- {!! $cdv_a_s_t_d_nominations->render_css() !!} --}}
+    @include('tf-bi-portal::pages.a_s_t_d_nominations.cardview.card-view-css')
 @stop
 
 @section('title_postfix')
@@ -56,8 +56,7 @@ All ASTD Nominations
     
     <div class="card border-top border-0 border-4 border-primary">
         <div class="card-body">
-            {{-- @include('hasob-foundation-core::cardview.index') --}}
-            {!! $cdv_a_s_t_d_nominations->cards_html !!}
+            @include('tf-bi-portal::pages.a_s_t_d_nominations.cardview.index')
         </div>
     </div>
 
@@ -76,6 +75,5 @@ All ASTD Nominations
 @stop
 
 @push('page_scripts')
-    {{-- @include('hasob-foundation-core::cardview.card-view-js') --}}
-    {{-- {!! $cdv_a_s_t_d_nominations->render_js() !!} --}}
+    @include('tf-bi-portal::pages.a_s_t_d_nominations.cardview.card-view-js')
 @endpush
