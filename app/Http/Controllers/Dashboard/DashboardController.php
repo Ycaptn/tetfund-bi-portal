@@ -34,9 +34,7 @@ class DashboardController extends BaseController
                     ->with('current_user', $current_user);
     }
 
-    public function displayASTDNominationsDashboard(Organization $org, Request $request){
-
-        
+    public function displayASTDNominationsDashboard(Organization $org, Request $request){ 
     }
 
     public function displayFundAvailabilityDashboard(Organization $org, Request $request){

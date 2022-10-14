@@ -2,12 +2,12 @@
 <div class="col-12 col-md-12 col-sm-12">
     <div class="card">
         @php
-            $detail_page_url = route('tetfund-astd.a_s_t_d_nominations.show', $data_item->id);
+            $detail_page_url = route('tf-bi-portal.a_s_t_d_nominations.show', $data_item->id);
         @endphp
         <div class="row g-0">
             <div class="col-xs-12 col-md-1 align-middle text-center p-2">
                 <a href='{{$detail_page_url}}'>
-                    @if ( $data_item->logo_image != null )
+                    @if ( optional($data_item)->logo_image != null )
                         <img width="42" height="42" class="ms-2 img-fluid text-center rounded-circle p-1 border" src="{{ route('fc.get-dept-picture', $data_item->id) }}" />
                     @else
                         <div class="ms-2 fm-icon-box radius-10 bg-primary text-white text-center">
@@ -37,7 +37,7 @@
                 <div class="card-body">
                     <a href='{{$detail_page_url}}'>
                         <h3 class="h6 card-title mb-0">
-                            {{ strtoupper($data_item->first_name) }} {{ strtoupper($data_item->middle_name) }} {{ strtoupper($data_item->last_name) }} &nbsp; <small>{{ $data_item->beneficiary->short_name ? ' ( BENEFICIARY: '. $data_item->beneficiary->full_name .' )' : ''}}</small>
+                            {{ strtoupper($data_item->first_name) }} {{ strtoupper($data_item->middle_name) }} {{ strtoupper($data_item->last_name) }} &nbsp; {{-- <small>{{ $data_item->beneficiary->short_name ? ' ( BENEFICIARY: '. $data_item->beneficiary->full_name .' )' : ''}} --}}</small>
                         </h3>
                     </a>
                     <p class="card-text text-muted small">
