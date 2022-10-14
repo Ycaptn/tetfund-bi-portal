@@ -4,7 +4,10 @@
     $data_set_enable_search = true;
     $search_placeholder_text = 'Search ASTDNomination by first or last name';
     $data_set_enable_pagination = $cdv_a_s_t_d_nominations->paginate ? true : false;
-    //$control_obj = new \Hasob\FoundationCore\View\Components\CardDataView();
+    $page_number = $cdv_a_s_t_d_nominations->page_number;
+    $pages_total = $cdv_a_s_t_d_nominations->pages_total;
+    $result_count = $cdv_a_s_t_d_nominations->result_count;
+        // +"pages_total": 2
         // +"paginate": true
         // +"page_number": 1
         // +"pages_total": 2

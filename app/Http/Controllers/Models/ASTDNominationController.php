@@ -30,6 +30,9 @@ class ASTDNominationController extends BaseController
         if (isset($request->st)) {
             $pay_load['st'] = $request->st;
         }
+        if (isset($request->pg)) {
+            $pay_load['pg'] = $request->pg;
+        }
 
         /*class constructor*/
         $tETFundServer = new TETFundServer();

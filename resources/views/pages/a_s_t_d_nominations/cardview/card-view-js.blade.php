@@ -5,7 +5,7 @@
         let page_total = 0;
         let current_page = 0;
 
-        /*//get page list 
+        //get page list
         
         function getPageList(totalPages, page, maxLength) {
             if (maxLength < 5) throw "maxLength must be at least 5";
@@ -78,8 +78,7 @@
             $("#previous-page").toggleClass("disabled", currentPage === 1);                
             $("#next-page").toggleClass("disabled", currentPage === totalPages);            
                                     
-        }
-*/      
+        }     
     
     //check for internet status 
         if (!window.navigator.onLine) {
@@ -93,6 +92,12 @@
                 $('#{{$div_id_name}}').append("<span class='text-center ma-20 pa-20'>No record(s) found!</span>");
             } else {
                 $('#{{$div_id_name}}').append({!! json_encode($cdv_a_s_t_d_nominations->cards_html) !!});
+                $("#{{$control_id}}-pagination").empty();
+                if ({{$data_set_enable_pagination}} != false && {{$result_count}} > 0){
+                    $(".pagination li").slice(1, -1).remove();
+                    showPage({{$page_number}}, {{$pages_total}},7);
+                    $("#{{$control_id}}-pagination").show();
+                }
             }
 
         }
@@ -135,7 +140,7 @@
                 $("#{{$control_id}}-pagination").empty();
                 if (response != null && response.paginate && response.result_count > 0){
                     $(".pagination li").slice(1, -1).remove();
-                    showPage(current_page, page_total,7)
+                    showPage(current_page, page_total,7);
 
                   
                     $("#{{$control_id}}-pagination").show();
@@ -183,7 +188,7 @@
             }
            
             /*' $control_obj->getJSONDataRouteName() '*/
-            {{$control_id}}_display_results("{{ url("tf-bi-portal/a_s_t_d_nominations/") }}?pg="+page_number);
+            {{$control_id}}_display_results("{{ url("tf-bi-portal/a_s_t_d_nominations/") }}?json=true&pg="+page_number);
             
         });
         
