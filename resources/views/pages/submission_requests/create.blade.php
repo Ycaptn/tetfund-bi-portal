@@ -46,7 +46,7 @@ New Submission
                 <hr />
 
                 <div class="col-lg-offset-3 col-lg-12">
-                    {!! Form::submit('Submit Request', ['class' => 'btn btn-primary']) !!}
+                    {!! Form::submit('Submit Request', ['class' => 'btn btn-primary', 'id'=>'btn_submit_request']) !!}
                     <a href="{{ route('tf-bi-portal.submissionRequests.index') }}" class="btn btn-default btn-warning">Cancel Submission</a>
                 </div>
 
@@ -67,4 +67,39 @@ New Submission
 @stop
 
 @push('page_scripts')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            /* Converting string words to upper-case */
+            function upperCaseFirstLetterInString(str){
+                var splitStr = str.toLowerCase().split(" ");
+                for(var i=0; i<splitStr.length; i++){
+                    splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].slice(1);
+                }
+                return splitStr.join(" ");
+            }
+
+            /* update intervention line on changing intervention type */
+            $(document).on('change', "#intervention_type", function(e) {
+                let intervention_type_val = $('#intervention_type').val();
+                let default_option = "<option value=''>Select an Intervention Line</option>"
+                $("#btn_submit_request").attr('disabled', true);
+                if (intervention_type_val == '') {
+                    $("#intervention_line").html(default_option);
+                    $("#btn_submit_request").attr('disabled', false);
+                } else {
+                    /* get all related Intervention Lines */
+                    $.get( "{{ route('tf-bi-portal-api.getAllInterventionLinesForSpecificType', '') }}?intervention_type="+intervention_type_val).done(function( response ) {
+                        if (response && response != null) {
+                            $.each(response, function( index, value ) {
+                                default_option += "<option value='" + value.id + "'>" + upperCaseFirstLetterInString(value.name) + ' (' + upperCaseFirstLetterInString(value.type) + ')' + "</option>";
+                            });
+                            
+                            $('#intervention_line').html(default_option);
+                        }
+                    });
+                    $("#btn_submit_request").attr('disabled', false);
+                }
+            });
+        });
+    </script>
 @endpush

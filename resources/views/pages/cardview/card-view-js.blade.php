@@ -88,10 +88,10 @@
         }else{
             $('.offline').fadeOut(300);
             $('#{{$div_id_name}}').empty();
-            if ({!! json_encode($cdv_a_s_t_d_nominations->cards_html) !!} == '') {
+            if ({!! json_encode($cdv_data_response->cards_html) !!} == '') {
                 $('#{{$div_id_name}}').append("<span class='text-center ma-20 pa-20'>No record(s) found!</span>");
             } else {
-                $('#{{$div_id_name}}').append({!! json_encode($cdv_a_s_t_d_nominations->cards_html) !!});
+                $('#{{$div_id_name}}').append({!! json_encode($cdv_data_response->cards_html) !!});
                 $("#{{$control_id}}-pagination").empty();
                 if ({{$data_set_enable_pagination}} != false && {{$result_count}} > 0){
                     $(".pagination li").slice(1, -1).remove();
@@ -151,20 +151,20 @@
         $(document).on('keyup', "#{{$control_id}}-txt-search", function(e) {
             e.preventDefault();
             let search_term = $('#{{$control_id}}-txt-search').val();
-            {{$control_id}}_display_results("{{ url("tf-bi-portal/a_s_t_d_nominations/") }}?json=true&st="+search_term);
+            {{$control_id}}_display_results("{{ $base_index_url }}?json=true&st="+search_term);
         });
 
         $(document).on('click', "#{{$control_id}}-btn-search", function(e) {
             e.preventDefault();
             let search_term = $('#{{$control_id}}-txt-search').val();
-            {{$control_id}}_display_results("{{ url("tf-bi-portal/a_s_t_d_nominations/") }}?json=true&st="+search_term);
+            {{$control_id}}_display_results("{{ $base_index_url }}?json=true&st="+search_term);
         });
 
         $(document).on('click', ".{{$control_id}}-grp", function(e) {
             e.preventDefault();
             let group_term = $(this).attr('data-val');
             $("#{{$control_id}}-pagination").hide();
-            {{$control_id}}_display_results("{{ url("tf-bi-portal/a_s_t_d_nominations/") }}?json=true&grp="+group_term);
+            {{$control_id}}_display_results("{{ $base_index_url }}?json=true&grp="+group_term);
             
         });
 
@@ -188,7 +188,7 @@
             }
            
             /*' $control_obj->getJSONDataRouteName() '*/
-            {{$control_id}}_display_results("{{ url("tf-bi-portal/a_s_t_d_nominations/") }}?json=true&pg="+page_number);
+            {{$control_id}}_display_results("{{ $base_index_url }}?json=true&pg="+page_number);
             
         });
         

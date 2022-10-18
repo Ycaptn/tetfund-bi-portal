@@ -5,14 +5,11 @@
         {{-- <label class="col-lg-12 control-label">Intervention</label> --}}
         <div class="col-lg-12">
             <div class="input-group">
-                <select name="intervention_type" class="form-select">
+                <select name="intervention_type" id="intervention_type" class="form-select">
                     <option value="">Select the type of Intervention</option>
                 @if (isset($intervention_types) && $intervention_types != null)
-                
                     @foreach ($intervention_types as $idx=>$type)
-                        @if ($type == "Annual" || $type == "Special")
-                            <option {{ (isset($beneficiary_request) && $beneficiary_request->intervention_request_type==$type) ? "selected" : '' }} value="{{$type}}"> {{$type}}</option> 
-                        @endif
+                        <option {{ (isset($beneficiary_request) && $beneficiary_request->intervention_request_type==$type) ? "selected" : '' }} value="{{$type}}"> {{ ucwords($type) }}</option>
                     @endforeach
                 @endif
                 </select>
@@ -25,31 +22,15 @@
         {{-- <label class="col-lg-12 control-label">Intervention Line</label> --}}
         <div class="col-lg-12">
             <div class="input-group">
-                
-                <select name="intervention_line" class="form-select">
+                <select name="intervention_line" id="intervention_line" class="form-select">
                     <option value="">Select an Intervention Line</option>
-                    
-                @if (isset($intervention_lines) && $intervention_lines != null)
-                    @foreach ($intervention_lines as $idx=>$line)
-
-                        @if (($bi_role == 'bi_ict' || $bi_role == 'bi_deskofficer') && $line == 'ICT Support' )
-
-                        <option {{ (isset($beneficiary_request) && $beneficiary_request->intervention_request_line==$line) ? "selected" : '' }} value="{{$line}}" > {{$line}}</option>
-                            
-                        @elseif(($bi_role == 'bi_works' || $bi_role == 'bi_deskofficer')  && $line == 'Physical Infrastructure and Program Upgrade' )
-
-                        <option {{ (isset($beneficiary_request) && $beneficiary_request->intervention_request_line==$line) ? "selected" : '' }} value="{{$line}}" > {{$line}}</option>
-
-                        @elseif(($bi_role == 'bi_library' || $bi_role == 'bi_deskofficer') && $line == 'Library Development
-                        ')
-
-                        <option {{ (isset($beneficiary_request) && $beneficiary_request->intervention_request_line==$line) ? "selected" : '' }} value="{{$line}}" > {{$line}}</option>
-                            
-                        @endif
-
-                    
-                    @endforeach
-                @endif
+                    @if (isset($intervention_lines) && $intervention_lines != null)
+                        @foreach ($intervention_lines as $idx=>$line)
+                            @if (in_array('bi_ict', $bi_roles_arr) || in_array('bi_deskofficer', $bi_roles_arr))
+                                <option {{ (isset($beneficiary_request) && $beneficiary_request->intervention_request_line==$line) ? "selected" : '' }} value="{{$line}}" > {{$line}}</option>
+                            @endif
+                        @endforeach
+                    @endif
                 </select>
                 <span class="input-group-text"><span class="fa fa-archive"></span></span>
             </div>
@@ -130,4 +111,5 @@
             </div>
         </div>
     </div>
+
 

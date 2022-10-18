@@ -28,6 +28,7 @@ $orgRoutes = function() {
                 //Route::resource('conferences', \TETFund\ASTD\Controllers\API\ConferenceAPIController::class);
                 Route::resource('countries', \App\Http\Controllers\API\CountryAPIController::class);
                 Route::resource('institutions', \App\Http\Controllers\API\InstitutionAPIController::class);
+                Route::get('/getAllInterventionLinesForSpecificType', [\App\Http\Controllers\API\SubmissionRequestAPIController::class, 'getAllInterventionLinesForSpecificType'])->name('getAllInterventionLinesForSpecificType');
                 
                 Route::resource('submission_requests', \App\Http\Controllers\API\SubmissionRequestAPIController::class);
             });

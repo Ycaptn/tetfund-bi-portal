@@ -17,6 +17,7 @@ use Hasob\FoundationCore\Traits\ApiResponder;
 use Hasob\FoundationCore\Models\Organization;
 
 use Hasob\FoundationCore\Controllers\BaseController as AppBaseController;
+use App\Managers\TETFundServer;
 
 /**
  * Class SubmissionRequestController
@@ -35,8 +36,7 @@ class SubmissionRequestAPIController extends AppBaseController
      * @param Request $request
      * @return Response
      */
-    public function index(Request $request, Organization $organization)
-    {
+    public function index(Request $request, Organization $organization) {
         $query = SubmissionRequest::query();
 
         if ($request->get('skip')) {
@@ -53,6 +53,15 @@ class SubmissionRequestAPIController extends AppBaseController
         $submissionRequests = $this->showAll($query->get());
 
         return $this->sendResponse($submissionRequests->toArray(), 'Submission Requests retrieved successfully');
+    }
+
+    public function getAllInterventionLinesForSpecificType(Organization $org, Request $request){
+        $pay_load = ['_method'=>'GET', 'intervention_type'=>$request->intervention_type];
+
+        $tETFundServer = new TETFundServer();   /* server class constructor */
+        $intervention_lines_server_response = $tETFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
+        
+        return $intervention_lines_server_response;
     }
 
     /**

@@ -1,12 +1,12 @@
 @php
-    $control_id = $cdv_a_s_t_d_nominations->control_id;
+    $control_id = $cdv_data_response->control_id;
     $data_set_group_list = [];
     $data_set_enable_search = true;
     $search_placeholder_text = 'Search ASTDNomination by first or last name';
-    $data_set_enable_pagination = $cdv_a_s_t_d_nominations->paginate ? true : false;
-    $page_number = $cdv_a_s_t_d_nominations->page_number;
-    $pages_total = $cdv_a_s_t_d_nominations->pages_total;
-    $result_count = $cdv_a_s_t_d_nominations->result_count;
+    $data_set_enable_pagination = $cdv_data_response->paginate ? true : false;
+    $page_number = $cdv_data_response->page_number;
+    $pages_total = $cdv_data_response->pages_total;
+    $result_count = $cdv_data_response->result_count;
         // +"pages_total": 2
         // +"paginate": true
         // +"page_number": 1
@@ -17,12 +17,13 @@
         // +"cards_html": """
         // +"page_limit": 2
     $div_id_name = $control_id.'-div-card-view';
+    $base_index_url = url('tf-bi-portal/a_s_t_d_nominations/');
 @endphp
 
 @extends('layouts.app')
 
 @section('app_css')
-    @include('tf-bi-portal::pages.a_s_t_d_nominations.cardview.card-view-css')
+    @include('tf-bi-portal::pages.cardview.card-view-css')
 @stop
 
 @section('title_postfix')
@@ -59,7 +60,7 @@ All ASTD Nominations
     
     <div class="card border-top border-0 border-4 border-primary">
         <div class="card-body">
-            @include('tf-bi-portal::pages.a_s_t_d_nominations.cardview.index')
+            @include('tf-bi-portal::pages.cardview.index')
         </div>
     </div>
 
@@ -78,5 +79,5 @@ All ASTD Nominations
 @stop
 
 @push('page_scripts')
-    @include('tf-bi-portal::pages.a_s_t_d_nominations.cardview.card-view-js')
+    @include('tf-bi-portal::pages.cardview.card-view-js')
 @endpush

@@ -46,7 +46,7 @@ class ASTDNominationController extends BaseController
             ->with('current_user', $current_user)
             ->with('months_list', BaseController::monthsList())
             ->with('states_list', BaseController::statesList())
-            ->with('cdv_a_s_t_d_nominations', $cdv_a_s_t_d_nominations);
+            ->with('cdv_data_response', $cdv_a_s_t_d_nominations);
     }
 
     /**
