@@ -57,7 +57,7 @@ class BeneficiaryMember extends Model
      **/
     public function user()
     {
-        return $this->hasOne(\Hasob\FoundationCore\Models\User::class, 'requesting_user_id', 'id');
+        return $this->hasOne(\Hasob\FoundationCore\Models\User::class, 'id', 'beneficiary_user_id');
     }
 
     /**

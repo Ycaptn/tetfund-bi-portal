@@ -47,10 +47,72 @@ Beneficiary
 @section('content')
     <div class="card border-top border-0 border-4 border-primary">
         <div class="card-body">
-
-            @include('tf-bi-portal::pages.beneficiaries.modal') 
-            @include('tf-bi-portal::pages.beneficiaries.show_fields')
-            
+            <div class="row col-sm-12">
+                @include('tf-bi-portal::pages.beneficiaries.modal') 
+                @include('tf-bi-portal::pages.beneficiaries.show_fields')
+            </div>
+            <div class="col-lg-12">
+                <br><br><h5 class="text-center pt-2" style="border-top: 1px solid lightgray;"> Beneficiary Members </h5><hr>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>
+                                    S/N
+                                </th>
+                                <th>
+                                    Full Name
+                                </th>
+                                <th>
+                                    Email
+                                </th>
+                                <th>
+                                    Phone
+                                </th>
+                                <th>
+                                    Roles
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(isset($beneficiary_members) && count($beneficiary_members) > 0)
+                                @php
+                                    $counter = 0;
+                                @endphp
+                                @foreach($beneficiary_members as $beneficiary_member)
+                                    <tr>
+                                        <td>
+                                            <b>{{ $counter += 1 }}). </b>  
+                                        </td>
+                                        <td>
+                                            {{ $beneficiary_member->user->fullname }}
+                                        </td>
+                                        <td>
+                                            {{ $beneficiary_member->user->email }}
+                                        </td>
+                                        <td>
+                                            {{ $beneficiary_member->user->telephone }}
+                                        </td>
+                                        <td>
+                                            @php
+                                                $user_roles = $beneficiary_member->user->roles()->pluck('name')->toArray();
+                                            @endphp
+                                            @if(count($user_roles) > 0)
+                                                @foreach($user_roles as $user_role)
+                                                    <b>||</b>
+                                                    {{ucwords($user_role)}}
+                                                    <b>||</b>
+                                                    <br>
+                                                @endforeach
+                                            @endif
+                                        </td>
+                                    </tr> 
+                                @endforeach
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 @stop

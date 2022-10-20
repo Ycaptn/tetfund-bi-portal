@@ -99,14 +99,17 @@ class BeneficiaryController extends BaseController
     {
         /** @var Beneficiary $beneficiary */
         $beneficiary = Beneficiary::find($id);
+        $beneficiary_members = [];
+        if ($beneficiary != null) {
+            $beneficiary_members = \App\Models\BeneficiaryMember::where('beneficiary_id', $beneficiary->id)->get();
+        }
 
         if (empty($beneficiary)) {
             //Flash::error('Beneficiary not found');
-
             return redirect(route('tf-bi-portal.beneficiaries.index'));
         }
 
-        return view('tf-bi-portal::pages.beneficiaries.show')->with('beneficiary', $beneficiary);
+        return view('tf-bi-portal::pages.beneficiaries.show')->with(['beneficiary'=>$beneficiary, 'beneficiary_members'=>$beneficiary_members]);
     }
 
     /**

@@ -105,10 +105,4 @@ class Beneficiary extends Model
         'tf_iterum_portal_response_meta_data' => 'string'
     ];
 
-
-    public function beneficiaryMembers()
-    {
-        return $this->hasMany(\App\Models\beneficiaryMember::class, 'user_id', 'beneficiary_id');
-    }
-
 }
