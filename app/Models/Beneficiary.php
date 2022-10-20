@@ -106,6 +106,9 @@ class Beneficiary extends Model
     ];
 
 
-    
+    public function beneficiaryMembers()
+    {
+        return $this->hasMany(\App\Models\beneficiaryMember::class, 'user_id', 'beneficiary_id');
+    }
 
 }

@@ -28,22 +28,7 @@ use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-/**
- * Class SubmissionRequest
- * @package App\Models
- * @version October 8, 2022, 5:09 pm UTC
- *
- * @property \App\Models\User $user
- * @property \App\Models\Beneficiary $beneficiary
- * @property string $organization_id
- * @property string $title
- * @property string $status
- * @property string $type
- * @property string $requesting_user_id
- * @property string $beneficiary_id
- * @property string $tf_iterum_portal_request_status
- */
-class SubmissionRequest extends Model
+class BeneficiaryMember extends Model
 {
     use GuidId;
     use OrganizationalConstraint;
@@ -52,7 +37,7 @@ class SubmissionRequest extends Model
 
     use HasFactory;
 
-    public $table = 'tf_bi_submission_requests';
+    public $table = 'tf_bi_beneficiary_members';
     
 
     protected $dates = ['deleted_at'];
@@ -61,32 +46,11 @@ class SubmissionRequest extends Model
 
     public $fillable = [
         'organization_id',
-        'title',
-        'status',
-        'type',
-        'requesting_user_id',
+        'beneficiary_user_id',
         'beneficiary_id',
-        'tf_iterum_portal_request_status'
+        'beneficiary_tetfund_iterum_id',
+        'additional_param',
     ];
-
-    /**
-     * The attributes that should be casted to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'title' => 'string',
-        'status' => 'string',
-        'type' => 'string',
-        'display_ordinal' => 'integer',
-        'intervention_year1' => 'integer',
-        'intervention_year2' => 'integer',
-        'intervention_year3' => 'integer',
-        'intervention_year4' => 'integer',
-        'tf_iterum_portal_request_status' => 'string',
-        'tf_iterum_portal_response_meta_data' => 'string'
-    ];
-
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -103,5 +67,4 @@ class SubmissionRequest extends Model
     {
         return $this->hasOne(\App\Models\Beneficiary::class, 'id', 'beneficiary_id');
     }
-
 }

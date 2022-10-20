@@ -83,14 +83,15 @@ $(document).ready(function() {
             closeOnCancel: true
         }, function(isConfirm) {
             if (isConfirm) {
-                let endPointUrl = "{{ route('tf-bi-portal-api.synchronize_beneficiary_list') }}";
+                let endPointUrl = "{{ route('tf-bi-portal-api.synchronize_beneficiary_list') }}";                
                 swal({
                     title: "Please wait...",
-                    text: "Synchronizing beneficiary list !!!",
-                    //imageUrl: "images/ajaxloader.gif",
+                    text: "Synchronizing Beneficiary List ! \n\n Do not refresh this page! ",
+                    imageUrl: "{{asset('imgs/loading.gif')}}",
+                    imageSize: '300x200',
                     showConfirmButton: false,
                     allowOutsideClick: false
-                });                   
+                });
                 $.ajax({
                     url:endPointUrl,
                     type: "GET",
@@ -99,10 +100,7 @@ $(document).ready(function() {
                     contentType: false,
                     dataType: 'json',
                     success: function(result){
-                        if(result.errors){
-                            console.log(result.errors)
-                            swal("Error", "Oops an error occurred. Please try again.", "error");
-                        }else{
+                        if(result.success && result.success == true){
                             swal({
                                 title: "Synchronized",
                                 text: result.message,
@@ -112,6 +110,9 @@ $(document).ready(function() {
                                 closeOnConfirm: false
                             });
                             location.reload(true);
+                        }else{
+                            console.log(result)
+                            swal("Error", "Oops an error occurred. Please try again.", "error");
                         }
                     },
                 });
