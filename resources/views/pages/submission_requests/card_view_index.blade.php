@@ -1,29 +1,7 @@
-@php
-    $control_id = $cdv_data_response->control_id;
-    $data_set_group_list = [];
-    $data_set_enable_search = true;
-    $search_placeholder_text = 'Search submissions by Year of Intervention ';
-    $data_set_enable_pagination = $cdv_data_response->paginate ? true : false;
-    $page_number = $cdv_data_response->page_number;
-    $pages_total = $cdv_data_response->pages_total;
-    $result_count = $cdv_data_response->result_count;
-        // +"pages_total": 2
-        // +"paginate": true
-        // +"page_number": 1
-        // +"pages_total": 2
-        // +"search_term": null
-        // +"result_count": 4
-        // +"control_id": "cdv_1665697478"
-        // +"cards_html": """
-        // +"page_limit": 2
-    $div_id_name = $control_id.'-div-card-view';
-    $base_index_url = url('tf-bi-portal/submissionRequests/');
-@endphp
-
 @extends('layouts.app')
 
 @section('app_css')
-    @include('tf-bi-portal::pages.cardview.card-view-css')
+    {!! $cdv_submission_requests->render_css() !!}
 @stop
 
 @section('title_postfix')
@@ -53,15 +31,7 @@ Submissions
 @section('content')
     <div class="card border-top border-0 border-4 border-success">
         <div class="card-body">
-            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 hidden-sm hidden-xs">
-                {{-- Summary Row --}}
-            </div>
-            
-            <div class="card border-top border-0 border-4 border-primary">
-                <div class="card-body">
-                    @include('tf-bi-portal::pages.cardview.index')
-                </div>
-            </div>
+            {{ $cdv_submission_requests->render() }}
         </div>
     </div>
 @stop
@@ -78,5 +48,5 @@ Submissions
 @stop
 
 @push('page_scripts')
-    @include('tf-bi-portal::pages.cardview.card-view-js')
+    {!! $cdv_submission_requests->render_js() !!}
 @endpush

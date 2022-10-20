@@ -78,8 +78,7 @@ New Submission
                 return splitStr.join(" ");
             }
 
-            /* update intervention line on changing intervention type */
-            $(document).on('change', "#intervention_type", function(e) {
+            function porpulateInterventionLine(){
                 let intervention_type_val = $('#intervention_type').val();
                 let default_option = "<option value=''>Select an Intervention Line</option>"
                 $("#btn_submit_request").attr('disabled', true);
@@ -90,8 +89,10 @@ New Submission
                     /* get all related Intervention Lines */
                     $.get( "{{ route('tf-bi-portal-api.getAllInterventionLinesForSpecificType', '') }}?intervention_type="+intervention_type_val).done(function( response ) {
                         if (response && response != null) {
+                            let type = "{{ old('type') }}";
                             $.each(response, function( index, value ) {
-                                default_option += "<option value='" + value.id + "'>" + upperCaseFirstLetterInString(value.name) + ' (' + upperCaseFirstLetterInString(value.type) + ')' + "</option>";
+                                var selection = (type == value.id) ? 'selected' : '';
+                                default_option += "<option " + selection + " value='" + value.id + "'>" + upperCaseFirstLetterInString(value.name) + "</option>";
                             });
                             
                             $('#intervention_line').html(default_option);
@@ -99,7 +100,16 @@ New Submission
                     });
                     $("#btn_submit_request").attr('disabled', false);
                 }
+            }
+
+            /* update intervention line on changing intervention type */
+            $(document).on('change', "#intervention_type", function(e) {
+                porpulateInterventionLine();
             });
+                
+            if ("{{ old('intervention_type') }}" != null && "{{ old('intervention_type') }}" != '') {
+                porpulateInterventionLine();
+            }
         });
     </script>
 @endpush

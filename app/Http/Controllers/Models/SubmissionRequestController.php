@@ -31,32 +31,31 @@ class SubmissionRequestController extends BaseController
      * @param SubmissionRequestDataTable $submissionRequestDataTable
      * @return Response
      */
-    public function index(Organization $org, Request $request) {
+    public function index(Organization $org, SubmissionRequestDataTable $submissionRequestDataTable)
+    {
         $current_user = Auth()->user();
 
-        $pay_load = array();
-        $pay_load['api_detail_page_url'] = url("tf-bi-portal/submissionRequests/");
-        $pay_load['_method'] = 'GET';
-        if (isset($request->st)) {
-            $pay_load['st'] = $request->st;
-        }
-        if (isset($request->pg)) {
-            $pay_load['pg'] = $request->pg;
+        $cdv_submission_requests = new \Hasob\FoundationCore\View\Components\CardDataView(SubmissionRequest::class, "pages.submission_requests.card_view_item");
+        $cdv_submission_requests->setDataQuery(['organization_id'=>$org->id])
+                        ->addDataGroup('All','deleted_at',null)
+                        ->addDataGroup('Not Submitted','status','not-submitted')
+                        ->addDataGroup('In Progress','status','in-progress')
+                        ->addDataGroup('Approved','status','aip')
+                        ->addDataGroup('Recalled','status','recall')
+                        ->enableSearch(true)
+                        ->enablePagination(true)
+                        ->setPaginationLimit(20)
+                        ->setSearchPlaceholder('Search Submissions');
+
+        if (request()->expectsJson()){
+            return $cdv_submission_requests->render();
         }
 
-        /*class constructor*/
-        $tETFundServer = new TETFundServer();
-        $cdv_submission_requests = $tETFundServer->getAllAndLoadRecordsToDataView('tetfund-bi-submission-api/beneficiary-submission-list', $pay_load);
-
-        if (isset($request->json) && $request->json == true) {
-            return $cdv_submission_requests;
-        }
-        return view('tf-bi-portal::pages.submission_requests.card_view_index')
-            ->with('organization', $org)
-            ->with('current_user', $current_user)
-            ->with('months_list', BaseController::monthsList())
-            ->with('states_list', BaseController::statesList())
-            ->with('cdv_data_response', $cdv_submission_requests);
+        return view('pages.submission_requests.card_view_index')
+                    ->with('current_user', $current_user)
+                    ->with('months_list', BaseController::monthsList())
+                    ->with('states_list', BaseController::statesList())
+                    ->with('cdv_submission_requests', $cdv_submission_requests);
 
     }
 
@@ -69,7 +68,7 @@ class SubmissionRequestController extends BaseController
         $bi_roles = auth()->user()->roles;
         $bi_roles_arr = array();
         $intervention_types_arr = [];
-        //$beneficiary = null;
+        $beneficiary = null;
 
         if (count($bi_roles) > 0) {
             foreach ($bi_roles as $role) {
@@ -87,11 +86,17 @@ class SubmissionRequestController extends BaseController
             }
         }
 
+          $years = [];
+          for ($i=0; $i < 6; $i++) { 
+              array_push($years, date("Y")-$i);
+          }
+
         return view('pages.submission_requests.create')
             ->with("type", 'AIP')
+            ->with("years", $years)
             ->with("intervention_types", array_unique($intervention_types_arr))
-            ->with('bi_roles', $bi_roles_arr);
-            //->with("beneficiary", $beneficiary->id);
+            ->with('bi_roles', $bi_roles_arr)
+            ->with("beneficiary", optional($beneficiary)->id);
     }
 
     /**
@@ -104,7 +109,7 @@ class SubmissionRequestController extends BaseController
     public function store(Organization $org, CreateSubmissionRequestRequest $request)
     {
         $input = $request->all();
-
+        dd($input);
         /** @var SubmissionRequest $submissionRequest */
         $submissionRequest = SubmissionRequest::create($input);
 
