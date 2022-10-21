@@ -46,7 +46,7 @@ New Submission
                 <hr />
 
                 <div class="col-lg-offset-3 col-lg-12">
-                    {!! Form::submit('Submit Request', ['class' => 'btn btn-primary', 'id'=>'btn_submit_request']) !!}
+                    {!! Form::submit('Save New Request', ['class' => 'btn btn-primary', 'id'=>'btn_submit_request']) !!}
                     <a href="{{ route('tf-bi-portal.submissionRequests.index') }}" class="btn btn-default btn-warning">Cancel Submission</a>
                 </div>
 
@@ -89,7 +89,7 @@ New Submission
                     /* get all related Intervention Lines */
                     $.get( "{{ route('tf-bi-portal-api.getAllInterventionLinesForSpecificType', '') }}?intervention_type="+intervention_type_val).done(function( response ) {
                         if (response && response != null) {
-                            let type = "{{ old('type') }}";
+                            let type = "{{ old('tf_iterum_intervention_line_key_id') }}";
                             $.each(response, function( index, value ) {
                                 var selection = (type == value.id) ? 'selected' : '';
                                 default_option += "<option " + selection + " value='" + value.id + "'>" + upperCaseFirstLetterInString(value.name) + "</option>";

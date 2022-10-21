@@ -12,17 +12,17 @@ Edit Submission Request
 @stop
 
 @section('page_title_suffix')
-{{ $submissionRequest->id }}
+{{ $submissionRequest->title }}
 @stop
 
 @section('page_title_subtext')
-<a class="ms-1" href="{{ route('xyz.submissionRequests.show', $submissionRequest->id) }}">
+<a class="ms-1" href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}">
     <i class="bx bx-chevron-left"></i> Back to Submission Request Details
 </a>
 @stop
 
 @section('page_title_buttons')
-<a href="{{ route('xyz.submissionRequests.create') }}" id="btn-new-submissionRequests" class="btn btn-sm btn-primary">
+<a href="{{ route('tf-bi-portal.submissionRequests.create') }}" id="btn-new-submissionRequests" class="btn btn-sm btn-primary">
     <i class="bx bx-book-add mr-1"></i>New Submission Request
 </a>
 @stop
@@ -38,14 +38,14 @@ Edit Submission Request
             <h5 class="mb-0 text-primary">Modify Submission Request Details</h5>
         </div>
 
-        {!! Form::model($submissionRequest, ['class'=>'form-horizontal', 'route' => ['xyz.submissionRequests.update', $submissionRequest->id], 'method' => 'patch']) !!}
+        {!! Form::model($submissionRequest, ['class'=>'form-horizontal', 'route' => ['tf-bi-portal.submissionRequests.update', $submissionRequest->id], 'method' => 'patch']) !!}
 
-            @include('xyz::pages.submission_requests.fields')
+            @include('tf-bi-portal::pages.submission_requests.fields')
 
             <div class="col-lg-offset-3 col-lg-9">
                 <hr/>
                 {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-                <a href="{{ route('xyz.submissionRequests.show', $submissionRequest->id) }}" class="btn btn-warning btn-default">Cancel</a>
+                <a href="{{ route('tf-bi-portal.submissionRequests.index') }}" class="btn btn-warning btn-default">Cancel</a>
             </div>
         {!! Form::close() !!}                
 
@@ -67,4 +67,49 @@ Edit Submission Request
 @stop
 
 @push('page_scripts')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            /* Converting string words to upper-case */
+            function upperCaseFirstLetterInString(str){
+                var splitStr = str.toLowerCase().split(" ");
+                for(var i=0; i<splitStr.length; i++){
+                    splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].slice(1);
+                }
+                return splitStr.join(" ");
+            }
+
+            function porpulateInterventionLine(){
+                let intervention_type_val = $('#intervention_type').val();
+                let default_option = "<option value=''>Select an Intervention Line</option>"
+                $("#btn_submit_request").attr('disabled', true);
+                if (intervention_type_val == '') {
+                    $("#intervention_line").html(default_option);
+                    $("#btn_submit_request").attr('disabled', false);
+                } else {
+                    /* get all related Intervention Lines */
+                    $.get( "{{ route('tf-bi-portal-api.getAllInterventionLinesForSpecificType', '') }}?intervention_type="+intervention_type_val).done(function( response ) {
+                        if (response && response != null) {
+                            let type = "{{ (isset($submissionRequest) && old('tf_iterum_intervention_line_key_id') == null) ? $submissionRequest->tf_iterum_intervention_line_key_id : old('tf_iterum_intervention_line_key_id') }}";
+                            $.each(response, function( index, value ) {
+                                var selection = (type == value.id) ? 'selected' : '';
+                                default_option += "<option " + selection + " value='" + value.id + "'>" + upperCaseFirstLetterInString(value.name) + "</option>";
+                            });
+                            
+                            $('#intervention_line').html(default_option);
+                        }
+                    });
+                    $("#btn_submit_request").attr('disabled', false);
+                }
+            }
+
+            /* update intervention line on changing intervention type */
+            $(document).on('change', "#intervention_type", function(e) {
+                porpulateInterventionLine();
+            });
+                
+            if (("{{ old('intervention_type') }}" != null && "{{ old('intervention_type') }}" != '') || ("{{ isset($submissionRequest) }}" && "{{$submissionRequest->tf_iterum_intervention_line_key_id}}" != null)) {
+                porpulateInterventionLine();
+            }
+        });
+    </script>
 @endpush

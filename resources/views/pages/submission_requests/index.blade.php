@@ -25,7 +25,7 @@ All Submission Request
     <i class="bx bx-book-add mr-1"></i>New Submission Request
 </a>
 @if (Auth()->user()->hasAnyRole(['','admin']))
-    @include('xyz::pages.submission_requests.bulk-upload-modal')
+    @include('tf-bi-portal::pages.submission_requests.bulk-upload-modal')
 @endif
 @stop
 
@@ -40,14 +40,14 @@ All Submission Request
         <div class="card-body">
         
             <div class="table-responsive">
-                @include('xyz::pages.submission_requests.table')
+                @include('tf-bi-portal::pages.submission_requests.table')
                 
             </div>
         
         </div>
     </div>
 
-    @include('xyz::pages.submission_requests.modal')
+    @include('tf-bi-portal::pages.submission_requests.modal')
 
 @stop
 

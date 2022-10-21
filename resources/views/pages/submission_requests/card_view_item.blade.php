@@ -2,7 +2,7 @@
 <div class="col-12 col-md-12 col-sm-12">
     <div class="card">
         @php
-            $detail_page_url = route('xyz.submissionRequests.show', $data_item->id);
+            $detail_page_url = route('tf-bi-portal.submissionRequests.show', $data_item->id);
         @endphp
         <div class="row g-0">
             <div class="col-xs-12 col-md-1 align-middle text-center p-2">
@@ -17,27 +17,30 @@
                 </a>
                 <div class="d-flex align-items-center">
                     {{-- <div><h4 class="card-title"><a href='{{$detail_page_url}}'>{{$data_item->id}}</a></h4></div> --}}
-                    <div class="ms-auto"> 
-                        <a data-toggle="tooltip" 
-                            title="Edit" 
-                            data-val='{{$data_item->id}}' 
-                            class="btn-edit-mdl-submissionRequest-modal me-1" href="#">
-                            <i class="bx bxs-edit"></i>
-                        </a>
-                        <a data-toggle="tooltip" 
-                            title="Delete" 
-                            data-val='{{$data_item->id}}' 
-                            class="btn-delete-mdl-submissionRequest-modal me-1" href="#">
-                            <i class="bx bxs-trash-alt"></i>
-                        </a>
-                    </div>
+                    @if(isset($data_item) && $data_item->status == 'not-submitted')
+                        <div class="ms-auto"> 
+                            <a data-toggle="tooltip" 
+                                title="Edit"
+                                data-val='{{$data_item->id}}'
+                                href="{{route('tf-bi-portal.submissionRequests.edit', $data_item->id)}}" 
+                                class="btn-edit-mdl-submissionRequest-modal me-1" href="#">
+                                <i class="bx bxs-edit"></i>
+                            </a>
+                            <a data-toggle="tooltip" 
+                                title="Delete" 
+                                data-val='{{$data_item->id}}' 
+                                class="btn-delete-mdl-submissionRequest-modal me-1" href="#">
+                                <i class="bx bxs-trash-alt" style="color: red;"></i>
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
             <div class="col-xs-12 col-md-11">
                 <div class="card-body">
                     <a href='{{$detail_page_url}}'>
                         <h3 class="h6 card-title mb-0">
-                            {{ $data_item->title }} @if(empty($data_item->status)==false)- {!! strtoupper($data_item->status) !!}@endif
+                            {{ $data_item->title }} @if(empty($data_item->status)==false) || {!! strtoupper($data_item->status) !!}@endif
                         </h3>
                     </a>
                     @if (!empty($data_item->description))

@@ -61,12 +61,18 @@ class SubmissionRequest extends Model
 
     public $fillable = [
         'organization_id',
-        'title',
-        'status',
         'type',
+        'title',
+        'amount_requested',
+        'intervention_year1',
+        'intervention_year2',
+        'intervention_year3',
+        'intervention_year4',
+        'status',
         'requesting_user_id',
         'beneficiary_id',
-        'tf_iterum_portal_request_status'
+        'tf_iterum_portal_request_status',
+        'tf_iterum_intervention_line_key_id'
     ];
 
     /**

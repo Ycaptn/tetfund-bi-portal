@@ -59,7 +59,7 @@ $(document).ready(function() {
 
     $('.offline-submission_requests').hide();
 
-    //Show Modal for New Entry
+    /*//Show Modal for New Entry
     $(document).on('click', ".btn-new-mdl-submissionRequest-modal", function(e) {
         $('#div-submissionRequest-modal-error').hide();
         $('#mdl-submissionRequest-modal').modal('show');
@@ -71,7 +71,7 @@ $(document).ready(function() {
 
         $("#spinner-submission_requests").hide();
         $("#div-save-mdl-submissionRequest-modal").attr('disabled', false);
-    });
+    });*/
 
     //Show Modal for View
     $(document).on('click', ".btn-show-mdl-submissionRequest-modal", function(e) {
@@ -112,7 +112,7 @@ $(document).ready(function() {
     });
 
     //Show Modal for Edit
-    $(document).on('click', ".btn-edit-mdl-submissionRequest-modal", function(e) {
+    /*$(document).on('click', ".btn-edit-mdl-submissionRequest-modal", function(e) {
         e.preventDefault();
         $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
 
@@ -139,7 +139,7 @@ $(document).ready(function() {
             $("#spinner-submission_requests").hide();
             $("#div-save-mdl-submissionRequest-modal").attr('disabled', false);
         });
-    });
+    });*/
 
     //Delete action
     $(document).on('click', ".btn-delete-mdl-submissionRequest-modal", function(e) {
@@ -206,7 +206,7 @@ $(document).ready(function() {
     });
 
     //Save details
-    $('#btn-save-mdl-submissionRequest-modal').click(function(e) {
+    /*$('#btn-save-mdl-submissionRequest-modal').click(function(e) {
         e.preventDefault();
         $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
 
@@ -291,7 +291,7 @@ $(document).ready(function() {
 
             }
         });
-    });
+    });*/
 
 });
 </script>

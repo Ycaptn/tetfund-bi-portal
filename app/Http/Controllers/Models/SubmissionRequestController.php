@@ -21,6 +21,7 @@ use Flash;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Managers\TETFundServer;
+use App\Models\BeneficiaryMember;
 
 
 class SubmissionRequestController extends BaseController
@@ -31,21 +32,22 @@ class SubmissionRequestController extends BaseController
      * @param SubmissionRequestDataTable $submissionRequestDataTable
      * @return Response
      */
-    public function index(Organization $org, SubmissionRequestDataTable $submissionRequestDataTable)
-    {
+    public function index(Organization $org, SubmissionRequestDataTable $submissionRequestDataTable) {
         $current_user = Auth()->user();
+        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
         $cdv_submission_requests = new \Hasob\FoundationCore\View\Components\CardDataView(SubmissionRequest::class, "pages.submission_requests.card_view_item");
-        $cdv_submission_requests->setDataQuery(['organization_id'=>$org->id])
+        $cdv_submission_requests->setDataQuery(['organization_id'=>$org->id, 'beneficiary_id'=>$beneficiary_member->beneficiary_id])
                         ->addDataGroup('All','deleted_at',null)
                         ->addDataGroup('Not Submitted','status','not-submitted')
                         ->addDataGroup('In Progress','status','in-progress')
                         ->addDataGroup('Approved','status','aip')
                         ->addDataGroup('Recalled','status','recall')
                         ->enableSearch(true)
+                        ->addDataOrder('created_at', 'DESC')
                         ->enablePagination(true)
                         ->setPaginationLimit(20)
-                        ->setSearchPlaceholder('Search Submissions');
+                        ->setSearchPlaceholder('Search Submissions by Project Title');
 
         if (request()->expectsJson()){
             return $cdv_submission_requests->render();
@@ -68,7 +70,6 @@ class SubmissionRequestController extends BaseController
         $bi_roles = auth()->user()->roles;
         $bi_roles_arr = array();
         $intervention_types_arr = [];
-        $beneficiary = null;
 
         if (count($bi_roles) > 0) {
             foreach ($bi_roles as $role) {
@@ -95,8 +96,7 @@ class SubmissionRequestController extends BaseController
             ->with("type", 'AIP')
             ->with("years", $years)
             ->with("intervention_types", array_unique($intervention_types_arr))
-            ->with('bi_roles', $bi_roles_arr)
-            ->with("beneficiary", optional($beneficiary)->id);
+            ->with('bi_roles', $bi_roles_arr);
     }
 
     /**
@@ -106,17 +106,23 @@ class SubmissionRequestController extends BaseController
      *
      * @return Response
      */
-    public function store(Organization $org, CreateSubmissionRequestRequest $request)
-    {
+    public function store(Organization $org, CreateSubmissionRequestRequest $request) {
         $input = $request->all();
-        dd($input);
+        $current_user = auth()->user();
+        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+        
+        $input['type'] = 'intervention';
+        $input['status'] = 'not-submitted';
+        $input['requesting_user_id'] = $current_user->id;
+        $input['organization_id'] = $current_user->organization_id;
+        $input['beneficiary_id'] = $beneficiary_member->beneficiary_id;
+
         /** @var SubmissionRequest $submissionRequest */
         $submissionRequest = SubmissionRequest::create($input);
 
-        //Flash::success('Submission Request saved successfully.');
-
+        /*Dispatch event*/
         SubmissionRequestCreated::dispatch($submissionRequest);
-        return redirect(route('xyz.submissionRequests.index'));
+        return redirect(route('tf-bi-portal.submissionRequests.show', $submissionRequest->id))->with('success', 'Submission Request saved successfully.')->with('submissionRequest', $submissionRequest);
     }
 
     /**
@@ -126,8 +132,7 @@ class SubmissionRequestController extends BaseController
      *
      * @return Response
      */
-    public function show(Organization $org, $id)
-    {
+    public function show(Organization $org, $id) {
         /** @var SubmissionRequest $submissionRequest */
         $submissionRequest = SubmissionRequest::find($id);
 
@@ -147,18 +152,45 @@ class SubmissionRequestController extends BaseController
      *
      * @return Response
      */
-    public function edit(Organization $org, $id)
-    {
+    public function edit(Organization $org, $id) {
         /** @var SubmissionRequest $submissionRequest */
         $submissionRequest = SubmissionRequest::find($id);
 
         if (empty($submissionRequest)) {
             //Flash::error('Submission Request not found');
-
             return redirect(route('tf-bi-submission.submissionRequests.index'));
         }
 
-        return view('pages.submission_requests.edit')->with('submissionRequest', $submissionRequest);
+        $bi_roles = auth()->user()->roles;
+        $bi_roles_arr = array();
+        $intervention_types_arr = [];
+
+        if (count($bi_roles) > 0) {
+            foreach ($bi_roles as $role) {
+                array_push($bi_roles_arr, $role->name);
+            }
+        }
+
+        $pay_load = ['_method'=>'GET'];
+        $tETFundServer = new TETFundServer();   /* server class constructor */
+        $intervention_types_server_response = $tETFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
+
+        if (count($intervention_types_server_response) > 0) {
+            foreach ($intervention_types_server_response as $intervention_type) {
+                $intervention_types_arr[$intervention_type->id] = $intervention_type->type;
+            }
+        }
+
+        $years = [];
+        for ($i=0; $i < 6; $i++) { 
+          array_push($years, date("Y")-$i);
+        }
+
+        return view('pages.submission_requests.edit')
+            ->with('submissionRequest', $submissionRequest)
+            ->with("years", $years)
+            ->with("intervention_types", array_unique($intervention_types_arr))
+            ->with('bi_roles', $bi_roles_arr);
     }
 
     /**
@@ -176,17 +208,24 @@ class SubmissionRequestController extends BaseController
 
         if (empty($submissionRequest)) {
             //Flash::error('Submission Request not found');
-
             return redirect(route('tf-bi-submission.submissionRequests.index'));
         }
 
-        $submissionRequest->fill($request->all());
-        $submissionRequest->save();
+        $input = $request->all();
+        $current_user = auth()->user();
+        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+        
+        $input['type'] = 'intervention';
+        $input['status'] = 'not-submitted';
+        $input['requesting_user_id'] = $current_user->id;
+        $input['organization_id'] = $current_user->organization_id;
+        $input['beneficiary_id'] = $beneficiary_member->beneficiary_id;
 
-        //Flash::success('Submission Request updated successfully.');
+        $submissionRequest->fill($input);
+        $submissionRequest->save();
         
         SubmissionRequestUpdated::dispatch($submissionRequest);
-        return redirect(route('tf-bi-submission.submissionRequests.index'));
+        return redirect(route('tf-bi-portal.submissionRequests.show', $submissionRequest->id))->with('success', 'Submission Request updated successfully.')->with('submissionRequest', $submissionRequest);
     }
 
     /**

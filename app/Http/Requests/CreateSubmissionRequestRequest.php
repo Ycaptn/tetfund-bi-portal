@@ -32,7 +32,7 @@ class CreateSubmissionRequestRequest extends AppBaseFormRequest
         return [
             //'organization_id' => 'required',
             'intervention_type' => 'required|string|max:100',
-            'type' => 'required|string|max:300',
+            'tf_iterum_intervention_line_key_id' => 'required|string|max:300',
             'title' => 'required|string|max:300',
             'intervention_year1' => "required|numeric|in:". implode($years, ','),
             'intervention_year2' => "required|numeric|in:". implode($years, ','),
@@ -51,7 +51,7 @@ class CreateSubmissionRequestRequest extends AppBaseFormRequest
     public function attributes() {
         return [
             'intervention_type'=>'Intervention Type',
-            'type'=>'Intervention Line',
+            'tf_iterum_intervention_line_key_id'=>'Intervention Line',
             'title'=>'Project Title',
             'intervention_year1'=>'Intervention Year 1',
             'intervention_year2'=>'Intervention Year 2',

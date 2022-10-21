@@ -24,7 +24,7 @@ Submissions
 
 @section('page_title_buttons')
 <a id="btn-new-mdl-submissionRequest-modal" class="btn btn-sm btn-primary btn-new-mdl-submissionRequest-modal" href="{{ route("tf-bi-portal.submissionRequests.create") }}">
-    <i class="bx bx-book-add mr-1"></i>New Submission
+    <i class="bx bx-book-add mr-1"></i> New Submission
 </a>
 @stop
 
@@ -32,6 +32,8 @@ Submissions
     <div class="card border-top border-0 border-4 border-success">
         <div class="card-body">
             {{ $cdv_submission_requests->render() }}
+
+            @include('tf-bi-portal::pages.submission_requests.modal')
         </div>
     </div>
 @stop
