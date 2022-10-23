@@ -69,6 +69,11 @@ New Submission
 @push('page_scripts')
     <script type="text/javascript">
         $(document).ready(function() {
+
+            /*$('#amount_requested').keyup(function(event){
+                $('#amount_requested').digits();
+            });*/
+
             /* Converting string words to upper-case */
             function upperCaseFirstLetterInString(str){
                 var splitStr = str.toLowerCase().split(" ");

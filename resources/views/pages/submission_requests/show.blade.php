@@ -12,7 +12,7 @@ Submission Request
 @stop
 
 @section('page_title_suffix')
-{{$submissionRequest->title}}
+{{$submissionRequest->title}} | <b>({{ strtoupper($submissionRequest->status) }})</b>
 @stop
 
 @section('page_title_subtext')
@@ -39,9 +39,9 @@ Submission Request
         <i class="fa fa-pencil-square-o"></i> Edit
     </a>
 
-    @if (Auth()->user()->hasAnyRole(['','admin']))
+    {{-- @if (Auth()->user()->hasAnyRole(['','admin']))
         @include('tf-bi-portal::pages.submission_requests.bulk-upload-modal')
-    @endif
+    @endif --}}
 @stop
 
 
@@ -50,9 +50,35 @@ Submission Request
     <div class="card border-top border-0 border-4 border-primary">
         <div class="card-body">
 
-            @include('tf-bi-portal::pages.submission_requests.modal') 
-            @include('tf-bi-portal::pages.submission_requests.show_fields')
-            
+            @include('tf-bi-portal::pages.submission_requests.modal')
+            <div class="row alert alert-warning">
+                <div class="col-md-9">
+                    <i class="icon fa fa-warning"></i>
+                    <strong>Notice:</strong> This request has <strong>NOT</strong> been submitted.
+                    <ul>
+                        @if (true)
+                            @if(isset(request()->attach) && request()->attach == true)
+                                
+                                <li>You can <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}">preview</a> request details before submitting your request.</li>
+                            @else
+                                <li>Please <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?attach=true">attach</a> the <strong>required documents</strong> before submitting your request.</li>
+                            @endif
+                        @endif
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <a href="{{ route('tf-bi-portal.processSubmissionRequestToTFPortal') }}" class="btn btn-sm btn-danger pull-right">
+                        Submit this Request
+                    </a>
+                </div>
+            </div>            
+            <div class="row col-sm-12">
+                @if (isset(request()->attach) && request()->attach == true)
+                    @include('tf-bi-portal::pages.submission_requests.partials.submission_attachments')
+                @else
+                    @include('tf-bi-portal::pages.submission_requests.partials.submission_details')
+                @endif
+            </div>
         </div>
     </div>
 @stop

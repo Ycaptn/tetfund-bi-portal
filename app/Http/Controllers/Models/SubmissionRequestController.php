@@ -37,7 +37,7 @@ class SubmissionRequestController extends BaseController
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
         $cdv_submission_requests = new \Hasob\FoundationCore\View\Components\CardDataView(SubmissionRequest::class, "pages.submission_requests.card_view_item");
-        $cdv_submission_requests->setDataQuery(['organization_id'=>$org->id, 'beneficiary_id'=>$beneficiary_member->beneficiary_id])
+        $cdv_submission_requests->setDataQuery(['organization_id'=>$org->id, 'beneficiary_id'=>optional($beneficiary_member)->beneficiary_id])
                         ->addDataGroup('All','deleted_at',null)
                         ->addDataGroup('Not Submitted','status','not-submitted')
                         ->addDataGroup('In Progress','status','in-progress')
@@ -125,6 +125,16 @@ class SubmissionRequestController extends BaseController
         return redirect(route('tf-bi-portal.submissionRequests.show', $submissionRequest->id))->with('success', 'Submission Request saved successfully.')->with('submissionRequest', $submissionRequest);
     }
 
+    public function processSubmissionRequestAttachement(Request $request, $id){
+        /*implement processing success*/
+        return 'Am good processSubmissionRequestAttachement';
+    }
+
+    public function processSubmissionRequestToTFPortal(Request $request, $id){
+        /*implement processing success*/
+        return 'Am good processSubmissionRequestToTFPortal';
+    }
+
     /**
      * Display the specified SubmissionRequest.
      *
@@ -138,11 +148,16 @@ class SubmissionRequestController extends BaseController
 
         if (empty($submissionRequest)) {
             //Flash::error('Submission Request not found');
-
             return redirect(route('tf-bi-submission.submissionRequests.index'));
         }
 
-        return view('pages.submission_requests.show')->with('submissionRequest', $submissionRequest);
+        $pay_load = ['_method'=>'GET', 'id'=>$submissionRequest->tf_iterum_intervention_line_key_id];
+        $tETFundServer = new TETFundServer();   /* server class constructor */
+        $intervention_types_server_response = $tETFundServer->get_row_records_from_server("tetfund-ben-mgt-api/interventions/".$submissionRequest->tf_iterum_intervention_line_key_id, $pay_load);
+
+        return view('pages.submission_requests.show')
+            ->with('intervention', $intervention_types_server_response)
+            ->with('submissionRequest', $submissionRequest);
     }
 
     /**

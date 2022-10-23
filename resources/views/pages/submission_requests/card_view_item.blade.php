@@ -43,9 +43,9 @@
                             {{ $data_item->title }} @if(empty($data_item->status)==false) || {!! strtoupper($data_item->status) !!}@endif
                         </h3>
                     </a>
-                    @if (!empty($data_item->description))
+                    @if (!empty($data_item->amount_requested))
                         <p class="card-text mb-0 small">
-                            {{ $data_item->description }}
+                            <b>Amount Requested: &nbsp; &#8358;</b>{{ number_format($data_item->amount_requested, 2, '.', ',') }}
                         </p>
                     @endif
                     
