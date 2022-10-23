@@ -148,7 +148,13 @@ class BeneficiaryAPIController extends AppBaseController
                     //checking if desk officer exist
                     $beneficiary_desk_officer_user = \Hasob\FoundationCore\Models\User::where('email', $get_server_beneficiary->official_email)->first();
                     
-                    if (empty($beneficiary_desk_officer_user)) {    
+                    if (empty($beneficiary_desk_officer_user)) {
+
+                        //check if beneficiary email is valid else skip
+                        if (!filter_var($get_server_beneficiary->official_email, FILTER_VALIDATE_EMAIL)) {
+                            continue;
+                        }
+
                         // desk officer payload
                         $pay_load = [
                             "email" => $get_server_beneficiary->official_email,
