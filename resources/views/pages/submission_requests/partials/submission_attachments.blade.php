@@ -9,7 +9,7 @@
         </thead>
         <tbody>
             {{-- route('beneficiary-checklist-submit',$submissionRequest->id) --}}
-            <form class="form-horizontal" role="form" enctype="multipart/form-data" method="POST" action="{{ route('tf-bi-portal.processSubmissionRequestAttachement',$submissionRequest->id) }}?posted_attachment=true" >
+            <form class="form-horizontal" role="form" enctype="multipart/form-data" method="POST" action="{{ route('tf-bi-portal.processSubmissionRequestAttachement', ['id'=>$submissionRequest->id] ) }}" >
 
                 {{ csrf_field() }}
 
@@ -49,7 +49,7 @@
                         </td>
                         <td width="50%">
                             <div class="input-group">
-                                <div class="{{ $errors->has('additional_attachment') ? ' has-error' : '' }}" >
+                                <div class="{{ $errors->has('additional_attachment') ? ' has-error' : '' }} col-sm-12" >
                                     <input multiple="multiple" type='file' class="form-control" name="additional_attachment" id="additional_attachment" />
                                 </div>
                             </div>

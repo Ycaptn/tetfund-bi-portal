@@ -41,9 +41,9 @@ $orgRoutes = function() {
                 Route::resource('a_s_t_d_nominations', \App\Http\Controllers\Models\ASTDNominationController::class);
 
                 Route::resource('beneficiaries', \App\Http\Controllers\Models\BeneficiaryController::class);
+                Route::post('/processSubmissionRequestToTFPortal', [\App\Http\Controllers\Models\SubmissionRequestController::class, 'processSubmissionRequestToTFPortal'])->name('submissionRequests.processSubmissionRequestToTFPortal');
+                Route::post('/processSubmissionRequestAttachement', [\App\Http\Controllers\Models\SubmissionRequestController::class, 'processSubmissionRequestAttachement'])->name('processSubmissionRequestAttachement');
                 Route::resource('submissionRequests', \App\Http\Controllers\Models\SubmissionRequestController::class);
-                Route::post('/submissionRequests/processSubmissionRequestAttachement', [\App\Http\Controllers\Models\SubmissionRequestController::class, 'processSubmissionRequestAttachement'])->name('processSubmissionRequestAttachement');
-                Route::post('/submissionRequests/processSubmissionRequestToTFPortal', [\App\Http\Controllers\Models\SubmissionRequestController::class, 'processSubmissionRequestToTFPortal'])->name('processSubmissionRequestToTFPortal');
             });
 
         });

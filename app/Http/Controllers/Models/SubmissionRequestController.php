@@ -127,12 +127,14 @@ class SubmissionRequestController extends BaseController
 
     public function processSubmissionRequestAttachement(Request $request, $id){
         /*implement processing success*/
-        return 'Am good processSubmissionRequestAttachement';
+        return redirect()->back()->withErrors(["Oops!... OCCURING ERROR(s): The request submission must contain all required Attachment(s).", "Oops!... OCCURING ERROR(s): The request submission must contain all required Attachment(s)."]);
+       
+
     }
 
-    public function processSubmissionRequestToTFPortal(Request $request, $id){
+    public function processSubmissionRequestToTFPortal(Request $request){
         /*implement processing success*/
-        return 'Am good processSubmissionRequestToTFPortal';
+        return redirect()->back()->withErrors(["The request submission must contain all required Attachment(s).", "Fund requested must be equal to the Allocated amount"]);
     }
 
     /**
@@ -148,7 +150,7 @@ class SubmissionRequestController extends BaseController
 
         if (empty($submissionRequest)) {
             //Flash::error('Submission Request not found');
-            return redirect(route('tf-bi-submission.submissionRequests.index'));
+            return redirect(route('tf-bi-portal.submissionRequests.index'));
         }
 
         $pay_load = ['_method'=>'GET', 'id'=>$submissionRequest->tf_iterum_intervention_line_key_id];

@@ -1,6 +1,44 @@
 @extends('layouts.app')
 
 @section('app_css')
+    <style type="text/css">
+        /* Style the tab */
+        .tab {
+          overflow: hidden;
+          border: 1px solid #ccc;
+          background-color: #f1f1f1;
+        }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+          background-color: inherit;
+          float: left;
+          border: none;
+          outline: none;
+          cursor: pointer;
+          padding: 14px 16px;
+          transition: 0.3s;
+          font-size: 17px;
+        }
+
+        /* Change background color of buttons on hover */
+        .tab button:hover {
+          background-color: #ddd;
+        }
+
+        /* Create an active/current tablink class */
+        .tab button.active {
+          background-color: #ccc;
+        }
+
+        /* Style the tab content */
+        .tabcontent {
+          display: none;
+          padding: 6px 12px;
+          border: 1px solid #ccc;
+          border-top: none;
+        }
+    </style>
 @stop
 
 @section('title_postfix')
@@ -54,30 +92,68 @@ Submission Request
             <div class="row alert alert-warning">
                 <div class="col-md-9">
                     <i class="icon fa fa-warning"></i>
-                    <strong>Notice:</strong> This request has <strong>NOT</strong> been submitted.
+                    <strong>PRE-SUBMISSION NOTICE:</strong> 
                     <ul>
                         @if (true)
-                            @if(isset(request()->attach) && request()->attach == true)
-                                
-                                <li>You can <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}">preview</a> request details before submitting your request.</li>
-                            @else
-                                <li>Please <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?attach=true">attach</a> the <strong>required documents</strong> before submitting your request.</li>
-                            @endif
+                            <li>This request has <strong>NOT</strong> been submitted.</li>
+                        @endif
+
+                        @if (true)
+                            <li>Please attach the <strong>required documents</strong> before submitting your request.</li>
+                        @endif
+
+                        @if (true)
+                            <li>Fund requested must be equal to the <strong>Allocated amount</strong>.</li>
                         @endif
                     </ul>
                 </div>
                 <div class="col-md-3">
-                    <a href="{{ route('tf-bi-portal.processSubmissionRequestToTFPortal') }}" class="btn btn-sm btn-danger pull-right">
-                        Submit this Request
-                    </a>
+                    <form method="POST" action="{{ route('tf-bi-portal.submissionRequests.processSubmissionRequestToTFPortal', ['id'=>$submissionRequest->id]) }}">
+                        {{ csrf_field() }}
+                        <button type="submit" class="btn btn-sm btn-danger pull-right">  
+                            Submit this Request 
+                        </button>                        
+                    </form>
                 </div>
             </div>            
             <div class="row col-sm-12">
-                @if (isset(request()->attach) && request()->attach == true)
-                    @include('tf-bi-portal::pages.submission_requests.partials.submission_attachments')
-                @else
-                    @include('tf-bi-portal::pages.submission_requests.partials.submission_details')
-                @endif
+                {{-- details --}}
+                @include('tf-bi-portal::pages.submission_requests.partials.submission_details')
+                <div class="container col-sm-12"><hr>
+                    <div class="tab">
+                        <ul class="nav">
+                            <li>
+                                <a href="#attachments?attachments=attachments" class="tablinks btn btn-primary btn-md shadow-none" onclick="openCity(event,'attachments')" id="defaultOpen">
+                                    Attachments
+                                </a>                        
+                            </li>
+                            <li>                            
+                                <a href="#astd_nominations?astd_nominations=astd_nominations" class="tablinks btn btn-primary btn-md shadow-none" onclick="openCity(event, 'astd_nominations')">
+                                    ASTD Nominations
+                                </a>
+                            </li>
+                            <li>                                
+                                <a href="#communications?communications=communications" class="tablinks btn btn-primary btn-md shadow-none" onclick="openCity(event, 'communications')">
+                                    Communications
+                                </a>
+                            </li>
+                        </ul>
+                    </div><hr>
+                    <div id="attachments" class="tabcontent">
+                        <h4>ATTACHMENTS</h4>
+                        @include('tf-bi-portal::pages.submission_requests.partials.submission_attachments') 
+                    </div>
+
+                    <div id="astd_nominations" class="tabcontent">
+                        <h4>ASTD NOMINATIONS</h4>
+                        
+                    </div>
+
+                    <div id="communications" class="tabcontent">
+                        <h4>COMMUNICATIONS</h4>
+                        
+                    </div>                   
+                </div>
             </div>
         </div>
     </div>
@@ -97,4 +173,22 @@ Submission Request
 @stop
 
 @push('page_scripts')
+    <script type="text/javascript">
+        function openCity(evt, cityName) {
+          var i, tabcontent, tablinks;
+          tabcontent = document.getElementsByClassName("tabcontent");
+          for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablinks");
+          for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+          }
+          document.getElementById(cityName).style.display = "block";
+          evt.currentTarget.className += " active";
+        }
+
+        // Get the element with id="defaultOpen" and click on it
+        document.getElementById("defaultOpen").click();
+    </script>
 @endpush
