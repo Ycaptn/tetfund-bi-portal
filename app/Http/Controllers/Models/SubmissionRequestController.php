@@ -144,7 +144,7 @@ class SubmissionRequestController extends BaseController
      *
      * @return Response
      */
-    public function show(Organization $org, $id) {
+    public function show(Organization $org, $id, Request $request) {
         /** @var SubmissionRequest $submissionRequest */
         $submissionRequest = SubmissionRequest::find($id);
 
@@ -152,14 +152,38 @@ class SubmissionRequestController extends BaseController
             //Flash::error('Submission Request not found');
             return redirect(route('tf-bi-portal.submissionRequests.index'));
         }
+        
+        /* get intervention model artifacts */
+        $pay_load = [
+            '_method' => 'POST',
+            'model_name' => strval("TETFund\BeneficiaryMgt\Models\Intervention"),
+            'model_primary_id' => $submissionRequest->tf_iterum_intervention_line_key_id
+        ];
+        $tETFundServer = new TETFundServer();   /* server class constructor */
+        $existing_model_artifact = $tETFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions/get_managing_checklist', $pay_load);
 
+        /* get checklist binded to specified intervention model artifact */
+        $checklist_items = null;
+        $existing_model_artifact_arr = [];
+        foreach($existing_model_artifact as $model_artifact){
+            array_push($existing_model_artifact_arr, $model_artifact->value);
+        }
+
+        if (count($existing_model_artifact) > 0 && count($existing_model_artifact_arr) > 0) {
+            $pay_load = [ '_method' => 'POST', 'list_name' => $existing_model_artifact_arr ];
+            $tETFundServer = new TETFundServer();   /* server class constructor */
+            $checklist_items = $tETFundServer->get_all_data_list_from_server('fc-api/get_filter_checklist', $pay_load);
+        }
+
+        /* get all interventions from server */
         $pay_load = ['_method'=>'GET', 'id'=>$submissionRequest->tf_iterum_intervention_line_key_id];
         $tETFundServer = new TETFundServer();   /* server class constructor */
         $intervention_types_server_response = $tETFundServer->get_row_records_from_server("tetfund-ben-mgt-api/interventions/".$submissionRequest->tf_iterum_intervention_line_key_id, $pay_load);
 
         return view('pages.submission_requests.show')
             ->with('intervention', $intervention_types_server_response)
-            ->with('submissionRequest', $submissionRequest);
+            ->with('submissionRequest', $submissionRequest)
+            ->with('checklist_items', $checklist_items);
     }
 
     /**
