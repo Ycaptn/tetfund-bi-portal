@@ -10,6 +10,7 @@ use App\Events\SubmissionRequestDeleted;
 
 use App\Http\Requests\CreateSubmissionRequestRequest;
 use App\Http\Requests\UpdateSubmissionRequestRequest;
+use App\Http\Requests\ProcessAttachmentsSubmissionRequest;
 
 use App\DataTables\SubmissionRequestDataTable;
 
@@ -32,6 +33,7 @@ class SubmissionRequestController extends BaseController
      * @param SubmissionRequestDataTable $submissionRequestDataTable
      * @return Response
      */
+    private $id = null;
     public function index(Organization $org, SubmissionRequestDataTable $submissionRequestDataTable) {
         $current_user = Auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
@@ -125,15 +127,48 @@ class SubmissionRequestController extends BaseController
         return redirect(route('tf-bi-portal.submissionRequests.show', $submissionRequest->id))->with('success', 'Submission Request saved successfully.')->with('submissionRequest', $submissionRequest);
     }
 
-    public function processSubmissionRequestAttachement(Request $request, $id){
-        /*implement processing success*/
-        return redirect()->back()->withErrors(["Oops!... OCCURING ERROR(s): The request submission must contain all required Attachment(s).", "Oops!... OCCURING ERROR(s): The request submission must contain all required Attachment(s)."]);
-       
+    /* implement processing success */
+    public function processSubmissionRequestAttachement(ProcessAttachmentsSubmissionRequest $request, $id) {
+        $attachement_inputs = $request->all();
+        $submissionRequest = SubmissionRequest::find($request->id);
 
+        //get existing checklist for this intervention
+        $checklist_items_arr = array();
+        $tETFundServer = new TETFundServer();   /* server class constructor */
+        $checklist_items = $tETFundServer->getInterventionChecklistData($request->intervention_line,);
+        
+        //mapping checklist id to item_label 
+        foreach ($checklist_items as $checklist){
+            $checklist_items_arr[$checklist->id] = $checklist->item_label;
+        }
+
+        //processing individual checklist file uploads
+        if($request->checklist_input_fields != "") {
+            $checklist_input_fields_arr = explode(',', $request->checklist_input_fields);
+            foreach ($checklist_input_fields_arr as $checklist_input_name) {
+                if (isset($attachement_inputs[$checklist_input_name]) && $request->hasFile($checklist_input_name)) {
+                    $checklist_id = substr("$checklist_input_name",10);
+                    $label = $checklist_items_arr[$checklist_id]; 
+                    $discription = 'This Document Contains the ' . $label ;
+                    $submissionRequest->attach(auth()->user(), $label, $discription, $attachement_inputs[$checklist_input_name]);
+                }
+            }
+        }
+
+        //handling additional files submission
+        if (isset($request->additional_attachment) && $request->hasFile('additional_attachment')) {
+            $label = $request->additional_attachment_name . ' Additional Attachment'; 
+            $discription = 'This Document Contains the ' . $label ;
+            $submissionRequest->attach(auth()->user(), $label, $discription, $attachement_inputs['additional_attachment']);
+        }   
+
+        $success_message = 'Submission Request Attachments saved successfully!';
+        return redirect()->back()->with('success', $success_message);
+    
     }
 
-    public function processSubmissionRequestToTFPortal(Request $request){
-        /*implement processing success*/
+    /* implement processing success */
+    public function processSubmissionRequestToTFPortal(Request $request) {
         return redirect()->back()->withErrors(["The request submission must contain all required Attachment(s).", "Fund requested must be equal to the Allocated amount"]);
     }
 
@@ -153,37 +188,44 @@ class SubmissionRequestController extends BaseController
             return redirect(route('tf-bi-portal.submissionRequests.index'));
         }
         
-        /* get intervention model artifacts */
-        $pay_load = [
-            '_method' => 'POST',
-            'model_name' => strval("TETFund\BeneficiaryMgt\Models\Intervention"),
-            'model_primary_id' => $submissionRequest->tf_iterum_intervention_line_key_id
-        ];
-        $tETFundServer = new TETFundServer();   /* server class constructor */
-        $existing_model_artifact = $tETFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions/get_managing_checklist', $pay_load);
-
         /* get checklist binded to specified intervention model artifact */
-        $checklist_items = null;
-        $existing_model_artifact_arr = [];
-        foreach($existing_model_artifact as $model_artifact){
-            array_push($existing_model_artifact_arr, $model_artifact->value);
-        }
+        $tETFundServer = new TETFundServer();   /* server class constructor */
+        $checklist_items = $tETFundServer->getInterventionChecklistData($submissionRequest->tf_iterum_intervention_line_key_id,);
 
-        if (count($existing_model_artifact) > 0 && count($existing_model_artifact_arr) > 0) {
-            $pay_load = [ '_method' => 'POST', 'list_name' => $existing_model_artifact_arr ];
-            $tETFundServer = new TETFundServer();   /* server class constructor */
-            $checklist_items = $tETFundServer->get_all_data_list_from_server('fc-api/get_filter_checklist', $pay_load);
-        }
 
         /* get all interventions from server */
         $pay_load = ['_method'=>'GET', 'id'=>$submissionRequest->tf_iterum_intervention_line_key_id];
         $tETFundServer = new TETFundServer();   /* server class constructor */
         $intervention_types_server_response = $tETFundServer->get_row_records_from_server("tetfund-ben-mgt-api/interventions/".$submissionRequest->tf_iterum_intervention_line_key_id, $pay_load);
 
+        /* get total fund available */
+        $beneficiary = $submissionRequest->beneficiary;
+        $years = array();
+
+        if ($submissionRequest->intervention_year1 != null) {
+            array_push($years, $submissionRequest->intervention_year1);
+        }
+
+        if ($submissionRequest->intervention_year2 != null) {
+            array_push($years, $submissionRequest->intervention_year2);
+        }
+
+        if ($submissionRequest->intervention_year3 != null) {
+            array_push($years, $submissionRequest->intervention_year3);
+        }
+
+        if ($submissionRequest->intervention_year4 != null) {
+            array_push($years, $submissionRequest->intervention_year4);
+        }
+
+        $tETFundServer = new TETFundServer();   /* server class constructor */
+        $fund_availability = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, array_unique($years));
         return view('pages.submission_requests.show')
             ->with('intervention', $intervention_types_server_response)
             ->with('submissionRequest', $submissionRequest)
-            ->with('checklist_items', $checklist_items);
+            ->with('checklist_items', $checklist_items)
+            ->with('fund_available', $fund_availability->total_fund)
+            ->with('beneficiary', $beneficiary);
     }
 
     /**

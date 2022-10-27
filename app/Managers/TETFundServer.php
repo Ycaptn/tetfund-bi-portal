@@ -87,16 +87,29 @@ class TETFundServer {
         }
     }
     
-    public static function getInterventionChecklistData($intervention_id)
-    {
-        //TODO: perform operation, return return the requested object and success msg if ok, error otherwise
-        return [];
+    public static function getInterventionChecklistData($intervention_id) {
+        $server_api_url = Config::get('keys.tetfund.server_api_url');
+        $token = self::get_auth_token();
+        $existing_model_artifact = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/intervention-checklist/$intervention_id", null);
+        $api_response = curl_exec($existing_model_artifact);
+        $api_response_data = json_decode($api_response);
+        curl_close ($existing_model_artifact);
+        return ($api_response != null && $api_response_data !=null && is_array($api_response_data->data)) ?  $api_response_data->data : [];
     }
 
-    public static function getFundAvailabilityData()
-    {
-        //TODO: perform operation, return return the requested object and success msg if ok, error otherwise
-        return [];
+    public static function getFundAvailabilityData($beneficiary_id, $years=null) {
+        $server_api_url = Config::get('keys.tetfund.server_api_url');
+        $token = self::get_auth_token();
+        $pay_load = [
+            '_method' => 'GET',
+            'beneficiary_id' => $beneficiary_id,
+            'years' => $years
+        ];
+        $funds_available = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/fund-availability/{$beneficiary_id}", $pay_load);
+        $api_response = curl_exec($funds_available);
+        $api_response_data = json_decode($api_response);
+        curl_close ($funds_available);
+        return ($api_response != null && $api_response_data !=null && isset($api_response_data->data)) ?  $api_response_data->data : [];
     }
 
     public static function getSubmissionRequestData($submission_id)
@@ -117,8 +130,7 @@ class TETFundServer {
         return [];
     }
 
-    public static function getBeneficiaryList()
-    {
+    public static function getBeneficiaryList() {
         $server_api_url = Config::get('keys.tetfund.server_api_url');
 
         $token = self::get_auth_token();

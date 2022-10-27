@@ -138,13 +138,18 @@ class SubmissionRequestAPIController extends AppBaseController
      *
      * @return Response
      */
-    public function destroy($id, Organization $organization)
-    {
+    public function destroy($id, Organization $organization, Request $request) {
         /** @var SubmissionRequest $submissionRequest */
         $submissionRequest = SubmissionRequest::find($id);
 
         if (empty($submissionRequest)) {
             return $this->sendError('Submission Request not found');
+        }
+
+        //handles submissions for attachemts
+        if (isset($request->submissionRequestId) && isset($request->attachment_label) && $submissionRequest != null) {
+            $submissionRequest->delete_attachment($request->attachment_label);
+            return $this->sendSuccess('Submission Request Attachment deleted successfully');
         }
 
         $submissionRequest->delete();

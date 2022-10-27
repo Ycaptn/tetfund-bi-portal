@@ -22,6 +22,7 @@ use Hasob\FoundationCore\Traits\Ledgerable;
 use Hasob\FoundationCore\Traits\Attachable;
 use Hasob\FoundationCore\Traits\Artifactable;
 use Hasob\FoundationCore\Traits\OrganizationalConstraint;
+use Hasob\FoundationCore\Models\Attachable as EloquentAttachable;
 
 use Eloquent as Model;
 
@@ -49,6 +50,7 @@ class SubmissionRequest extends Model
     use OrganizationalConstraint;
     
     use SoftDeletes;
+    use Attachable;
 
     use HasFactory;
 
@@ -108,6 +110,22 @@ class SubmissionRequest extends Model
     public function beneficiary()
     {
         return $this->hasOne(\App\Models\Beneficiary::class, 'id', 'beneficiary_id');
+    }
+
+    public static function get_specific_attachement($submission_request_id, $item_label){
+        $submission_request = SubmissionRequest::find($submission_request_id);
+        if ($submission_request != null) {
+            $attachements = $submission_request->get_attachments();
+            if ($attachements != null) {
+                foreach($attachements as $attachement){
+                    if ($attachement->label == $item_label || str_contains($attachement->label, $item_label)) {
+                        return $attachement;
+                        break;
+                    }
+                }    
+            }
+        }
+        return null;
     }
 
 }

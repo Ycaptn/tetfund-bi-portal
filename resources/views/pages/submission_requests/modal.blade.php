@@ -205,6 +205,72 @@ $(document).ready(function() {
 
     });
 
+     //Delete action attachement
+    $(document).on('click', ".btn-delete-mdl-submissionRequest-attachement", function(e) {
+        e.preventDefault();
+        $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+        //check for internet status 
+        if (!window.navigator.onLine) {
+            $('.offline-submission_requests').fadeIn(300);
+            return;
+        }else{
+            $('.offline-submission_requests').fadeOut(300);
+        }
+
+        let submissionRequestId = "{{ isset($submissionRequest->id) ? $submissionRequest->id : '' }}";
+        let attachment_label = $(this).attr('data-val');
+        swal({
+                title: "Are you sure you want to delete this SubmissionRequest Attachment?",
+                text: "You will not be able to recover this Attachment if deleted.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                closeOnConfirm: false,
+                closeOnCancel: true
+            }, function(isConfirm) {
+                if (isConfirm) {
+
+                    let endPointUrl = "{{ route('tf-bi-portal-api.submission_requests.destroy','') }}/"+submissionRequestId;
+
+                    let formData = new FormData();
+                    formData.append('_token', $('input[name="_token"]').val());
+                    formData.append('_method', 'DELETE');
+                    formData.append('submissionRequestId', submissionRequestId);
+                    formData.append('attachment_label', attachment_label);
+                    
+                    $.ajax({
+                        url:endPointUrl,
+                        type: "POST",
+                        data: formData,
+                        cache: false,
+                        processData:false,
+                        contentType: false,
+                        dataType: 'json',
+                        success: function(result){
+                            if(result.errors){
+                                console.log(result.errors)
+                                swal("Error", "Oops an error occurred. Please try again.", "error");
+                            }else{
+                                swal({
+                                    title: "Deleted",
+                                    text: "SubmissionRequest Attachment deleted successfully",
+                                    type: "success",
+                                    confirmButtonClass: "btn-success",
+                                    confirmButtonText: "OK",
+                                    closeOnConfirm: false
+                                });
+                                location.reload(true);
+                            }
+                        },
+                    });
+                }
+            });
+
+    });
+
     //Save details
     /*$('#btn-save-mdl-submissionRequest-modal').click(function(e) {
         e.preventDefault();

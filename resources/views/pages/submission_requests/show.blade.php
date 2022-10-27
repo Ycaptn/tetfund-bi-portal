@@ -100,9 +100,9 @@ Submission Request
 
                         @if (true)
                             <li>Please attach the <strong>required documents</strong> before submitting your request.</li>
-                        @endif
+                        @endif 
 
-                        @if (true)
+                        @if (isset($fund_available) && $fund_available != $submissionRequest->amount_requested)
                             <li>Fund requested must be equal to the <strong>Allocated amount</strong>.</li>
                         @endif
                     </ul>

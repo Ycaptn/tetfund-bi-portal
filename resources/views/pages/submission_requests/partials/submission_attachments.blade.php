@@ -15,11 +15,13 @@
 
                 @php
                     $x = 0;
+                    $checklist_input_fields = "";
                 @endphp
                 @if (isset($checklist_items) )
                     @foreach ($checklist_items as $item)
                         @php
-                            $checklist = "checklist_".$item->id;
+                            $checklist = "checklist-".$item->id;
+                            $checklist_input_fields .= ($checklist_input_fields == "") ? $checklist : ','.$checklist;
                         @endphp
 
                         <tr>
@@ -27,9 +29,26 @@
                             <td>{{ $item->item_label }}</td>
                             <td width="50%">
                                 <div class="input-group">
-                                    <div class="{{ $errors->has($checklist) ? ' has-error' : '' }} col-sm-12" >
-                                        <input type='file' class="form-control" name="{{$checklist}}" />
-                                    </div>
+                                    @php
+                                        $submission_attachement = $submissionRequest->get_specific_attachement($submissionRequest->id, $item->item_label);
+                                    @endphp
+                                    @if($submission_attachement != null)
+                                        <div class="col-sm-12">
+                                            <a href="{{url(substr($submission_attachement->path,7))}}" target="__blank" title="Preview this Attachement">{{ ucwords($submission_attachement->label) }}</a> &nbsp; &nbsp;
+                                            <a data-toggle="tooltip" 
+                                                title="Delete this Attachement"
+                                                data-val='{{$submission_attachement->label}}'
+                                                class="pull-right text-danger btn-delete-mdl-submissionRequest-attachement"
+                                                href="#">
+                                                <span class="fa fa-trash"></span>
+                                            </a><br>
+                                            <small><i>{{ ucwords($submission_attachement->description) }}</i></small>
+                                        </div>
+                                    @else
+                                        <div class="{{ $errors->has($checklist) ? ' has-error' : '' }} col-sm-12" >
+                                            <input type='file' class="form-control" name="{{$checklist}}" />
+                                        </div>
+                                    @endif
                                 </div>
                                 <em><small class="" style="color: red;"> Max file Size 100M </small></em>
                             </td>
@@ -40,16 +59,44 @@
                 <tr>
                     <th>{{ $x+=1 }}</th>
                     <td>
+                        @php
+                            $submission_attachement_addition = $submissionRequest->get_specific_attachement($submissionRequest->id, 'Additional Attachment');
+                        @endphp
                         <div class="{{ $errors->has('additional_attachment_name') ? ' has-error' : '' }}" >
-                                <input type='text' class="form-control" name="additional_attachment_name"
-                                placeholder="Enter name for Additional Attachment" />
+                                <input 
+                                    type='text' 
+                                    class="form-control" 
+                                    name="additional_attachment_name"
+                                    placeholder="Enter name for Additional Attachment" 
+                                    value="{{ ($submission_attachement_addition != null) ? $submission_attachement_addition->label : '' }}" 
+                                    {{ ($submission_attachement_addition != null) ? "disabled='disabled'" : '' }}
+                                />
                         </div>
                     </td>
                     <td width="50%">
                         <div class="input-group">
-                            <div class="{{ $errors->has('additional_attachment') ? ' has-error' : '' }} col-sm-12" >
-                                <input type='file' class="form-control" name="additional_attachment" id="additional_attachment" />
-                            </div>
+                            @if($submission_attachement_addition != null)
+                                <div class="col-sm-12">
+                                    <a href="{{url(substr($submission_attachement_addition->path,7))}}"
+                                        target="__blank"
+                                        title="Preview this Attachement">
+                                        {{ ucwords($submission_attachement_addition->label) }}
+                                    </a> &nbsp; &nbsp;
+
+                                    <a data-toggle="tooltip" 
+                                        title="Delete this Attachement"
+                                        data-val='{{$submission_attachement_addition->label}}'
+                                        class="pull-right text-danger btn-delete-mdl-submissionRequest-attachement"
+                                        href="#">
+                                        <span class="fa fa-trash"></span>
+                                    </a><br>
+                                    <small><i>{{ ucwords($submission_attachement_addition->description) }}</i></small>
+                                </div>
+                            @else
+                                <div class="{{ $errors->has('additional_attachment') ? ' has-error' : '' }} col-sm-12" >
+                                    <input type='file' class="form-control" name="additional_attachment" id="additional_attachment" />
+                                </div>
+                            @endif
                         </div>
                         <em><small class="" style="color: red;"> Max file Size 100M </small></em>
                     </td>
@@ -59,10 +106,12 @@
                 <tr>
                     <td></td>
                     <th>
-                        <input type='hidden' class="form-control" name="intervention_line" value="{{$intervention->id}}"  />
-                        <input type='hidden' class="form-control" name="submission_request_id" value="{{$submissionRequest->id}}"  />
+                        <input type='hidden' class="form-control" name="intervention_line" value="{{$intervention->id}}" />
+                        <input type='hidden' class="form-control" name="submission_request_id" value="{{$submissionRequest->id}}" />
+                        <input type='hidden' class="form-control" name="organization_id" value="{{ auth()->user()->organization_id }}" />
+                        <input type='hidden' class="form-control" name="intervention_request_tranche" value="{{optional($submissionRequest)->tranche}}" />
+                        <input type='hidden' class="form-control" name="checklist_input_fields" value="{{$checklist_input_fields}}" />
 
-                        <input type='hidden' class="form-control" name="intervention_request_tranche" value="{{optional($submissionRequest)->tranche}}"  />
                         <button type="submit" class="btn btn-sm btn-primary"> <span class="glyphicon glyphicon-ok"></span> &nbsp; Submit Attachment </button>
                         <a href="{{ route('tf-bi-portal.submissionRequests.show',$submissionRequest->id) }}">
                             <button type="button" class="btn btn-sm btn-warning"> <span class="glyphicon glyphicon-remove"></span> Cancel </button>
