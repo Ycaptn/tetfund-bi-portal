@@ -97,13 +97,14 @@ class TETFundServer {
         return ($api_response != null && $api_response_data !=null && is_array($api_response_data->data)) ?  $api_response_data->data : [];
     }
 
-    public static function getFundAvailabilityData($beneficiary_id, $years=null) {
+    public static function getFundAvailabilityData($beneficiary_id, $tf_iterum_intervention_line_key_id, $years=null) {
         $server_api_url = Config::get('keys.tetfund.server_api_url');
         $token = self::get_auth_token();
         $pay_load = [
             '_method' => 'GET',
             'beneficiary_id' => $beneficiary_id,
-            'years' => $years
+            'years' => $years,
+            'tf_iterum_intervention_line_key_id' => $tf_iterum_intervention_line_key_id
         ];
         $funds_available = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/fund-availability/{$beneficiary_id}", $pay_load);
         $api_response = curl_exec($funds_available);
@@ -165,7 +166,7 @@ class TETFundServer {
 
          /* append user_id to payload */
         $pay_load['user_id'] = self::$authenticated_user_id;
-        
+
         /* append organization_id to payload */
         $pay_load['organization_id'] = self::$authenticated_user_organization_id; 
 

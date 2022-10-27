@@ -290,12 +290,13 @@ class SubmissionRequestController extends BaseController
         }
 
         $tETFundServer = new TETFundServer();   /* server class constructor */
-        $fund_availability = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, array_unique($years));
+        $fund_availability = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, array_unique($years));
+
         return view('pages.submission_requests.show')
             ->with('intervention', $intervention_types_server_response)
             ->with('submissionRequest', $submissionRequest)
             ->with('checklist_items', $checklist_items)
-            ->with('fund_available', $fund_availability->total_fund)
+            ->with('fund_available', optional($fund_availability)->total_fund)
             ->with('beneficiary', $beneficiary);
     }
 
@@ -315,36 +316,40 @@ class SubmissionRequestController extends BaseController
             return redirect(route('tf-bi-submission.submissionRequests.index'));
         }
 
-        $bi_roles = auth()->user()->roles;
-        $bi_roles_arr = array();
-        $intervention_types_arr = [];
+        if ($submissionRequest->status == 'not-submitted') {
+            $bi_roles = auth()->user()->roles;
+            $bi_roles_arr = array();
+            $intervention_types_arr = [];
 
-        if (count($bi_roles) > 0) {
-            foreach ($bi_roles as $role) {
-                array_push($bi_roles_arr, $role->name);
+            if (count($bi_roles) > 0) {
+                foreach ($bi_roles as $role) {
+                    array_push($bi_roles_arr, $role->name);
+                }
             }
-        }
 
-        $pay_load = ['_method'=>'GET'];
-        $tETFundServer = new TETFundServer();   /* server class constructor */
-        $intervention_types_server_response = $tETFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
+            $pay_load = ['_method'=>'GET'];
+            $tETFundServer = new TETFundServer();   /* server class constructor */
+            $intervention_types_server_response = $tETFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
 
-        if (count($intervention_types_server_response) > 0) {
-            foreach ($intervention_types_server_response as $intervention_type) {
-                $intervention_types_arr[$intervention_type->id] = $intervention_type->type;
+            if (count($intervention_types_server_response) > 0) {
+                foreach ($intervention_types_server_response as $intervention_type) {
+                    $intervention_types_arr[$intervention_type->id] = $intervention_type->type;
+                }
             }
-        }
 
-        $years = [];
-        for ($i=0; $i < 6; $i++) { 
-          array_push($years, date("Y")-$i);
-        }
+            $years = [];
+            for ($i=0; $i < 6; $i++) { 
+              array_push($years, date("Y")-$i);
+            }
 
-        return view('pages.submission_requests.edit')
-            ->with('submissionRequest', $submissionRequest)
-            ->with("years", $years)
-            ->with("intervention_types", array_unique($intervention_types_arr))
-            ->with('bi_roles', $bi_roles_arr);
+            return view('pages.submission_requests.edit')
+                ->with('submissionRequest', $submissionRequest)
+                ->with("years", $years)
+                ->with("intervention_types", array_unique($intervention_types_arr))
+                ->with('bi_roles', $bi_roles_arr);
+        }
+        
+        return redirect(route('tf-bi-submission.submissionRequests.index'));
     }
 
     /**
@@ -365,21 +370,24 @@ class SubmissionRequestController extends BaseController
             return redirect(route('tf-bi-submission.submissionRequests.index'));
         }
 
-        $input = $request->all();
-        $current_user = auth()->user();
-        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
-        
-        $input['type'] = 'intervention';
-        $input['status'] = 'not-submitted';
-        $input['requesting_user_id'] = $current_user->id;
-        $input['organization_id'] = $current_user->organization_id;
-        $input['beneficiary_id'] = $beneficiary_member->beneficiary_id;
+        if ($submissionRequest->status == 'not-submitted') {
+            $input = $request->all();
+            $current_user = auth()->user();
+            $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+            
+            $input['type'] = 'intervention';
+            $input['status'] = 'not-submitted';
+            $input['requesting_user_id'] = $current_user->id;
+            $input['organization_id'] = $current_user->organization_id;
+            $input['beneficiary_id'] = $beneficiary_member->beneficiary_id;
 
-        $submissionRequest->fill($input);
-        $submissionRequest->save();
-        
-        SubmissionRequestUpdated::dispatch($submissionRequest);
-        return redirect(route('tf-bi-portal.submissionRequests.show', $submissionRequest->id))->with('success', 'Submission Request updated successfully.')->with('submissionRequest', $submissionRequest);
+            $submissionRequest->fill($input);
+            $submissionRequest->save();
+            
+            SubmissionRequestUpdated::dispatch($submissionRequest);
+            return redirect(route('tf-bi-portal.submissionRequests.show', $submissionRequest->id))->with('success', 'Submission Request updated successfully.')->with('submissionRequest', $submissionRequest);
+        }
+        return redirect(route('tf-bi-submission.submissionRequests.index'));
     }
 
     /**
