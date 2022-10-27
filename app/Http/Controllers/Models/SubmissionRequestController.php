@@ -169,7 +169,78 @@ class SubmissionRequestController extends BaseController
 
     /* implement processing success */
     public function processSubmissionRequestToTFPortal(Request $request) {
-        return redirect()->back()->withErrors(["The request submission must contain all required Attachment(s).", "Fund requested must be equal to the Allocated amount"]);
+        $input = $request->all();
+        $submissionRequest = SubmissionRequest::find($input['submission_request_id']);
+        $beneficiary = $submissionRequest->beneficiary;
+        $errors_array = array();    /* errors flag */
+        $years = array();   /*intervention years*/
+
+        if (empty($submissionRequest)) {
+            return redirect(route('tf-bi-portal.submissionRequests.index'));
+        }
+        
+        //intervention years merge
+        if ($submissionRequest->intervention_year1 != null) {
+            array_push($years, $submissionRequest->intervention_year1);
+        }
+        if ($submissionRequest->intervention_year2 != null) {
+            array_push($years, $submissionRequest->intervention_year2);
+        }
+        if ($submissionRequest->intervention_year3 != null) {
+            array_push($years, $submissionRequest->intervention_year3);
+        }
+        if ($submissionRequest->intervention_year4 != null) {
+            array_push($years, $submissionRequest->intervention_year4);
+        }
+
+        //get total fund available 
+        $tETFundServer = new TETFundServer();   /* server class constructor */
+        $fund_availability = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, array_unique($years));
+
+        //error for requested fund mismached to allocated fund
+        if (isset($fund_availability) && $fund_availability->total_fund != $submissionRequest->amount_requested) {
+            array_push($errors_array, "Fund requested must be equal to the Allocated amount.");
+        }
+
+        //error for incomplete attachments
+        if ($submissionRequest->get_all_attachements_count_aside_additional($submissionRequest->id, 'Additional Attachment') < $input['checklist_items_count']) {
+            array_push($errors_array, "The request submission must contain all required Attachment(s).");
+        }
+
+        //checking errors status
+        if (count($errors_array) > 0) {
+            return redirect()->back()->withErrors($errors_array);
+        }
+        
+        //processing submission to tetfund server
+        $tETFundServer = new TETFundServer();   /* server class constructor */
+        $tf_beneficiary_id = $beneficiary->tf_iterum_portal_key_id;
+        $pay_load = $submissionRequest->toArray();
+        $pay_load['tf_beneficiary_id'] = $tf_beneficiary_id;
+        $pay_load['_method'] = 'POST';
+        $pay_load['is_aip_request'] = true;
+        $pay_load['requested_tranche'] = 'AIP';
+        $pay_load['title'] = 'funding AIP request';
+
+        $final_submission_to_tetfund = $tETFundServer->processSubmissionRequest($pay_load, $tf_beneficiary_id);
+
+        if (isset($final_submission_to_tetfund->data) && $final_submission_to_tetfund->data != null) {
+            $response = $final_submission_to_tetfund->data;
+
+            //update submission request record status
+            $submissionRequest->status = 'in-progress';
+            $submissionRequest->tf_iterum_portal_key_id = $response->id;
+            $submissionRequest->tf_iterum_portal_request_status = $response->request_status;
+            $submissionRequest->tf_iterum_portal_response_meta_data = json_encode($response);
+            $submissionRequest->tf_iterum_portal_response_at = date('Y-m-d');
+            $submissionRequest->save();
+
+            $success_message = "This Request Has Now Been Successfully Submitted To TETFund!!";
+            return redirect()->back()->with('success', $success_message);
+        }
+
+        return redirect()->back()->withErrors(['Oops!!!, An unknown error was encountered while processing final submistion.']);
+
     }
 
     /**

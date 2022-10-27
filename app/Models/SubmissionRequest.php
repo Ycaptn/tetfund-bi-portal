@@ -112,7 +112,7 @@ class SubmissionRequest extends Model
         return $this->hasOne(\App\Models\Beneficiary::class, 'id', 'beneficiary_id');
     }
 
-    public static function get_specific_attachement($submission_request_id, $item_label){
+    public static function get_specific_attachement($submission_request_id, $item_label) {
         $submission_request = SubmissionRequest::find($submission_request_id);
         if ($submission_request != null) {
             $attachements = $submission_request->get_attachments();
@@ -126,6 +126,33 @@ class SubmissionRequest extends Model
             }
         }
         return null;
+    }
+
+    public static function get_all_attachements($submission_request_id) {
+        $submission_request = SubmissionRequest::find($submission_request_id);
+        if ($submission_request != null) {
+            $attachements = $submission_request->get_attachments();
+            if ($attachements != null) {
+                return $attachements;
+            }
+        }
+        return null;
+    }
+
+    public static function get_all_attachements_count_aside_additional($submission_request_id, $key_to_exclude) {
+        $submission_request = SubmissionRequest::find($submission_request_id);
+        $counter = 0;
+        if ($submission_request != null) {
+            $attachements = $submission_request->get_attachments();
+            if ($attachements != null) {
+                foreach($attachements as $attach) {
+                    if (str_contains($attach->label, $key_to_exclude) == false) {
+                        $counter += 1;
+                    }
+                }
+            }
+        }
+        return $counter;
     }
 
 }

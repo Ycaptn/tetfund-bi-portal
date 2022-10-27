@@ -69,13 +69,15 @@ Submission Request
         <i class="fa fa-eye"></i> New
     </a>&nbsp;
 
-    <a data-toggle="tooltip" 
-        title="Edit" 
-        data-val='{{$submissionRequest->id}}' 
-        href="{{route('tf-bi-portal.submissionRequests.edit', $submissionRequest->id)}}" 
-        class="btn btn-sm btn-primary btn-edit-mdl-submissionRequest-modal" href="#">
-        <i class="fa fa-pencil-square-o"></i> Edit
-    </a>
+    @if($submissionRequest->status == 'not-submitted')
+        <a data-toggle="tooltip" 
+            title="Edit" 
+            data-val='{{$submissionRequest->id}}' 
+            href="{{route('tf-bi-portal.submissionRequests.edit', $submissionRequest->id)}}" 
+            class="btn btn-sm btn-primary btn-edit-mdl-submissionRequest-modal" href="#">
+            <i class="fa fa-pencil-square-o"></i> Edit
+        </a>
+    @endif
 
     {{-- @if (Auth()->user()->hasAnyRole(['','admin']))
         @include('tf-bi-portal::pages.submission_requests.bulk-upload-modal')
@@ -89,33 +91,53 @@ Submission Request
         <div class="card-body">
 
             @include('tf-bi-portal::pages.submission_requests.modal')
-            <div class="row alert alert-warning">
-                <div class="col-md-9">
-                    <i class="icon fa fa-warning"></i>
-                    <strong>PRE-SUBMISSION NOTICE:</strong> 
-                    <ul>
-                        @if (true)
+            @if($submissionRequest->status == 'not-submitted')
+                <div class="row container alert alert-warning">
+                    <div class="col-md-9">
+                        <i class="icon fa fa-warning"></i>
+                        <strong>PRE-SUBMISSION NOTICE:</strong> 
+                        <ul>
                             <li>This request has <strong>NOT</strong> been submitted.</li>
-                        @endif
 
-                        @if (true)
-                            <li>Please attach the <strong>required documents</strong> before submitting your request.</li>
-                        @endif 
+                            @if ($submissionRequest->get_all_attachements_count_aside_additional($submissionRequest->id, 'Additional Attachment') < count($checklist_items)) 
+                                <li>Please attach the <strong>required documents</strong> before submitting your request.</li>
+                            @endif 
 
-                        @if (isset($fund_available) && $fund_available != $submissionRequest->amount_requested)
-                            <li>Fund requested must be equal to the <strong>Allocated amount</strong>.</li>
-                        @endif
-                    </ul>
+                            @if (isset($fund_available) && $fund_available != $submissionRequest->amount_requested)
+                                <li>Fund requested must be equal to the <strong>Allocated amount</strong>.</li>
+                            @endif
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <form method="POST" action="{{ route('tf-bi-portal.submissionRequests.processSubmissionRequestToTFPortal', ['id'=>$submissionRequest->id]) }}">
+                            {{ csrf_field() }}
+                            <input type="hidden" name="submission_request_id" value="{{ $submissionRequest->id }}">
+                            <input type="hidden" name="checklist_items_count" value="{{ count($checklist_items) }}">
+                            <button type="submit" class="btn btn-sm btn-danger pull-right">  
+                                Submit this Request 
+                            </button>                        
+                        </form>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <form method="POST" action="{{ route('tf-bi-portal.submissionRequests.processSubmissionRequestToTFPortal', ['id'=>$submissionRequest->id]) }}">
-                        {{ csrf_field() }}
-                        <button type="submit" class="btn btn-sm btn-danger pull-right">  
-                            Submit this Request 
-                        </button>                        
-                    </form>
+            @else
+                <div class="row container alert alert-success">
+                    <div class="col-md-9">
+                        <i class="icon fa fa-success"></i>
+                        <strong>SUBMISSION COMPLETED:</strong> 
+                        <ul>
+                            <li>This request has been <strong>successfully submitted!</strong></li>
+                            <li>The submission was completed on <strong>
+                                {{ \Carbon\Carbon::parse($submissionRequest->tf_iterum_portal_response_at)->format('l jS F Y') }}
+                            .</strong></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <span type="button" class="text-success pull-right" disabled="disabled">  
+                            Request Submitted 
+                        </span>
+                    </div>
                 </div>
-            </div>            
+            @endif           
             <div class="row col-sm-12">
                 {{-- details --}}
                 @include('tf-bi-portal::pages.submission_requests.partials.submission_details')
