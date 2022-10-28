@@ -295,6 +295,7 @@ class SubmissionRequestController extends BaseController
         return view('pages.submission_requests.show')
             ->with('intervention', $intervention_types_server_response)
             ->with('submissionRequest', $submissionRequest)
+            ->with('years', $years)
             ->with('checklist_items', $checklist_items)
             ->with('fund_available', optional($fund_availability)->total_fund)
             ->with('beneficiary', $beneficiary);

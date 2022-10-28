@@ -37,13 +37,28 @@ class DashboardController extends BaseController
     public function displayASTDNominationsDashboard(Organization $org, Request $request){ 
     }
 
-    public function displayFundAvailabilityDashboard(Organization $org, Request $request){
+    public function displayFundAvailabilityDashboard(Organization $org, Request $request) {
 
         $current_user = Auth()->user();
+        $beneficiary_member = \App\Models\BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+        $bi_beneficiary = $beneficiary_member->beneficiary;
+        $tf_beneficiary_id = $bi_beneficiary->tf_iterum_portal_key_id;
+
+        $selected_year = date('Y');
+        if (isset($request->year) &&  $request->year!=null && is_numeric( $request->year)) {
+            $selected_year = $request->year;
+        }
+
+        //Get the funding data for the selected year.
+        $tETFundServer = new TETFundServer();   /* server class constructor */
+        $funding = $tETFundServer->getFundAvailabilityData($tf_beneficiary_id, null, [$selected_year]);
 
         return view('pages.fund_availability.index')
-                    ->with('organization', $org)
-                    ->with('current_user', $current_user);
+                ->with('organization', $org)
+                ->with("funding", (array) $funding)
+                ->with("selected_year", $selected_year) 
+                ->with("beneficiary", $bi_beneficiary)
+                ->with('current_user', $current_user);
     }
 
     public function displayDeskOfficerAdminDashboard(Organization $org, Request $request){
