@@ -36,12 +36,18 @@ trait BeneficiaryUserTrait {
         $zUser->last_name = $pay_load_data['last_name'];
         $zUser->organization_id = $pay_load_data['organization_id'];
         $zUser->password = bcrypt($pay_load_data['password']);
-        $zUser->syncRoles(['bi-desk-officer']);
+        if (isset($pay_load_data['user_roles_arr']) && count($pay_load_data['user_roles_arr']) > 0) {
+            $zUser->syncRoles($pay_load_data['user_roles_arr']);
+            $zUser->gender = $pay_load_data['gender'];
+        } else {
+            $zUser->syncRoles(['bi-desk-officer']);
+        }
         $zUser->save();
         if (isset($zUser->id) && $zUser->id != null) {
             $response_arr = [
                 'organization_id'=>$pay_load_data['organization_id'],
                 'beneficiary_user_id'=>$zUser->id,
+                'beneficiary_user_email'=>$zUser->email,
                 'beneficiary_id'=>$pay_load_data['beneficiary_bi_id'],
                 'beneficiary_tetfund_iterum_id'=>$pay_load_data['beneficiary_tetfund_iterum_id']
             ];

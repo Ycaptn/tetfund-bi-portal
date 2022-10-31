@@ -20,8 +20,10 @@ $orgRoutes = function() {
             Route::name('tf-bi-portal-api.')->prefix('tf-bi-portal-api')->group(function(){
                 Route::resource('beneficiaries', \App\Http\Controllers\API\BeneficiaryAPIController::class);
                 Route::get('synchronize_beneficiary_list', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'synchronize_beneficiary_list'])->name('synchronize_beneficiary_list');
+                Route::post('submission_requests/request_actions/{id}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'request_actions'])->name('submission_requests.request_actions');
 
                 
+                Route::resource('nomination_requests', \App\Http\Controllers\API\NominationRequestAPIController::class);
                 Route::resource('a_s_t_d_nominations', \App\Http\Controllers\API\ASTDNominationAPIController::class);
                 //Route::resource('t_p_nominations', \TETFund\ASTD\Controllers\API\TPNominationAPIController::class);
                 //Route::resource('c_a_nominations', \TETFund\ASTD\Controllers\API\CANominationAPIController::class);

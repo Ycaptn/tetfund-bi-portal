@@ -38,6 +38,7 @@ $orgRoutes = function() {
                 Route::get('/dict', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayDirectorICTAdminDashboard'])->name('dict');
                 Route::get('/dworks', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayDirectorPIWorksAdminDashboard'])->name('dworks');
 
+                Route::resource('nomination_requests', \App\Http\Controllers\Models\NominationRequestController::class);
                 Route::resource('a_s_t_d_nominations', \App\Http\Controllers\Models\ASTDNominationController::class);
 
                 Route::resource('beneficiaries', \App\Http\Controllers\Models\BeneficiaryController::class);

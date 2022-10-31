@@ -148,6 +148,16 @@
 
 			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi','bi-staff']))
 			<li>
+				<a href="{{ route('tf-bi-portal.nomination_requests.index') }}" class="">
+					<div class="parent-icon"><i class='bx bx-paper-plane'></i>
+					</div>
+					<div class="menu-title">Nomination Request</div>
+				</a>
+			</li>
+			@endif
+
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi','bi-staff']))
+			<li>
 				<a href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}" class="">
 					<div class="parent-icon"><i class='bx bx-paper-plane'></i>
 					</div>

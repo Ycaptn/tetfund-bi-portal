@@ -25,7 +25,7 @@
         <div class="col-lg-12">
             <div class="input-group">
                 <select name="tf_iterum_intervention_line_key_id" id="intervention_line" class="form-select">
-                    <option value="">Select an Intervention Line</option>sssss   
+                    <option value="">Select an Intervention Line</option>   
                 </select>
                 <span class="input-group-text"><span class="fa fa-archive"></span></span>
             </div>
