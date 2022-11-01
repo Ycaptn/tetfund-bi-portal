@@ -96,13 +96,10 @@ class NominationRequestController extends BaseController
         }
 
         $bi_beneficiary =  $nominationRequest->beneficiary;
-        $nominationRequest_user = $nominationRequest->user;
 
         return view('pages.nomination_requests.show')
             ->with('nominationRequest', $nominationRequest)
-            ->with('beneficiary', $bi_beneficiary)
-            ->with('nominationRequest_user', $nominationRequest_user)
-            ;
+            ->with('beneficiary', $bi_beneficiary);
     }
 
     /**

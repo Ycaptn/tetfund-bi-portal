@@ -2,6 +2,17 @@
 
 namespace App\Http\Controllers\Models;
 
+use App\Models\ASTDNomination;
+
+use App\Events\ASTDNominationCreated;
+use App\Events\ASTDNominationUpdated;
+use App\Events\ASTDNominationDeleted;
+
+use App\Http\Requests\CreateASTDNominationRequest;
+use App\Http\Requests\UpdateASTDNominationRequest;
+
+use App\DataTables\ASTDNominationDataTable;
+
 use Hasob\FoundationCore\Controllers\BaseController;
 use Hasob\FoundationCore\Models\Organization;
 
@@ -9,7 +20,6 @@ use Flash;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Managers\TETFundServer;
 
 
 class ASTDNominationController extends BaseController
@@ -20,33 +30,38 @@ class ASTDNominationController extends BaseController
      * @param ASTDNominationDataTable $aSTDNominationDataTable
      * @return Response
      */
-
-    public function index(Organization $org, Request $request) {
+    public function index(Organization $org, ASTDNominationDataTable $aSTDNominationDataTable)
+    {
         $current_user = Auth()->user();
 
-        $pay_load = array();
-        $pay_load['api_detail_page_url'] = url("tf-bi-portal/a_s_t_d_nominations/");
-        $pay_load['_method'] = 'GET';
-        if (isset($request->st)) {
-            $pay_load['st'] = $request->st;
-        }
-        if (isset($request->pg)) {
-            $pay_load['pg'] = $request->pg;
+        $cdv_a_s_t_d_nominations = new \Hasob\FoundationCore\View\Components\CardDataView(ASTDNomination::class, "tetfund-astd-module::pages.a_s_t_d_nominations.card_view_item");
+        $cdv_a_s_t_d_nominations->setDataQuery(['organization_id'=>$org->id, 'type_of_nomination'=>'ASTD'])
+                        //->addDataGroup('label','field','value')
+                        //->addDataOrder('id','DESC')
+                        ->setSearchFields(['first_name','last_name'])
+                        ->addDataOrder('created_at','DESC')
+                        ->enableSearch(true)
+                        ->enablePagination(true)
+                        ->setPaginationLimit(20)
+                        ->setSearchPlaceholder('Search ASTDNomination By First or Last Name');
+
+        if (request()->expectsJson()){
+            return $cdv_a_s_t_d_nominations->render();
         }
 
-        /*class constructor*/
-        $tETFundServer = new TETFundServer();
-        $cdv_a_s_t_d_nominations = $tETFundServer->getASTDNominationList($pay_load);
+        return view('tetfund-astd-module::pages.a_s_t_d_nominations.card_view_index')
+                    ->with('current_user', $current_user)
+                    ->with('months_list', BaseController::monthsList())
+                    ->with('states_list', BaseController::statesList())
+                    ->with('cdv_a_s_t_d_nominations', $cdv_a_s_t_d_nominations);
 
-        if (isset($request->json) && $request->json == true) {
-            return $cdv_a_s_t_d_nominations;
-        }
-        return view('tf-bi-portal::pages.a_s_t_d_nominations.card_view_index')
-            ->with('organization', $org)
-            ->with('current_user', $current_user)
-            ->with('months_list', BaseController::monthsList())
-            ->with('states_list', BaseController::statesList())
-            ->with('cdv_data_response', $cdv_a_s_t_d_nominations);
+        /*
+        return $aSTDNominationDataTable->render('tetfund-astd-module::pages.a_s_t_d_nominations.index',[
+            'current_user'=>$current_user,
+            'months_list'=>BaseController::monthsList(),
+            'states_list'=>BaseController::statesList()
+        ]);
+        */
     }
 
     /**
@@ -77,7 +92,7 @@ class ASTDNominationController extends BaseController
         //Flash::success('A S T D Nomination saved successfully.');
 
         ASTDNominationCreated::dispatch($aSTDNomination);
-        return redirect(route('tf-bi-portal.a_s_t_d_nominations.index'));
+        return redirect(route('tetfund-astd.aSTDNominations.index'));
     }
 
     /**
@@ -87,18 +102,18 @@ class ASTDNominationController extends BaseController
      *
      * @return Response
      */
-    public function show(Organization $org, $id) {
-        $pay_load = ['id' => $id, '_method' => 'GET'];
-
-        $tETFundServer = new TETFundServer();   /*class constructor*/
-        $aSTDNomination = $tETFundServer->get_row_records_from_server("tetfund-astd-api/a_s_t_d_nominations/$id", $pay_load);
+    public function show(Organization $org, $id)
+    {
+        /** @var ASTDNomination $aSTDNomination */
+        $aSTDNomination = ASTDNomination::find($id);
 
         if (empty($aSTDNomination)) {
             //Flash::error('A S T D Nomination not found');
-            return redirect(route('tf-bi-portal.a_s_t_d_nominations.index'));
+
+            return redirect(route('tetfund-astd.aSTDNominations.index'));
         }
 
-        return view('tf-bi-portal::pages.a_s_t_d_nominations.show')->with('aSTDNomination', $aSTDNomination);
+        return view('tetfund-astd-module::pages.a_s_t_d_nominations.show')->with('aSTDNomination', $aSTDNomination);
     }
 
     /**
@@ -116,7 +131,7 @@ class ASTDNominationController extends BaseController
         if (empty($aSTDNomination)) {
             //Flash::error('A S T D Nomination not found');
 
-            return redirect(route('tf-bi-portal.a_s_t_d_nominations.index'));
+            return redirect(route('tetfund-astd.aSTDNominations.index'));
         }
 
         return view('tetfund-astd-module::pages.a_s_t_d_nominations.edit')->with('aSTDNomination', $aSTDNomination);
@@ -138,7 +153,7 @@ class ASTDNominationController extends BaseController
         if (empty($aSTDNomination)) {
             //Flash::error('A S T D Nomination not found');
 
-            return redirect(route('tf-bi-portal.a_s_t_d_nominations.index'));
+            return redirect(route('tetfund-astd.aSTDNominations.index'));
         }
 
         $aSTDNomination->fill($request->all());
@@ -147,7 +162,7 @@ class ASTDNominationController extends BaseController
         //Flash::success('A S T D Nomination updated successfully.');
         
         ASTDNominationUpdated::dispatch($aSTDNomination);
-        return redirect(route('tf-bi-portal.a_s_t_d_nominations.index'));
+        return redirect(route('tetfund-astd.aSTDNominations.index'));
     }
 
     /**
@@ -167,14 +182,14 @@ class ASTDNominationController extends BaseController
         if (empty($aSTDNomination)) {
             //Flash::error('A S T D Nomination not found');
 
-            return redirect(route('tf-bi-portal.a_s_t_d_nominations.index'));
+            return redirect(route('tetfund-astd.aSTDNominations.index'));
         }
 
         $aSTDNomination->delete();
 
         //Flash::success('A S T D Nomination deleted successfully.');
         ASTDNominationDeleted::dispatch($aSTDNomination);
-        return redirect(route('tf-bi-portal.a_s_t_d_nominations.index'));
+        return redirect(route('tetfund-astd.aSTDNominations.index'));
     }
 
         

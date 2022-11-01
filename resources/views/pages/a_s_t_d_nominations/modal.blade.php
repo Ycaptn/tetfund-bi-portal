@@ -61,7 +61,7 @@ $(document).ready(function() {
     $('.offline-a_s_t_d_nominations').hide();
 
     //Show Modal for New Entry
-    $(document).on('click', ".btn-new-mdl-aSTDNomination-modal", function(e) {
+    $(document).on('click', ".{{ $nomination_type_str }}-nomination-form", function(e) {
         $('#div-aSTDNomination-modal-error').hide();
         $('#frm-aSTDNomination-modal').trigger("reset");
         $('#txt-aSTDNomination-primary-id').val(0);
@@ -72,7 +72,12 @@ $(document).ready(function() {
             if (response.data && response.data != null) {
                 let html_options = "<option value=''>-- None selected --</option>";
                 $.each(response.data, function( index, value ) {
-                    html_options += "<option value='" + value.tf_iterum_portal_key_id + "'>" + value.full_name + ' (' + value.short_name + ')' + "</option>";
+                    /*determining user beneficiary selected*/
+                    if (value.id == '{{ $nominationRequest->beneficiary_id}}') {
+                        html_options += "<option selected='selected' value='" + value.id + "'>" + value.full_name + ' (' + value.short_name + ')' + "</option>";
+                    } else {
+                        html_options += "<option value='" + value.id + "'>" + value.full_name + ' (' + value.short_name + ')' + "</option>";
+                        }
                 });
                 $('#beneficiary_institution_id_select').html(html_options);
             }
@@ -242,11 +247,10 @@ $(document).ready(function() {
                     let html_options = "<option value=''>-- None selected --</option>";
                     $.each(response.data, function( index, value ) {
                         /*determining selected*/
-                        if (initially_selected_beneficiary_institution_id == value.tf_iterum_portal_key_id) {
-                            html_options += "<option  value='" + value.tf_iterum_portal_key_id + "'>" + value.name + ' (' + value.country_code + ')' + "</option>";
-                            html_options += "<option selected='selected' value='" + value.tf_iterum_portal_key_id + "'>" + value.full_name + ' (' + value.short_name + ')' + "</option>";
+                        if (initially_selected_beneficiary_institution_id == value.id) {
+                            html_options += "<option selected='selected' value='" + value.id + "'>" + value.full_name + ' (' + value.short_name + ')' + "</option>";
                         } else {
-                            html_options += "<option value='" + value.tf_iterum_portal_key_id + "'>" + value.full_name + ' (' + value.short_name + ')' + "</option>";
+                            html_options += "<option value='" + value.id + "'>" + value.full_name + ' (' + value.short_name + ')' + "</option>";
                         }
                     });
                     $('#beneficiary_institution_id_select').html(html_options);
@@ -387,12 +391,17 @@ $(document).ready(function() {
         }
         
         formData.append('_method', actionType);
-        // formData.append('', $('#').val());
+        @if (isset($nominationRequest->user->organization_id) && $nominationRequest->user->organization_id!=null)
+            formData.append('organization_id', '{{ $nominationRequest->user->organization_id }}');
+            formData.append('user_id', '{{ $nominationRequest->user->id }}');
+            formData.append('nomination_request_id', '{{ $nominationRequest->id }}');
+        @endif
+
         if ($('#email').length){	formData.append('email',$('#email').val());	}
 		if ($('#telephone').length){	formData.append('telephone',$('#telephone').val());	}
 		if ($('#beneficiary_institution_id_select').length){	formData.append('beneficiary_institution_id',$('#beneficiary_institution_id_select').val());	}
-        if ($('#institution_id_select').length){   formData.append('institution_id',$('#institution_id_select').val());   }
-        if ($('#country_id_select').length){   formData.append('country_id',$('#country_id_select').val());   }
+        if ($('#institution_id_select').length){   formData.append('tf_iterum_portal_institution_id',$('#institution_id_select').val());   }
+        if ($('#country_id_select').length){   formData.append('tf_iterum_portal_country_id',$('#country_id_select').val());   }
         if ($('#gender').length){   formData.append('gender',$('#gender').val());   }
 		if ($('#name_title').length){	formData.append('name_title',$('#name_title').val());	}
 		if ($('#first_name').length){	formData.append('first_name',$('#first_name').val());	}

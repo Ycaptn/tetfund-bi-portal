@@ -103,13 +103,17 @@
                     </span>
                 </div>
                 <div class="col-sm-12">
-                    <a data-toggle="tooltip" 
-                        title="completed and submit {{ $nomination_type_str }} nomination form" 
-                        data-val='{{$nominationRequest->id}}' 
-                        class="btn btn-sm btn-danger pt-2 pull-right" href="#">
-                        <i class="fa fa-pencil-square-o"></i> {{ $nomination_type_str }} Nomination Form 
-                    </a>
+                    <button title="completed and submit {{ $nomination_type_str }} nomination form" 
+                            class="btn btn-sm btn-danger pt-2 pull-right {{ $nomination_type_str }}-nomination-form">
+                            <i class="fa fa-pencil-square-o"></i> {{ $nomination_type_str }} Nomination Form 
+                    </button>
                 </div>
             </div>
         </div>
+
+        @if($nominationRequest->type == 'astd')
+            @include('tf-bi-portal::pages.a_s_t_d_nominations.modal')
+        @endif
+
+
     @endif

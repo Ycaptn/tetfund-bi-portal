@@ -39,7 +39,7 @@ class NominationRequest extends Model
 
     use HasFactory;
 
-    public $table = 'tf_nomination_requests';
+    public $table = 'tf_bi_nomination_requests';
     
 
     protected $dates = ['deleted_at'];

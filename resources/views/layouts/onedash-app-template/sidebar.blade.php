@@ -125,7 +125,27 @@
 					<div class="menu-title">Dashboard</div>
 				</a>
 			</li>
+			
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi','bi-staff']))
+			<li>
+				<a href="{{ route('tf-bi-portal.nomination_requests.index') }}" class="">
+					<div class="parent-icon"><i class='bx bx-paper-plane'></i>
+					</div>
+					<div class="menu-title">Nomination Request</div>
+				</a>
+			</li>
+			@endif
 
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
+			<li>
+				<a href="{{ route('tf-bi-portal.fund-availability') }}" class="">
+					<div class="parent-icon"><i class='bx bx-wallet'></i>
+					</div>
+					<div class="menu-title">Fund Availability Status</div>
+				</a>
+			</li>
+			@endif
+			
 			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
 			<li>
 				<a href="{{ route('tf-bi-portal.submissionRequests.index') }}" class="">
@@ -142,36 +162,6 @@
 					<div class="parent-icon"><i class='bx bx-location-plus'></i>
 					</div>
 					<div class="menu-title">Monitoring</div>
-				</a>
-			</li>
-			@endif
-
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi','bi-staff']))
-			<li>
-				<a href="{{ route('tf-bi-portal.nomination_requests.index') }}" class="">
-					<div class="parent-icon"><i class='bx bx-paper-plane'></i>
-					</div>
-					<div class="menu-title">Nomination Request</div>
-				</a>
-			</li>
-			@endif
-
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi','bi-staff']))
-			<li>
-				<a href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}" class="">
-					<div class="parent-icon"><i class='bx bx-paper-plane'></i>
-					</div>
-					<div class="menu-title">ASTD Nominations</div>
-				</a>
-			</li>
-			@endif
-
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
-			<li>
-				<a href="{{ route('tf-bi-portal.fund-availability') }}" class="">
-					<div class="parent-icon"><i class='bx bx-wallet'></i>
-					</div>
-					<div class="menu-title">Fund Availability Status</div>
 				</a>
 			</li>
 			@endif

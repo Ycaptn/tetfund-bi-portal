@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTfNominationRequestsTable extends Migration
+class CreateTfBiNominationRequestsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateTfNominationRequestsTable extends Migration
      */
     public function up()
     {
-        Schema::create('tf_nomination_requests', function (Blueprint $table) {
+        Schema::create('tf_bi_nomination_requests', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('organization_id')->references('id')->on('fc_organizations');
             $table->foreignUuid('user_id')->references('id')->on('fc_users');
@@ -33,6 +33,6 @@ class CreateTfNominationRequestsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tf_nomination_requests');
+        Schema::dropIfExists('tf_bi_nomination_requests');
     }
 }

@@ -2,7 +2,7 @@
 <div id="div-email" class="form-group mb-3 col-md-6">
     <label for="email" class="col-sm-11 col-form-label">Email:</label>
     <div class="col-sm-12">
-        {!! Form::text('email', null, ['id'=>'email', 'class' => 'form-control']) !!}
+        {!! Form::text('email', $nominationRequest->user->email ?? '', ['id'=>'email', 'class' => 'form-control', 'disabled'=>'disabled']) !!}
     </div>
 </div>
 
@@ -10,7 +10,7 @@
 <div id="div-telephone" class="form-group mb-3 col-md-6">
     <label for="telephone" class="col-sm-11 col-form-label">Telephone:</label>
     <div class="col-sm-12">
-        {!! Form::text('telephone', null, ['id'=>'telephone', 'class' => 'form-control']) !!}
+        {!! Form::text('telephone', $nominationRequest->user->telephone ?? '', ['id'=>'telephone', 'class' => 'form-control', 'disabled'=>'disabled']) !!}
     </div>
 </div>
 
@@ -18,7 +18,7 @@
 <div id="div-beneficiary_institution_id" class="form-group mb-3">
     <label for="beneficiary_institution_id" class="col-sm-11 col-form-label">Beneficiary Institution:</label>
     <div class="col-sm-12">
-        <select id="beneficiary_institution_id_select" class="form-control">
+        <select id="beneficiary_institution_id_select" class="form-select" disabled='disabled'>
             <option value="">-- &nbsp; -- &nbsp; --</option>
         </select>
     </div>
@@ -28,7 +28,7 @@
 <div id="div-institution_id" class="form-group mb-3 col-md-6">
     <label for="institution_id" class="col-sm-11 col-form-label">Institution:</label>
     <div class="col-sm-12">
-        <select id="institution_id_select" class="form-control">
+        <select id="institution_id_select" class="form-select">
             <option value="">-- &nbsp; -- &nbsp; --</option>
         </select>
     </div>
@@ -38,7 +38,7 @@
 <div id="div-country_id" class="form-group mb-3 col-md-6">
     <label for="country_id" class="col-sm-11 col-form-label">Country:</label>
     <div class="col-sm-12">
-        <select id="country_id_select" class="form-control">
+        <select id="country_id_select" class="form-select">
             <option value="">-- &nbsp; -- &nbsp; --</option>
         </select>
     </div>
@@ -48,11 +48,22 @@
 <!-- Gender Field -->
 <div id="div-gender" class="form-group mb-3 col-md-4">
     <label for="gender" class="col-sm-11 col-form-label">Gender:</label>
+     @php
+        $gender = strtolower($nominationRequest->user->gender);
+        $m = $f = $n = '';
+        if($gender == 'male') {
+            $m = "selected='selected'";
+        } elseif ($gender == 'female') {
+            $f = "selected='selected'";
+        } else {
+            $n = "selected='selected'";
+        }
+    @endphp
     <div class="col-sm-12">
-        <select class="form-control" id="gender" name="gender">
-            <option value="">-- None selected --</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
+        <select class="form-select" id="gender" name="gender" disabled='disabled'>
+            <option value="" {{ $n }}>-- None selected --</option>
+            <option value="Male" {{ $m }}>Male</option>
+            <option value="Female" {{ $f }}>Female</option>
         </select>
     </div>
 </div>
@@ -77,7 +88,7 @@
 <div id="div-first_name" class="form-group mb-3 col-md-4">
     <label for="first_name" class="col-sm-11 col-form-label">First Name:</label>
     <div class="col-sm-12">
-        {!! Form::text('first_name', null, ['id'=>'first_name', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+        {!! Form::text('first_name', $nominationRequest->user->first_name ?? '', ['id'=>'first_name', 'class' => 'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
     </div>
 </div>
 
@@ -85,7 +96,7 @@
 <div id="div-middle_name" class="form-group mb-3 col-md-4">
     <label for="middle_name" class="col-sm-11 col-form-label">Middle Name:</label>
     <div class="col-sm-12">
-        {!! Form::text('middle_name', null, ['id'=>'middle_name', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
+        {!! Form::text('middle_name', $nominationRequest->user->middle_name ?? '', ['id'=>'middle_name', 'class' => 'form-control', 'placeholder'=>'optional field', 'disabled'=>'disabled']) !!}
     </div>
 </div>
 
@@ -93,7 +104,7 @@
 <div id="div-last_name" class="form-group mb-3 col-md-4">
     <label for="last_name" class="col-sm-11 col-form-label">Last Name:</label>
     <div class="col-sm-12">
-        {!! Form::text('last_name', null, ['id'=>'last_name', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+        {!! Form::text('last_name', $nominationRequest->user->last_name ?? '', ['id'=>'last_name', 'class' => 'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
     </div>
 </div>
 
