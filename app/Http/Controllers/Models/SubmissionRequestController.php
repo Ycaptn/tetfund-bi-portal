@@ -292,12 +292,15 @@ class SubmissionRequestController extends BaseController
         $tETFundServer = new TETFundServer();   /* server class constructor */
         $fund_availability = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, array_unique($years));
 
+        $aSTDNominations = \App\Models\ASTDNomination::all();
+
         return view('pages.submission_requests.show')
             ->with('intervention', $intervention_types_server_response)
             ->with('submissionRequest', $submissionRequest)
             ->with('years', $years)
             ->with('checklist_items', $checklist_items)
             ->with('fund_available', optional($fund_availability)->total_fund)
+            ->with('aSTDNominations', $aSTDNominations)
             ->with('beneficiary', $beneficiary);
     }
 

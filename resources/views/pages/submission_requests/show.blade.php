@@ -132,8 +132,10 @@ Submission Request
                         </ul>
                     </div>
                     <div class="col-md-3">
-                        <span type="button" class="text-success pull-right" disabled="disabled">  
-                            Request Submitted 
+                        <span type="button" class="text-success pull-right" disabled="disabled"> 
+                            <strong>
+                                Request Submitted 
+                            </strong> 
                         </span>
                     </div>
                 </div>
@@ -168,7 +170,7 @@ Submission Request
 
                     <div id="astd_nominations" class="tabcontent">
                         <h4>ASTD NOMINATIONS</h4>
-                        
+                        @include('tf-bi-portal::pages.submission_requests.partials.submission_astd_nominations')
                     </div>
 
                     <div id="communications" class="tabcontent">

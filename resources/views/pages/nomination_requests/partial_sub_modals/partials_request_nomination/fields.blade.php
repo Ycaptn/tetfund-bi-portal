@@ -61,10 +61,10 @@
     <div class="col-sm-12 input-group">
         <select name="nomination_type" id="nomination_type" class="form-select">
         <option value="">Select type of Nomination</option> 
-            <option value="ca">CA &nbsp; (Conference)</option> 
-            <option value="tsas">TSAS &nbsp; (TETFund Scholar)</option> 
-            <option value="tp">TP &nbsp; (Teaching Practice)</option> 
-            <option value="astd">ASTD &nbsp; (Staff Training)</option> 
+            <option value="astd">Academic Staff Training and Development &nbsp; (ASTD)</option>
+            <option value="ca">Conference Attendance &nbsp; (CA)</option> 
+            <option value="tp">Teaching Practice &nbsp; (TP)</option> 
+            <option value="tsas">TETFund Scholarship for Academic Staff &nbsp; (TSAS)</option>
         </select>
         <span class="input-group-text"><span class="fa fa-archive"></span></span>
     </div>

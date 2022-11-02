@@ -11,6 +11,7 @@ use Flash;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\BeneficiaryMember;
+use \Hasob\FoundationCore\Models\User;
 
 class NominationRequestController extends BaseController
 {
@@ -50,10 +51,16 @@ class NominationRequestController extends BaseController
             return $cdv_nomination_requests->render();
         }
 
+        $all_beneficiary_users = User::join('tf_bi_beneficiary_members', 'fc_users.id', '=', 'tf_bi_beneficiary_members.beneficiary_user_id')
+            ->where('tf_bi_beneficiary_members.beneficiary_id', $beneficiary_member->beneficiary_id)
+            ->where('fc_users.id', '!=', $current_user->id)
+            ->get(['email']);
+
         return view('pages.nomination_requests.card_view_index')
                 ->with('current_user', $current_user)
                 ->with('months_list', BaseController::monthsList())
                 ->with('states_list', BaseController::statesList())
+                ->with('all_beneficiary_users', $all_beneficiary_users)
                 ->with('cdv_nomination_requests', $cdv_nomination_requests);
     }
 

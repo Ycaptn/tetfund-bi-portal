@@ -115,7 +115,7 @@ $(document).ready(function() {
     });
 
     //Show Modal for View
-    $(document).on('click', ".btn-show-mdl-aSTDNomination-modal", function(e) {
+    $(document).on('click', ".btn-show-{{$nominationRequest->type}}", function(e) {
         e.preventDefault();
         $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
 
@@ -172,15 +172,42 @@ $(document).ready(function() {
     		$('#spn_aSTDNomination_final_remarks').html(response.data.final_remarks);
     		$('#spn_aSTDNomination_total_requested_amount').html(response.data.total_requested_amount);
     		$('#spn_aSTDNomination_total_approved_amount').html(response.data.total_approved_amount);
+            $('#spn_beneficiary_institution_name').html(response.data.beneficiary.full_name);
 
+            initially_selected_institution_id= response.data.tf_iterum_portal_institution_id;
+            initially_selected_country_id = response.data.tf_iterum_portal_country_id;
+
+            /*get all institutions*/
+            $.get( "{{ route('tf-bi-portal-api.institutions.index') }}").done(function( response ) {
+                if (response.data && response.data != null) {
+                    $.each(response.data, function( index, value ) {
+                        if (initially_selected_institution_id == value.id) {
+                            $('#spn_institution_name').html(value.name);
+                        }
+                    });
+                }
+            });
+
+             /*all countries*/
+            $.get( "{{ route('tf-bi-portal-api.countries.index') }}").done(function( response ) {
+                if (response.data && response.data != null) {
+                    $.each(response.data, function( index, value ) {
+                        if (initially_selected_country_id == value.id) {
+                            $('#spn_aSTDNomination_country_name').html(value.name + ' (' + value
+                            .country_code + ')');
+                        }
+                    });
+                }
+            });
 
             $("#spinner-a_s_t_d_nominations").hide();
+            $("#div-save-mdl-aSTDNomination-modal").hide();
             $("#btn-save-mdl-aSTDNomination-modal").attr('disabled', false);
         });
     });
 
     //Show Modal for Edit
-    $(document).on('click', ".btn-edit-mdl-aSTDNomination-modal", function(e) {
+    $(document).on('click', ".btn-edit-{{$nominationRequest->type}}", function(e) {
         e.preventDefault();
         $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
 
@@ -238,8 +265,8 @@ $(document).ready(function() {
             $('#program_end_date').val(program_end_date);
 
             initially_selected_beneficiary_institution_id = response.data.beneficiary_institution_id;
-            initially_selected_institution_id= response.data.institution_id;
-            initially_selected_country_id = response.data.country_id;
+            initially_selected_institution_id= response.data.tf_iterum_portal_institution_id;
+            initially_selected_country_id = response.data.tf_iterum_portal_country_id;
 
             /*get all beneficiary institutions*/
             $.get( "{{ route('tf-bi-portal-api.beneficiaries.index') }}").done(function( response ) {
@@ -298,7 +325,7 @@ $(document).ready(function() {
     });
 
     //Delete action
-    $(document).on('click', ".btn-delete-mdl-aSTDNomination-modal", function(e) {
+    $(document).on('click', ".btn-delete-{{$nominationRequest->type}}", function(e) {
         e.preventDefault();
         $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
 
