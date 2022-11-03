@@ -84,14 +84,23 @@ $(document).ready(function() {
         }, function(isConfirm) {
             if (isConfirm) {
                 let endPointUrl = "{{ route('tf-bi-portal-api.synchronize_beneficiary_list') }}";                
+                
                 swal({
+                    title: '<div id="spinner-beneficiaries" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br> Please wait...',
+                    text: 'Synchronizing Beneficiary List ! <br><br> Do not refresh this page! ',
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    html: true
+                })
+
+                /*swal({
                     title: "Please wait...",
                     text: "Synchronizing Beneficiary List ! \n\n Do not refresh this page! ",
                     imageUrl: "{{asset('imgs/loading.gif')}}",
                     imageSize: '300x200',
                     showConfirmButton: false,
                     allowOutsideClick: false
-                });
+                });*/
                 $.ajax({
                     url:endPointUrl,
                     type: "GET",

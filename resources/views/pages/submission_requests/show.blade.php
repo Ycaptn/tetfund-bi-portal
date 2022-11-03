@@ -132,8 +132,9 @@ Submission Request
                         </ul>
                     </div>
                     <div class="col-md-3">
-                        <span type="button" class="text-success pull-right" disabled="disabled"> 
+                        <span class="text-success pull-right"> 
                             <strong>
+                                <span class="fa fa-check-square"></span>
                                 Request Submitted 
                             </strong> 
                         </span>

@@ -126,13 +126,21 @@
                 }, function(isConfirm) {
                     if (isConfirm) {
                         swal({
+                            title: '<div id="spinner-nomination-request" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br> Please wait...',
+                            text: ing_word + " Nomination Request! <br><br> Do not refresh this page! ",
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            html: true
+                        })
+
+                        /*swal({
                             title: "Please wait...",
                             text: ing_word + " Nomination Request!",
                             imageUrl: "{{asset('imgs/loading.gif')}}",
                             imageSize: '300x200',
                             showConfirmButton: false,
                             allowOutsideClick: false
-                        });
+                        });*/
                         
                         let endPointUrl = "{{ route('tf-bi-portal-api.submission_requests.request_actions', '') }}/"+itemId;                
                         let actionType = "POST";
