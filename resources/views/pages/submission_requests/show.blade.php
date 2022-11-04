@@ -154,7 +154,7 @@ Submission Request
                             </li>
                             <li class="mt-3" style="margin-right: 3px;">                            
                                 <a href="#astd_nominations?astd_nominations=astd_nominations" class="tablinks btn btn-primary btn-md shadow-none" onclick="openCity(event, 'astd_nominations')">
-                                    ASTD Nominations
+                                    Final Nominations
                                 </a>
                             </li>
                             <li class="mt-3" style="margin-right: 3px;">                                
@@ -170,7 +170,7 @@ Submission Request
                     </div>
 
                     <div id="astd_nominations" class="tabcontent">
-                        <h4>ASTD NOMINATIONS</h4>
+                        <h4>FINAL NOMINATIONS DETAILS</h4>
                         @include('tf-bi-portal::pages.submission_requests.partials.submission_astd_nominations')
                     </div>
 

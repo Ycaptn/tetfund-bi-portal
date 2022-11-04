@@ -16,6 +16,7 @@ use App\Http\Requests\API\CreateNominationRequestAPIRequest;
 use App\Http\Traits\BeneficiaryUserTrait;
 use App\Models\BeneficiaryMember;
 use App\Models\Beneficiary;
+use App\Models\SubmissionRequest;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\NominationRequestInviteNotification;
 
@@ -97,6 +98,7 @@ class NominationRequestAPIController extends BaseController
         $nominationRequest->organization_id = $current_user->organization_id;
         $nominationRequest->user_id = $invited_user->id;
         $nominationRequest->beneficiary_id =$bi_beneficiary_id;
+        $nominationRequest->bi_submission_request_id = $request->bi_submission_request_id;
         $nominationRequest->type = $request->nomination_type;
         $nominationRequest->request_date = date('Y-m-d');
         $nominationRequest->status = 'approved';
@@ -189,7 +191,19 @@ class NominationRequestAPIController extends BaseController
         } elseif ($request->actionTasked == 'defer') {
             $nominationRequest->status = 'defered';
         } elseif ($request->actionTasked == 'approve') {
+            
+            if (!isset($request->bi_submission_request_id) || $request->bi_submission_request_id == null) {
+                return BaseController::createJSONResponse("fail", "errors", ["The Bind Nomination to one Submission field is required"], 200);
+            }
+
+            $bi_submission_request = SubmissionRequest::find($request->bi_submission_request_id);
+            if (empty($bi_submission_request)) {
+                return BaseController::createJSONResponse("fail", "errors", ['The Bind Nomination to one Submission selection field is invalid'], 200);
+            }
+
+            $nominationRequest->bi_submission_request_id = $request->bi_submission_request_id;
             $nominationRequest->status = 'approved';
+
         }
 
         $nominationRequest->save();

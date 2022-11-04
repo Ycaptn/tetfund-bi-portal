@@ -253,6 +253,8 @@ $(document).ready(function() {
         if ($('#bi_staff_gender').length){ formData.append('bi_staff_gender',$('#bi_staff_gender').val()); }
 
         if ($('#nomination_type').length){ formData.append('nomination_type',$('#nomination_type').val()); }
+        
+        if ($('#bind_nomination_to_submission').length){ formData.append('bi_submission_request_id',$('#bind_nomination_to_submission').val()); }
 
         $.ajax({
             url:endPointUrl,
@@ -263,14 +265,14 @@ $(document).ready(function() {
             contentType: false,
             dataType: 'json',
             success: function(result){
-                if(result.errors){
+                if (result.errors) {
                     $('#div-nominationInvitation-modal-error').html('');
                     $('#div-nominationInvitation-modal-error').show();
                     
                     $.each(result.errors, function(key, value){
                         $('#div-nominationInvitation-modal-error').append('<li class="">'+value+'</li>');
                     });
-                }else{
+                } else {
                     $('#div-nominationInvitation-modal-error').hide();
                     window.setTimeout( function(){
 

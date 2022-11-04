@@ -49,6 +49,7 @@ class NominationRequest extends Model
     public $fillable = [
         'id',
         'user_id',
+        'bi_submission_request_id',
         'organization_id',
         'beneficiary_id',
         'type',

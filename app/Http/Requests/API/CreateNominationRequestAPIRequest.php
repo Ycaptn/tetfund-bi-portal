@@ -25,7 +25,8 @@ class CreateNominationRequestAPIRequest extends AppBaseFormRequest
     public function rules() {
         $gender_arr = ['male', 'female'];
         $nomination_type = ['ca', 'tsas', 'tp', 'astd'];
-        return [
+
+        $return_arr = [
             'organization_id' => 'required',
             'bi_staff_email' => 'required|email|max:300',
             'bi_staff_fname' => 'required|string|max:100',
@@ -34,6 +35,12 @@ class CreateNominationRequestAPIRequest extends AppBaseFormRequest
             'bi_staff_gender' => "required|string|max:50|in:". implode($gender_arr, ','),
             'nomination_type' => "required|string|max:50|in:". implode($nomination_type, ','),
         ];
+
+        if(auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi']) ){
+            $return_arr['bi_submission_request_id'] = 'required|exists:tf_bi_submission_requests,id';
+        }
+
+        return $return_arr;
     }
 
     public function attributes() {
@@ -45,6 +52,7 @@ class CreateNominationRequestAPIRequest extends AppBaseFormRequest
             'bi_telephone' => 'Staff Telephone',
             'bi_staff_gender' => 'Staff Gender',
             'nomination_type' => 'Type of Nomination',
+            'bi_submission_request_id' => 'Nomination to one Submission Binding',
         ];
     }
 

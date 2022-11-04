@@ -21,6 +21,7 @@ class CreateTfBiAstdNominationsTable extends Migration
             $table->string('email');
             $table->string('telephone');
             $table->foreignUuid('beneficiary_institution_id')->references('id')->on('tf_bi_portal_beneficiaries');
+            $table->foreignUuid('bi_submission_request_id')->references('id')->on('tf_bi_submission_requests');
             //$table->foreignUuid('institution_id')->references('id')->on('tf_astd_institutions');
             //$table->foreignUuid('country_id')->references('id')->on('tf_astd_countries');
             $table->uuid('tf_iterum_portal_institution_id')->nullable();

@@ -73,6 +73,7 @@ class SubmissionRequest extends Model
         'status',
         'requesting_user_id',
         'beneficiary_id',
+        'bi_submission_request_id',
         'tf_iterum_portal_request_status',
         'tf_iterum_intervention_line_key_id'
     ];
@@ -91,6 +92,7 @@ class SubmissionRequest extends Model
         'intervention_year2' => 'integer',
         'intervention_year3' => 'integer',
         'intervention_year4' => 'integer',
+        'bi_submission_request_id' => 'string',
         'tf_iterum_portal_request_status' => 'string',
         'tf_iterum_portal_response_meta_data' => 'string'
     ];

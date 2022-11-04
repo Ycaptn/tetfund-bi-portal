@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\BeneficiaryMember;
 use \Hasob\FoundationCore\Models\User;
+use App\Models\SubmissionRequest;
 
 class NominationRequestController extends BaseController
 {
@@ -56,11 +57,14 @@ class NominationRequestController extends BaseController
             ->where('fc_users.id', '!=', $current_user->id)
             ->get(['email']);
 
+        $bi_submission_requests = SubmissionRequest::where(['status'=>'not-submitted', 'type'=>'intervention'])->get(['id', 'title', 'intervention_year1', 'intervention_year2', 'intervention_year3', 'intervention_year4']);
+
         return view('pages.nomination_requests.card_view_index')
                 ->with('current_user', $current_user)
                 ->with('months_list', BaseController::monthsList())
                 ->with('states_list', BaseController::statesList())
                 ->with('all_beneficiary_users', $all_beneficiary_users)
+                ->with('bi_submission_requests', $bi_submission_requests)
                 ->with('cdv_nomination_requests', $cdv_nomination_requests);
     }
 
@@ -104,8 +108,11 @@ class NominationRequestController extends BaseController
 
         $bi_beneficiary =  $nominationRequest->beneficiary;
 
+        $bi_submission_requests = SubmissionRequest::where(['status'=>'not-submitted', 'type'=>'intervention'])->get(['id', 'title', 'intervention_year1', 'intervention_year2', 'intervention_year3', 'intervention_year4']);
+        
         return view('pages.nomination_requests.show')
             ->with('nominationRequest', $nominationRequest)
+            ->with('bi_submission_requests', $bi_submission_requests)
             ->with('beneficiary', $bi_beneficiary);
     }
 

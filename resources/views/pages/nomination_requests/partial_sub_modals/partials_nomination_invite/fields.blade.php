@@ -64,3 +64,51 @@
         <span class="input-group-text"><span class="fa fa-archive"></span></span>
     </div>
 </div>
+
+<div class="row col-sm-12 form-group mb-3 mt-3">
+    <hr>
+    <div class="col-sm-12 input-group">
+        <select name="bind_nomination_to_submission" id="bind_nomination_to_submission" class="form-select">
+        <option value="">-- Bind Nomination to one Submission --</option> 
+            @if (isset($bi_submission_requests) && $bi_submission_requests != null)
+                @foreach($bi_submission_requests as $biSR)
+                    
+                    @php
+                        $years = array();
+
+                        if ($biSR->intervention_year1 != null) {
+                            array_push($years, $biSR->intervention_year1);
+                        }
+
+                        if ($biSR->intervention_year2 != null) {
+                            array_push($years, $biSR->intervention_year2);
+                        }
+
+                        if ($biSR->intervention_year3 != null) {
+                            array_push($years, $biSR->intervention_year3);
+                        }
+
+                        if ($biSR->intervention_year4 != null) {
+                            array_push($years, $biSR->intervention_year4);
+                        }
+
+                        $years_str = $biSR->intervention_year1; 
+                        // merged years, unique years & sorted years
+                        if (isset($years) && count($years) > 1) {
+                            $years_detail = array_values(array_unique($years));
+                            sort($years_detail);
+                            $years_detail[count($years_detail) - 1] = ' and ' . $years_detail[count($years_detail) - 1];
+                            $years_str = implode(", ", $years_detail);
+                            $years_str = substr($years_str, 0,strrpos($years_str,",")) . $years_detail[count($years_detail) - 1];
+                        } 
+                    @endphp
+
+                    <option value="{{ $biSR->id }}">{{ ucwords($biSR->title) }} &nbsp; ({{ $years_str }})</option>
+
+                @endforeach
+            @endif
+        </select>
+        <span class="input-group-text"><span class="fa fa-check-square"></span></span>
+    </div>
+    <label class="col-sm-12 control-label text-danger" for="bind_nomination_to_submission"><i class="text-danger"><small>You should bind this Nomination to one recent existing <strong>Submission</strong></small></i></label>    
+</div>
