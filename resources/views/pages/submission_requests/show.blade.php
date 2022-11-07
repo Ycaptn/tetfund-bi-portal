@@ -109,13 +109,11 @@ Submission Request
                         </ul>
                     </div>
                     <div class="col-md-3">
-                        <form method="POST" action="{{ route('tf-bi-portal.submissionRequests.processSubmissionRequestToTFPortal', ['id'=>$submissionRequest->id]) }}">
-                            {{ csrf_field() }}
+                        <form method="POST" action="{{ route('tf-bi-portal.submissionRequests.processSubmissionRequestToTFPortal', ['id'=>$submissionRequest->id]) }}" onSubmit="onSubmitAction()" id="form_final_submission">
+                            @csrf
                             <input type="hidden" name="submission_request_id" value="{{ $submissionRequest->id }}">
                             <input type="hidden" name="checklist_items_count" value="{{ count($checklist_items) }}">
-                            <button type="submit" class="btn btn-sm btn-danger pull-right">  
-                                Submit this Request 
-                            </button>                        
+                            <input type="submit" class="btn btn-sm btn-danger pull-right" value="Submit This Request"> 
                         </form>
                     </div>
                 </div>
@@ -199,6 +197,36 @@ Submission Request
 
 @push('page_scripts')
     <script type="text/javascript">
+        function onSubmitAction() {
+            event.preventDefault();
+            swal({
+                title: "Completing This Submission Request?",
+                text: "Pls do confirm completion of this submission by chicking 'Yes submit'.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes submit",
+                cancelButtonText: "No don't submit",
+                closeOnConfirm: false,
+                closeOnCancel: true
+            }, function(isConfirm) {
+                if (isConfirm) {
+                   $("#form_final_submission").submit();
+                   swal({
+                        title: '<div id="spinner-final-submission" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br> Please wait...',
+                        text: "Verifying Requirements And Completing Submission! <br><br> Do not refresh this page! ",
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        html: true
+                    });
+                   return true;
+                } else {
+                    return false;
+                }
+            });
+        }
+
+
         function openCity(evt, cityName) {
           var i, tabcontent, tablinks;
           tabcontent = document.getElementsByClassName("tabcontent");
