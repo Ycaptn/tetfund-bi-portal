@@ -15,6 +15,7 @@ use App\Http\Requests\API\UpdateASTDNominationAPIRequest;
 
 use Hasob\FoundationCore\Traits\ApiResponder;
 use Hasob\FoundationCore\Models\Organization;
+use Hasob\FoundationCore\View\Components\CardDataView;
 
 use Hasob\FoundationCore\Controllers\BaseController as AppBaseController;
 
@@ -38,7 +39,7 @@ class ASTDNominationAPIController extends AppBaseController
     public function index(Request $request, Organization $org)
     {
         $current_user = Auth()->user();
-        $cdv_a_s_t_d_nominations = new \Hasob\FoundationCore\View\Components\CardDataView(ASTDNomination::class, "pages.a_s_t_d_nominations.card_view_item");
+        $cdv_a_s_t_d_nominations = new CardDataView(ASTDNomination::class, "pages.a_s_t_d_nominations.card_view_item");
         $cdv_a_s_t_d_nominations->setDataQuery(['organization_id'=>$org->id, 'type_of_nomination'=>'ASTD'])
                 //->addDataGroup('label','field','value')
                 //->addDataOrder('id','DESC')

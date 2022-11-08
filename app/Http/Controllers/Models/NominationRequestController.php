@@ -13,6 +13,7 @@ use Illuminate\Http\Response;
 use App\Models\BeneficiaryMember;
 use \Hasob\FoundationCore\Models\User;
 use App\Models\SubmissionRequest;
+use Hasob\FoundationCore\View\Components\CardDataView;
 
 class NominationRequestController extends BaseController
 {
@@ -26,7 +27,7 @@ class NominationRequestController extends BaseController
         $current_user = Auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
-        $cdv_nomination_requests = new \Hasob\FoundationCore\View\Components\CardDataView(NominationRequest::class, "pages.nomination_requests.card_view_item");
+        $cdv_nomination_requests = new CardDataView(NominationRequest::class, "pages.nomination_requests.card_view_item");
 
         // set query parameters array
         $setDataQuery = ['organization_id'=>$org->id, 'beneficiary_id'=>$beneficiary_member->beneficiary_id];

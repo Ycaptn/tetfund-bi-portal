@@ -200,7 +200,7 @@ Submission Request
         function onSubmitAction() {
             event.preventDefault();
             swal({
-                title: "Completing This Submission Request?",
+                title: "Validate & Process This Submission Request?",
                 text: "Pls do confirm completion of this submission by chicking 'Yes submit'.",
                 type: "warning",
                 showCancelButton: true,
@@ -214,7 +214,7 @@ Submission Request
                    $("#form_final_submission").submit();
                    swal({
                         title: '<div id="spinner-final-submission" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br> Please wait...',
-                        text: "Verifying Requirements And Completing Submission! <br><br> Do not refresh this page! ",
+                        text: "Validating Requirements And Completing Submission! <br><br> Do not refresh this page! ",
                         showConfirmButton: false,
                         allowOutsideClick: false,
                         html: true

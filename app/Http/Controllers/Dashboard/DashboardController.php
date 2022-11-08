@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Hasob\FoundationCore\Models\User;
 use Hasob\FoundationCore\Models\Department;
 use Hasob\FoundationCore\Models\Organization;
+use App\Models\BeneficiaryMember;
 
 use Hasob\FoundationCore\Controllers\BaseController;
 use App\Managers\TETFundServer;
@@ -40,7 +41,7 @@ class DashboardController extends BaseController
     public function displayFundAvailabilityDashboard(Organization $org, Request $request) {
 
         $current_user = Auth()->user();
-        $beneficiary_member = \App\Models\BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
         $bi_beneficiary = $beneficiary_member->beneficiary;
         $tf_beneficiary_id = $bi_beneficiary->tf_iterum_portal_key_id;
 

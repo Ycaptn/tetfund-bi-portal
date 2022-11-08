@@ -13,7 +13,7 @@
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
-        "hasob/hasob-foundation-core-bs-5": "dev-master",
+        "hasob/hasob-foundation-core-bs-5": "dev-bs-5",
 
         "knplabs/knp-snappy": "^1.2",
         "laravel/framework": "^8.40",

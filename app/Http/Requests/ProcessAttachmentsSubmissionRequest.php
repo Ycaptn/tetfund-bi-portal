@@ -25,32 +25,44 @@ class ProcessAttachmentsSubmissionRequest extends AppBaseFormRequest
      */
      public function rules() {
         $array_to_return = ['organization_id' => 'required'];
+        
         if(request()->checklist_input_fields != "") {
+            
             $checklist_input_fields_arr = explode(',', request()->checklist_input_fields);
+            
             foreach ($checklist_input_fields_arr as $checklist_input_name) {
-                $array_to_return[strval($checklist_input_name)] = 'sometimes|mimes:pdf,doc|max:102400';
+                $array_to_return[strval($checklist_input_name)] = 'sometimes|mimes:pdf|max:102400';
             }
+
         }
+        
         if (isset(request()->additional_attachment)) {
             $array_to_return['additional_attachment_name'] = 'required|string|max:190';
         }
-        $array_to_return['additional_attachment'] = 'sometimes|mimes:pdf,doc|max:102400';
-        //dd($array_to_return);
+        
+        $array_to_return['additional_attachment'] = 'sometimes|mimes:pdf|max:102400';
+        
         return $array_to_return;
     }
 
     public function attributes() {
         $array_to_return = array();
+        
         if(request()->checklist_input_fields != "") {
+          
             $checklist_input_fields_arr = explode(',', request()->checklist_input_fields);
             $counter = 1;
+           
             foreach ($checklist_input_fields_arr as $checklist_input_name) {
                 $array_to_return[strval($checklist_input_name)] = "Attachment With S/N ($counter)";
                 $counter += 1;
             }
+
         }
+       
         $array_to_return['additional_attachment_name'] = 'Additional Attachment Name';
         $array_to_return['additional_attachment'] = 'Additional Attachment';
+       
         return $array_to_return;
     }
 }

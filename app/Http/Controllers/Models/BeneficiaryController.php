@@ -15,6 +15,8 @@ use App\DataTables\BeneficiaryDataTable;
 
 use Hasob\FoundationCore\Controllers\BaseController;
 use Hasob\FoundationCore\Models\Organization;
+use Hasob\FoundationCore\View\Components\CardDataView;
+use App\Models\BeneficiaryMember;
 
 use Flash;
 
@@ -34,7 +36,7 @@ class BeneficiaryController extends BaseController
     {
         $current_user = Auth()->user();
 
-        $cdv_beneficiaries = new \Hasob\FoundationCore\View\Components\CardDataView(Beneficiary::class, "pages.beneficiaries.card_view_item");
+        $cdv_beneficiaries = new CardDataView(Beneficiary::class, "pages.beneficiaries.card_view_item");
         $cdv_beneficiaries->addDataGroup('All','deleted_at',null)
                         //->setDataQuery(['organization_id'=>$org->id])
                         ->addDataGroup('University','type','university')
@@ -101,7 +103,7 @@ class BeneficiaryController extends BaseController
         $beneficiary = Beneficiary::find($id);
         $beneficiary_members = [];
         if ($beneficiary != null) {
-            $beneficiary_members = \App\Models\BeneficiaryMember::where('beneficiary_id', $beneficiary->id)->get();
+            $beneficiary_members = BeneficiaryMember::where('beneficiary_id', $beneficiary->id)->get();
         }
 
         if (empty($beneficiary)) {

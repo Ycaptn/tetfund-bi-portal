@@ -16,6 +16,8 @@ use App\DataTables\SubmissionRequestDataTable;
 
 use Hasob\FoundationCore\Controllers\BaseController;
 use Hasob\FoundationCore\Models\Organization;
+use Hasob\FoundationCore\View\Components\CardDataView;
+use App\Models\ASTDNomination;
 
 use Flash;
 
@@ -38,7 +40,7 @@ class SubmissionRequestController extends BaseController
         $current_user = Auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
-        $cdv_submission_requests = new \Hasob\FoundationCore\View\Components\CardDataView(SubmissionRequest::class, "pages.submission_requests.card_view_item");
+        $cdv_submission_requests = new CardDataView(SubmissionRequest::class, "pages.submission_requests.card_view_item");
         $cdv_submission_requests->setDataQuery(['organization_id'=>$org->id, 'beneficiary_id'=>optional($beneficiary_member)->beneficiary_id])
                         ->addDataGroup('All','deleted_at',null)
                         ->addDataGroup('Not Submitted','status','not-submitted')
@@ -300,7 +302,7 @@ class SubmissionRequestController extends BaseController
         $tETFundServer = new TETFundServer();   /* server class constructor */
         $fund_availability = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, array_unique($years));
 
-        $aSTDNominations = \App\Models\ASTDNomination::all();
+        $aSTDNominations = ASTDNomination::all();
 
         return view('pages.submission_requests.show')
             ->with('intervention', $intervention_types_server_response)
