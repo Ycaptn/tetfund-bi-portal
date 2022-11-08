@@ -52,7 +52,13 @@ class CreateNominationRequestAPIRequest extends AppBaseFormRequest
             'bi_telephone' => 'Staff Telephone',
             'bi_staff_gender' => 'Staff Gender',
             'nomination_type' => 'Type of Nomination',
-            'bi_submission_request_id' => 'Nomination to one Submission Binding',
+        ];
+    }
+
+    public function messages() {
+        return [
+            'bi_submission_request_id.required' => 'The Bind Nomination to one Submission selection is required.',
+            'bi_submission_request_id.exists' => 'The Bind Nomination to one Submission selection is invalid.',
         ];
     }
 
