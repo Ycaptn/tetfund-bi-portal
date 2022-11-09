@@ -16,19 +16,23 @@ trait BeneficiaryUserTrait {
     // create a new uer on bims and to users table
     public function create_new_bims_and_local_user($pay_load_data){
         $zUser = new User();
-        if (env('BIMS_CLIENT_ID') && env('BIMS_IS_ENABLED') == true && env('BIMS_REGISTERATION_URI') != null) {
-            //register user on bims
-            $phone_number_raw = strval($pay_load_data['telephone']);
-            $pay_load_data['telephone'] = (!empty($pay_load_data['telephone']) && $pay_load_data['telephone'] != null) ? preg_replace("/[^0-9]/", "", "$phone_number_raw" ) : '08011223344'; 
-            $response = Http::acceptJson()->post(env('BIMS_REGISTERATION_URI'), [
-                "client_id" => env('BIMS_CLIENT_ID'),
-                "first_name" => $pay_load_data['first_name'],
-                "last_name" => $pay_load_data['last_name'],
-                "phone" => $pay_load_data['telephone'],
-                "email" => $pay_load_data['email'],
-                "gender" => ucfirst(substr($pay_load_data['gender'], 0, 1)),
-            ]);          
+        
+        if (env('APP_ENV') != 'local') {
+            if (env('BIMS_CLIENT_ID') && env('BIMS_IS_ENABLED') == true && env('BIMS_REGISTERATION_URI') != null) {
+                //register user on bims
+                $phone_number_raw = strval($pay_load_data['telephone']);
+                $pay_load_data['telephone'] = (!empty($pay_load_data['telephone']) && $pay_load_data['telephone'] != null) ? preg_replace("/[^0-9]/", "", "$phone_number_raw" ) : '08011223344'; 
+                $response = Http::acceptJson()->post(env('BIMS_REGISTERATION_URI'), [
+                    "client_id" => env('BIMS_CLIENT_ID'),
+                    "first_name" => $pay_load_data['first_name'],
+                    "last_name" => $pay_load_data['last_name'],
+                    "phone" => $pay_load_data['telephone'],
+                    "email" => $pay_load_data['email'],
+                    "gender" => ucfirst(substr($pay_load_data['gender'], 0, 1)),
+                ]);          
+            }
         }
+        
             
         $zUser->telephone = ($pay_load_data['telephone'] != null) ? $pay_load_data['telephone'] : '08011223344';
         $zUser->email = $pay_load_data['email'];
