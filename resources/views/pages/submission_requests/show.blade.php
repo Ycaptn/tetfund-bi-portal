@@ -65,7 +65,7 @@ Submission Request
         title="New" 
         href="{{ route('tf-bi-portal.submissionRequests.create') }}" 
         data-val='{{$submissionRequest->id}}' 
-        class="btn btn-sm btn-primary btn-new-mdl-submissionRequest-modal" href="#">
+        class="btn btn-sm btn-primary btn-new-mdl-submissionRequest-modal">
         <i class="fa fa-eye"></i> New
     </a>&nbsp;
 
@@ -74,14 +74,11 @@ Submission Request
             title="Edit" 
             data-val='{{$submissionRequest->id}}' 
             href="{{route('tf-bi-portal.submissionRequests.edit', $submissionRequest->id)}}" 
-            class="btn btn-sm btn-primary btn-edit-mdl-submissionRequest-modal" href="#">
+            class="btn btn-sm btn-primary btn-edit-mdl-submissionRequest-modal">
             <i class="fa fa-pencil-square-o"></i> Edit
         </a>
     @endif
 
-    {{-- @if (Auth()->user()->hasAnyRole(['','admin']))
-        @include('tf-bi-portal::pages.submission_requests.bulk-upload-modal')
-    @endif --}}
 @stop
 
 
@@ -104,7 +101,13 @@ Submission Request
                             @endif 
 
                             @if (isset($fund_available) && $fund_available != $submissionRequest->amount_requested)
-                                <li>Fund requested must be equal to the <strong>Allocated amount</strong>.</li>
+                                <li>Fund requested must be equal to the 
+                                    <strong>
+                                        <a title="Preview allocation amount details" data-val='{{$submissionRequest->id}}' href="#" class="btn-show-submissionRequestAllocationAmount text-primary"> 
+                                            <u>allocated amount</u>.
+                                        </a>
+                                    </strong>
+                                </li>
                             @endif
                         </ul>
                     </div>
@@ -140,8 +143,11 @@ Submission Request
                 </div>
             @endif           
             <div class="row col-sm-12">
-                {{-- details --}}
+                
+                {{-- details and allocation preview modal --}}
                 @include('tf-bi-portal::pages.submission_requests.partials.submission_details')
+
+                {{-- sub menu buttons --}}
                 <div class="container col-sm-12"><hr>
                     <div class="tab">
                         <ul class="nav">
@@ -162,6 +168,8 @@ Submission Request
                             </li>
                         </ul>
                     </div><hr>
+
+                    {{-- sub menu contents --}}
                     <div id="attachments" class="tabcontent">
                         <h4>ATTACHMENTS</h4>
                         @include('tf-bi-portal::pages.submission_requests.partials.submission_attachments') 
@@ -197,6 +205,12 @@ Submission Request
 
 @push('page_scripts')
     <script type="text/javascript">
+
+        //Show Modal for Allocation Dtails Preview
+        $(document).on('click', ".btn-show-submissionRequestAllocationAmount", function(e) {
+            $('#mdl-submissionRequestAllocationAmount-modal').modal('show');
+        });
+
         function onSubmitAction() {
             event.preventDefault();
             swal({

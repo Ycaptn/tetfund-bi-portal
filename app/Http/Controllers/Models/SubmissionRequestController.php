@@ -249,7 +249,7 @@ class SubmissionRequestController extends BaseController
             return redirect()->back()->with('success', $success_message);
         }
 
-        return redirect()->back()->withErrors(['Oops!!!, An unknown error was encountered while processing final submistion.']);
+        return redirect()->back()->withErrors(['Oops!!!, An unknown error was encountered while processing final submission.']);
 
     }
 
@@ -279,7 +279,6 @@ class SubmissionRequestController extends BaseController
         $tETFundServer = new TETFundServer();   /* server class constructor */
         $intervention_types_server_response = $tETFundServer->get_row_records_from_server("tetfund-ben-mgt-api/interventions/".$submissionRequest->tf_iterum_intervention_line_key_id, $pay_load);
 
-        /* get total fund available */
         $beneficiary = $submissionRequest->beneficiary;
         $years = array();
 
@@ -299,8 +298,9 @@ class SubmissionRequestController extends BaseController
             array_push($years, $submissionRequest->intervention_year4);
         }
 
+        //Get the funding data and total_funds for the selected intervention year(s).
         $tETFundServer = new TETFundServer();   /* server class constructor */
-        $fund_availability = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, array_unique($years));
+        $submission_allocations = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, array_unique($years), true);
 
         $aSTDNominations = ASTDNomination::all();
 
@@ -309,7 +309,8 @@ class SubmissionRequestController extends BaseController
             ->with('submissionRequest', $submissionRequest)
             ->with('years', $years)
             ->with('checklist_items', $checklist_items)
-            ->with('fund_available', optional($fund_availability)->total_fund)
+            ->with('fund_available', optional($submission_allocations)->total_funds)
+            ->with('submission_allocations', optional($submission_allocations)->allocation_records)
             ->with('aSTDNominations', $aSTDNominations)
             ->with('beneficiary', $beneficiary);
     }

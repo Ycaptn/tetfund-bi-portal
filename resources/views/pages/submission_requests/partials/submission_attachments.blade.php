@@ -118,7 +118,7 @@
                         <input type='hidden' class="form-control" name="intervention_request_tranche" value="{{optional($submissionRequest)->tranche}}" />
                         <input type='hidden' class="form-control" name="checklist_input_fields" value="{{$checklist_input_fields}}" />
                         @if($submissionRequest->status == 'not-submitted')
-                            <button type="submit" class="btn btn-sm btn-primary"> <span class="glyphicon glyphicon-ok"></span> &nbsp; Submit Attachment </button>
+                            <button type="submit" class="btn btn-sm btn-primary"> <span class="glyphicon glyphicon-ok"></span> &nbsp; Save Attachments </button>
                             <a href="{{ route('tf-bi-portal.submissionRequests.show',$submissionRequest->id) }}">
                                 <button type="button" class="btn btn-sm btn-warning"> <span class="glyphicon glyphicon-remove"></span> Cancel </button>
                             </a>
