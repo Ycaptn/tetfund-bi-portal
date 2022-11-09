@@ -152,6 +152,8 @@
 
         @if($nominationRequest->type == 'astd')
             @include('tf-bi-portal::pages.a_s_t_d_nominations.modal')
+        @elseif($nominationRequest->type == 'tp')
+            @include('tf-bi-portal::pages.t_p_nominations.modal')
         @endif
 
 

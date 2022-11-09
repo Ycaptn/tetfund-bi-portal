@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use TETFund\ASTD\Requests\AppBaseFormRequest;
-use TETFund\ASTD\Models\ASTDNomination;
+use App\Http\Requests\AppBaseFormRequest;
+use App\Models\ASTDNomination;
 
 class CreateASTDNominationRequest extends AppBaseFormRequest
 {
@@ -30,6 +30,7 @@ class CreateASTDNominationRequest extends AppBaseFormRequest
             'email' => 'required|email|max:190',
             'telephone' => 'required|digits:11',
             'beneficiary_institution_id' => 'required|exists:tf_bi_portal_beneficiaries,id',
+            'bi_submission_request_id' => 'required|exists:tf_bi_submission_requests,id',
             //'institution_id' => 'required|exists:tf_astd_institutions,id',
             //'country_id' => 'required|exists:tf_astd_countries,id',
             'tf_iterum_portal_institution_id' => 'required|uuid',

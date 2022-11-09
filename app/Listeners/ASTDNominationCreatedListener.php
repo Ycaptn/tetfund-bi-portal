@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Models\ASTDNomination;
-use App\Models\ASTDNominationCreated;
+use App\Events\ASTDNominationCreated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 

@@ -2,8 +2,7 @@
 namespace App\Listeners;
 
 use App\Models\ASTDNomination;
-use App\Models\ASTDNominationUpdated;
-
+use App\Events\ASTDNominationUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 

@@ -2,8 +2,7 @@
 namespace App\Listeners;
 
 use App\Models\ASTDNomination;
-use App\Models\ASTDNominationDeleted;
-
+use App\Events\ASTDNominationDeleted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 

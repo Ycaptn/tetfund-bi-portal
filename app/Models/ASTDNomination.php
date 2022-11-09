@@ -100,6 +100,7 @@ class ASTDNomination extends Model
         'tf_iterum_portal_institution_id',
         'tf_iterum_portal_country_id',
         'nomination_request_id',
+        'bi_submission_request_id',
         'user_id',
         'gender',
         'name_title',

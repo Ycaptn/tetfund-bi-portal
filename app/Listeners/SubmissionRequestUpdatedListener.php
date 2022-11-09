@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Models\SubmissionRequest;
-use App\Models\SubmissionRequestUpdated;
+use App\Events\SubmissionRequestUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 

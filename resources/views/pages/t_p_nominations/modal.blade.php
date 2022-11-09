@@ -1,35 +1,35 @@
 
 
-<div class="modal fade" id="mdl-aSTDNomination-modal" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
+<div class="modal fade" id="mdl-tPNomination-modal" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 id="lbl-aSTDNomination-modal-title" class="modal-title"><span id="prefix_info"></span> ASTD Nomination</h5>
+                <h5 id="lbl-tPNomination-modal-title" class="modal-title"><span id="prefix_info"></span> TP Nomination</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body">
-                <div id="div-aSTDNomination-modal-error" class="alert alert-danger" role="alert"></div>
-                <form class="form-horizontal" id="frm-aSTDNomination-modal" role="form" method="POST" enctype="multipart/form-data" action="">
+                <div id="div-tPNomination-modal-error" class="alert alert-danger" role="alert"></div>
+                <form class="form-horizontal" id="frm-tPNomination-modal" role="form" method="POST" enctype="multipart/form-data" action="">
                     <div class="row m-3">
                         <div class="col-sm-12">
                             
                             @csrf
                             
-                            <div class="offline-flag"><span class="offline-a_s_t_d_nominations">You are currently offline</span></div>
+                            <div class="offline-flag"><span class="offline-t_p_nominations">You are currently offline</span></div>
 
-                            <input type="hidden" id="txt-aSTDNomination-primary-id" value="0" />
-                            <div id="div-show-txt-aSTDNomination-primary-id">
+                            <input type="hidden" id="txt-tPNomination-primary-id" value="0" />
+                            <div id="div-show-txt-tPNomination-primary-id">
                                 <div class="row">
                                     <div class="col-sm-12">
-                                    @include('tf-bi-portal::pages.a_s_t_d_nominations.show_fields')
+                                    @include('tf-bi-portal::pages.t_p_nominations.show_fields')
                                     </div>
                                 </div>
                             </div>
-                            <div id="div-edit-txt-aSTDNomination-primary-id">
+                            <div id="div-edit-txt-tPNomination-primary-id">
                                 <div class="row col-sm-12">
-                                    @include('tf-bi-portal::pages.a_s_t_d_nominations.fields')
+                                    @include('tf-bi-portal::pages.t_p_nominations.fields')
                                 </div>
                             </div>
 
@@ -39,14 +39,14 @@
             </div>
 
         
-            <div class="modal-footer" id="div-save-mdl-aSTDNomination-modal">
-                <button type="button" class="btn btn-primary" id="btn-save-mdl-aSTDNomination-modal" value="add">
-                <div id="spinner-a_s_t_d_nominations" style="color: white;">
+            <div class="modal-footer" id="div-save-mdl-tPNomination-modal">
+                <button type="button" class="btn btn-primary" id="btn-save-mdl-tPNomination-modal" value="add">
+                <div id="spinner-t_p_nominations" style="color: white;">
                     <div class="spinner-border" style="width: 1rem; height: 1rem;" role="status">
                     </div>
                     <span class="">Loading...</span><hr>
                 </div>
-                Save ASTD Nomination
+                Save TP Nomination
                 </button>
             </div>
 
@@ -58,22 +58,22 @@
 <script type="text/javascript">
 $(document).ready(function() {
 
-    $('.offline-a_s_t_d_nominations').hide();
+    $('.offline-t_p_nominations').hide();
 
     //Show Modal for New Entry
     $(document).on('click', ".{{ $nomination_type_str }}-nomination-form", function(e) {
-        $('#div-aSTDNomination-modal-error').hide();
-        $('#frm-aSTDNomination-modal').trigger("reset");
-        $('#txt-aSTDNomination-primary-id').val(0);
+        $('#div-tPNomination-modal-error').hide();
+        $('#frm-tPNomination-modal').trigger("reset");
+        $('#txt-tPNomination-primary-id').val(0);
         $('#prefix_info').text("New");
 
-        $('#mdl-aSTDNomination-modal').modal('show');
+        $('#mdl-tPNomination-modal').modal('show');
 
-        $('#div-show-txt-aSTDNomination-primary-id').hide();
-        $('#div-edit-txt-aSTDNomination-primary-id').show();
+        $('#div-show-txt-tPNomination-primary-id').hide();
+        $('#div-edit-txt-tPNomination-primary-id').show();
 
-        $("#spinner-a_s_t_d_nominations").hide();
-        $("#btn-save-mdl-aSTDNomination-modal").attr('disabled', false);
+        $("#spinner-t_p_nominations").hide();
+        $("#btn-save-mdl-tPNomination-modal").attr('disabled', false);
     });
 
     //Show Modal for View
@@ -83,64 +83,64 @@ $(document).ready(function() {
 
         //check for internet status 
         if (!window.navigator.onLine) {
-            $('.offline-a_s_t_d_nominations').fadeIn(300);
+            $('.offline-t_p_nominations').fadeIn(300);
             return;
         }else{
-            $('.offline-a_s_t_d_nominations').fadeOut(300);
+            $('.offline-t_p_nominations').fadeOut(300);
         }
 
-        $('#div-aSTDNomination-modal-error').hide();
-        $('#mdl-aSTDNomination-modal').modal('show');
-        $('#frm-aSTDNomination-modal').trigger("reset");
+        $('#div-tPNomination-modal-error').hide();
+        $('#mdl-tPNomination-modal').modal('show');
+        $('#frm-tPNomination-modal').trigger("reset");
 
-        $("#spinner-a_s_t_d_nominations").show();
-        $("#btn-save-mdl-aSTDNomination-modal").attr('disabled', true);
+        $("#spinner-t_p_nominations").show();
+        $("#btn-save-mdl-tPNomination-modal").attr('disabled', true);
 
-        $('#div-show-txt-aSTDNomination-primary-id').show();
-        $('#div-edit-txt-aSTDNomination-primary-id').hide();
+        $('#div-show-txt-tPNomination-primary-id').show();
+        $('#div-edit-txt-tPNomination-primary-id').hide();
         let itemId = $(this).attr('data-val');
 
-        $.get( "{{ route('tf-bi-portal-api.a_s_t_d_nominations.show','') }}/"+itemId).done(function( response ) {
+        $.get( "{{ route('tf-bi-portal-api.t_p_nominations.show','') }}/"+itemId).done(function( response ) {
 			
-			$('#txt-aSTDNomination-primary-id').val(response.data.id);
-            $('#spn_aSTDNomination_email').html(response.data.email);
-    		$('#spn_aSTDNomination_telephone').html(response.data.telephone);
-    		$('#spn_aSTDNomination_gender').html(response.data.gender);
-    		$('#spn_aSTDNomination_name_title').html(response.data.name_title);
-    		$('#spn_aSTDNomination_first_name').html(response.data.first_name);
-    		$('#spn_aSTDNomination_middle_name').html(response.data.middle_name);
-    		$('#spn_aSTDNomination_last_name').html(response.data.last_name);
-    		$('#spn_aSTDNomination_name_suffix').html(response.data.name_suffix);
-    		$('#spn_aSTDNomination_bank_account_name').html(response.data.bank_account_name);
-    		$('#spn_aSTDNomination_bank_account_number').html(response.data.bank_account_number);
-    		$('#spn_aSTDNomination_bank_name').html(response.data.bank_name);
-    		$('#spn_aSTDNomination_bank_sort_code').html(response.data.bank_sort_code);
-    		$('#spn_aSTDNomination_intl_passport_number').html(response.data.intl_passport_number);
-    		$('#spn_aSTDNomination_bank_verification_number').html(response.data.bank_verification_number);
-    		$('#spn_aSTDNomination_national_id_number').html(response.data.national_id_number);
-    		$('#spn_aSTDNomination_degree_type').html(response.data.degree_type);
-    		$('#spn_aSTDNomination_program_title').html(response.data.program_title);
-    		$('#spn_aSTDNomination_program_type').html(response.data.program_type);
-    		$('#spn_aSTDNomination_fee_amount').html(response.data.fee_amount);
-    		$('#spn_aSTDNomination_tuition_amount').html(response.data.tuition_amount);
-    		$('#spn_aSTDNomination_upgrade_fee_amount').html(response.data.upgrade_fee_amount);
-    		$('#spn_aSTDNomination_stipend_amount').html(response.data.stipend_amount);
-    		$('#spn_aSTDNomination_passage_amount').html(response.data.passage_amount);
-    		$('#spn_aSTDNomination_medical_amount').html(response.data.medical_amount);
-    		$('#spn_aSTDNomination_warm_clothing_amount').html(response.data.warm_clothing_amount);
-    		$('#spn_aSTDNomination_study_tours_amount').html(response.data.study_tours_amount);
-    		$('#spn_aSTDNomination_education_materials_amount').html(response.data.education_materials_amount);
-    		$('#spn_aSTDNomination_thesis_research_amount').html(response.data.thesis_research_amount);
-    		$('#spn_aSTDNomination_final_remarks').html(response.data.final_remarks);
-    		$('#spn_aSTDNomination_total_requested_amount').html(response.data.total_requested_amount);
-    		$('#spn_aSTDNomination_total_approved_amount').html(response.data.total_approved_amount);
-            $('#spn_aSTDNomination_beneficiary_institution_name').html(response.data.beneficiary.full_name);
-            $('#spn_aSTDNomination_institution_name').html(response.data.institution.name); 
-            $('#spn_aSTDNomination_country_name').html(response.data.country.name + ' (' + response.data.country.country_code + ')');
+			$('#txt-tPNomination-primary-id').val(response.data.id);
+            $('#spn_tPNomination_email').html(response.data.email);
+    		$('#spn_tPNomination_telephone').html(response.data.telephone);
+    		$('#spn_tPNomination_gender').html(response.data.gender);
+    		$('#spn_tPNomination_name_title').html(response.data.name_title);
+    		$('#spn_tPNomination_first_name').html(response.data.first_name);
+    		$('#spn_tPNomination_middle_name').html(response.data.middle_name);
+    		$('#spn_tPNomination_last_name').html(response.data.last_name);
+    		$('#spn_tPNomination_name_suffix').html(response.data.name_suffix);
+    		$('#spn_tPNomination_bank_account_name').html(response.data.bank_account_name);
+    		$('#spn_tPNomination_bank_account_number').html(response.data.bank_account_number);
+    		$('#spn_tPNomination_bank_name').html(response.data.bank_name);
+    		$('#spn_tPNomination_bank_sort_code').html(response.data.bank_sort_code);
+    		$('#spn_tPNomination_intl_passport_number').html(response.data.intl_passport_number);
+    		$('#spn_tPNomination_bank_verification_number').html(response.data.bank_verification_number);
+    		$('#spn_tPNomination_national_id_number').html(response.data.national_id_number);
+    		$('#spn_tPNomination_degree_type').html(response.data.degree_type);
+    		$('#spn_tPNomination_program_title').html(response.data.program_title);
+    		$('#spn_tPNomination_program_type').html(response.data.program_type);
+    		$('#spn_tPNomination_fee_amount').html(response.data.fee_amount);
+    		$('#spn_tPNomination_tuition_amount').html(response.data.tuition_amount);
+    		$('#spn_tPNomination_upgrade_fee_amount').html(response.data.upgrade_fee_amount);
+    		$('#spn_tPNomination_stipend_amount').html(response.data.stipend_amount);
+    		$('#spn_tPNomination_passage_amount').html(response.data.passage_amount);
+    		$('#spn_tPNomination_medical_amount').html(response.data.medical_amount);
+    		$('#spn_tPNomination_warm_clothing_amount').html(response.data.warm_clothing_amount);
+    		$('#spn_tPNomination_study_tours_amount').html(response.data.study_tours_amount);
+    		$('#spn_tPNomination_education_materials_amount').html(response.data.education_materials_amount);
+    		$('#spn_tPNomination_thesis_research_amount').html(response.data.thesis_research_amount);
+    		$('#spn_tPNomination_final_remarks').html(response.data.final_remarks);
+    		$('#spn_tPNomination_total_requested_amount').html(response.data.total_requested_amount);
+    		$('#spn_tPNomination_total_approved_amount').html(response.data.total_approved_amount);
+            $('#spn_tPNomination_beneficiary_institution_name').html(response.data.beneficiary.full_name);
+            $('#spn_tPNomination_institution_name').html(response.data.institution.name); 
+            $('#spn_tPNomination_country_name').html(response.data.country.name + ' (' + response.data.country.country_code + ')');
 
-            $("#spinner-a_s_t_d_nominations").hide();
-            $("#div-save-mdl-aSTDNomination-modal").hide();
-            $("#btn-save-mdl-aSTDNomination-modal").attr('disabled', false);
+            $("#spinner-t_p_nominations").hide();
+            $("#div-save-mdl-tPNomination-modal").hide();
+            $("#btn-save-mdl-tPNomination-modal").attr('disabled', false);
         });
     });
 
@@ -149,20 +149,20 @@ $(document).ready(function() {
         e.preventDefault();
         $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
 
-        $('#div-aSTDNomination-modal-error').hide();
-        $('#frm-aSTDNomination-modal').trigger("reset");
+        $('#div-tPNomination-modal-error').hide();
+        $('#frm-tPNomination-modal').trigger("reset");
         $('#prefix_info').text("Edit");
 
-        $("#spinner-a_s_t_d_nominations").show();
-        $("#btn-save-mdl-aSTDNomination-modal").attr('disabled', true);
+        $("#spinner-t_p_nominations").show();
+        $("#btn-save-mdl-tPNomination-modal").attr('disabled', true);
 
-        $('#div-show-txt-aSTDNomination-primary-id').hide();
-        $('#div-edit-txt-aSTDNomination-primary-id').show();
+        $('#div-show-txt-tPNomination-primary-id').hide();
+        $('#div-edit-txt-tPNomination-primary-id').show();
         let itemId = $(this).attr('data-val');
 
-        $.get( "{{ route('tf-bi-portal-api.a_s_t_d_nominations.show','') }}/"+itemId+"?_method=GET").done(function( response ) {     
+        $.get( "{{ route('tf-bi-portal-api.t_p_nominations.show','') }}/"+itemId).done(function( response ) {     
 
-			$('#txt-aSTDNomination-primary-id').val(response.data.id);
+			$('#txt-tPNomination-primary-id').val(response.data.id);
             $('#email').val(response.data.email);
     		$('#telephone').val(response.data.telephone);
     		$('#gender').val(response.data.gender);
@@ -204,33 +204,33 @@ $(document).ready(function() {
 
             $('#institution_id_select option[value="' + response.data.tf_iterum_portal_institution_id + '"]').prop('selected', 'selected');
             $('#country_id_select option[value="' + response.data.tf_iterum_portal_country_id + '"]').prop('selected', 'selected');
-           
-            $('#mdl-aSTDNomination-modal').modal('show');
 
-            $("#spinner-a_s_t_d_nominations").hide();
-            $("#div-save-mdl-aSTDNomination-modal").show();
-            $("#btn-save-mdl-aSTDNomination-modal").attr('disabled', false);
+            $('#mdl-tPNomination-modal').modal('show');
+
+            $("#spinner-t_p_nominations").hide();
+            $("#div-save-mdl-tPNomination-modal").show();
+            $("#btn-save-mdl-tPNomination-modal").attr('disabled', false);
 
         });
     });
 
     //Delete action
-    $(document).on('click', ".btn-delete-{{$nominationRequest->type}}", function(e) {
+    $(document).on('click', ".btn-delete-mdl-tPNomination-modal", function(e) {
         e.preventDefault();
         $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
 
         //check for internet status 
         if (!window.navigator.onLine) {
-            $('.offline-a_s_t_d_nominations').fadeIn(300);
+            $('.offline-t_p_nominations').fadeIn(300);
             return;
         }else{
-            $('.offline-a_s_t_d_nominations').fadeOut(300);
+            $('.offline-t_p_nominations').fadeOut(300);
         }
 
         let itemId = $(this).attr('data-val');
         swal({
-                title: "Are you sure you want to delete this ASTDNomination?",
-                text: "You will not be able to recover this ASTDNomination if deleted.",
+                title: "Are you sure you want to delete this TPNomination?",
+                text: "You will not be able to recover this TPNomination if deleted.",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonClass: "btn-danger",
@@ -241,7 +241,7 @@ $(document).ready(function() {
             }, function(isConfirm) {
                 if (isConfirm) {
 
-                    let endPointUrl = "{{ route('tf-bi-portal-api.a_s_t_d_nominations.destroy','') }}/"+itemId;
+                    let endPointUrl = "{{ route('tf-bi-portal-api.t_p_nominations.destroy','') }}/"+itemId;
 
                     let formData = new FormData();
                     formData.append('_token', $('input[name="_token"]').val());
@@ -262,7 +262,7 @@ $(document).ready(function() {
                             }else{
                                 swal({
                                     title: "Deleted",
-                                    text: "ASTDNomination deleted successfully",
+                                    text: "TPNomination deleted successfully",
                                     type: "success",
                                     confirmButtonClass: "btn-success",
                                     confirmButtonText: "OK",
@@ -278,32 +278,32 @@ $(document).ready(function() {
     });
 
     //Save details
-    $('#btn-save-mdl-aSTDNomination-modal').click(function(e) {
+    $('#btn-save-mdl-tPNomination-modal').click(function(e) {
         e.preventDefault();
         $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
 
 
         //check for internet status 
         if (!window.navigator.onLine) {
-            $('.offline-a_s_t_d_nominations').fadeIn(300);
+            $('.offline-t_p_nominations').fadeIn(300);
             return;
         }else{
-            $('.offline-a_s_t_d_nominations').fadeOut(300);
+            $('.offline-t_p_nominations').fadeOut(300);
         }
 
-        $("#spinner-a_s_t_d_nominations").show();
-        $("#btn-save-mdl-aSTDNomination-modal").attr('disabled', true);
+        $("#spinner-t_p_nominations").show();
+        $("#btn-save-mdl-tPNomination-modal").attr('disabled', true);
 
         let actionType = "POST";
-        let endPointUrl = "{{ route('tf-bi-portal-api.a_s_t_d_nominations.store') }}";
-        let primaryId = $('#txt-aSTDNomination-primary-id').val();
+        let endPointUrl = "{{ route('tf-bi-portal-api.t_p_nominations.store') }}";
+        let primaryId = $('#txt-tPNomination-primary-id').val();
         
         let formData = new FormData();
         formData.append('_token', $('input[name="_token"]').val());
 
         if (primaryId != "0"){
             actionType = "PUT";
-            endPointUrl = "{{ route('tf-bi-portal-api.a_s_t_d_nominations.update','') }}/"+primaryId;
+            endPointUrl = "{{ route('tf-bi-portal-api.t_p_nominations.update','') }}/"+primaryId;
             formData.append('id', primaryId);
         }
         
@@ -364,36 +364,36 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(result){
                 if(result.errors){
-					$('#div-aSTDNomination-modal-error').html('');
-					$('#div-aSTDNomination-modal-error').show();
+					$('#div-tPNomination-modal-error').html('');
+					$('#div-tPNomination-modal-error').show();
                     
                     $.each(result.errors, function(key, value){
-                        $('#div-aSTDNomination-modal-error').append('<li class="">'+value+'</li>');
+                        $('#div-tPNomination-modal-error').append('<li class="">'+value+'</li>');
                     });
                 }else{
-                    $('#div-aSTDNomination-modal-error').hide();
+                    $('#div-tPNomination-modal-error').hide();
                     window.setTimeout( function(){
 
-                        $('#div-aSTDNomination-modal-error').hide();
-                        console.log(result.message);
+                        $('#div-tPNomination-modal-error').hide();
+
                         swal({
                             title: "Saved",
-                            text: "ASTDNomination saved successfully",
+                            text: "TPNomination saved successfully",
                             type: "success"
                         });
                         location.reload(true);
                     },20);
                 }
 
-                $("#spinner-a_s_t_d_nominations").hide();
-                $("#btn-save-mdl-aSTDNomination-modal").attr('disabled', false);
+                $("#spinner-t_p_nominations").hide();
+                $("#btn-save-mdl-tPNomination-modal").attr('disabled', false);
                 
             }, error: function(data){
                 console.log(data);
                 swal("Error", "Oops an error occurred. Please try again.", "error");
 
-                $("#spinner-a_s_t_d_nominations").hide();
-                $("#btn-save-mdl-aSTDNomination-modal").attr('disabled', false);
+                $("#spinner-t_p_nominations").hide();
+                $("#btn-save-mdl-tPNomination-modal").attr('disabled', false);
 
             }
         });

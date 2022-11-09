@@ -40,6 +40,7 @@ $orgRoutes = function() {
 
                 Route::resource('nomination_requests', \App\Http\Controllers\Models\NominationRequestController::class);
                 Route::resource('a_s_t_d_nominations', \App\Http\Controllers\Models\ASTDNominationController::class);
+                Route::resource('t_p_nominations', \App\Http\Controllers\Models\TPNominationController::class);
 
                 Route::resource('beneficiaries', \App\Http\Controllers\Models\BeneficiaryController::class);
                 Route::post('/processSubmissionRequestToTFPortal', [\App\Http\Controllers\Models\SubmissionRequestController::class, 'processSubmissionRequestToTFPortal'])->name('submissionRequests.processSubmissionRequestToTFPortal');

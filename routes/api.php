@@ -25,11 +25,10 @@ $orgRoutes = function() {
                 
                 Route::resource('nomination_requests', \App\Http\Controllers\API\NominationRequestAPIController::class);
                 Route::resource('a_s_t_d_nominations', \App\Http\Controllers\API\ASTDNominationAPIController::class);
-                //Route::resource('t_p_nominations', \TETFund\ASTD\Controllers\API\TPNominationAPIController::class);
+                Route::resource('t_p_nominations', \App\Http\Controllers\API\TPNominationAPIController::class);
+
                 //Route::resource('c_a_nominations', \TETFund\ASTD\Controllers\API\CANominationAPIController::class);
-                //Route::resource('conferences', \TETFund\ASTD\Controllers\API\ConferenceAPIController::class);
-                Route::resource('countries', \App\Http\Controllers\API\CountryAPIController::class);
-                Route::resource('institutions', \App\Http\Controllers\API\InstitutionAPIController::class);
+                
                 Route::get('/getAllInterventionLinesForSpecificType', [\App\Http\Controllers\API\SubmissionRequestAPIController::class, 'getAllInterventionLinesForSpecificType'])->name('getAllInterventionLinesForSpecificType');
                 
                 Route::resource('submission_requests', \App\Http\Controllers\API\SubmissionRequestAPIController::class);

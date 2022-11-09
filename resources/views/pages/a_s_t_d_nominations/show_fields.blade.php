@@ -31,12 +31,12 @@
 </div>
 
 <!-- Beneficiary Institution Field -->
-<div id="div_beneficiary_institution_name" class="col-sm-12 mb-10">
+<div id="div_aSTDNomination_beneficiary_institution_name" class="col-sm-12 mb-10">
     <p>
         <strong>
             {!! Form::label('beneficiary_institution_id', 'Beneficiary Institution:', ['class'=>'control-label']) !!}
         </strong>
-        <span id="spn_beneficiary_institution_name">
+        <span id="spn_aSTDNomination_beneficiary_institution_name">
         @if (isset($aSTDNomination->beneficiary_institution_id) && empty($aSTDNomination->beneficiary)==false)
             {!! $aSTDNomination->beneficiary->full_name !!}
             {!! $aSTDNomination->beneficiary->short_name ? '('.$aSTDNomination->beneficiary->short_name.')' : '' !!}
@@ -48,12 +48,12 @@
 </div>
 
 <!-- Institution Field -->
-<div id="div_institution_name" class="col-sm-12 mb-10">
+<div id="div_aSTDNomination_institution_name" class="col-sm-12 mb-10">
     <p>
         <strong>
             {!! Form::label('institution_id', 'Institution:', ['class'=>'control-label']) !!}
         </strong>
-        <span id="spn_institution_name">
+        <span id="spn_aSTDNomination_institution_name">
         @if (isset($aSTDNomination->institution_id) && empty($aSTDNomination->institution)==false)
             {!! $aSTDNomination->institution->name !!}
         @else
