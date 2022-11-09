@@ -16,6 +16,8 @@ use App\DataTables\SubmissionRequestDataTable;
 
 use Hasob\FoundationCore\Controllers\BaseController;
 use Hasob\FoundationCore\Models\Organization;
+use Hasob\FoundationCore\View\Components\CardDataView;
+use App\Models\ASTDNomination;
 
 use Flash;
 
@@ -38,7 +40,7 @@ class SubmissionRequestController extends BaseController
         $current_user = Auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
-        $cdv_submission_requests = new \Hasob\FoundationCore\View\Components\CardDataView(SubmissionRequest::class, "pages.submission_requests.card_view_item");
+        $cdv_submission_requests = new CardDataView(SubmissionRequest::class, "pages.submission_requests.card_view_item");
         $cdv_submission_requests->setDataQuery(['organization_id'=>$org->id, 'beneficiary_id'=>optional($beneficiary_member)->beneficiary_id])
                         ->addDataGroup('All','deleted_at',null)
                         ->addDataGroup('Not Submitted','status','not-submitted')
@@ -197,7 +199,7 @@ class SubmissionRequestController extends BaseController
         $tETFundServer = new TETFundServer();   /* server class constructor */
         $fund_availability = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, array_unique($years));
 
-        //error for requested fund mismached to allocated fund
+        //error for requested fund mismatched to allocated fund
         if (isset($fund_availability) && $fund_availability->total_fund != $submissionRequest->amount_requested) {
             array_push($errors_array, "Fund requested must be equal to the Allocated amount.");
         }
@@ -221,6 +223,14 @@ class SubmissionRequestController extends BaseController
         $pay_load['is_aip_request'] = true;
         $pay_load['requested_tranche'] = 'AIP';
         $pay_load['title'] = 'funding AIP request';
+
+        /*add attachement records to payload*/
+        //$submission_attachemt_arr = array();
+        // $payload['submission_attachemt_arr'] = $submission_attachemt_arr;
+
+        /*add nomination details to payload*/
+        //$final_nominations_arr = array();
+        // $payload['final_nominations_arr'] = $final_nominations_arr;
 
         $final_submission_to_tetfund = $tETFundServer->processSubmissionRequest($pay_load, $tf_beneficiary_id);
 
@@ -292,7 +302,7 @@ class SubmissionRequestController extends BaseController
         $tETFundServer = new TETFundServer();   /* server class constructor */
         $fund_availability = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, array_unique($years));
 
-        $aSTDNominations = \App\Models\ASTDNomination::all();
+        $aSTDNominations = ASTDNomination::all();
 
         return view('pages.submission_requests.show')
             ->with('intervention', $intervention_types_server_response)

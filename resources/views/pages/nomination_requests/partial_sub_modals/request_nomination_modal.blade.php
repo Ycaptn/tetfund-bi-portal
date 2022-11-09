@@ -40,7 +40,7 @@
         
             <div class="modal-footer" id="div-save-mdl-requestNomination-modal">
                 <button type="button" class="btn btn-primary" id="btn-save-mdl-requestNomination-modal" value="add">
-                    <div id="spinner-request_nomination" class="spinner-border text-primary" role="status"> 
+                    <div id="spinner-request_nomination" class="spinner-border text-info" role="status"> 
                         <span class="visually-hidden">Loading...</span>
                     </div>
                     Submit Nomination Request

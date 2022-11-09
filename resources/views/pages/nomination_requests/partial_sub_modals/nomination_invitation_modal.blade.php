@@ -39,7 +39,7 @@
         
             <div class="modal-footer" id="div-save-mdl-nominationInvitation-modal">
                 <button type="button" class="btn btn-primary" id="btn-save-mdl-nominationInvitation-modal" value="add">
-                    <div id="spinner-nomination_invitation" class="spinner-border text-primary" role="status"> 
+                    <div id="spinner-nomination_invitation" class="spinner-border text-info" role="status"> 
                         <span class="visually-hidden">Loading...</span>
                     </div>
                     Process & send Invitation

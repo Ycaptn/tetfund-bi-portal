@@ -15,6 +15,7 @@ use App\DataTables\ASTDNominationDataTable;
 
 use Hasob\FoundationCore\Controllers\BaseController;
 use Hasob\FoundationCore\Models\Organization;
+use Hasob\FoundationCore\View\Components\CardDataView;
 
 use Flash;
 
@@ -34,7 +35,7 @@ class ASTDNominationController extends BaseController
     {
         $current_user = Auth()->user();
 
-        $cdv_a_s_t_d_nominations = new \Hasob\FoundationCore\View\Components\CardDataView(ASTDNomination::class, "tetfund-astd-module::pages.a_s_t_d_nominations.card_view_item");
+        $cdv_a_s_t_d_nominations = new CardDataView(ASTDNomination::class, "tetfund-astd-module::pages.a_s_t_d_nominations.card_view_item");
         $cdv_a_s_t_d_nominations->setDataQuery(['organization_id'=>$org->id, 'type_of_nomination'=>'ASTD'])
                         //->addDataGroup('label','field','value')
                         //->addDataOrder('id','DESC')
