@@ -170,7 +170,10 @@ class BeneficiaryAPIController extends AppBaseController
                         ];
                         
                         // creating beneficiary desk officer
-                        $beneficiary_desk_officer = $this->create_new_bims_and_local_user($pay_load);
+                        if (env('APP_ENV') != 'local') {
+                            $beneficiary_desk_officer = $this->create_new_bims_and_local_user($pay_load);
+                        }
+                      
                     }
 
                 } else if (!empty($beneficiary_obj)) {
