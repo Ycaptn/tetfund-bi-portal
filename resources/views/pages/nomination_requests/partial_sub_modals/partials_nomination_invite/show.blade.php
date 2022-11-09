@@ -59,7 +59,7 @@
                             data-val='defer'
                             {{ ($nominationRequest->status == 'defered') ?  "disabled='disabled'" : '' }}
                             class="btn btn-sm btn-primary col-sm-12 col-md-4 btn-nomination-request-actions mr-3" href="#">
-                            &nbsp;Defer
+                            <small>&nbsp;Defer</small>
                     </button>
                     <button title="Decline Request" 
                             data-val='decline' 

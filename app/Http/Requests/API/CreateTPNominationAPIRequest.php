@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests\API;
 
-use App\Models\ASTDNomination;
+use App\Models\ASTDNomination as TPNomination;
 use App\Http\Requests\AppBaseFormRequest;
 
 
-class CreateASTDNominationAPIRequest extends AppBaseFormRequest
+class CreateTPNominationAPIRequest extends AppBaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

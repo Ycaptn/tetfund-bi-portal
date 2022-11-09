@@ -14,6 +14,7 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "hasob/hasob-foundation-core-bs-5": "dev-bs-5",
+        "tetfund/tetfund-bi-submission-module": "dev-master",
 
         "knplabs/knp-snappy": "^1.2",
         "laravel/framework": "^8.40",
@@ -45,6 +46,10 @@
         {
             "type": "path",
             "url": "../hasob-foundation-core-bs-5"
+        },
+        {
+            "type": "path",
+            "url" : "../tetfund-bi-submission-module"
         }
     ],
     "autoload-dev": {

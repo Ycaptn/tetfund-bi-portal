@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Models\Beneficiary;
-use App\Models\BeneficiaryUpdated;
+use App\Events\BeneficiaryUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 

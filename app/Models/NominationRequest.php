@@ -77,7 +77,7 @@ class NominationRequest extends Model
 
     public function beneficiary()
     {
-        return $this->hasOne(\App\Models\Beneficiary::class, 'id', 'user_id');
+        return $this->hasOne(\App\Models\Beneficiary::class, 'id', 'beneficiary_id');
     }
 
     public function astd_submission()

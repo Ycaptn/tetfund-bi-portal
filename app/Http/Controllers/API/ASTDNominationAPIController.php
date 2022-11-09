@@ -16,6 +16,7 @@ use App\Http\Requests\API\UpdateASTDNominationAPIRequest;
 use Hasob\FoundationCore\Traits\ApiResponder;
 use Hasob\FoundationCore\Models\Organization;
 use Hasob\FoundationCore\View\Components\CardDataView;
+use App\Managers\TETFundServer;
 
 use Hasob\FoundationCore\Controllers\BaseController as AppBaseController;
 
@@ -38,22 +39,22 @@ class ASTDNominationAPIController extends AppBaseController
      */
     public function index(Request $request, Organization $org)
     {
-        $current_user = Auth()->user();
-        $cdv_a_s_t_d_nominations = new CardDataView(ASTDNomination::class, "pages.a_s_t_d_nominations.card_view_item");
-        $cdv_a_s_t_d_nominations->setDataQuery(['organization_id'=>$org->id, 'type_of_nomination'=>'ASTD'])
-                //->addDataGroup('label','field','value')
-                //->addDataOrder('id','DESC')
-                ->setSearchFields(['first_name','last_name'])
-                ->addDataOrder('created_at','DESC')
-                ->enableSearch(true)
-                ->enablePagination(true)
-                ->setPaginationLimit(20)
-                ->setSearchPlaceholder('Search ASTDNomination By First or Last Name');
+        $query = ASTDNomination::query();
 
-        if (request()->expectsJson()){
-            return $cdv_a_s_t_d_nominations->render();
+        if ($request->get('skip')) {
+            $query->skip($request->get('skip'));
         }
-        return $this->sendError("Couldn't retrieve any ASTD Nominations");
+        if ($request->get('limit')) {
+            $query->limit($request->get('limit'));
+        }
+        
+        if ($organization != null){
+            $query->where('organization_id', $organization->id, 'type_of_nomination', 'ASTD');
+        }
+
+        $tPNominations = $this->showAll($query->get());
+
+        return $this->sendResponse($tPNominations->toArray(), 'A S T D Nominations retrieved successfully');
     }
 
     /**
@@ -84,8 +85,7 @@ class ASTDNominationAPIController extends AppBaseController
      *
      * @return Response
      */
-    public function show($id, Organization $organization)
-    {
+    public function show($id, Organization $organization) {
         /** @var ASTDNomination $aSTDNomination */
         $aSTDNomination = ASTDNomination::find($id);
 
@@ -93,9 +93,21 @@ class ASTDNominationAPIController extends AppBaseController
             return $this->sendError('A S T D Nomination not found');
         }
 
+        /*class constructor to fetch institution*/
+        $tETFundServer = new TETFundServer();
+        $url_path ="tetfund-astd-api/institutions/".$aSTDNomination->tf_iterum_portal_institution_id;
+        $payload = ['_method'=>'GET', 'id'=>$aSTDNomination->tf_iterum_portal_institution_id];
+        $institution = $tETFundServer->get_row_records_from_server($url_path, $payload);
+
+        /*class constructor to fetch country*/
+        $tETFundServer = new TETFundServer();
+        $url_path ="tetfund-astd-api/countries/".$aSTDNomination->tf_iterum_portal_country_id;
+        $payload = ['_method'=>'GET', 'id'=>$aSTDNomination->tf_iterum_portal_country_id];
+        $country = $tETFundServer->get_row_records_from_server($url_path, $payload);
+
         $aSTDNomination->beneficiary = ($aSTDNomination->beneficiary_institution_id != null) ? $aSTDNomination->beneficiary : [];
-        $aSTDNomination->institution = ($aSTDNomination->institution_id != null) ? $aSTDNomination->institution : [];
-        $aSTDNomination->country = ($aSTDNomination->country_id != null) ? $aSTDNomination->country : [];
+        $aSTDNomination->institution = ($institution != null) ? $institution : null;
+        $aSTDNomination->country = ($country != null) ? $country : null;
         $aSTDNomination->user = ($aSTDNomination->user_id != null) ? $aSTDNomination->user : [];
 
         return $this->sendResponse($aSTDNomination->toArray(), 'A S T D Nomination retrieved successfully');

@@ -2,12 +2,12 @@
 
 namespace App\Listeners;
 
-use App\Models\SubmissionRequest;
-use App\Events\SubmissionRequestDeleted;
+use App\Models\ASTDNomination as TPNomination;
+use App\Events\ASTDNominationCreated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class SubmissionRequestDeletedListener
+class TPNominationCreatedListener
 {
     /**
      * Create the event listener.
@@ -22,10 +22,10 @@ class SubmissionRequestDeletedListener
     /**
      * Handle the event.
      *
-     * @param  SubmissionRequestDeleted  $event
+     * @param  ASTDNominationCreated  $event
      * @return void
      */
-    public function handle(SubmissionRequestDeleted $event)
+    public function handle(ASTDNominationCreated $event)
     {
         //
     }
