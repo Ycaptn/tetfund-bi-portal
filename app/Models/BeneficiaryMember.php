@@ -22,6 +22,8 @@ use Hasob\FoundationCore\Traits\Ledgerable;
 use Hasob\FoundationCore\Traits\Attachable;
 use Hasob\FoundationCore\Traits\Artifactable;
 use Hasob\FoundationCore\Traits\OrganizationalConstraint;
+use App\Models\Beneficiary;
+use Hasob\FoundationCore\Models\User;
 
 use Eloquent as Model;
 
@@ -57,7 +59,7 @@ class BeneficiaryMember extends Model
      **/
     public function user()
     {
-        return $this->hasOne(\Hasob\FoundationCore\Models\User::class, 'id', 'beneficiary_user_id');
+        return $this->hasOne(User::class, 'id', 'beneficiary_user_id');
     }
 
     /**
@@ -65,6 +67,6 @@ class BeneficiaryMember extends Model
      **/
     public function beneficiary()
     {
-        return $this->hasOne(\App\Models\Beneficiary::class, 'id', 'beneficiary_id');
+        return $this->hasOne(Beneficiary::class, 'id', 'beneficiary_id');
     }
 }

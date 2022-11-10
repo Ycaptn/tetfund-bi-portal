@@ -23,6 +23,8 @@ use Hasob\FoundationCore\Traits\Attachable;
 use Hasob\FoundationCore\Traits\Artifactable;
 use Hasob\FoundationCore\Traits\OrganizationalConstraint;
 use Hasob\FoundationCore\Models\Attachable as EloquentAttachable;
+use Hasob\FoundationCore\Models\User;
+use App\Models\Beneficiary;
 
 use Eloquent as Model;
 
@@ -103,7 +105,7 @@ class SubmissionRequest extends Model
      **/
     public function user()
     {
-        return $this->hasOne(\Hasob\FoundationCore\Models\User::class, 'requesting_user_id', 'id');
+        return $this->hasOne(User::class, 'requesting_user_id', 'id');
     }
 
     /**
@@ -111,7 +113,7 @@ class SubmissionRequest extends Model
      **/
     public function beneficiary()
     {
-        return $this->hasOne(\App\Models\Beneficiary::class, 'id', 'beneficiary_id');
+        return $this->hasOne(Beneficiary::class, 'id', 'beneficiary_id');
     }
 
     public static function get_specific_attachement($submission_request_id, $item_label) {

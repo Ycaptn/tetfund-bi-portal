@@ -22,6 +22,9 @@ use Hasob\FoundationCore\Traits\Ledgerable;
 use Hasob\FoundationCore\Traits\Attachable;
 use Hasob\FoundationCore\Traits\Artifactable;
 use Hasob\FoundationCore\Traits\OrganizationalConstraint;
+use Hasob\FoundationCore\Models\User;
+use App\Models\Beneficiary;
+use App\Models\ASTDNomination;
 
 use Eloquent as Model;
 
@@ -72,12 +75,12 @@ class NominationRequest extends Model
      **/
     public function user()
     {
-        return $this->hasOne(\Hasob\FoundationCore\Models\User::class, 'id', 'user_id');
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
 
     public function beneficiary()
     {
-        return $this->hasOne(\App\Models\Beneficiary::class, 'id', 'beneficiary_id');
+        return $this->hasOne(Beneficiary::class, 'id', 'beneficiary_id');
     }
 
     public function astd_submission()

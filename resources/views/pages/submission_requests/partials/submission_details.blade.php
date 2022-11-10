@@ -54,7 +54,9 @@
                                                 {{ $sub_allocation->allocation_type }} 
                                             </td>
                                             <td> {{ $sub_allocation->allocation_code }} </td>
-                                            <td> {{ $sub_allocation->allocated_amount }} </td>
+                                            <td> &#8358; 
+                                                {{ number_format((isset($sub_allocation->allocated_amount) ? $sub_allocation->allocated_amount : 0), 2) }} 
+                                            </td>
                                         </tr>
                                     @endforeach
                                 @endif

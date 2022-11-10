@@ -22,6 +22,8 @@ use Hasob\FoundationCore\Traits\Ledgerable;
 use Hasob\FoundationCore\Traits\Attachable;
 use Hasob\FoundationCore\Traits\Artifactable;
 use Hasob\FoundationCore\Traits\OrganizationalConstraint;
+use Hasob\FoundationCore\Models\User;
+use App\Models\Beneficiary;
 
 use Eloquent as Model;
 
@@ -188,7 +190,7 @@ class ASTDNomination extends Model
      **/
     public function beneficiary()
     {
-        return $this->hasOne(\App\Models\Beneficiary::class, 'id', 'beneficiary_institution_id');
+        return $this->hasOne(Beneficiary::class, 'id', 'beneficiary_institution_id');
     }
 
     /**
@@ -196,7 +198,7 @@ class ASTDNomination extends Model
      **/
     public function user()
     {
-        return $this->hasOne(\Hasob\FoundationCore\Models\User::class, 'id', 'user_id');
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
 
 }
