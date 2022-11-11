@@ -149,19 +149,17 @@ class BeneficiaryAPIController extends AppBaseController
                 //create or update beneficiary institution
                 $beneficiary_obj->save();
 
+                //desk-officer custom email
+                $desk_officer_email = strtolower($get_server_beneficiary->short_name)."@tetfund.gov.ng";
+                
                 //checking if beneficiary desk officer exist
-                $beneficiary_desk_officer_user = User::where('email', $get_server_beneficiary->official_email)->first();
+                $beneficiary_desk_officer_user = User::where('email', $desk_officer_email)->first();
                 
                 if (empty($beneficiary_desk_officer_user)) {
 
-                    //check if beneficiary email is valid else skip desk_officer user creation
-                    if (!filter_var($get_server_beneficiary->official_email, FILTER_VALIDATE_EMAIL)) {
-                        continue;
-                    }
-
                     // desk officer payload
                     $pay_load = [
-                        "email" => $get_server_beneficiary->official_email,
+                        "email" => $desk_officer_email,
                         'password' => 'password',
                         "telephone" => $get_server_beneficiary->official_phone,
                         "first_name" => strtoupper($get_server_beneficiary->short_name),
