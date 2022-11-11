@@ -53,7 +53,7 @@
                                         </div>
                                     @endif
                                 </div>
-                                <em><small class="" style="color: red;"> Max file Size 100M </small></em>
+                                <em><small class="" style="color: red;"> Max file Size 100M (Required)</small></em>
                             </td>
                         </tr>
                     @endforeach
@@ -104,7 +104,7 @@
                                 </div>
                             @endif
                         </div>
-                        <em><small class="" style="color: red;"> Max file Size 100M </small></em>
+                        <em><small class="" style="color: red;"> Max file Size 100M (Optional) </small></em>
                     </td>
                 </tr>
 

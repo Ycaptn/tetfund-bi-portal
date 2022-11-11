@@ -116,6 +116,13 @@ class TETFundServer {
         $api_response_data = json_decode($api_response);
 
         curl_close ($funds_available);
+
+        // return server error response when processing submissions containing valid intervention line
+        if (isset($api_response_data->success) && $api_response_data->success == false && isset($tf_iterum_intervention_line_key_id) && $tf_iterum_intervention_line_key_id != null ) {
+            return $api_response_data;
+        }
+
+        // return server success and default response message
         return ($api_response != null && $api_response_data !=null && isset($api_response_data->data)) ?  $api_response_data->data : [];
     }
 

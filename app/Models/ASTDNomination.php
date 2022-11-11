@@ -186,19 +186,19 @@ class ASTDNomination extends Model
 
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function beneficiary()
     {
-        return $this->hasOne(Beneficiary::class, 'id', 'beneficiary_institution_id');
+        return $this->belongsTo(Beneficiary::class, 'beneficiary_institution_id', 'id');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function user()
     {
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
 }

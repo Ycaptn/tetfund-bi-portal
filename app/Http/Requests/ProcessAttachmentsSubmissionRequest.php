@@ -31,7 +31,7 @@ class ProcessAttachmentsSubmissionRequest extends AppBaseFormRequest
             $checklist_input_fields_arr = explode(',', request()->checklist_input_fields);
             
             foreach ($checklist_input_fields_arr as $checklist_input_name) {
-                $array_to_return[strval($checklist_input_name)] = 'sometimes|mimes:pdf|max:102400';
+                $array_to_return[strval($checklist_input_name)] = 'sometimes|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:102400';
             }
 
         }
@@ -40,7 +40,7 @@ class ProcessAttachmentsSubmissionRequest extends AppBaseFormRequest
             $array_to_return['additional_attachment_name'] = 'required|string|max:190';
         }
         
-        $array_to_return['additional_attachment'] = 'sometimes|mimes:pdf|max:102400';
+        $array_to_return['additional_attachment'] = 'sometimes|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:102400';
         
         return $array_to_return;
     }

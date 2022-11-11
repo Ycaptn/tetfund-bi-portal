@@ -98,7 +98,9 @@
         <label class="col-lg-12 control-label">Requested Amount (&#8358)</label>
         <div class="col-lg-4">
             <div class="input-group">
-                <input type='text' class="form-control" name="amount_requested" id="amount_requested" value="{{ (isset($submissionRequest) && old('amount_requested') == null) ? $submissionRequest->amount_requested : old('amount_requested')  }}" />
+                <input type='hidden' class="form-control" name="amount_requested" id="amount_requested" value="{{ (isset($submissionRequest) && old('amount_requested') == null) ? $submissionRequest->amount_requested : old('amount_requested')  }}" />
+
+                <input type='text' class="form-control" name="amount_requested_digit" id="amount_requested_digit" value="{{ (isset($submissionRequest) && old('amount_requested_digit') == null) ? number_format($submissionRequest->amount_requested) : old('amount_requested_digit')  }}" />
                 <span class="input-group-text"><span class="fa fa-money"></span></span>
             </div>
         </div>

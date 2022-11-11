@@ -31,7 +31,26 @@ New Submission
 
 @section('content')
     <div class="card border-top border-0 border-4 border-success">
-        <div class="card-body p-4">
+       
+        {{-- fainted loader --}}
+        <div class="col-sm-12 text-center" id="spinner-submission_requests" style="display: none; width:100%; height: 100%; position: absolute; z-index: 2;">
+            
+            <div style="position: absolute; background-color: lightgrey; width:100%; height: 100%; opacity:0.5;">
+            </div>
+
+            <div class="col-sm-12 text-center" style="position: absolute; width:100%; height: 100%; padding-top: 150px;">
+                <div class="spinner-border text-primary" role="status"> 
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <br>
+                <div class="col-sm-12">
+                    <h3><strong>Please Wait...</strong></h3>
+                    <h5><strong><i>Loading related intervention lines !</i></strong></h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-4">   
             <div class="card-title d-flex align-items-center">
                 <div>
                     <i class="bx bx-highlight me-1 font-22 text-primary"></i>
@@ -39,7 +58,7 @@ New Submission
                 <h5 class="mb-0 text-primary">Please provide details of your submission</h5>
             </div>
             <hr />
-            {!! Form::open(['route' => 'tf-bi-portal.submissionRequests.store','class'=>'form-horizontal']) !!}
+            {!! Form::open(['route' => 'tf-bi-portal.submissionRequests.store','class'=>'form-horizontal', 'onsubmit'=>'filter_removing_comma()' ]) !!}
             
                 @include('pages.submission_requests.fields')
 
@@ -68,11 +87,19 @@ New Submission
 
 @push('page_scripts')
     <script type="text/javascript">
+
+        // filter function to remove comma in amount before posting 
+        function filter_removing_comma() {
+            var numeric_amount = $('#amount_requested_digit').val().replace(/,/g,'');
+            $("#amount_requested").val(numeric_amount);
+            //console.log(numeric_amount);
+        }
+
         $(document).ready(function() {
 
-            /*$('#amount_requested').keyup(function(event){
-                $('#amount_requested').digits();
-            });*/
+            $('#amount_requested_digit').keyup(function(event){
+                $('#amount_requested_digit').digits();
+            });
 
             /* Converting string words to upper-case */
             function upperCaseFirstLetterInString(str){
@@ -91,6 +118,10 @@ New Submission
                     $("#intervention_line").html(default_option);
                     $("#btn_submit_request").attr('disabled', false);
                 } else {
+                    
+                    $("#spinner-submission_requests").show();
+                    $("#spinner-submission_requests").focus();
+
                     /* get all related Intervention Lines */
                     $.get( "{{ route('tf-bi-portal-api.getAllInterventionLinesForSpecificType', '') }}?intervention_type="+intervention_type_val).done(function( response ) {
                         if (response && response != null) {
@@ -101,6 +132,8 @@ New Submission
                             });
                             
                             $('#intervention_line').html(default_option);
+
+                            $("#spinner-submission_requests").hide();
                         }
                     });
                     $("#btn_submit_request").attr('disabled', false);

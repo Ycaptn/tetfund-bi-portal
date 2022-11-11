@@ -101,19 +101,19 @@ class SubmissionRequest extends Model
 
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function user()
     {
-        return $this->hasOne(User::class, 'requesting_user_id', 'id');
+        return $this->belongsTo(User::class, 'requesting_user_id', 'id');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function beneficiary()
     {
-        return $this->hasOne(Beneficiary::class, 'id', 'beneficiary_id');
+        return $this->belongsTo(Beneficiary::class, 'beneficiary_id', 'id');
     }
 
     public static function get_specific_attachement($submission_request_id, $item_label) {

@@ -199,8 +199,13 @@ class SubmissionRequestController extends BaseController
         $tETFundServer = new TETFundServer();   /* server class constructor */
         $fund_availability = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, array_unique($years));
 
+        //error when no fund allocation for selected year(s) is found
+        if (isset($fund_availability->success) && $fund_availability->success == false && $fund_availability->message != null) {
+            array_push($errors_array, $fund_availability->message);
+        }
+        
         //error for requested fund mismatched to allocated fund
-        if (isset($fund_availability) && $fund_availability->total_fund != $submissionRequest->amount_requested) {
+        if (isset($fund_availability->total_funds) && $fund_availability->total_funds != $submissionRequest->amount_requested) {
             array_push($errors_array, "Fund requested must be equal to the Allocated amount.");
         }
 

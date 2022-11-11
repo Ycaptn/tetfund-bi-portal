@@ -215,7 +215,7 @@ Submission Request
             event.preventDefault();
             swal({
                 title: "Validate & Process This Submission Request?",
-                text: "Pls do confirm completion of this submission by chicking 'Yes submit'.",
+                text: "Pls do confirm completion of this submission by clicking 'Yes submit'.",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonClass: "btn-danger",
