@@ -65,38 +65,34 @@
                 @endif
         </div>
 
-        <div class="flex justify-center">      
+        <div class="flex justify-center" style="margin-top: 15px;" >      
             <div class=" bg-white shadow-md border border-blue-300 rounded-md w-full md:w-3/4 z-10 px-8 pt-6 pb-8 mb-4" >
-                @if(env('BIMS_CLIENT_ID') && env('BIMS_IS_ENABLED') == true && env('BIMS_REDIRECT_URI') != null)
-                    <div class="mb-8" style="width: 100%;">
-                        <div class="flex flex-row min-h-screen justify-center items-center mb-16">
-                            <a href="https://bims.tetfund.gov.ng/oauth/authorize?response_type=code&client_id={{$clientId}}&redirect_uri={{$redirectUrl}}&state={{$state}}" role="button" style="border-radius:10px;">
-                                <button class="bg-limegreen hover:bg-green-500 rounded text-white font-bold py-2 px-5">
-                                    <div class="">
-                                        <img src="{{asset('imgs/bims.png')}}" style="width: 80px; height: 35px;" alt="">
-                                    </div>
-                                    <div class="" >
-                                        <span>Continue with BIMS</span>
-                                    </div>
-                                </button>
-                            </a>
-                        </div>
-                        <div class="flex flex-row min-h-screen justify-center items-center">
-                            <button class="bg-lightgray hover:bg-gray-500 rounded text-black" style="border-radius:5px;" id="toggle_login_form">
-                                &nbsp;
-                                    <span class="fa fa-angle-down" id="login_icon_1" style="display: inline-block;"></span>
-                                    <span class="fa fa-angle-up" id="login_icon_2" style="display: none;"></span>
-                                        Login Directly
-                                &nbsp;
-                            </button>
-                        </div>
+                
+                <div class="md:flex md:items-center justify-between mb-4">
+                    <div class="mb-4 flex justify-center md:justify-between">
+                        <img src="{{ asset('imgs/tetfundlogo1.png') }}" width="110vw" alt="TETFund Logo" />
                     </div>
-                @else
 
-                @endif
+                    @if(env('BIMS_CLIENT_ID') && env('BIMS_IS_ENABLED') == true && env('BIMS_REDIRECT_URI') != null)
+                        <div class="mb-8" style="width: 100%;">
+                            <div class="flex flex-row justify-center md:justify-end mb-4">
+                                <a href="https://bims.tetfund.gov.ng/oauth/authorize?response_type=code&client_id={{$clientId}}&redirect_uri={{$redirectUrl}}&state={{$state}}" role="button" style="border-radius:10px;">
+                                    <button class="bg-limegreen hover:bg-green-500 rounded text-white font-bold py-2 px-5">
+                                        <div class="">
+                                            <img src="{{asset('imgs/bims.png')}}" style="width: 80px; height: 30px;" alt="">
+                                        </div>
+                                        <div class="" >
+                                            <span><small>Continue with BIMS</small></span>
+                                        </div>
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                    @endif
+                </div>
 
                 <!-- form to be toggled -->
-                <div class="" style="display: none;" id="login_form"> 
+                <div class=""> 
                     <form method="post" action="{{ url('/login') }}">
                             @csrf
                         <div class="mb-4 ">
@@ -225,17 +221,6 @@
             // toggle icon class
             icon.toggleClass('fa-eye fa-eye-slash')
         })
-
-        $("#toggle_login_form").on('click', function(e) {
-            e.preventDefault()
-            $('#login_form').slideToggle('slow');
-            $('#login_icon_1').toggle();
-            $('#login_icon_2').toggle();
-        })
-
-        @if(!env('BIMS_CLIENT_ID') || env('BIMS_IS_ENABLED') == false || env('BIMS_REDIRECT_URI') == null)
-            $('#login_form').show('slow');
-        @endif
 
     });
 
