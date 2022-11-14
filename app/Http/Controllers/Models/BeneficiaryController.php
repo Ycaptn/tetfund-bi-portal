@@ -17,6 +17,7 @@ use Hasob\FoundationCore\Controllers\BaseController;
 use Hasob\FoundationCore\Models\Organization;
 use Hasob\FoundationCore\View\Components\CardDataView;
 use App\Models\BeneficiaryMember;
+use Spatie\Permission\Models\Role;
 
 use Flash;
 
@@ -111,7 +112,9 @@ class BeneficiaryController extends BaseController
             return redirect(route('tf-bi-portal.beneficiaries.index'));
         }
 
-        return view('tf-bi-portal::pages.beneficiaries.show')->with(['beneficiary'=>$beneficiary, 'beneficiary_members'=>$beneficiary_members]);
+        $allRoles = Role::where('guard_name', 'web')->pluck('name');
+
+        return view('tf-bi-portal::pages.beneficiaries.show')->with(['beneficiary'=>$beneficiary, 'beneficiary_members'=>$beneficiary_members, 'roles'=>$allRoles]);
     }
 
     /**

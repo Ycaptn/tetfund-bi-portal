@@ -1,5 +1,5 @@
 <!-- Full Name Field -->
-<div id="div_beneficiary_full_name" class="col-sm-12 mb-10">
+<div id="div_beneficiary_full_name" class="col-sm-12 ">
     <p>
         <strong> {!! Form::label('full_name', 'FULL NAME:', ['class'=>'control-label']) !!} </strong> &nbsp;
         <span id="spn_beneficiary_full_name">
@@ -13,7 +13,7 @@
 </div>
 
 <!-- Email Field -->
-<div id="div_beneficiary_email" class="col-sm-6 mb-10">
+<div id="div_beneficiary_email" class="col-sm-6">
     <p>
         <strong> {!! Form::label('email', 'EMAIL:', ['class'=>'control-label']) !!} </strong>
         <span id="spn_beneficiary_email" class="col-sm-6"> &nbsp; &nbsp;
@@ -27,7 +27,7 @@
 </div>
 
 <!-- Short Name Field -->
-<div id="div_beneficiary_short_name" class="col-sm-6 mb-10">
+<div id="div_beneficiary_short_name" class="col-sm-6">
     <p>
         <strong> {!! Form::label('short_name', 'SHORT NAME:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
         <span id="spn_beneficiary_short_name">
@@ -41,7 +41,7 @@
 </div>
 
 <!-- Official Email Field -->
-<div id="div_beneficiary_official_email" class="col-sm-6 mb-10">
+<div id="div_beneficiary_official_email" class="col-sm-6">
     <p>
         <strong> {!! Form::label('official_email', 'OFFICIAL EMAIL:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
         <span id="spn_beneficiary_official_email">
@@ -55,7 +55,7 @@
 </div>
 
 <!-- Official Website Field -->
-<div id="div_beneficiary_official_website" class="col-sm-6 mb-10">
+<div id="div_beneficiary_official_website" class="col-sm-6">
     <p>
         <strong> {!! Form::label('official_website', 'OFFICIAL WEBSITE:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
         <span id="spn_beneficiary_official_website">
@@ -69,7 +69,7 @@
 </div>
 
 <!-- Type Field -->
-<div id="div_beneficiary_type" class="col-sm-6 mb-10">
+<div id="div_beneficiary_type" class="col-sm-6">
     <p>
         <strong> {!! Form::label('type', 'INSTITUTION TYPE:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
         <span id="spn_beneficiary_type">
@@ -83,7 +83,7 @@
 </div>
 
 <!-- Official Phone Field -->
-<div id="div_beneficiary_official_phone" class="col-sm-6 mb-10">
+<div id="div_beneficiary_official_phone" class="col-sm-6">
     <p>
         <strong> {!! Form::label('official_phone', 'OFFICIAL PHONE:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
         <span id="spn_beneficiary_official_phone">
@@ -98,7 +98,7 @@
 <hr>
 
 <!-- Address Street Field -->
-<div id="div_beneficiary_address_street" class="col-sm-12 mb-10">
+<div id="div_beneficiary_address_street" class="col-sm-12 ">
     <p>
         <strong> {!! Form::label('address_street', 'ADDRESS STREET:', ['class'=>'control-label']) !!} </strong>
         <span id="spn_beneficiary_address_street"> &nbsp; &nbsp;
@@ -111,7 +111,7 @@
     </p>
 </div>
 <!-- Address Town Field -->
-<div id="div_beneficiary_address_town" class="col-sm-6 mb-10">
+<div id="div_beneficiary_address_town" class="col-sm-6">
     <p>
         <strong> {!! Form::label('address_town', 'ADDRESS TOWN:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
         <span id="spn_beneficiary_address_town">
@@ -125,7 +125,7 @@
 </div>
 
 <!-- Address State Field -->
-<div id="div_beneficiary_address_state" class="col-sm-6 mb-10">
+<div id="div_beneficiary_address_state" class="col-sm-6">
     <p>
         <strong> {!! Form::label('address_state', 'ADDRESS STATE:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
         <span id="spn_beneficiary_address_state">
@@ -139,7 +139,7 @@
 </div>
 
 <!-- Head Of Institution Title Field -->
-<div id="div_beneficiary_head_of_institution_title" class="col-sm-6 mb-10">
+<div id="div_beneficiary_head_of_institution_title" class="col-sm-6">
     <p>
         <strong> {!! Form::label('head_of_institution_title', 'HEAD OF INSTITUTION TITLE:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
         <span id="spn_beneficiary_head_of_institution_title">
@@ -153,7 +153,7 @@
 </div>
 
 <!-- Geo Zone Field -->
-<div id="div_beneficiary_geo_zone" class="col-sm-6 mb-10">
+<div id="div_beneficiary_geo_zone" class="col-sm-6">
     <p>
         <strong> {!! Form::label('geo_zone', 'GEO ZONE:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
         <span id="spn_beneficiary_geo_zone">
@@ -167,7 +167,7 @@
 </div>
 
 <!-- Owner Agency Type Field -->
-<div id="div_beneficiary_owner_agency_type" class="col-sm-6 mb-10">
+<div id="div_beneficiary_owner_agency_type" class="col-sm-6">
     <p>
         <strong> {!! Form::label('owner_agency_type', 'OWNER AGENCY TYPE:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
         <span id="spn_beneficiary_owner_agency_type">
@@ -181,7 +181,7 @@
 </div>
 
 <!-- Tf Iterum Portal Beneficiary Status Field -->
-<div id="div_beneficiary_tf_iterum_portal_beneficiary_status" class="col-sm-6 mb-10">
+<div id="div_beneficiary_tf_iterum_portal_beneficiary_status" class="col-sm-6">
     <p>
         <strong> {!! Form::label('tf_iterum_portal_beneficiary_status', 'TF ITERUM PORTAL BENEFICIARY STATUS:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
         <span id="spn_beneficiary_tf_iterum_portal_beneficiary_status">

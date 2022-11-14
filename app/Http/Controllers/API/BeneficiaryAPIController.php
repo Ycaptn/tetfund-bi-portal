@@ -12,6 +12,7 @@ use App\Events\BeneficiaryDeleted;
 
 use App\Http\Requests\API\CreateBeneficiaryAPIRequest;
 use App\Http\Requests\API\UpdateBeneficiaryAPIRequest;
+use App\Http\Requests\API\CreateBeneficiaryMemberAPIRequest;
 
 use Hasob\FoundationCore\Traits\ApiResponder;
 use Hasob\FoundationCore\Models\Organization;
@@ -20,6 +21,7 @@ use Hasob\FoundationCore\Controllers\BaseController as AppBaseController;
 use App\Managers\TETFundServer;
 use App\Http\Traits\BeneficiaryUserTrait;
 use Hasob\FoundationCore\Models\User;
+use Spatie\Permission\Models\Role;
 
 /**
  * Class BeneficiaryController
@@ -69,6 +71,47 @@ class BeneficiaryAPIController extends AppBaseController
     public function store(CreateBeneficiaryAPIRequest $request, Organization $organization)
     {
         
+    }
+
+    public function store_beneficiary_member(CreateBeneficiaryMemberAPIRequest $request, Organization $organization) {
+        
+        //get beneficiary
+        $beneficiary = Beneficiary::find($request->beneficiary_id);
+
+        $allRoles = Role::where('guard_name', 'web')->pluck('name');
+        $selectedRoles = [];
+
+        if (isset($allRoles) && count($allRoles) > 0) {
+            foreach ($allRoles as $role) {
+                if ($role == 'admin') continue;
+                if (isset($role->{''.$role}) && $role->{''.$role} == 'on') {
+                    array_push($selectedRoles, $role);
+                }
+            }
+        }
+
+        //new beneficiary staff payload
+        $pay_load = [
+            "email" => $request->bi_staff_email,
+            "first_name" => ucwords($request->bi_staff_fname),
+            "last_name" => ucwords($request->bi_staff_lname),
+            "telephone" => $request->bi_telephone,
+            'password' => 'password',
+            "gender" => ucwords($request->bi_staff_gender),
+            'organization_id' => $request->organization_id ?? null,
+            'beneficiary_bi_id' => $beneficiary->id,
+            'beneficiary_tetfund_iterum_id' => $beneficiary->tf_iterum_portal_key_id,
+            'user_roles_arr' => $selectedRoles
+        ];
+        
+        // creating beneficiary staff user to DB and on BIMS 
+        $new_user_response = $this->create_new_bims_and_local_user($pay_load);
+
+        if (isset($new_user_response['beneficiary_user_id']) && isset($new_user_response['beneficiary_user_email'])) {
+            return $this->sendSuccess('New beneficiary User created successfully!'); 
+        }
+
+        return $this->sendError('An error occured while creating new beneficiary User');
     }
 
     /**

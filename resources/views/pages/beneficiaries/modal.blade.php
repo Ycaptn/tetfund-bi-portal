@@ -1,57 +1,6 @@
 
 
-<div class="modal fade" id="mdl-beneficiary-modal" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
 
-            <div class="modal-header">
-                <h5 id="lbl-beneficiary-modal-title" class="modal-title">Beneficiary</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <div class="modal-body">
-                <div id="div-beneficiary-modal-error" class="alert alert-danger" role="alert"></div>
-                <form class="form-horizontal" id="frm-beneficiary-modal" role="form" method="POST" enctype="multipart/form-data" action="">
-                    <div class="row">
-                        <div class="col-lg-12 m-3">
-                            
-                            @csrf
-                            
-                            <div class="offline-flag"><span class="offline-beneficiaries">You are currently offline</span></div>
-
-                            <div id="spinner-beneficiaries" class="spinner-border text-primary" role="status"> 
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-
-                            <input type="hidden" id="txt-beneficiary-primary-id" value="0" />
-                            <div id="div-show-txt-beneficiary-primary-id">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                    @include('tf-bi-portal::pages.beneficiaries.show_fields')
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="div-edit-txt-beneficiary-primary-id">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                    @include('tf-bi-portal::pages.beneficiaries.fields')
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-        
-            <div class="modal-footer" id="div-save-mdl-beneficiary-modal">
-                <button type="button" class="btn btn-primary" id="btn-save-mdl-beneficiary-modal" value="add">Save</button>
-            </div>
-
-        </div>
-    </div>
-</div>
 
 @push('page_scripts')
 <script type="text/javascript">
