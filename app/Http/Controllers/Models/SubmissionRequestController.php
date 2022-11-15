@@ -195,10 +195,12 @@ class SubmissionRequestController extends BaseController
             array_push($years, $submissionRequest->intervention_year4);
         }
 
+        $unique_years = array_unique($years);
+
         //get total fund available 
         $tETFundServer = new TETFundServer();   /* server class constructor */
-        $fund_availability = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, array_unique($years));
-
+        $fund_availability = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $unique_years, true);
+        
         //error when no fund allocation for selected year(s) is found
         if (isset($fund_availability->success) && $fund_availability->success == false && $fund_availability->message != null) {
             array_push($errors_array, $fund_availability->message);
@@ -207,6 +209,16 @@ class SubmissionRequestController extends BaseController
         //error for requested fund mismatched to allocated fund
         if (isset($fund_availability->total_funds) && $fund_availability->total_funds != $submissionRequest->amount_requested) {
             array_push($errors_array, "Fund requested must be equal to the Allocated amount.");
+        }
+
+        //error when at least one selected allocation year is found
+        if (isset($fund_availability->allocation_records) && count($fund_availability->allocation_records) > 0) {
+            $all_valid_allocation_year = array_column($fund_availability->allocation_records, 'year');
+            foreach($unique_years as $year) {
+                if (!in_array($year, $all_valid_allocation_year)) {
+                    array_push($errors_array, "No allocation datails is found for selected Intervention year ". $year);
+                }
+            }
         }
 
         //error for incomplete attachments

@@ -40,12 +40,14 @@ class CreateBeneficiaryMemberAPIRequest extends AppBaseFormRequest
             'beneficiary_id' => 'required|string|exists:tf_bi_portal_beneficiaries,id|max:300',
         ];
 
-        $allRoles = Role::where('guard_name', 'web')->pluck('name');
+        $allRoles = Role::where('guard_name', 'web')
+                    ->where('name', '!=', 'admin')
+                    ->where('name', 'like', '%bi%')
+                    ->pluck('name');
 
         // checking if any role is set
         if(count($allRoles) > 0) {
             foreach($allRoles as $role) {
-                if ($role == 'admin') continue;
                 if (isset(request()->{'userRole_'.$role}) && request()->{'userRole_'.$role} == 'on') $roles_set = true;
             }
         }

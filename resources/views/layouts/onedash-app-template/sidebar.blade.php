@@ -126,16 +126,6 @@
 				</a>
 			</li>
 			
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi','bi-staff']))
-			<li>
-				<a href="{{ route('tf-bi-portal.nomination_requests.index') }}" class="">
-					<div class="parent-icon"><i class='bx bx-paper-plane'></i>
-					</div>
-					<div class="menu-title">Nomination Request</div>
-				</a>
-			</li>
-			@endif
-
 			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
 			<li>
 				<a href="{{ route('tf-bi-portal.fund-availability') }}" class="">
@@ -145,13 +135,23 @@
 				</a>
 			</li>
 			@endif
-			
+
 			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
 			<li>
 				<a href="{{ route('tf-bi-portal.submissionRequests.index') }}" class="">
 					<div class="parent-icon"><i class='bx bx-layer-plus'></i>
 					</div>
 					<div class="menu-title">Submissions</div>
+				</a>
+			</li>
+			@endif
+
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi','bi-staff']))
+			<li>
+				<a href="{{ route('tf-bi-portal.nomination_requests.index') }}" class="">
+					<div class="parent-icon"><i class='bx bx-paper-plane'></i>
+					</div>
+					<div class="menu-title">Nomination Request</div>
 				</a>
 			</li>
 			@endif

@@ -78,13 +78,15 @@ class BeneficiaryAPIController extends AppBaseController
         //get beneficiary
         $beneficiary = Beneficiary::find($request->beneficiary_id);
 
-        $allRoles = Role::where('guard_name', 'web')->pluck('name');
+        $allRoles = Role::where('guard_name', 'web')
+                        ->where('name', '!=', 'admin')
+                        ->where('name', 'like', '%bi%')
+                        ->pluck('name');
         $selectedRoles = [];
 
         if (isset($allRoles) && count($allRoles) > 0) {
             foreach ($allRoles as $role) {
-                if ($role == 'admin') continue;
-                if (isset($role->{''.$role}) && $role->{''.$role} == 'on') {
+                if (isset($request->{'userRole_'.$role}) && $request->{'userRole_'.$role} == 'on') {
                     array_push($selectedRoles, $role);
                 }
             }

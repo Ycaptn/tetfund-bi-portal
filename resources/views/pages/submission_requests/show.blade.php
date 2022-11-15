@@ -109,6 +109,10 @@ Submission Request
                                     </strong>
                                 </li>
                             @endif
+                            
+                            {{-- @if(true)
+                                <li>No allocation datails exist for 2020 intervention year.</li>
+                            @endif --}}
                         </ul>
                     </div>
                     <div class="col-md-3">

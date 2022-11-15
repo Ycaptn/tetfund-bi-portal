@@ -103,16 +103,18 @@ class BeneficiaryController extends BaseController
         /** @var Beneficiary $beneficiary */
         $beneficiary = Beneficiary::find($id);
         $beneficiary_members = [];
-        if ($beneficiary != null) {
-            $beneficiary_members = BeneficiaryMember::where('beneficiary_id', $beneficiary->id)->get();
-        }
-
+        
         if (empty($beneficiary)) {
             //Flash::error('Beneficiary not found');
             return redirect(route('tf-bi-portal.beneficiaries.index'));
         }
 
-        $allRoles = Role::where('guard_name', 'web')->pluck('name');
+        $beneficiary_members = BeneficiaryMember::where('beneficiary_id', $beneficiary->id)->get();
+
+        $allRoles = Role::where('guard_name', 'web')
+                    ->where('name', '!=', 'admin')
+                    ->where('name', 'like', '%bi%')
+                    ->pluck('name');
 
         return view('tf-bi-portal::pages.beneficiaries.show')->with(['beneficiary'=>$beneficiary, 'beneficiary_members'=>$beneficiary_members, 'roles'=>$allRoles]);
     }
@@ -131,7 +133,6 @@ class BeneficiaryController extends BaseController
 
         if (empty($beneficiary)) {
             //Flash::error('Beneficiary not found');
-
             return redirect(route('xyz.beneficiaries.index'));
         }
 
@@ -153,7 +154,6 @@ class BeneficiaryController extends BaseController
 
         if (empty($beneficiary)) {
             //Flash::error('Beneficiary not found');
-
             return redirect(route('xyz.beneficiaries.index'));
         }
 
@@ -182,7 +182,6 @@ class BeneficiaryController extends BaseController
 
         if (empty($beneficiary)) {
             //Flash::error('Beneficiary not found');
-
             return redirect(route('xyz.beneficiaries.index'));
         }
 

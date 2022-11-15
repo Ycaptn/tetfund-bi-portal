@@ -1,15 +1,15 @@
 @php
     $years_str = $submissionRequest->intervention_year1;
-    
     // merged years, unique years & sorted years
     if (isset($years) && count($years) > 1) {
         $years_detail = array_values(array_unique($years));
         rsort($years_detail);
-        $years_detail[count($years_detail) - 1] = ' and ' . $years_detail[count($years_detail) - 1];
-        $years_str = implode(", ", $years_detail);
-        $years_str = substr($years_str, 0,strrpos($years_str,",")) . $years_detail[count($years_detail) - 1];
-    } 
-
+        if (count($years_detail) > 1) {
+            $years_detail[count($years_detail) - 1] = ' and ' . $years_detail[count($years_detail) - 1];
+            $years_str = implode(", ", $years_detail);
+            $years_str = substr($years_str, 0,strrpos($years_str,",")) . $years_detail[count($years_detail) - 1];
+        }
+    }
 @endphp
 
 
