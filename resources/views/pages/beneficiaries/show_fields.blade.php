@@ -1,7 +1,7 @@
 <!-- Full Name Field -->
 <div id="div_beneficiary_full_name" class="col-sm-12 ">
     <p>
-        <strong> {!! Form::label('full_name', 'FULL NAME:', ['class'=>'control-label']) !!} </strong> &nbsp;
+        <strong> {!! Form::label('full_name', 'BENEFICIARY NAME:', ['class'=>'control-label']) !!} </strong> &nbsp;
         <span id="spn_beneficiary_full_name">
         @if (isset($beneficiary->full_name) && empty($beneficiary->full_name)==false)
             {!! $beneficiary->full_name !!}
@@ -71,7 +71,7 @@
 <!-- Type Field -->
 <div id="div_beneficiary_type" class="col-sm-6">
     <p>
-        <strong> {!! Form::label('type', 'INSTITUTION TYPE:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
+        <strong> {!! Form::label('type', 'BENEFICIARY TYPE:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
         <span id="spn_beneficiary_type">
         @if (isset($beneficiary->type) && empty($beneficiary->type)==false)
             {!! ucwords($beneficiary->type) !!}
@@ -141,10 +141,10 @@
 <!-- Head Of Institution Title Field -->
 <div id="div_beneficiary_head_of_institution_title" class="col-sm-6">
     <p>
-        <strong> {!! Form::label('head_of_institution_title', 'HEAD OF INSTITUTION TITLE:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
+        <strong> {!! Form::label('head_of_institution_title', 'HEAD OF BENEFICIARY TITLE:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
         <span id="spn_beneficiary_head_of_institution_title">
         @if (isset($beneficiary->head_of_institution_title) && empty($beneficiary->head_of_institution_title)==false)
-            {!! $beneficiary->head_of_institution_title !!}
+            {!! ucwords($beneficiary->head_of_institution_title) !!}
         @else
             N/A
         @endif
@@ -166,31 +166,33 @@
     </p>
 </div>
 
-<!-- Owner Agency Type Field -->
-<div id="div_beneficiary_owner_agency_type" class="col-sm-6">
-    <p>
-        <strong> {!! Form::label('owner_agency_type', 'OWNER AGENCY TYPE:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
-        <span id="spn_beneficiary_owner_agency_type">
-        @if (isset($beneficiary->owner_agency_type) && empty($beneficiary->owner_agency_type)==false)
-            {!! $beneficiary->owner_agency_type !!}
-        @else
-            N/A
-        @endif
-        </span>
-    </p>
-</div>
+@if(auth()->user()->hasAnyRole('admin'))
+    <!-- Owner Agency Type Field -->
+    <div id="div_beneficiary_owner_agency_type" class="col-sm-6">
+        <p>
+            <strong> {!! Form::label('owner_agency_type', 'OWNER AGENCY TYPE:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
+            <span id="spn_beneficiary_owner_agency_type">
+            @if (isset($beneficiary->owner_agency_type) && empty($beneficiary->owner_agency_type)==false)
+                {!! $beneficiary->owner_agency_type !!}
+            @else
+                N/A
+            @endif
+            </span>
+        </p>
+    </div>
 
-<!-- Tf Iterum Portal Beneficiary Status Field -->
-<div id="div_beneficiary_tf_iterum_portal_beneficiary_status" class="col-sm-6">
-    <p>
-        <strong> {!! Form::label('tf_iterum_portal_beneficiary_status', 'TF ITERUM PORTAL BENEFICIARY STATUS:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
-        <span id="spn_beneficiary_tf_iterum_portal_beneficiary_status">
-        @if (isset($beneficiary->tf_iterum_portal_beneficiary_status) && empty($beneficiary->tf_iterum_portal_beneficiary_status)==false)
-            {!! $beneficiary->tf_iterum_portal_beneficiary_status !!}
-        @else
-            N/A
-        @endif
-        </span>
-    </p>
-</div>
+    <!-- Tf Iterum Portal Beneficiary Status Field -->
+    <div id="div_beneficiary_tf_iterum_portal_beneficiary_status" class="col-sm-6">
+        <p>
+            <strong> {!! Form::label('tf_iterum_portal_beneficiary_status', 'TF ITERUM PORTAL BENEFICIARY STATUS:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
+            <span id="spn_beneficiary_tf_iterum_portal_beneficiary_status">
+            @if (isset($beneficiary->tf_iterum_portal_beneficiary_status) && empty($beneficiary->tf_iterum_portal_beneficiary_status)==false)
+                {!! $beneficiary->tf_iterum_portal_beneficiary_status !!}
+            @else
+                N/A
+            @endif
+            </span>
+        </p>
+    </div>
+@endif
 

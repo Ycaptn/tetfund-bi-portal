@@ -64,14 +64,14 @@ Beneficiary
     {{-- <a data-toggle="tooltip" 
         title="New" 
         data-val='{{$beneficiary->id}}' 
-        class="btn btn-sm btn-primary btn-new-mdl-beneficiary-modal" href="#">
+        class="btn btn-sm btn-primary btn-new-mdl-beneficiary-member-modal" href="#">
         <i class="fa fa-eye"></i> New
     </a>
 
     <a data-toggle="tooltip" 
         title="Edit" 
         data-val='{{$beneficiary->id}}' 
-        class="btn btn-sm btn-primary btn-edit-mdl-beneficiary-modal" href="#">
+        class="btn btn-sm btn-primary btn-edit-mdl-beneficiary-member-modal" href="#">
         <i class="fa fa-pencil-square-o"></i> Edit
     </a>
 
@@ -93,7 +93,7 @@ Beneficiary
                 <div class="tab pb-2 mt-3" style="border-top: thin solid lightgray; border-bottom: thin solid lightgray;">
                     <ul class="nav">
                         <li class="mt-3" style="margin-right: 3px;">
-                            <a href="#?members=members" class="tablinks btn btn-primary btn-md shadow-none" onclick="openCity(event,'members')" id="defaultOpen">
+                            <a href="#?beneficiary_members=true" class="tablinks btn btn-primary btn-md shadow-none" onclick="openCity(event,'beneficiary_details')" id="defaultOpen">
                                 Members
                             </a>                        
                         </li>
@@ -110,38 +110,23 @@ Beneficiary
                     </ul>
                 </div>
 
-                {{-- sub menu contents --}}
-                <div id="members" class="tabcontent">
-                    <h5 class="pt-2"> 
-                        <strong>
-                            Beneficiary Members 
-                        </strong>
-                         <a title="Create New Beneficiary Member" class="btn btn-primary btn-sm pull-right btn-new-beneficiary-member" href="#">
-                            <span class="fa fa-plus"></span> <small>New Member</small>
-                        </a>
-                    </h5>
-                    @include('tf-bi-portal::pages.beneficiaries.partials.beneficiary_members') 
-                </div>
 
-                <div id="submissions" class="tabcontent">
-                    <h5 class="pt-2"> 
-                        <strong>
-                            Submissions Requests
-                        </strong>
-                    </h5>
-                    {{-- include view path --}}
+            {{-- sub menu contents details--}}
+                <div id="beneficiary_details" class="tabcontent">
+                    <div class="col-sm-12 panel panel-default card-view">
+                        <h5 class="pt-2"> 
+                            <strong>
+                                Beneficiary Members 
+                            </strong>
+                             <a title="Create New Beneficiary Member" class="btn btn-primary btn-sm pull-right btn-new-beneficiary-member" href="#">
+                                <span class="fa fa-plus"></span> <small>New Member</small>
+                            </a>
+                        </h5>
+                        @include('tf-bi-portal::pages.beneficiaries.table')
+                        @include('tf-bi-portal::pages.beneficiaries.partials.beneficiary_member_modal')
+                    </div>
                 </div>
-
-                <div id="nominations" class="tabcontent">
-                    <h5 class="pt-2"> 
-                        <strong>
-                            Nominations 
-                        </strong>
-                    </h5>
-                    {{-- include view path --}}                    
-                </div>   
-                <div class="">
-                </div>
+                
             </div>
         </div>
     </div>
@@ -189,10 +174,19 @@ Beneficiary
         $(document).ready(function() {
             $('.offline-beneficiary-member').hide();
         
-        //Show Modal for New beneficiary members Entry
+            //Show Modal for New beneficiary members Entry
             $(document).on('click', ".btn-new-beneficiary-member", function(e) {
                 $('#div-beneficiary-member-modal-error').hide();
+                $('#bi_staff_email').attr('disabled', false);
+                $('.opposite_create').text("Create");
+                $('#opposite_creating').text("You will be creating a new");
                 $('#mdl-beneficiary-member-modal').modal('show');
+
+                $('#div_beneficiary_member_show_fields').hide();
+                $('#div_beneficiary_member_fields').show();
+                $('#btn-dismiss-beneficiary-member-preview-modal').hide();
+                $('#btn-save-beneficiary-member-modal').show();
+
                 $('#form-beneficiary-member-modal').trigger("reset");
                 $('#txt-beneficiary-member-primary-id').val(0);
 
@@ -200,12 +194,241 @@ Beneficiary
                 $("#btn-new-beneficiary-member").attr('disabled', false);
             });
 
+            //Show Modal to preview beneficiary member details
+            $(document).on('click', ".btn-preview-beneficiary-member", function(e) {
+                e.preventDefault();
+                $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+                $('#div-beneficiary-member-modal-error').hide();
+                $('.opposite_create').text("Preview");
+                $('#opposite_creating').text("You are previewing details of an existing");
+                $('#mdl-beneficiary-member-modal').modal('show');
+
+                $('#div_beneficiary_member_fields').hide();
+                $('#div_beneficiary_member_show_fields').show();
+                $('#btn-save-beneficiary-member-modal').hide();
+                $('#btn-dismiss-beneficiary-member-preview-modal').show();
+
+                $('#form-beneficiary-member-modal').trigger("reset");
+
+                $("#spinner-beneficiary-member").show();
+                $("#btn-new-beneficiary-member").attr('disabled', true);
+
+                let itemId = $(this).attr('data-val');
+                $('#txt-beneficiary-member-primary-id').val(itemId);
+
+                $.get( "{{ route('tf-bi-portal-api.show_beneficiary_member','') }}/"+itemId).done(function( response ) {     
+                    console.log(response);
+                    $('#bi_staff_email_preview').text((response.data.email != null) ? response.data.email.toLowerCase() : 'N/A');
+                    $('#bi_staff_account_status_preview').text((response.data.is_disabled == 0) ? 'Enabled' : 'Disabled');
+                    $('#bi_staff_fname_preview').text((response.data.first_name != null) ? response.data.first_name.toUpperCase() : 'N/A');
+                    $('#bi_staff_lname_preview').text((response.data.last_name != null) ? response.data.last_name.toUpperCase() : 'N/A');
+                    $('#bi_telephone_preview').text((response.data.telephone != null) ? response.data.telephone.toUpperCase() : 'N/A');
+                    $('#bi_staff_gender_preview').text((response.data.gender != null) ? response.data.gender.toUpperCase() : 'N/A');
+
+                    // handling data for role(s)
+                    $('#bi_staff_userRoles').text('N/A');
+                    if(response.data.user_roles != '') {
+                        let roles =  ''
+                        $.each(response.data.user_roles, function(key, value){
+                            roles += "<div class='form-group col-sm-4'> <label class='form-label' for='userRole_"+ value +"'>"+ value.toUpperCase() +"</label>  </div>";
+                        });
+                        $('#bi_staff_userRoles').html(roles);
+                    }
+
+                    $("#spinner-beneficiary-member").hide();
+                    $("#div-save-mdl-beneficiary-member-modal").attr('disabled', false);
+                });
+            });
+
+            //process disable & enable beneficiary member
+            $(document).on('click', ".btn-enable-disable-beneficiary-member", function(e) {
+                e.preventDefault();
+                $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+                let itemId = $(this).attr('data-val');
+                let itemFlag = itemId.slice(-1);
+                let itemName = (itemFlag == '0') ? 'Disabl' : 'Enabl';
+                swal({
+                    title: "Are you sure you want to " + itemName.toLowerCase() + "e this beneficiary user?",
+                    text: 'This action will be applied to selected beneficiary user only!',
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, " + itemName.toLowerCase() + 'e',
+                    cancelButtonText: "No, don't " + itemName.toLowerCase() + 'e',
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        swal({
+                            title: '<div id="spinner-beneficiary-member" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br> Please wait...',
+                            text: itemName + "ing beneficiary user! <br><br> Do not refresh this page! ",
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            html: true
+                        })
+                        
+                        let endPointUrl = "{{ route('tf-bi-portal-api.enable_disable_beneficiary_member','') }}/"+itemId;                
+
+                        let formData = new FormData();
+                        
+                        formData.append('_token', $('input[name="_token"]').val());
+                        formData.append('_method', "GET");
+
+                        @if (isset($organization) && $organization!=null)
+                            formData.append('organization_id', '{{$organization->id}}');
+                        @endif
+                        formData.append('user_id', itemId);
+                        
+                        $.ajax({
+                            url:endPointUrl,
+                            type: "GET",
+                            cache: false,
+                            data: formData,
+                            processData:false,
+                            contentType: false,
+                            dataType: 'json',
+                            success: function(result){
+                                if(result.success && result.success == true){
+                                    swal({
+                                        title: itemName + 'ed',
+                                        text: result.message,
+                                        type: "success",
+                                        confirmButtonClass: "btn-success",
+                                        confirmButtonText: "OK",
+                                        closeOnConfirm: false
+                                    });
+                                    location.reload(true);
+                                }else{
+                                    console.log(result)
+                                    swal("Error", "Oops an error occurred. Please try again.", "error");
+                                }
+                            },
+                        });
+                    }
+                });
+            });
+
+
+            //Delete action for beneficiary user
+            $(document).on('click', ".btn-delete-beneficiary-member", function(e) {
+                e.preventDefault();
+                $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+                //check for internet status 
+                if (!window.navigator.onLine) {
+                    $('.offline-beneficiary-member').fadeIn(300);
+                    return;
+                }else{
+                    $('.offline-beneficiary-member').fadeOut(300);
+                }
+
+                let itemId = $(this).attr('data-val');
+                swal({
+                    title: "Are you sure you want to delete this beneficiary user?",
+                    text: "You will not be able to recover beneficiary user data if deleted.",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No",
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        swal({
+                            title: '<div id="spinner-beneficiary-member" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br> Please wait...',
+                            text: "Deleting beneficiary user! <br><br> Do not refresh this page! ",
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            html: true
+                        })
+
+                        let endPointUrl = "{{ route('tf-bi-portal-api.delete_beneficiary_member','') }}/"+itemId;
+
+                        let formData = new FormData();
+                        formData.append('_token', $('input[name="_token"]').val());
+                        formData.append('_method', 'DELETE');
+                        
+                        $.ajax({
+                            url:endPointUrl,
+                            type: "POST",
+                            data: formData,
+                            cache: false,
+                            processData:false,
+                            contentType: false,
+                            dataType: 'json',
+                            success: function(result){
+                                if(result.errors){
+                                    console.log(result.errors);
+                                    swal("Error", "Oops an error occurred. Please try again.", "error");
+                                }else{
+                                    swal({
+                                        title: "Deleted",
+                                        text: "Beneficiary user deleted successfully",
+                                        type: "success",
+                                        confirmButtonClass: "btn-success",
+                                        confirmButtonText: "OK",
+                                        closeOnConfirm: false
+                                    });
+                                    location.reload(true);
+                                }
+                            },
+                        });
+                    }
+                });
+            });
+
+
+            //Show Modal for beneficiary member Edit
+            $(document).on('click', ".btn-edit-beneficiary-member", function(e) {
+                e.preventDefault();
+                $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+                $('#div-beneficiary-member-modal-error').hide();
+                $('#bi_staff_email').attr('disabled', true);
+                $('.opposite_create').text("Modify");
+                $('#opposite_creating').text("You will be modifying an existing");
+                $('#mdl-beneficiary-member-modal').modal('show');
+
+                $('#div_beneficiary_member_show_fields').hide();
+                $('#div_beneficiary_member_fields').show();
+                $('#btn-dismiss-beneficiary-member-preview-modal').hide();
+                $('#btn-save-beneficiary-member-modal').show();
+
+                $('#form-beneficiary-member-modal').trigger("reset");
+
+                $("#spinner-beneficiary-member").show();
+                $("#btn-new-beneficiary-member").attr('disabled', true);
+
+                let itemId = $(this).attr('data-val');
+                $('#txt-beneficiary-member-primary-id').val(itemId);
+
+                $.get( "{{ route('tf-bi-portal-api.show_beneficiary_member','') }}/"+itemId).done(function( response ) {     
+                    console.log(response);
+                    $('#bi_staff_email').val(response.data.email);
+                    $('#bi_staff_fname').val(response.data.first_name);
+                    $('#bi_staff_lname').val(response.data.last_name);
+                    $('#bi_telephone').val(response.data.telephone);
+                    $('#bi_staff_gender').val((response.data.gender != null) ? response.data.gender.toLowerCase() : '');
+
+                    // handling data for role(s)
+                    if(response.data.user_roles != '') {
+                        $.each(response.data.user_roles, function(key, value){
+                            $('#userRole_' + value).prop('checked', true);
+                        });
+                    }
+
+                    $("#spinner-beneficiary-member").hide();
+                    $("#div-save-mdl-beneficiary-member-modal").attr('disabled', false);
+                });
+            });
 
         //Save beneficiary member details
             $('#btn-save-beneficiary-member-modal').click(function(e) {
                 e.preventDefault();
                 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
-
 
                 //check for internet status 
                 if (!window.navigator.onLine) {
@@ -227,7 +450,7 @@ Beneficiary
 
                 if (primaryId != "0"){
                     actionType = "PUT";
-                    endPointUrl = "{{ route('tf-bi-portal-api.beneficiaries.update','') }}/"+primaryId;
+                    endPointUrl = "{{ route('tf-bi-portal-api.update_beneficiary_member','') }}/"+primaryId;
                     formData.append('id', primaryId);
                 }
                 

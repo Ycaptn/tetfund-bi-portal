@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Beneficiary;
+use App\Models\BeneficiaryMember;
 
 use App\Events\BeneficiaryCreated;
 use App\Events\BeneficiaryUpdated;
@@ -13,6 +14,7 @@ use App\Events\BeneficiaryDeleted;
 use App\Http\Requests\API\CreateBeneficiaryAPIRequest;
 use App\Http\Requests\API\UpdateBeneficiaryAPIRequest;
 use App\Http\Requests\API\CreateBeneficiaryMemberAPIRequest;
+use App\Http\Requests\API\UpdateBeneficiaryMemberAPIRequest;
 
 use Hasob\FoundationCore\Traits\ApiResponder;
 use Hasob\FoundationCore\Models\Organization;
@@ -73,14 +75,57 @@ class BeneficiaryAPIController extends AppBaseController
         
     }
 
-    public function store_beneficiary_member(CreateBeneficiaryMemberAPIRequest $request, Organization $organization) {
+
+    /**
+     * Display the specified Beneficiary.
+     * GET|HEAD /beneficiaries/{id}
+     *
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function show($id, Organization $organization)
+    {
+
+    }
+
+    /**
+     * Update the specified Beneficiary in storage.
+     * PUT/PATCH /beneficiaries/{id}
+     *
+     * @param int $id
+     * @param UpdateBeneficiaryAPIRequest $request
+     *
+     * @return Response
+     */
+    public function update($id, UpdateBeneficiaryAPIRequest $request, Organization $organization)
+    {
         
+    }
+
+    /**
+     * Remove the specified Beneficiary from storage.
+     * DELETE /beneficiaries/{id}
+     *
+     * @param int $id
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function destroy($id, Organization $organization)
+    {
+        
+    }
+
+    /* to store a new beneficiary member */
+    public function store_beneficiary_member(CreateBeneficiaryMemberAPIRequest $request, Organization $organization) {
         //get beneficiary
         $beneficiary = Beneficiary::find($request->beneficiary_id);
 
         $allRoles = Role::where('guard_name', 'web')
                         ->where('name', '!=', 'admin')
-                        ->where('name', 'like', '%bi%')
+                        ->where('name', 'like', '%bi-%')
                         ->pluck('name');
         $selectedRoles = [];
 
@@ -116,48 +161,94 @@ class BeneficiaryAPIController extends AppBaseController
         return $this->sendError('An error occured while creating new beneficiary User');
     }
 
-    /**
-     * Display the specified Beneficiary.
-     * GET|HEAD /beneficiaries/{id}
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
-    public function show($id, Organization $organization)
-    {
+    /* specific beneficiary member detail */
+    public function show_beneficiary_member($id, Organization $organization) {
+        $beneficiary_member = User::find($id);
         
+        if (empty($beneficiary_member)) {
+            return $this->sendError('Beneficiary member is not found');
+        }
+
+        $user_roles_arr = $beneficiary_member->roles()->pluck('name')->toArray();
+
+        $beneficiary_member['user_roles'] = (count($user_roles_arr) > 0) ? $user_roles_arr : '';
+        return $this->sendResponse($beneficiary_member->toArray(), 'Beneficiary member retrieved successfully');
     }
 
-    /**
-     * Update the specified Beneficiary in storage.
-     * PUT/PATCH /beneficiaries/{id}
-     *
-     * @param int $id
-     * @param UpdateBeneficiaryAPIRequest $request
-     *
-     * @return Response
-     */
-    public function update($id, UpdateBeneficiaryAPIRequest $request, Organization $organization)
-    {
-        
+    /* update an existing beneficiary member */
+    public function update_beneficiary_member(Organization $organization, UpdateBeneficiaryMemberAPIRequest $request, $id) {
+        $beneficiary_member = User::find($id);
+
+        if (empty($beneficiary_member)) {
+            return $this->sendError('Beneficiary member is not found');
+        }
+
+        $allRoles = Role::where('guard_name', 'web')
+                        ->where('name', '!=', 'admin')
+                        ->where('name', 'like', '%bi-%')
+                        ->pluck('name');
+        $selectedRoles = [];
+
+        if (isset($allRoles) && count($allRoles) > 0) {
+            foreach ($allRoles as $role) {
+                if (isset($request->{'userRole_'.$role}) && $request->{'userRole_'.$role} == 'on') {
+                    array_push($selectedRoles, $role);
+                }
+            }
+        }
+
+        //update beneficiary user details
+        /*$beneficiary_member->email = $request->bi_staff_email;*/
+        $beneficiary_member->first_name = $request->bi_staff_fname;
+        $beneficiary_member->last_name = $request->bi_staff_lname;
+        $beneficiary_member->telephone = $request->bi_telephone;
+        $beneficiary_member->gender = $request->bi_staff_gender;
+        $beneficiary_member->syncRoles($selectedRoles);
+        $beneficiary_member->save(); /* save to DB */
+
+        return $this->sendSuccess('Beneficiary User updated successfully!'); 
     }
 
-    /**
-     * Remove the specified Beneficiary from storage.
-     * DELETE /beneficiaries/{id}
-     *
-     * @param int $id
-     *
-     * @throws \Exception
-     *
-     * @return Response
-     */
-    public function destroy($id, Organization $organization)
-    {
+
+    /* disable beneficiaty member */
+    public function enable_disable_beneficiary_member (Organization $org, $id) {
+        $beneficiary_member = User::find(substr($id, 0, -1));
         
+        if (empty($beneficiary_member)) {
+            return $this->sendError('Beneficiary member is not found');
+        }
+        
+        if ($beneficiary_member->is_disabled == 1) {
+            $flag_response = "enabled";
+            $beneficiary_member->is_disabled = 0;
+        } else {
+            $flag_response = "disabled";
+            $beneficiary_member->is_disabled = 1;
+        }
+
+        $beneficiary_member->save();
+        return $this->sendSuccess("Beneficiary User $flag_response successfully!");
     }
 
+    /* delete beneficiary member */
+    public function delete_beneficiary_member(Organization $org, Request $request, $id) {
+        $beneficiary_member = User::find($id);
+        
+        if (empty($beneficiary_member)) {
+            return $this->sendError('Beneficiary member is not found');
+        }
+
+        //get beneficiary_to_member_mapping
+        $beneficiary_to_member_mapping = BeneficiaryMember::where(['beneficiary_user_id'=>$beneficiary_member->id, 'beneficiary_id'=>$request->beneficiary_id])->first();
+        if (!empty($beneficiary_to_member_mapping)) {
+            $beneficiary_to_member_mapping->delete(); //delete in beneficiary member table
+        }
+        $beneficiary_member->delete(); //delete in users table
+
+        return $this->sendSuccess('Beneficiary User data deleted successfully!'); 
+    }
+
+    /* sychronization fuction */
     public function synchronize_beneficiary_list(Organization $org, Request $request){
         /* class constructor */
         $tETFundServer = new TETFundServer();

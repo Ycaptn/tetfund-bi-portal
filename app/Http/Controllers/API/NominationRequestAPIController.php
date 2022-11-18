@@ -98,7 +98,6 @@ class NominationRequestAPIController extends BaseController
         $nominationRequest->organization_id = $current_user->organization_id;
         $nominationRequest->user_id = $invited_user->id;
         $nominationRequest->beneficiary_id =$bi_beneficiary_id;
-        $nominationRequest->bi_submission_request_id = $request->bi_submission_request_id;
         $nominationRequest->type = $request->nomination_type;
         $nominationRequest->request_date = date('Y-m-d');
         $nominationRequest->status = 'approved';
@@ -142,6 +141,26 @@ class NominationRequestAPIController extends BaseController
     public function show(NominationRequest $nominationRequest)
     {
         //
+    }
+
+    public function show_selected_email(NominationRequest $nominationRequest, $email)
+    {
+        $user = User::where('email', $email)->first();
+        if (empty($user)) {
+            return $this->sendResponse([], 'User not found');
+        }
+
+        $current_user = auth()->user();
+        $beneficiary_members = BeneficiaryMember::where('beneficiary_user_id', $user->id)
+                                    ->orWhere('beneficiary_user_id', $current_user->id)
+                                    ->get();
+
+        if (count($beneficiary_members) == 2) {
+            return $this->sendResponse($user->toArray(), 'User retrieved successfully');
+        }
+        
+        return $this->sendResponse([], 'User is not a beneficiary member');
+
     }
 
     /**

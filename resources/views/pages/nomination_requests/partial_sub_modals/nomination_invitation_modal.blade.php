@@ -74,6 +74,55 @@ $(document).ready(function() {
         $("#btn-save-mdl-nominationInvitation-modal").attr('disabled', false);
     });
 
+    // auto fill nomination invite form 
+    $(document).on('change', "#bi_staff_email", function(e) {
+        e.preventDefault();
+        $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+        //check for internet status 
+        if (!window.navigator.onLine) {
+            $('.offline-nomination_invitation').fadeIn(300);
+            return;
+        }else{
+            $('.offline-nomination_invitation').fadeOut(300);
+        }
+        $("#spinner-nomination_invitation").show();
+        $("#btn-save-mdl-nominationInvitation-modal").attr('disabled', true);
+        
+
+        let selected_email = $('#bi_staff_email').val();
+        if (selected_email != '') {
+            $.get( "{{ route('tf-bi-portal-api.nomination_requests.show_selected_email','') }}/"+selected_email).done(function( response ) {
+
+                // default vlues
+                $('#bi_staff_fname').val('');
+                $('#bi_staff_lname').val('');
+                $('#bi_telephone').val('');
+                $('#bi_staff_gender').val('');
+                
+                if (response.success == true && response.data != null) {
+                    // existing valid values
+                    $('#bi_staff_fname').val((response.data.first_name) ? response.data.first_name : '');
+                    $('#bi_staff_lname').val((response.data.last_name) ? response.data.last_name : '');
+                    $('#bi_telephone').val((response.data.telephone) ? response.data.telephone : '');
+                    $('#bi_staff_gender').val((response.data.gender != null) ? response.data.gender.toLowerCase() : '');
+
+                }
+                
+                $("#spinner-nomination_invitation").hide();
+                $("#btn-save-mdl-nominationInvitation-modal").attr('disabled', false);
+
+            });
+
+        } else {
+
+            $("#spinner-nomination_invitation").hide();
+            $("#btn-save-mdl-nominationInvitation-modal").attr('disabled', false);
+
+        }
+
+    });
+
+
     /*//Show Modal for View
     $(document).on('click', ".btn-show-mdl-nominationInvitation-modal", function(e) {
         e.preventDefault();
@@ -253,8 +302,6 @@ $(document).ready(function() {
         if ($('#bi_staff_gender').length){ formData.append('bi_staff_gender',$('#bi_staff_gender').val()); }
 
         if ($('#nomination_type').length){ formData.append('nomination_type',$('#nomination_type').val()); }
-        
-        if ($('#bind_nomination_to_submission').length){ formData.append('bi_submission_request_id',$('#bind_nomination_to_submission').val()); }
 
         $.ajax({
             url:endPointUrl,
@@ -264,7 +311,7 @@ $(document).ready(function() {
             processData:false,
             contentType: false,
             dataType: 'json',
-            success: function(result){
+            success: function(result) {
                 if (result.errors) {
                     $('#div-nominationInvitation-modal-error').html('');
                     $('#div-nominationInvitation-modal-error').show();
@@ -292,7 +339,7 @@ $(document).ready(function() {
                 $("#spinner-nomination_invitation").hide();
                 $("#btn-save-mdl-nominationInvitation-modal").attr('disabled', false);
                 
-            }, error: function(data){
+            }, error: function(data) {
                 console.log(data);
                 swal("Error", "Oops an error occurred. Please try again.", "error");
 

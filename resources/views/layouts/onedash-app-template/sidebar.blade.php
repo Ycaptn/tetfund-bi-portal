@@ -171,7 +171,7 @@
 				<a href="{{ route('tf-bi-portal.desk-officer') }}" class="">
 					<div class="parent-icon"><i class='bx bx-devices'></i>
 					</div>
-					<div class="menu-title">Desk Officer</div>
+					<div class="menu-title">Desk Officer Mgt</div>
 				</a>
 			</li>
 			@endif

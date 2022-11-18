@@ -10,6 +10,12 @@ use Hasob\FoundationCore\Models\Department;
 use Hasob\FoundationCore\Models\Organization;
 use App\Models\BeneficiaryMember;
 
+
+use App\Http\Requests\CreateBeneficiaryRequest;
+use App\Http\Requests\UpdateBeneficiaryRequest;
+use App\DataTables\BeneficiaryMemberDatatable;
+use Spatie\Permission\Models\Role;
+
 use Hasob\FoundationCore\Controllers\BaseController;
 use App\Managers\TETFundServer;
 
@@ -62,13 +68,30 @@ class DashboardController extends BaseController
                 ->with('current_user', $current_user);
     }
 
-    public function displayDeskOfficerAdminDashboard(Organization $org, Request $request){
-
+    public function displayDeskOfficerAdminDashboard(Organization $org, BeneficiaryMemberDatatable $beneficiaryMembersDatatable) {
         $current_user = Auth()->user();
 
-        return view('pages.desk_officer.index')
-                    ->with('organization', $org)
-                    ->with('current_user', $current_user);
+        /** @var BeneficiaryMember $beneficiary_member */
+        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+        
+        if (empty($beneficiary_member) || $beneficiary_member->beneficiary == null) {
+            //Flash::error('BeneficiaryMember not found');
+            return redirect(route('tf-bi-portal.beneficiaries.index'));
+        }
+
+        $allRoles = Role::where('guard_name', 'web')
+                    ->where('name', '!=', 'admin')
+                    ->where('name', '!=', 'bi-desk-officer')
+                    ->where('name', 'like', '%bi-%')
+                    ->pluck('name');
+        
+        return $beneficiaryMembersDatatable->with('beneficiary_id', $beneficiary_member->beneficiary->id)
+                ->render('tf-bi-portal::pages.desk_officer.index', [
+                    'beneficiary'=>$beneficiary_member->beneficiary,
+                    'organization'=>$org,
+                    'current_user'=>$current_user,
+                    'roles'=>$allRoles
+                ]);
     }
 
     public function displayLibrarianAdminDashboard(Organization $org, Request $request){

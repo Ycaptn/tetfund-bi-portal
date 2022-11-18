@@ -10,8 +10,7 @@ use App\Events\BeneficiaryDeleted;
 
 use App\Http\Requests\CreateBeneficiaryRequest;
 use App\Http\Requests\UpdateBeneficiaryRequest;
-
-use App\DataTables\BeneficiaryDataTable;
+use App\DataTables\BeneficiaryMemberDatatable;
 
 use Hasob\FoundationCore\Controllers\BaseController;
 use Hasob\FoundationCore\Models\Organization;
@@ -29,11 +28,9 @@ class BeneficiaryController extends BaseController
 {
     /**
      * Display a listing of the Beneficiary.
-     *
-     * @param BeneficiaryDataTable $beneficiaryDataTable
      * @return Response
      */
-    public function index(Organization $org, BeneficiaryDataTable $beneficiaryDataTable)
+    public function index(Organization $org)
     {
         $current_user = Auth()->user();
 
@@ -98,25 +95,22 @@ class BeneficiaryController extends BaseController
      *
      * @return Response
      */
-    public function show(Organization $org, $id)
+    public function show(Organization $org, BeneficiaryMemberDatatable $beneficiaryMembersDatatable, $id)
     {
         /** @var Beneficiary $beneficiary */
         $beneficiary = Beneficiary::find($id);
-        $beneficiary_members = [];
         
         if (empty($beneficiary)) {
             //Flash::error('Beneficiary not found');
             return redirect(route('tf-bi-portal.beneficiaries.index'));
         }
 
-        $beneficiary_members = BeneficiaryMember::where('beneficiary_id', $beneficiary->id)->get();
-
         $allRoles = Role::where('guard_name', 'web')
                     ->where('name', '!=', 'admin')
-                    ->where('name', 'like', '%bi%')
+                    ->where('name', 'like', '%bi-%')
                     ->pluck('name');
-
-        return view('tf-bi-portal::pages.beneficiaries.show')->with(['beneficiary'=>$beneficiary, 'beneficiary_members'=>$beneficiary_members, 'roles'=>$allRoles]);
+        
+        return $beneficiaryMembersDatatable->with('beneficiary_id', $beneficiary->id)->render('tf-bi-portal::pages.beneficiaries.show', ['beneficiary'=>$beneficiary, 'roles'=>$allRoles]);
     }
 
     /**

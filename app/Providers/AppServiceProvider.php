@@ -37,15 +37,22 @@ class AppServiceProvider extends ServiceProvider
 
         //Roles in this application with their permissions.
         \FoundationCore::register_roles([
-            'bi-admin'           =>  [],
-            'bi-desk-officer'    =>  [],
-            'bi-hoi'             =>  [],
-            'bi-ict'             =>  [],
-            'bi-lib'             =>  [],
-            'bi-works'           =>  [],
-            'bi-ppd'             =>  [],
-            'bi-staff'           =>  [],
-            'bi-student'         =>  [],
+            'bi-admin'                  =>  [],
+            'bi-desk-officer'           =>  [],
+            'bi-astd-commitee-head'     =>  [],
+            'bi-co-commitee-head'       =>  [],
+            'bi-tp-commitee-head'       =>  [],
+            'bi-tsas-commitee-head'     =>  [],
+            'bi-astd-commitee-member'   =>  [],
+            'bi-co-commitee-member'     =>  [],
+            'bi-tp-commitee-member'     =>  [],
+            'bi-tsas-commitee-member'   =>  [],
+            'bi-ict'                    =>  [],
+            'bi-lib'                    =>  [],
+            'bi-works'                  =>  [],
+            'bi-ppd'                    =>  [],
+            'bi-staff'                  =>  [],
+            'bi-student'                =>  [],
         ]);
 
         Schema::defaultStringLength(125);
