@@ -89,35 +89,52 @@ $(document).ready(function() {
         $("#btn-save-mdl-nominationInvitation-modal").attr('disabled', true);
         
 
-        let selected_email = $('#bi_staff_email').val();
-        if (selected_email != '') {
-            $.get( "{{ route('tf-bi-portal-api.nomination_requests.show_selected_email','') }}/"+selected_email).done(function( response ) {
+       let $input = $('#bi_staff_email'),
+           selected_email = $input.val();
+           list = $input.attr('list'),
+           match = $('#'+list + ' option').filter(function() {
+               return ($(this).val() === selected_email);
+           });
 
-                // default vlues
-                $('#bi_staff_fname').val('');
-                $('#bi_staff_lname').val('');
-                $('#bi_telephone').val('');
-                $('#bi_staff_gender').val('');
+        if (selected_email != '' && match.length > 0) {
+            $.get( "{{ route('tf-bi-portal-api.nomination_requests.show_selected_email','') }}/"+selected_email).done(function( response ) {
                 
                 if (response.success == true && response.data != null) {
                     // existing valid values
                     $('#bi_staff_fname').val((response.data.first_name) ? response.data.first_name : '');
+                    $("#bi_staff_fname").attr('disabled', true);
+                    
                     $('#bi_staff_lname').val((response.data.last_name) ? response.data.last_name : '');
+                    $("#bi_staff_lname").attr('disabled', true);
+                    
                     $('#bi_telephone').val((response.data.telephone) ? response.data.telephone : '');
+                    $("#bi_telephone").attr('disabled', true);
+                    
                     $('#bi_staff_gender').val((response.data.gender != null) ? response.data.gender.toLowerCase() : '');
-
+                    $("#bi_staff_gender").attr('disabled', true);
                 }
-                
+
                 $("#spinner-nomination_invitation").hide();
                 $("#btn-save-mdl-nominationInvitation-modal").attr('disabled', false);
 
             });
 
         } else {
+            // default vlues
+            $('#bi_staff_fname').val('');
+            $("#bi_staff_fname").attr('disabled', false);
+            
+            $('#bi_staff_lname').val('');
+            $("#bi_staff_lname").attr('disabled', false);
+            
+            $('#bi_telephone').val('');
+            $("#bi_telephone").attr('disabled', false);
+            
+            $('#bi_staff_gender').val('');
+            $("#bi_staff_gender").attr('disabled', false);
 
             $("#spinner-nomination_invitation").hide();
             $("#btn-save-mdl-nominationInvitation-modal").attr('disabled', false);
-
         }
 
     });

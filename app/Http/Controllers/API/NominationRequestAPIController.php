@@ -143,8 +143,7 @@ class NominationRequestAPIController extends BaseController
         //
     }
 
-    public function show_selected_email(NominationRequest $nominationRequest, $email)
-    {
+    public function show_selected_email(NominationRequest $nominationRequest, $email) {
         $user = User::where('email', $email)->first();
         if (empty($user)) {
             return $this->sendResponse([], 'User not found');
@@ -152,15 +151,14 @@ class NominationRequestAPIController extends BaseController
 
         $current_user = auth()->user();
         $beneficiary_members = BeneficiaryMember::where('beneficiary_user_id', $user->id)
-                                    ->orWhere('beneficiary_user_id', $current_user->id)
-                                    ->get();
+                                ->orWhere('beneficiary_user_id', $current_user->id)
+                                ->get();
 
         if (count($beneficiary_members) == 2) {
             return $this->sendResponse($user->toArray(), 'User retrieved successfully');
         }
         
         return $this->sendResponse([], 'User is not a beneficiary member');
-
     }
 
     /**

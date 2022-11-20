@@ -36,10 +36,6 @@ class CreateNominationRequestAPIRequest extends AppBaseFormRequest
             'nomination_type' => "required|string|max:50|in:". implode($nomination_type, ','),
         ];
 
-        if(auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi']) ){
-            $return_arr['bi_submission_request_id'] = 'required|exists:tf_bi_submission_requests,id';
-        }
-
         return $return_arr;
     }
 
@@ -57,8 +53,7 @@ class CreateNominationRequestAPIRequest extends AppBaseFormRequest
 
     public function messages() {
         return [
-            'bi_submission_request_id.required' => 'The Bind Nomination to one Submission selection is required.',
-            'bi_submission_request_id.exists' => 'The Bind Nomination to one Submission selection is invalid.',
+            'bi_submission_request_id.required' => 'The Bind Nomination to one Submission selection is required.'
         ];
     }
 

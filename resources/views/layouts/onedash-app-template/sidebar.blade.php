@@ -146,13 +146,56 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi','bi-staff']))
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-staff', 'bi-astd-commitee-head', 'bi-ca-commitee-head', 'bi-tp-commitee-head', 'bi-tsas-commitee-head', 'bi-astd-commitee-member', 'bi-ca-commitee-member', 'bi-tp-commitee-member', 'bi-tsas-commitee-member']))
+
 			<li>
-				<a href="{{ route('tf-bi-portal.nomination_requests.index') }}" class="">
-					<div class="parent-icon"><i class='bx bx-paper-plane'></i>
+			    <a href="javascript:void(0);" data-toggle="collapse" data-target="#access_dr" class="collapsed" aria-expanded="false">
+			        <div class="parent-icon pull-left">
+			        	<i class='bx bx-paper-plane'></i>
 					</div>
-					<div class="menu-title">Nomination Request</div>
-				</a>
+			        <div class="menu-title col-sm-12">
+			        	All Nomination Mgt
+			        	&nbsp; <i class="fa fa-caret-down"></i>
+			        </div>
+			    </a>
+
+			    {{-- collapse-level-1 collapse --}}
+			    <ul id="access_dr" class="" aria-expanded="false" style="">
+			        <li>
+						<a href="{{ route('tf-bi-portal.nomination_requests.index') }}" class="">
+							<div class="menu-title col-sm-12">
+								<span class="fa fa-check-square"></span>
+								Nomination Requests
+							</div>
+						</a>
+					</li>
+
+					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-astd-commitee-head', 'bi-ca-commitee-head', 'bi-tp-commitee-head', 'bi-tsas-commitee-head', 'bi-astd-commitee-member', 'bi-ca-commitee-member', 'bi-tp-commitee-member', 'bi-tsas-commitee-member']))
+						<li>
+							<a href="#" class="">
+								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> ASTD Nominations </div>
+							</a>
+						</li>
+
+						<li>
+							<a href="#" class="">
+								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> CA Nominations </div>
+							</a>
+						</li>
+
+						<li>
+							<a href="#" class="">
+								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> TP Nominations </div>
+							</a>
+						</li>
+
+						<li>
+							<a href="#" class="">
+								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> TSAS Nominations </div>
+							</a>
+						</li>
+					@endif
+			    </ul>
 			</li>
 			@endif
 

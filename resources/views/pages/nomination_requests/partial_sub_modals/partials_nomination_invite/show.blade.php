@@ -25,6 +25,12 @@
                     <li> The <strong>Nomination Request</strong> has been <strong>Approved</strong>  </li>
                 
                 @endif
+                <li>
+                    {!! (isset($nominationRequest->details_submitted) && $nominationRequest->details_submitted == true) ? 
+                        "The Nomination Details has been <b>submitted</b> by the nominee" : 
+                        "The Nomination Details has <b>not been submitted</b> by the nominee"
+                    !!}
+                </li>
             </ul>
         </div>
         <div class="col-md-4">

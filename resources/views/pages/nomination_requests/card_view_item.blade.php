@@ -39,7 +39,19 @@
                 <div class="card-body">
                     <a href='{{$detail_page_url}}'>
                         <h3 class="h6 card-title mb-0">
-                            {{ strtoupper($data_item->user->first_name) }} {{ strtoupper($data_item->user->last_name) }} @if(empty($data_item->status)==false) || {!! strtoupper($data_item->status) !!}@endif
+                            {{ strtoupper($data_item->user->first_name) }}
+                            {{ strtoupper($data_item->user->last_name) }}
+                            @if(empty($data_item->status)==false) 
+                                || 
+                                @if($data_item->status == 'approved')
+                                    <span class="text-success"> REQUEST {{ strtoupper($data_item->status) }} </span>
+                                @elseif($data_item->status == 'declined')
+                                    <span class="text-danger"> REQUEST {{ strtoupper($data_item->status) }} </span>
+                                @else
+                                    <span class="text-info"> REQUEST {{ strtoupper($data_item->status) }} </span>
+
+                                @endif
+                            @endif
                         </h3>
                     </a>
                     <p class="card-text mb-0 small">
@@ -49,6 +61,15 @@
                             </small>
                         </b>
                     </p>
+                    @if(empty($data_item->status == false && $data_item->status == 'approved'))
+                        <p class="card-text mb-0 small">
+                            <b>
+                                {!! (isset($data_item->details_submitted) && $data_item->details_submitted == true) ? 
+                                "<span class='text-success'> Nomination Details saved and submitted</span>" : 
+                                "<span class='text-danger'> Nomination Details has not been submitted</span>" !!}
+                            </b>
+                        </p>
+                    @endif
                     
                     <p class="card-text text-muted small">
                         Created: {{ \Carbon\Carbon::parse($data_item->created_at)->format('l jS F Y') }} - {!! \Carbon\Carbon::parse($data_item->created_at)->diffForHumans() !!}
