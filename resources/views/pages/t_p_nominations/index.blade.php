@@ -25,7 +25,7 @@ All TP Nomination
     <i class="bx bx-book-add mr-1"></i>New TP Nomination
 </a>
 @if (Auth()->user()->hasAnyRole(['','admin']))
-    @include('tetfund-astd-module::pages.t_p_nominations.bulk-upload-modal')
+    @include('tf-bi-portal::pages.t_p_nominations.bulk-upload-modal')
 @endif
 @stop
 
@@ -40,14 +40,14 @@ All TP Nomination
         <div class="card-body">
         
             <div class="table-responsive">
-                @include('tetfund-astd-module::pages.t_p_nominations.table')
+                @include('tf-bi-portal::pages.t_p_nominations.table')
                 
             </div>
         
         </div>
     </div>
 
-    @include('tetfund-astd-module::pages.t_p_nominations.modal')
+    @include('tf-bi-portal::pages.t_p_nominations.modal')
 
 @stop
 

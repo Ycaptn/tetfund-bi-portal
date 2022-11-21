@@ -40,7 +40,7 @@ Edit A S T D Nomination
 
         {!! Form::model($aSTDNomination, ['class'=>'form-horizontal', 'route' => ['tetfund-astd.aSTDNominations.update', $aSTDNomination->id], 'method' => 'patch']) !!}
 
-            @include('tetfund-astd-module::pages.a_s_t_d_nominations.fields')
+            @include('tf-bi-portal::pages.a_s_t_d_nominations.fields')
 
             <div class="col-lg-offset-3 col-lg-9">
                 <hr/>

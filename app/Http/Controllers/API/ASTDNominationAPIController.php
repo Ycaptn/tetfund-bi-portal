@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\ASTDNomination;
+use App\Models\NominationRequest;
 
 use App\Events\ASTDNominationCreated;
 use App\Events\ASTDNominationUpdated;
@@ -73,6 +74,10 @@ class ASTDNominationAPIController extends AppBaseController
         /** @var ASTDNomination $aSTDNomination */
         $aSTDNomination = ASTDNomination::create($input);
         
+        $nominationRequest = NominationRequest::find($request->nomination_request_id);
+        $nominationRequest->details_submitted = 1;
+        $nominationRequest->save();
+
         ASTDNominationCreated::dispatch($aSTDNomination);
         return $this->sendResponse($aSTDNomination->toArray(), 'A S T D Nomination saved successfully');
     }

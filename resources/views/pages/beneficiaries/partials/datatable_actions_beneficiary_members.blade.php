@@ -47,7 +47,7 @@
                 class="btn-enable-disable-beneficiary-member" 
                 href="#">
                 <i class="{{$font_awesome}}" style="opacity:80%"></i>
-            </a>
+            </a> &nbsp; &nbsp;
 
             {{-- <a data-toggle="tooltip" 
                 title="Delete user account" 
@@ -57,5 +57,13 @@
                 <i class="fa fa-trash text-danger" style="opacity:80%"></i>
             </a> --}}
         @endif
+
+        <a data-toggle="tooltip" 
+            title="Reset user password" 
+            data-val='{{$id}}' 
+            class="btn-reset-password-beneficiary-member" 
+            href="#">
+            <i class="fa fa-key text-primary" style="opacity:80%"></i>
+        </a>
     </div>
 </center>

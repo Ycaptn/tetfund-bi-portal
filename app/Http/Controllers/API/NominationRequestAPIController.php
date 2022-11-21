@@ -208,19 +208,7 @@ class NominationRequestAPIController extends BaseController
         } elseif ($request->actionTasked == 'defer') {
             $nominationRequest->status = 'defered';
         } elseif ($request->actionTasked == 'approve') {
-            
-            if (!isset($request->bi_submission_request_id) || $request->bi_submission_request_id == null) {
-                return BaseController::createJSONResponse("fail", "errors", ["The Bind Nomination to one Submission field is required"], 200);
-            }
-
-            $bi_submission_request = SubmissionRequest::find($request->bi_submission_request_id);
-            if (empty($bi_submission_request)) {
-                return BaseController::createJSONResponse("fail", "errors", ['The Bind Nomination to one Submission selection field is invalid'], 200);
-            }
-
-            $nominationRequest->bi_submission_request_id = $request->bi_submission_request_id;
             $nominationRequest->status = 'approved';
-
         }
 
         $nominationRequest->save();

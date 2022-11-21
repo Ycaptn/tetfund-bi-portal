@@ -15,6 +15,7 @@ use App\Http\Requests\API\CreateBeneficiaryAPIRequest;
 use App\Http\Requests\API\UpdateBeneficiaryAPIRequest;
 use App\Http\Requests\API\CreateBeneficiaryMemberAPIRequest;
 use App\Http\Requests\API\UpdateBeneficiaryMemberAPIRequest;
+use App\Http\Requests\API\UpdateBeneficiaryUserPasswordAPIRequest;
 
 use Hasob\FoundationCore\Traits\ApiResponder;
 use Hasob\FoundationCore\Models\Organization;
@@ -173,6 +174,20 @@ class BeneficiaryAPIController extends AppBaseController
 
         $beneficiary_member['user_roles'] = (count($user_roles_arr) > 0) ? $user_roles_arr : '';
         return $this->sendResponse($beneficiary_member->toArray(), 'Beneficiary member retrieved successfully');
+    }
+
+    /* reset password for selected beneficiary member */
+    public function reset_password_beneficiary_member($id, Organization $organization, UpdateBeneficiaryUserPasswordAPIRequest $request) {
+        $beneficiary_member = User::find($id);
+        
+        if (empty($beneficiary_member)) {
+            return $this->sendError('Beneficiary member is not found');
+        }
+
+        $beneficiary_member->password = bcrypt($request->password);
+        $beneficiary_member->save();
+        
+        return $this->sendSuccess('Beneficiary member password reset successful');
     }
 
     /* update an existing beneficiary member */

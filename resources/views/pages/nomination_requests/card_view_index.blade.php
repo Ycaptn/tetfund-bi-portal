@@ -24,10 +24,15 @@ Nomination Requests
 
 @section('page_title_buttons')
     @if (auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
-         <a data-toggle="tooltip" 
+        <a data-toggle="tooltip" 
             title="Nomination Invitation" 
             class="btn btn-sm btn-primary  btn-new-mdl-nominationInvitation-modal me-1" href="#">
-            <i class="bx bx-book-add mr-1"></i> Nomination Invite
+            <i class="bx bx-user mr-1"></i> Nomination Invite
+        </a>
+        <a data-toggle="tooltip" 
+            title="Bulk Nomination Invitation" 
+            class="btn btn-sm btn-primary  btn-bulk-new-mdl-nominationInvitation-modal me-1" href="#">
+            <i class="fas fa-users mr-1"></i> Bulk Invitation
         </a>
     @endif
     

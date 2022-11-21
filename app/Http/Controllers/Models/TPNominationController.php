@@ -35,7 +35,7 @@ class TPNominationController extends BaseController
     {
         $current_user = Auth()->user();
 
-        $cdv_t_p_nominations = new CardDataView(TPNomination::class, "tetfund-astd-module::pages.t_p_nominations.card_view_item");
+        $cdv_t_p_nominations = new CardDataView(TPNomination::class, "tf-bi-portal::pages.t_p_nominations.card_view_item");
         $cdv_t_p_nominations->setDataQuery(['organization_id'=>$org->id, 'type_of_nomination'=>'TP'])
                         //->addDataGroup('label','field','value')
                         //->addDataOrder('id','DESC')
@@ -50,14 +50,14 @@ class TPNominationController extends BaseController
             return $cdv_t_p_nominations->render();
         }
 
-        return view('tetfund-astd-module::pages.t_p_nominations.card_view_index')
+        return view('tf-bi-portal::pages.t_p_nominations.card_view_index')
                     ->with('current_user', $current_user)
                     ->with('months_list', BaseController::monthsList())
                     ->with('states_list', BaseController::statesList())
                     ->with('cdv_t_p_nominations', $cdv_t_p_nominations);
 
         /*
-        return $tPNominationDataTable->render('tetfund-astd-module::pages.t_p_nominations.index',[
+        return $tPNominationDataTable->render('tf-bi-portal::pages.t_p_nominations.index',[
             'current_user'=>$current_user,
             'months_list'=>BaseController::monthsList(),
             'states_list'=>BaseController::statesList()
@@ -72,7 +72,7 @@ class TPNominationController extends BaseController
      */
     public function create(Organization $org)
     {
-        return view('tetfund-astd-module::pages.t_p_nominations.create');
+        return view('tf-bi-portal::pages.t_p_nominations.create');
     }
 
     /**
@@ -114,7 +114,7 @@ class TPNominationController extends BaseController
             return redirect(route('tetfund-astd.tPNominations.index'));
         }
 
-        return view('tetfund-astd-module::pages.t_p_nominations.show')->with('tPNomination', $tPNomination);
+        return view('tf-bi-portal::pages.t_p_nominations.show')->with('tPNomination', $tPNomination);
     }
 
     /**
@@ -135,7 +135,7 @@ class TPNominationController extends BaseController
             return redirect(route('tetfund-astd.tPNominations.index'));
         }
 
-        return view('tetfund-astd-module::pages.t_p_nominations.edit')->with('tPNomination', $tPNomination);
+        return view('tf-bi-portal::pages.t_p_nominations.edit')->with('tPNomination', $tPNomination);
     }
 
     /**

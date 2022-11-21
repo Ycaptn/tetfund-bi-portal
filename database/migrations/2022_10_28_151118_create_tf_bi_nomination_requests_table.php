@@ -25,6 +25,7 @@ class CreateTfBiNominationRequestsTable extends Migration
             $table->boolean('details_submitted')->default(0);
             $table->boolean('is_desk_officer_check')->default(0);
             $table->boolean('is_head_commitee_members_check')->default(0);
+            $table->boolean('is_desk_officer_check_after_head_commitee_members')->default(0);
             $table->boolean('is_head_of_institution_check')->default(0);
             $table->boolean('is_set_for_final_submission')->default(0);
             $table->timestamps();

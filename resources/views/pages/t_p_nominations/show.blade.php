@@ -38,7 +38,7 @@ TP Nomination
     </a>
 
     {{-- @if (Auth()->user()->hasAnyRole(['','admin']))
-        @include('tetfund-astd-module::pages.t_p_nominations.bulk-upload-modal')
+        @include('tf-bi-portal::pages.t_p_nominations.bulk-upload-modal')
     @endif --}}
 @stop
 
@@ -48,8 +48,8 @@ TP Nomination
     <div class="card border-top border-0 border-4 border-primary">
         <div class="card-body">
 
-            @include('tetfund-astd-module::pages.t_p_nominations.modal') 
-            @include('tetfund-astd-module::pages.t_p_nominations.show_fields')
+            @include('tf-bi-portal::pages.t_p_nominations.modal') 
+            @include('tf-bi-portal::pages.t_p_nominations.show_fields')
             
         </div>
     </div>

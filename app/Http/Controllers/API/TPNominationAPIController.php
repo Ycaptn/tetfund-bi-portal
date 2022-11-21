@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\ASTDNomination as TPNomination;
+use App\Models\NominationRequest;
 
 use App\Events\TPNominationCreated;
 use App\Events\TPNominationUpdated;
@@ -71,6 +72,10 @@ class TPNominationAPIController extends AppBaseController
 
         /** @var TPNomination $tPNomination */
         $tPNomination = TPNomination::create($input);
+
+        $nominationRequest = NominationRequest::find($request->nomination_request_id);
+        $nominationRequest->details_submitted = 1;
+        $nominationRequest->save();
         
         TPNominationCreated::dispatch($tPNomination);
         return $this->sendResponse($tPNomination->toArray(), 'T P Nomination saved successfully');

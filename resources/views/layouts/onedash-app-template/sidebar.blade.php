@@ -172,7 +172,7 @@
 
 					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-astd-commitee-head', 'bi-ca-commitee-head', 'bi-tp-commitee-head', 'bi-tsas-commitee-head', 'bi-astd-commitee-member', 'bi-ca-commitee-member', 'bi-tp-commitee-member', 'bi-tsas-commitee-member']))
 						<li>
-							<a href="#" class="">
+							<a href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}" class="">
 								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> ASTD Nominations </div>
 							</a>
 						</li>
@@ -184,7 +184,7 @@
 						</li>
 
 						<li>
-							<a href="#" class="">
+							<a href="{{ route('tf-bi-portal.t_p_nominations.index') }}" class="">
 								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> TP Nominations </div>
 							</a>
 						</li>

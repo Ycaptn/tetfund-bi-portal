@@ -112,8 +112,6 @@ class NominationRequestController extends BaseController
         $bi_beneficiary =  $nominationRequest->beneficiary;
         $bi_beneficiaries =  Beneficiary::all();
 
-        $bi_submission_requests = SubmissionRequest::where(['status'=>'not-submitted', 'type'=>'intervention'])->get(['id', 'title', 'intervention_year1', 'intervention_year2', 'intervention_year3', 'intervention_year4']);
-
         /*class constructor to fetch countries*/
         $tETFundServer = new TETFundServer();
         $countries = $tETFundServer->get_all_data_list_from_server("tetfund-astd-api/countries", null);
@@ -124,7 +122,6 @@ class NominationRequestController extends BaseController
         
         return view('pages.nomination_requests.show')
             ->with('nominationRequest', $nominationRequest)
-            ->with('bi_submission_requests', $bi_submission_requests)
             ->with('countries', $countries)
             ->with('institutions', $institutions)
             ->with('beneficiary', $bi_beneficiary)

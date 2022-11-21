@@ -38,7 +38,7 @@ ASTD Nomination Details {{-- {{$aSTDNomination->title}} --}}
     </a>
 
     {{-- @if (Auth()->user()->hasAnyRole(['','admin']))
-        @include('tetfund-astd-module::pages.a_s_t_d_nominations.bulk-upload-modal')
+        @include('tf-bi-portal::pages.a_s_t_d_nominations.bulk-upload-modal')
     @endif --}}
 @stop
 

@@ -71,6 +71,7 @@ Beneficiary Admin Panel
         
             //Show Modal for New beneficiary members Entry
             $(document).on('click', ".btn-new-beneficiary-member", function(e) {
+                e.preventDefault();
                 $('#div-beneficiary-member-modal-error').hide();
                 $('#bi_staff_email').attr('disabled', false);
                 $('.opposite_create').text("Create");
@@ -87,6 +88,97 @@ Beneficiary Admin Panel
 
                 $("#spinner-beneficiary-member").hide();
                 $("#btn-new-beneficiary-member").attr('disabled', false);
+            });
+
+                        //Show Modal for beneficiary member password reset
+            $(document).on('click', ".btn-reset-password-beneficiary-member", function(e) {
+                e.preventDefault();
+                $('#div-beneficiary-member-reset-password-modal-error').hide();
+                $('#mdl-beneficiary-member-reset-password-modal').modal('show');
+                $('#btn-save-beneficiary-member-reset-password-modal').show();
+
+                $('#form-beneficiary-member-reset-password').trigger("reset");
+
+                let itemId = $(this).attr('data-val');
+                $('#txt-beneficiary-member-reset-password-primary-id').val(itemId);
+
+                $("#spinner-beneficiary-member-reset-password").hide();
+            });
+
+            //process beneficiary user password reset action
+            $('#btn-save-beneficiary-member-reset-password-modal').click(function(e) {
+                e.preventDefault();
+                $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+                //check for internet status 
+                if (!window.navigator.onLine) {
+                    $('.offline-beneficiary-member-reset-password').fadeIn(300);
+                    return;
+                }else{
+                    $('.offline-beneficiary-member-reset-password').fadeOut(300);
+                }
+
+                $("#spinner-beneficiary-member-reset-password").show();
+                $("#btn-save-beneficiary-member-reset-password-modal").attr('disabled', true);
+
+                let itemId = $('#txt-beneficiary-member-reset-password-primary-id').val();
+                
+                let formData = new FormData();
+                formData.append('_token', $('input[name="_token"]').val());
+                
+                formData.append('_method', "PUT");
+                @if (isset($organization) && $organization!=null)
+                    formData.append('organization_id', '{{$organization->id}}');
+                @endif
+
+                if ($('#bi_staff_new_password').length){ formData.append('password',$('#bi_staff_new_password').val()); }
+                if ($('#bi_staff_confirm_password').length){ formData.append('confirm_password',$('#bi_staff_confirm_password').val()); }
+
+                $.ajax({
+                    url: "{{ route('tf-bi-portal-api.reset_password_beneficiary_member','') }}/"+itemId,
+                    type: "POST",
+                    data: formData,
+                    cache: false,
+                    processData:false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function(result){
+                        if(result.errors){
+                            $('#div-beneficiary-member-reset-password-modal-error').html('');
+                            $('#div-beneficiary-member-reset-password-modal-error').show();
+                            
+                            $.each(result.errors, function(key, value){
+                                $('#div-beneficiary-member-reset-password-modal-error').append('<li class="">'+value+'</li>');
+                            });
+                        }else{
+                            $('#div-beneficiary-member-reset-password-modal-error').hide();
+                            window.setTimeout( function(){
+
+                                $('#div-beneficiary-member-reset-password-modal-error').hide();
+
+                                swal({
+                                    title: "Saved",
+                                    text: result.message,
+                                    type: "success"
+                                });
+                                
+                                location.reload(true);
+
+                            },20);
+                        }
+
+                        $("#spinner-beneficiary-member-reset-password").hide();
+                        $("#btn-save-beneficiary-member-reset-password-modal").attr('disabled', false);
+                        
+                    }, error: function(data){
+                        console.log(data);
+                        swal("Error", "Oops an error occurred. Please try again.", "error");
+
+                        $("#spinner-beneficiary-member-reset-password").hide();
+                        $("#btn-save-beneficiary-member-reset-password-modal").attr('disabled', false);
+
+                    }
+                });
             });
 
             //Show Modal to preview beneficiary member details

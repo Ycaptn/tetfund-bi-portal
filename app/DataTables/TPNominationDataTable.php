@@ -26,7 +26,7 @@ class TPNominationDataTable extends DataTable
     {
         $dataTable = new EloquentDataTable($query);
 
-        return $dataTable->addColumn('action', 'tetfund-astd-module::pages.t_p_nominations.datatables_actions');
+        return $dataTable->addColumn('action', 'tf-bi-portal::pages.t_p_nominations.datatables_actions');
     }
 
     /**

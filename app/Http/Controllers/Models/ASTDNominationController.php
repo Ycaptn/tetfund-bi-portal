@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Models;
 
 use App\Models\ASTDNomination;
+use App\Models\BeneficiaryMember;
 
 use App\Events\ASTDNominationCreated;
 use App\Events\ASTDNominationUpdated;
@@ -11,7 +12,7 @@ use App\Events\ASTDNominationDeleted;
 use App\Http\Requests\CreateASTDNominationRequest;
 use App\Http\Requests\UpdateASTDNominationRequest;
 
-use App\DataTables\ASTDNominationDataTable;
+use App\DataTables\NominationRequestDataTable;
 
 use Hasob\FoundationCore\Controllers\BaseController;
 use Hasob\FoundationCore\Models\Organization;
@@ -28,41 +29,20 @@ class ASTDNominationController extends BaseController
     /**
      * Display a listing of the ASTDNomination.
      *
-     * @param ASTDNominationDataTable $aSTDNominationDataTable
+     * @param NominationRequestDataTable $aSTDNominationDataTable
      * @return Response
      */
-    public function index(Organization $org, ASTDNominationDataTable $aSTDNominationDataTable)
+    public function index(Organization $org, NominationRequestDataTable $aSTDNominationDataTable)
     {
         $current_user = Auth()->user();
-
-        $cdv_a_s_t_d_nominations = new CardDataView(ASTDNomination::class, "tetfund-astd-module::pages.a_s_t_d_nominations.card_view_item");
-        $cdv_a_s_t_d_nominations->setDataQuery(['organization_id'=>$org->id, 'type_of_nomination'=>'ASTD'])
-                        //->addDataGroup('label','field','value')
-                        //->addDataOrder('id','DESC')
-                        ->setSearchFields(['first_name','last_name'])
-                        ->addDataOrder('created_at','DESC')
-                        ->enableSearch(true)
-                        ->enablePagination(true)
-                        ->setPaginationLimit(20)
-                        ->setSearchPlaceholder('Search ASTDNomination By First or Last Name');
-
-        if (request()->expectsJson()){
-            return $cdv_a_s_t_d_nominations->render();
-        }
-
-        return view('tetfund-astd-module::pages.a_s_t_d_nominations.card_view_index')
-                    ->with('current_user', $current_user)
-                    ->with('months_list', BaseController::monthsList())
-                    ->with('states_list', BaseController::statesList())
-                    ->with('cdv_a_s_t_d_nominations', $cdv_a_s_t_d_nominations);
-
-        /*
-        return $aSTDNominationDataTable->render('tetfund-astd-module::pages.a_s_t_d_nominations.index',[
-            'current_user'=>$current_user,
-            'months_list'=>BaseController::monthsList(),
-            'states_list'=>BaseController::statesList()
-        ]);
-        */
+        $user_beneficiary_id = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first()->beneficiary_id;   //BI beneficiary_id
+        
+        return $aSTDNominationDataTable
+                ->with('type', 'astd')
+                ->with('user_beneficiary_id', $user_beneficiary_id)
+                ->render('tf-bi-portal::pages.a_s_t_d_nominations.index', [
+                    'current_user'=>$current_user
+                ]);
     }
 
     /**
@@ -72,7 +52,7 @@ class ASTDNominationController extends BaseController
      */
     public function create(Organization $org)
     {
-        return view('tetfund-astd-module::pages.a_s_t_d_nominations.create');
+        return view('tf-bi-portal::pages.a_s_t_d_nominations.create');
     }
 
     /**
@@ -114,7 +94,7 @@ class ASTDNominationController extends BaseController
             return redirect(route('tetfund-astd.aSTDNominations.index'));
         }
 
-        return view('tetfund-astd-module::pages.a_s_t_d_nominations.show')->with('aSTDNomination', $aSTDNomination);
+        return view('tf-bi-portal::pages.a_s_t_d_nominations.show')->with('aSTDNomination', $aSTDNomination);
     }
 
     /**
@@ -135,7 +115,7 @@ class ASTDNominationController extends BaseController
             return redirect(route('tetfund-astd.aSTDNominations.index'));
         }
 
-        return view('tetfund-astd-module::pages.a_s_t_d_nominations.edit')->with('aSTDNomination', $aSTDNomination);
+        return view('tf-bi-portal::pages.a_s_t_d_nominations.edit')->with('aSTDNomination', $aSTDNomination);
     }
 
     /**

@@ -312,7 +312,6 @@ $(document).ready(function() {
             formData.append('organization_id', '{{ $nominationRequest->user->organization_id }}');
             formData.append('user_id', '{{ $nominationRequest->user->id }}');
             formData.append('nomination_request_id', '{{ $nominationRequest->id }}');
-            formData.append('bi_submission_request_id', '{{ $nominationRequest->bi_submission_request_id }}');
         @endif
 
         if ($('#email').length){	formData.append('email',$('#email').val());	}

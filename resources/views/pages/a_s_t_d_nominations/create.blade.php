@@ -37,7 +37,7 @@ Create ASTD Nomination
             <hr />
             {!! Form::open(['route' => 'tetfund-astd.aSTDNominations.store','class'=>'form-horizontal']) !!}
             
-                @include('tetfund-astd-module::pages.a_s_t_d_nominations.fields')
+                @include('tf-bi-portal::pages.a_s_t_d_nominations.fields')
 
                 <div class="col-lg-offset-3 col-lg-9">
                     <hr />

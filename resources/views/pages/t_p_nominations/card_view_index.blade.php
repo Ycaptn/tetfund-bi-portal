@@ -27,7 +27,7 @@ All TP Nominations
     <i class="bx bx-book-add me-1"></i>New TP Nomination
 </a>
 {{-- @if (Auth()->user()->hasAnyRole(['','admin']))
-    @include('tetfund-astd-module::pages.t_p_nominations.bulk-upload-modal')
+    @include('tf-bi-portal::pages.t_p_nominations.bulk-upload-modal')
 @endif --}}
 @stop
 
@@ -42,7 +42,7 @@ All TP Nominations
         </div>
     </div>
 
-    @include('tetfund-astd-module::pages.t_p_nominations.modal')
+    @include('tf-bi-portal::pages.t_p_nominations.modal')
 @stop
 
 @section('side-panel')
