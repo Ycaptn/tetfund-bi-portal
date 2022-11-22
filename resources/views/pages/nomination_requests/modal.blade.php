@@ -1,4 +1,4 @@
-
+{{-- include script if uers is deskofficer, HOI or committee head --}}
 
 @if(auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi']))
 

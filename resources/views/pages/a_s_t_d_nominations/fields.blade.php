@@ -68,7 +68,7 @@
 <div id="div-gender" class="form-group mb-3 col-md-4">
     <label for="gender" class="col-sm-11 col-form-label">Gender:</label>
      @php
-        $gender = strtolower($nominationRequest->user->gender);
+        $gender = strtolower($nominationRequest->user->gender ?? '');
         $m = $f = $n = '';
         if($gender == 'male') {
             $m = "selected='selected'";

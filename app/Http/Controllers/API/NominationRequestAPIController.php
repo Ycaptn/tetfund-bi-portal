@@ -134,14 +134,52 @@ class NominationRequestAPIController extends BaseController
 
     /**
      * Display the specified resource.
-     *
-     * @param  \App\NominationRequest  $nominationRequest
      * @return \Illuminate\Http\Response
      */
-    public function show(NominationRequest $nominationRequest)
-    {
-        //
+    public function show($id)  {  
+        $nominationRequest = NominationRequest::find($id);
+        if (empty($nominationRequest)) {
+            return $this->sendError('Nomination Request not found');
+        }
+
+        $current_user = auth()->user();
+        $beneficiary_members = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+
+        $nominee = $nominationRequest->user;    //user requesting nomination
+        $nomination_committee_voters = (!empty($nominationRequest->nomination_committee_votes) ? array_column($nominationRequest->nomination_committee_votes->toArray(), 'user')  : [] );   //voters for nominee
+
+        // possible roles allowed based on nomination
+        $allowed_roles = [];
+        if (strtolower($nominationRequest->type) == 'astd') {
+            array_push($allowed_roles, 'bi-astd-commitee-head', 'bi-astd-commitee-member');
+        } elseif (strtolower($nominationRequest->type) == 'tp') {
+            array_push($allowed_roles, 'bi-tp-commitee-head', 'bi-tp-commitee-member');
+        } elseif (strtolower($nominationRequest->type) == 'ca') {
+            array_push($allowed_roles, 'bi-ca-commitee-head', 'bi-ca-commitee-member');
+        } elseif (strtolower($nominationRequest->type) == 'tsas') {
+            array_push($allowed_roles, 'bi-tsas-commitee-head', 'bi-tsas-commitee-member');
+        }
+
+        $beneficiary_committee_members = User::role($allowed_roles)
+                                ->join('tf_bi_beneficiary_members', 'tf_bi_beneficiary_members.beneficiary_user_id', 'fc_users.id', )
+                                ->where('tf_bi_beneficiary_members.beneficiary_id', $beneficiary_members->beneficiary_id)
+                                ->select('fc_users.*', 'tf_bi_beneficiary_members.beneficiary_id')
+                                ->get();
+
+        $count_committee_members = count($beneficiary_committee_members);
+        $count_committee_votes = count($nomination_committee_voters);
+
+        $nominationRequestDetails = $nominationRequest->toArray();
+        $nominationRequestDetails['nominee'] = $nominee;
+        $nominationRequestDetails['beneficiary_committee_members'] = $beneficiary_committee_members;
+        $nominationRequestDetails['nomination_committee_voters'] = $nomination_committee_voters;
+        $nominationRequestDetails['count_committee_members'] = $count_committee_members;
+        $nominationRequestDetails['count_committee_votes'] = $count_committee_votes;
+        $nominationRequestDetails['nomination_request_type'] = $nominationRequest->type;
+
+        return $this->sendResponse($nominationRequestDetails, 'Nomination Request details retrieved successfully');
     }
+
 
     public function show_selected_email(NominationRequest $nominationRequest, $email) {
         $user = User::where('email', $email)->first();
@@ -194,6 +232,18 @@ class NominationRequestAPIController extends BaseController
     public function destroy(NominationRequest $nominationRequest)
     {
         //
+    }
+
+    public function process_forward_details(Request $request, NominationRequest $nominationRequest, $id) {
+        $nominationRequest = $nominationRequest->find($id);
+        if(empty($nominationRequest)) {
+            return $this->sendError("Oops... Nomination Request was not found");
+        }
+
+        $nominationRequest->{$request->column_to_update} = 1;
+        $nominationRequest->save();
+
+        return $this->sendSuccess("Nomination Request forwarded successfully");
     }
 
     public function request_actions(Request $request, NominationRequest $nominationRequest, $id) {

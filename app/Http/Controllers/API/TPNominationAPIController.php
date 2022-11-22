@@ -94,7 +94,12 @@ class TPNominationAPIController extends AppBaseController
         $tPNomination = TPNomination::find($id);
 
         if (empty($tPNomination)) {
-            return $this->sendError('T P Nomination not found');
+            $nominationRequest = NominationRequest::find($id);
+            if (empty($nominationRequest)) {
+                return $this->sendError('T P Nomination not found');
+            }
+
+            $tPNomination = $nominationRequest->tp_submission;
         }
 
         /*class constructor to fetch institution*/

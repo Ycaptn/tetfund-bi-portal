@@ -27,7 +27,8 @@ class NominationRequestDataTable extends DataTable
         $query_filter = [   'type'=>$this->type,
                             'status'=>'approved',
                             'details_submitted'=>1,
-                            'beneficiary_id'=>$this->user_beneficiary_id
+                            'beneficiary_id'=>$this->user_beneficiary_id,
+                            'is_set_for_final_submission'=>0
                         ];
 
         if ($this->organization != null){
@@ -50,6 +51,8 @@ class NominationRequestDataTable extends DataTable
             $query_filter['is_desk_officer_check'] = 1;
         } else if (Auth()->user()->hasAnyRole(['bi-hoi'])) {
             $query_filter['is_desk_officer_check_after_head_commitee_members'] = 1;
+        } else if (Auth()->user()->hasAnyRole(['bi-desk-officer'])) {
+            $query_filter['is_desk_officer_check'] = 0;
         }
         
         // request filter for selected sub-menu button
@@ -87,7 +90,7 @@ class NominationRequestDataTable extends DataTable
             ->parameters([
                 'dom'       => 'Bfrtip',
                 'stateSave' => true,
-                'order'     => [[1, 'desc']],
+                'order'     => [[2, 'desc']],
                 'buttons'   => [
                     ['extend' => 'print', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
                     ['extend' => 'reset', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
@@ -106,6 +109,7 @@ class NominationRequestDataTable extends DataTable
         return [
             //['title'=>'Requested on', 'data'=>'full_name', 'name'=>'user.first_name' ],
             Column::make('full_name')->name('user.first_name'),
+            Column::make('email')->name('user.email'),
             ['title'=>'Requested on','data'=>'created_at', 'name'=>'created_at' ],
         ];
     }
@@ -127,6 +131,13 @@ class NominationRequestDataTable extends DataTable
             return "N/A";
         });
 
+        $dataTable->addColumn('email', function ($query) {
+            if ($query->user->email != null){
+                return $query->user->email;
+            }
+            return "N/A";
+        });
+
         $dataTable->addColumn('created_at', function ($query) {
             if ($query->created_at != null){
                 $created_at = \Carbon\Carbon::parse($query->created_at)->format('jS M, Y');
@@ -135,7 +146,7 @@ class NominationRequestDataTable extends DataTable
             return "N/A";
         });
 
-        return $dataTable->addColumn('action', 'tf-bi-portal::pages.a_s_t_d_nominations.datatables_actions');
+        return $dataTable->addColumn('action', 'tf-bi-portal::pages.nomination_requests.default_datatables_actions');
     }
 
     /**

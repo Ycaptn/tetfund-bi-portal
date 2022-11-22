@@ -1,35 +1,30 @@
-{{--    
-    <a href="#" data-val='{{$id}}' class='btn-show-mdl-aSTDNomination-modal'>
-        {!! Form::button('<i class="fa fa-eye"></i>', ['type'=>'button']) !!}
-    </a>
-    
-    <a href="#" data-val='{{$id}}' class='btn-edit-mdl-aSTDNomination-modal'>
-        {!! Form::button('<i class="fa fa-edit"></i>', ['type'=>'button']) !!}
-    </a>
-    
-    <a href="#" data-val='{{$id}}' class='btn-delete-mdl-aSTDNomination-modal'>
-        {!! Form::button('<i class="fa fa-trash"></i>', ['type'=>'button']) !!}
-    </a>
---}}
+
 <div class='btn-group' role="group">
     <a data-toggle="tooltip" 
-        title="View" 
+        title="Preview ASTD Nomination details" 
         data-val='{{$id}}' 
-        class="btn-show-mdl-aSTDNomination-modal" href="#">
+        class="btn-show-{{$type}}" href="#">
         <i class="fa fa-eye text-primary" style="opacity:80%"></i>
-    </a>
+    </a> &nbsp; &nbsp;
 
-    <a data-toggle="tooltip" 
-        title="Edit" 
-        data-val='{{$id}}' 
-        class="btn-edit-mdl-aSTDNomination-modal" href="#">
-        <i class="fa fa-pencil-square-o text-primary" style="opacity:80%"></i>
-    </a>
+    {{-- appears for desk officer only --}}
+    @if($is_desk_officer_check == 0 && auth()->user()->hasAnyRole(['bi-desk-officer']))
+        <a data-toggle="tooltip" 
+            title="Forward  ASTD Nomination details to ASTD Committee" 
+            data-val='{{$id}}$is_desk_officer_check' 
+            class="btn-forward-{{$type}}" href="#">
+            <i class="fa fa-paper-plane text-danger" style="opacity:80%"></i>
+        </a> &nbsp; &nbsp;
+    @endif
 
-    <a data-toggle="tooltip" 
-        title="Delete" 
-        data-val='{{$id}}' 
-        class="btn-delete-mdl-aSTDNomination-modal" href="#">
-        <i class="fa fa-trash-o text-danger" style="opacity:80%"></i>
-    </a>
+    {{-- appears for all astd committee members only --}}
+    @if($is_desk_officer_check == 1 && auth()->user()->hasAnyRole(['bi-astd-commitee-head', 'bi-astd-commitee-member']))
+        <a data-toggle="tooltip" 
+            title="ASTD Nomination Committee Voting Zone" 
+            data-val='{{$id}}' 
+            class="btn-committee-vote-modal" href="#">
+            <i class="fa fa-vote-yea text-danger" style="opacity:80%"></i>
+        </a> &nbsp; &nbsp;
+    @endif
+
 </div>

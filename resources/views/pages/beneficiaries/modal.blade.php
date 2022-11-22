@@ -42,14 +42,6 @@ $(document).ready(function() {
                     html: true
                 })
 
-                /*swal({
-                    title: "Please wait...",
-                    text: "Synchronizing Beneficiary List ! \n\n Do not refresh this page! ",
-                    imageUrl: "{{asset('imgs/loading.gif')}}",
-                    imageSize: '300x200',
-                    showConfirmButton: false,
-                    allowOutsideClick: false
-                });*/
                 $.ajax({
                     url:endPointUrl,
                     type: "GET",

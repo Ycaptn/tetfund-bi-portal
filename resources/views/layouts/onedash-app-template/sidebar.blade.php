@@ -161,14 +161,16 @@
 
 			    {{-- collapse-level-1 collapse --}}
 			    <ul id="access_dr" class="" aria-expanded="false" style="">
-			        <li>
-						<a href="{{ route('tf-bi-portal.nomination_requests.index') }}" class="">
-							<div class="menu-title col-sm-12">
-								<span class="fa fa-check-square"></span>
-								Nomination Requests
-							</div>
-						</a>
-					</li>
+			        @if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-staff']))
+				        <li>
+							<a href="{{ route('tf-bi-portal.nomination_requests.index') }}" class="">
+								<div class="menu-title col-sm-12">
+									<span class="fa fa-check-square"></span>
+									Nomination Requests
+								</div>
+							</a>
+						</li>
+					@endif
 
 					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-astd-commitee-head', 'bi-ca-commitee-head', 'bi-tp-commitee-head', 'bi-tsas-commitee-head', 'bi-astd-commitee-member', 'bi-ca-commitee-member', 'bi-tp-commitee-member', 'bi-tsas-commitee-member']))
 						<li>

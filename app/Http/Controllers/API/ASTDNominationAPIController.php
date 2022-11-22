@@ -95,7 +95,12 @@ class ASTDNominationAPIController extends AppBaseController
         $aSTDNomination = ASTDNomination::find($id);
 
         if (empty($aSTDNomination)) {
-            return $this->sendError('A S T D Nomination not found');
+            $nominationRequest = NominationRequest::find($id);
+            if (empty($nominationRequest)) {
+                return $this->sendError('A S T D Nomination not found');
+            }
+
+            $aSTDNomination = $nominationRequest->astd_submission;
         }
 
         /*class constructor to fetch institution*/

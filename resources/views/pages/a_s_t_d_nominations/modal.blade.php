@@ -60,8 +60,84 @@ $(document).ready(function() {
 
     $('.offline-a_s_t_d_nominations').hide();
 
+    // include script if uers is deskofficer, HOI or committee head
+    @if (auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-astd-commitee-member']))
+
+        //process nomination forwarding actions
+        $(document).on('click', ".btn-forward-astd", function(e) {
+            e.preventDefault();
+            $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+            let itemName = $(this).attr('data-val');
+            let receipiant = '';
+            if (itemName.includes("is_desk_officer_check") == true) {
+                receipiant = 'ASTD Committee';
+            }
+
+            let itemArr = itemName.split('$');
+            swal({
+                    title: "Are you sure you want to forward this ASTDNomination to " + receipiant + "?",
+                    text: "You will not be able to revert this process once initiated.",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes forward",
+                    cancelButtonText: "No don't forward",
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+                }, function(isConfirm) {
+                    if (isConfirm) {
+
+                        let endPointUrl = "{{ route('tf-bi-portal-api.nomination_requests.process_forward_details','') }}/"+itemArr[0];
+                        
+                        swal({
+                            title: '<div id="spinner-beneficiaries" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br> Please wait...',
+                            text: 'Forwarding ASTDNomination to ' + receipiant + '! <br><br> Do not refresh this page! ',
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            html: true
+                        })
+
+                        let formData = new FormData();
+                        formData.append('_token', $('input[name="_token"]').val());
+                        formData.append('_method', 'PUT');
+                        formData.append('id', itemArr[0]);
+                        formData.append('column_to_update', itemArr[1]);
+                        
+                        $.ajax({
+                            url:endPointUrl,
+                            type: "POST",
+                            data: formData,
+                            cache: false,
+                            processData:false,
+                            contentType: false,
+                            dataType: 'json',
+                            success: function(result){
+                                if(result.errors){
+                                    console.log(result.errors);
+                                    swal("Error", "Oops an error occurred. Please try again.", "error");
+                                }else{
+                                    swal({
+                                        title: "Forwarded",
+                                        text: "ASTDNomination forwarded to " + receipiant + " successfully",
+                                        type: "success",
+                                        confirmButtonClass: "btn-success",
+                                        confirmButtonText: "OK",
+                                        closeOnConfirm: false
+                                    });
+                                    location.reload(true);
+                                }
+                            },
+                        });
+                    }
+                });
+
+        });
+
+    @endif
+
     //Show Modal for New Entry
-    $(document).on('click', ".{{ $nomination_type_str }}-nomination-form", function(e) {
+    $(document).on('click', ".{{ $nomination_type_str ?? 'astd' }}-nomination-form", function(e) {
         $('#div-aSTDNomination-modal-error').hide();
         $('#frm-aSTDNomination-modal').trigger("reset");
         $('#txt-aSTDNomination-primary-id').val(0);
@@ -77,7 +153,7 @@ $(document).ready(function() {
     });
 
     //Show Modal for View
-    $(document).on('click', ".btn-show-{{$nominationRequest->type}}", function(e) {
+    $(document).on('click', ".btn-show-{{$nominationRequest->type ?? 'astd'}}", function(e) {
         e.preventDefault();
         $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
 
@@ -145,7 +221,7 @@ $(document).ready(function() {
     });
 
     //Show Modal for Edit
-    $(document).on('click', ".btn-edit-{{$nominationRequest->type}}", function(e) {
+    $(document).on('click', ".btn-edit-{{$nominationRequest->type ?? 'astd'}}", function(e) {
         e.preventDefault();
         $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
 
@@ -215,7 +291,7 @@ $(document).ready(function() {
     });
 
     //Delete action
-    $(document).on('click', ".btn-delete-{{$nominationRequest->type}}", function(e) {
+    $(document).on('click', ".btn-delete-{{$nominationRequest->type ?? 'astd'}}", function(e) {
         e.preventDefault();
         $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
 
