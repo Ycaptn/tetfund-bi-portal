@@ -19,6 +19,7 @@
                             <div class="offline-flag"><span class="offline-nomination_request_vote">You are currently offline</span></div>
 
                             <input type="hidden" id="txt-nomination_request_vote-primary-id" value="0" />
+                            <input type="hidden" id="txt-nomination_request_push-primary-id" value="0" />
                             <div id="div-show-txt-nomination_request_vote-primary-id" class="table-responsive">
                                 <table class="table table-striped">
                                     <thead>
@@ -62,7 +63,7 @@
                             </div>
                             <span class="">Loading...</span><hr>
                         </div>
-                        <span class="fa fa-send"></span> Push approval to Desk Officer
+                        <span class="fa fa-send"></span> Push nomination to Desk Officer
                     </button>
                 @endif
             </div>
@@ -77,6 +78,75 @@
         
         $(document).ready(function() {
             $('.offline-nomination_request_vote').hide();
+
+            //process pushing nomination back to Desk officer dashboard
+            @if(auth()->user()->hasAnyRole(['bi-astd-commitee-head', 'bi-tp-commitee-head', 'bi-ca-commitee-head', 'bi-tsas-commitee-head']))
+                $(document).on('click', "#btn-save-nomination_request_push", function(e) {
+                    e.preventDefault();
+                    $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+                    //check for internet status 
+                    if (!window.navigator.onLine) {
+                        $('.offline-nomination_request_vote').fadeIn(300);
+                        return;
+                    }else{
+                        $('.offline-nomination_request_vote').fadeOut(300);
+                    }
+
+                    swal({
+                        title: "You are about to push this Nomination Request back to Desk Officer!",
+                        text: "Majority committee member have successfully voted approval for this Nomination request.",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger",
+                        confirmButtonText: "Yes, push",
+                        cancelButtonText: "No, don't push",
+                        closeOnConfirm: true,
+                        closeOnCancel: true
+                    }, function(isConfirm) {
+                        if (isConfirm) {
+                            $("#spinner-nomination_request_push").show();
+                            $("#btn-save-nomination_request_push").attr('disabled', true);
+
+                            let itemName = $('#txt-nomination_request_push-primary-id').val();
+                            let itemArr = itemName.split('$');
+
+                            let formData = new FormData();
+                            formData.append('_token', $('input[name="_token"]').val());                
+                            formData.append('_method', 'PUT');
+                            formData.append('id', itemArr[0]);
+                            formData.append('column_to_update', itemArr[1]);
+                            
+                            $.ajax({
+                                url: "{{ route('tf-bi-portal-api.nomination_requests.process_forward_details','') }}/"+itemArr[0],
+                                type: "POST",
+                                data: formData,
+                                cache: false,
+                                processData:false,
+                                contentType: false,
+                                dataType: 'json',
+                                success: function(result){
+                                    if(result.errors){
+                                        console.log(result.errors);
+                                        swal("Error", "Oops an error occurred. Please try again.", "error");
+                                    }else{
+                                        swal({
+                                            title: "Completed",
+                                            text: "Nomination request forwarded to Desk Officer successfully",
+                                            type: "success",
+                                            confirmButtonClass: "btn-success",
+                                            confirmButtonText: "OK",
+                                            closeOnConfirm: false
+                                        });
+                                        location.reload(true);
+                                    }
+                                },
+                            });
+                        }
+                    });
+                });
+            @endif
+
 
             //process approval vote button
             $(document).on('click', "#btn-save-nomination_request_vote", function(e) {
@@ -172,6 +242,7 @@
                 $('#form-nomination_request_vote-modal').trigger("reset");
                 $("#spinner-nomination_request_vote").show();
                 $("#spinner-nomination_request_push").show();
+                $("#div-save-mdl-nomination_request_vote-modal").hide();
 
                 let itemId = $(this).attr('data-val');
                 $('#txt-nomination_request_vote-primary-id').val(itemId);
@@ -203,8 +274,15 @@
 
                     //show push approval button on committee head dashboard if average members vote for approval
                     if (count_commitee_voter > (count_commitee_members/2)) {
+                        let push_nomination_primary_id = itemId+"$is_head_commitee_members_check";
+                        $("#txt-nomination_request_push-primary-id").val(push_nomination_primary_id);
                         $("#btn-save-nomination_request_push").show();
                     }
+
+                    //show modal footer if nomination request is stil with committee
+                    if (response.data.is_head_commitee_members_check == 0 && response.data.is_desk_officer_check == 1) {
+                        $("#div-save-mdl-nomination_request_vote-modal").show();
+                    } 
 
                     $("#spinner-nomination_request_vote").hide();
                     $("#spinner-nomination_request_push").hide();

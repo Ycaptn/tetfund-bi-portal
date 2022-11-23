@@ -40,7 +40,6 @@ $orgRoutes = function() {
                 Route::get('nomination_requests/show_selected_email/{email}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'show_selected_email'])->name('nomination_requests.show_selected_email');
                 Route::put('nomination_requests/process_forward_details/{id}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'process_forward_details'])->name('nomination_requests.process_forward_details');
                 Route::post('nomination_requests/process_approval_by_vote/{id}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'process_approval_by_vote'])->name('nomination_requests.process_approval_by_vote');
-                Route::post('nomination_requests/push_approval_to_deskofficer/{id}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'push_approval_to_deskofficer'])->name('nomination_requests.push_approval_to_deskofficer');
 
                 Route::resource('a_s_t_d_nominations', \App\Http\Controllers\API\ASTDNominationAPIController::class);
                 Route::resource('t_p_nominations', \App\Http\Controllers\API\TPNominationAPIController::class);

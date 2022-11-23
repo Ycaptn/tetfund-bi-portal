@@ -12,6 +12,19 @@ All A S T D Nomination
 @stop
 
 @section('page_title_suffix')
+    @if(isset(request()->view_type))
+        @if(request()->view_type == 'commitee_approved')
+            Commitee Approved
+        @elseif(request()->view_type == 'hoi_approved')
+            HOI Approved
+        @elseif(request()->view_type == 'final_nominations')
+            Final Nomination
+        @else
+            Newly Submitted
+        @endif
+    @else
+        Newly Submitted
+    @endif
 @stop
 
 @section('page_title_subtext')

@@ -47,11 +47,13 @@ class NominationRequestDataTable extends DataTable
         ];
 
         // addition filters to return newly submitted for respective dashboards
-        if (Auth()->user()->hasAnyRole($all_commitee_stakeholders)) {
+        if (Auth()->user()->hasAnyRole($all_commitee_stakeholders) && !isset(request()->view_type)) {
+            $query_filter['is_head_commitee_members_check'] = 0;
             $query_filter['is_desk_officer_check'] = 1;
-        } else if (Auth()->user()->hasAnyRole(['bi-hoi'])) {
+        } else if (Auth()->user()->hasAnyRole(['bi-hoi']) && !isset(request()->view_type)) {
+            $query_filter['is_head_of_institution_check'] = 0;
             $query_filter['is_desk_officer_check_after_head_commitee_members'] = 1;
-        } else if (Auth()->user()->hasAnyRole(['bi-desk-officer'])) {
+        } else if (Auth()->user()->hasAnyRole(['bi-desk-officer']) && !isset(request()->view_type)) {
             $query_filter['is_desk_officer_check'] = 0;
         }
         
