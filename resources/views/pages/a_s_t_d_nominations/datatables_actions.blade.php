@@ -20,7 +20,7 @@
     {{-- appears for all astd committee members only --}}
     @if($is_desk_officer_check == 1 && auth()->user()->hasAnyRole(['bi-astd-commitee-head', 'bi-astd-commitee-member']))
         <a data-toggle="tooltip" 
-            title="ASTD Nomination Committee Voting Zone" 
+            title="ASTD Nomination Committee Vote Approval Zone" 
             data-val='{{$id}}' 
             class="btn-committee-vote-modal" href="#">
             <i class="fa fa-vote-yea text-danger" style="opacity:80%"></i>

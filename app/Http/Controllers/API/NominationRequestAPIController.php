@@ -17,6 +17,7 @@ use App\Http\Traits\BeneficiaryUserTrait;
 use App\Models\BeneficiaryMember;
 use App\Models\Beneficiary;
 use App\Models\SubmissionRequest;
+use App\Models\NominationCommitteeVotes;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\NominationRequestInviteNotification;
 
@@ -145,8 +146,13 @@ class NominationRequestAPIController extends BaseController
         $current_user = auth()->user();
         $beneficiary_members = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
-        $nominee = $nominationRequest->user;    //user requesting nomination
-        $nomination_committee_voters = (!empty($nominationRequest->nomination_committee_votes) ? array_column($nominationRequest->nomination_committee_votes->toArray(), 'user')  : [] );   //voters for nominee
+        //voters for nominee
+        $nomination_committee_voters = [];  
+        if (count($nominationRequest->nomination_committee_votes) > 0) {
+            foreach ($nominationRequest->nomination_committee_votes as $key => $value) {
+                array_push($nomination_committee_voters, $value->user);
+            }
+        }
 
         // possible roles allowed based on nomination
         $allowed_roles = [];
@@ -160,27 +166,76 @@ class NominationRequestAPIController extends BaseController
             array_push($allowed_roles, 'bi-tsas-commitee-head', 'bi-tsas-commitee-member');
         }
 
+        //all commitee members for specific type of nomination
         $beneficiary_committee_members = User::role($allowed_roles)
-                                ->join('tf_bi_beneficiary_members', 'tf_bi_beneficiary_members.beneficiary_user_id', 'fc_users.id', )
-                                ->where('tf_bi_beneficiary_members.beneficiary_id', $beneficiary_members->beneficiary_id)
-                                ->select('fc_users.*', 'tf_bi_beneficiary_members.beneficiary_id')
-                                ->get();
-
-        $count_committee_members = count($beneficiary_committee_members);
-        $count_committee_votes = count($nomination_committee_voters);
+            ->join('tf_bi_beneficiary_members', 'tf_bi_beneficiary_members.beneficiary_user_id', 'fc_users.id', )
+            ->where('tf_bi_beneficiary_members.beneficiary_id', $beneficiary_members->beneficiary_id)
+            ->select('fc_users.*', 'tf_bi_beneficiary_members.beneficiary_id')
+            ->get();
 
         $nominationRequestDetails = $nominationRequest->toArray();
-        $nominationRequestDetails['nominee'] = $nominee;
         $nominationRequestDetails['beneficiary_committee_members'] = $beneficiary_committee_members;
         $nominationRequestDetails['nomination_committee_voters'] = $nomination_committee_voters;
-        $nominationRequestDetails['count_committee_members'] = $count_committee_members;
-        $nominationRequestDetails['count_committee_votes'] = $count_committee_votes;
+        $nominationRequestDetails['count_committee_members'] = count($beneficiary_committee_members);
+        $nominationRequestDetails['count_committee_votes'] = count($nomination_committee_voters);
         $nominationRequestDetails['nomination_request_type'] = $nominationRequest->type;
 
         return $this->sendResponse($nominationRequestDetails, 'Nomination Request details retrieved successfully');
     }
 
+    //process commitee members approval
+    public function process_approval_by_vote(Request $request, $id) {
+        $nominationRequest = NominationRequest::find($id);
+        if (empty($nominationRequest)) {
+            return self::createJSONResponse("fail","error",["Nomination Request is not found"],200);
+        }
 
+        $current_user = auth()->user();
+        $beneficiary_members = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+
+        //eligible roles that can vote
+        $allowed_roles = [
+                'bi-'.strtolower($nominationRequest->type).'-commitee-head',
+                'bi-'.strtolower($nominationRequest->type).'-commitee-member' 
+            ];
+
+        //checking if user has role to vote
+        if (!($current_user->hasAnyRole($allowed_roles))) {
+            return self::createJSONResponse("fail","error",["Current user doesn't has the role to case approval vote"],200);
+        }
+        
+        //checking commitee member is from same institution
+        $nomination_request_name = strtoupper($nominationRequest->type).'Nomination';
+        if ($nominationRequest->beneficiary_id != optional($beneficiary_members)->beneficiary_id) {
+            $err_msg = "This " . $nomination_request_name . " Request doesn't belong to your Institution";
+            return self::createJSONResponse("fail","error",[$err_msg],200);
+        }
+
+        //checking if this user has voted before
+        $committee_member_vote = NominationCommitteeVotes::where([
+                                    'user_id' => $current_user->id,
+                                    'beneficiary_id' => $beneficiary_members->beneficiary_id,
+                                    'nomination_request_id' => $nominationRequest->id
+                                ])->first();
+        if (!empty($committee_member_vote)) {
+            $err_msg = "VOTE REJECTED: You cannot vote approval for this " . $nomination_request_name . " Request more than Once!";
+            return self::createJSONResponse("fail","error",[$err_msg],200);
+        }
+
+        //finally save vote for nomination request
+        $committee_member_vote = new NominationCommitteeVotes();
+        $committee_member_vote->organization_id = $current_user->organization_id;
+        $committee_member_vote->user_id = $current_user->id;
+        $committee_member_vote->beneficiary_id = $beneficiary_members->beneficiary_id;
+        $committee_member_vote->nomination_request_id = $nominationRequest->id;
+        $committee_member_vote->additional_param = $nomination_request_name;
+        
+        $committee_member_vote->save();
+
+        return $this->sendSuccess('Your Approval vote has been counted for the selected ' . $nomination_request_name . ' Request');
+    }
+
+    // seleect nominee user by  email
     public function show_selected_email(NominationRequest $nominationRequest, $email) {
         $user = User::where('email', $email)->first();
         if (empty($user)) {

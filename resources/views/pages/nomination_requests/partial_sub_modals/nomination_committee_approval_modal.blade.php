@@ -34,7 +34,7 @@
                                             <th>Approval Date</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="committee_table_body">
+                                    <tbody id="committee_table_body">
                                         
                                     </tbody>
                                 </table>
@@ -46,23 +46,23 @@
             </div>
         
             <div class="modal-footer" id="div-save-mdl-nomination_request_vote-modal">
-                <button type="button" class="btn btn-sm btn-primary" id="btn-save-mdl-nomination_request_vote-modal" value="add">
-                <div id="spinner-nomination_request_vote" style="color: white;">
-                    <div class="spinner-border" style="width: 1rem; height: 1rem;" role="status">
-                    </div>
-                    <span class="">Loading...</span><hr>
-                </div>
-                <span class="fa fa-vote-yea"></span> Vote for approval
-                </button>
-
-                @if(auth()->user()->hasAnyRole(['bi-astd-commitee-head', 'bi-tp-commitee-head', 'bi-ca-commitee-head', 'bi-tsas-commitee-head']))
-                    <button type="button" class="btn btn-sm btn-primary" id="btn-save-mdl-nomination_request_push-modal" value="add" style="display: none;">
-                    <div id="spinner-nomination_request_push" style="color: white; display: none;">
+                <button type="button" class="btn btn-sm btn-primary" id="btn-save-nomination_request_vote" value="add">
+                    <div id="spinner-nomination_request_vote" style="color: white;">
                         <div class="spinner-border" style="width: 1rem; height: 1rem;" role="status">
                         </div>
                         <span class="">Loading...</span><hr>
                     </div>
-                    <span class="fa fa-send"></span> Push approval to Desk Officer
+                    <span class="fa fa-vote-yea"></span> Vote for approval
+                </button>
+
+                @if(auth()->user()->hasAnyRole(['bi-astd-commitee-head', 'bi-tp-commitee-head', 'bi-ca-commitee-head', 'bi-tsas-commitee-head']))
+                    <button type="button" class="btn btn-sm btn-primary" id="btn-save-nomination_request_push" value="add" style="display: none;">
+                        <div id="spinner-nomination_request_push" style="color: white; display: none;">
+                            <div class="spinner-border" style="width: 1rem; height: 1rem;" role="status">
+                            </div>
+                            <span class="">Loading...</span><hr>
+                        </div>
+                        <span class="fa fa-send"></span> Push approval to Desk Officer
                     </button>
                 @endif
             </div>
@@ -78,8 +78,8 @@
         $(document).ready(function() {
             $('.offline-nomination_request_vote').hide();
 
-            // show nomination committee voting modal
-            $(document).on('click', ".btn-committee-vote-modal", function(e) {
+            //process approval vote button
+            $(document).on('click', "#btn-save-nomination_request_vote", function(e) {
                 e.preventDefault();
                 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
 
@@ -91,6 +91,83 @@
                     $('.offline-nomination_request_vote').fadeOut(300);
                 }
 
+                swal({
+                    title: "Are you sure you want to vote Approval for this Nomination Request?",
+                    text: "You will not be able to revert your approval status once completed.",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Vote approval",
+                    cancelButtonText: "Don't vote approval",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                }, function(isConfirm) {
+                    if (isConfirm) {
+
+                        $("#spinner-nomination_request_vote").show();
+                        $("#btn-save-nomination_request_vote").attr('disabled', true);
+
+                        let primaryId = $('#txt-nomination_request_vote-primary-id').val();
+                        
+                        let formData = new FormData();
+                        formData.append('_token', $('input[name="_token"]').val());                
+                        formData.append('_method', 'POST');
+                        formData.append('nomination_request_id', primaryId);
+
+                        $.ajax({
+                            url: "{{ route('tf-bi-portal-api.nomination_requests.process_approval_by_vote','') }}/"+primaryId,
+                            type: "POST",
+                            data: formData,
+                            cache: false,
+                            processData:false,
+                            contentType: false,
+                            dataType: 'json',
+                            success: function(result){
+                                if(result.errors || (result.status && result.status == 'fail' && result.response)) {
+                                    $('#div-nomination_request_vote-modal-error').html('');
+                                    $('#div-nomination_request_vote-modal-error').show();
+                                    
+                                    let response_arr = (result.errors) ? result.errors : result.response;
+                                    $.each(response_arr, function(key, value){
+                                        $('#div-nomination_request_vote-modal-error').append('<li class="">'+value+'</li>');
+                                    });
+                                }else{
+                                    $('#div-nomination_request_vote-modal-error').hide();
+                                    window.setTimeout( function(){
+
+                                        $('#div-nomination_request_vote-modal-error').hide();
+
+                                        swal({
+                                            title: "Saved",
+                                            text: result.message,
+                                            type: "success"
+                                        });
+                                        location.reload(true);
+                                    },20);
+                                }
+
+                                $("#spinner-nomination_request_vote").hide();
+                                $("#btn-save-nomination_request_vote").attr('disabled', false);
+                                
+                            }, error: function(data){
+                                console.log(data);
+                                swal("Error", "Oops an error occurred. Please try again.", "error");
+
+                                $("#spinner-nomination_request_vote").hide();
+                                $("#btn-save-nomination_request_vote").attr('disabled', false);
+
+                            }
+                        });
+                    }
+                });
+            });
+
+
+            // show nomination committee voting modal
+            $(document).on('click', ".btn-committee-vote-modal", function(e) {
+                e.preventDefault();
+                $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
                 $('#div-nomination_request_vote-modal-error').hide();
                 $('#form-nomination_request_vote-modal').trigger("reset");
                 $("#spinner-nomination_request_vote").show();
@@ -100,10 +177,11 @@
                 $('#txt-nomination_request_vote-primary-id').val(itemId);
                 $('#mdl-nomination_request_vote-modal').modal('show');
 
-                $("#btn-save-mdl-nomination_request_vote-modal").attr('disabled', true);
-                $("#btn-save-mdl-nomination_request_push-modal").attr('disabled', true);
+                $("#btn-save-nomination_request_vote").attr('disabled', true);
+                $("#btn-save-nomination_request_push").attr('disabled', true);
 
                 $.get( "{{ route('tf-bi-portal-api.nomination_requests.show','') }}/"+itemId).done(function( response ) {
+                    console.log(response.data);
 
                     let table_body = '';
                     let count_commitee_voter = response.data.count_committee_votes;
@@ -111,13 +189,27 @@
 
                     $('#committee_type').text(response.data.nomination_request_type.toUpperCase() + 'Nomination');
                     $('#committee_ratio').text('(RATIO: ' + count_commitee_voter + ' of ' + count_commitee_members +  ' ' + response.data.nomination_request_type.toUpperCase() + 'Nomination Committee Member)');
-                    
-                    console.log(response.data);
+
+                    if (response.data.nomination_committee_voters) {
+                        let counter = 1;
+                        $.each(response.data.nomination_committee_voters, function(key, value){
+                            var serverDate = new Date(value.created_at).toDateString();
+                            table_body += "<tr> <td>"+ counter +"</td> <td>"+value.first_name+' '+value.last_name+"</td> <td>"+value.email+"</td> <td>"+serverDate+"</td> </tr>";
+                            counter += 1;
+                        });
+                    }
+
+                    $("#committee_table_body").html(table_body);
+
+                    //show push approval button on committee head dashboard if average members vote for approval
+                    if (count_commitee_voter > (count_commitee_members/2)) {
+                        $("#btn-save-nomination_request_push").show();
+                    }
 
                     $("#spinner-nomination_request_vote").hide();
                     $("#spinner-nomination_request_push").hide();
-                    $("#btn-save-mdl-nomination_request_vote-modal").attr('disabled', false);
-                    $("#btn-save-mdl-nomination_request_push-modal").attr('disabled', false);
+                    $("#btn-save-nomination_request_vote").attr('disabled', false);
+                    $("#btn-save-nomination_request_push").attr('disabled', false);
                 });
 
             });
