@@ -27,6 +27,7 @@ use App\Models\Beneficiary;
 use App\Models\NominationCommitteeVotes;
 use App\Models\ASTDNomination;
 use App\Models\ASTDNomination as TPNomination;
+use Hasob\FoundationCore\Models\Attachable as EloquentAttachable;
 
 use Eloquent as Model;
 
@@ -39,6 +40,7 @@ class NominationRequest extends Model
     use HasFactory;
     use GuidId;
     use OrganizationalConstraint;
+    use Attachable;
     
     use SoftDeletes;
 
@@ -109,5 +111,34 @@ class NominationRequest extends Model
     public function tp_submission()
     {
         return $this->hasOne(TPNomination::class, 'nomination_request_id', 'id');
+    }
+
+    // get specific attachement for a nomination request
+    public static function get_specific_attachement($nomination_request_id, $item_label) {
+        $nomination_request = NominationRequest::find($nomination_request_id);
+        if ($nomination_request != null) {
+            $attachements = $nomination_request->get_attachments();
+            if ($attachements != null) {
+                foreach($attachements as $attachement){
+                    if ($attachement->label == $item_label || str_contains($attachement->label, $item_label)) {
+                        return $attachement;
+                        break;
+                    }
+                }    
+            }
+        }
+        return null;
+    }
+
+    // get all attachements a nomination request
+    public static function get_all_attachements($nomination_request_id) {
+        $nomination_request = NominationRequest::find($nomination_request_id);
+        if ($nomination_request != null) {
+            $attachements = $nomination_request->get_attachments();
+            if ($attachements != null) {
+                return $attachements;
+            }
+        }
+        return null;
     }
 }

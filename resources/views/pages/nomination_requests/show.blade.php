@@ -46,30 +46,63 @@ Nomination Request Details {{-- {{$nominationRequest->title}} --}}
 @section('content')
     <div class="card border-top border-0 border-4 border-primary">
         <div class="card-body">
-            <div class="col-sm-12">
-                <div class="container">
-                    @if(auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
-                        @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.partials_nomination_invite.show')
-                    @endif
 
-                    @if(auth()->user()->hasAnyRole(['bi-staff']))
-                        @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.partials_request_nomination.show')
-                    @endif
+            <div class="row col-sm-12">
+                <div class="col-sm-12">
+                    <div class="">
+                        @if(auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
+                            @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.partials_nomination_invite.show')
+                        @endif
+
+                        @if(auth()->user()->hasAnyRole(['bi-staff']))
+                            @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.partials_request_nomination.show')
+                        @endif
+                    </div>
                 </div>
-            </div>
 
+                <div class="col-sm-12 col-md-7">
+                    <div class="container">
+                        <i class="fa fa-calendar-o fa-fw"></i> <strong>Created on </strong> {{ \Carbon\Carbon::parse($nominationRequest->created_at)->format('l jS F Y') }} - {!! \Carbon\Carbon::parse($nominationRequest->created_at)->diffForHumans() !!} <br>
 
-            <div class="col-sm-12">
-                <div class="container">
-                    <i class="fa fa-calendar-o fa-fw"></i> <strong>Created on </strong> {{ \Carbon\Carbon::parse($nominationRequest->created_at)->format('l jS F Y') }} - {!! \Carbon\Carbon::parse($nominationRequest->created_at)->diffForHumans() !!} </span> <br />
+                       <i class="fa fa-user fa-fw"></i><b>Beneficiary Staff Name : </b> 
+                            {{ ($nominationRequest->user->full_name) }} <br/>
+                        <i class="fa fa-envelope fa-fw"></i><b>Beneficiary Staff Email : </b> 
+                            {{ ($nominationRequest->user->email) }} <br/>
+                        <i class="fa fa-bank fa-fw"></i><b>Nomination Type : </b> {{ ucwords($nomination_type_str) }} Nomination <br/>
+                        
+                        <i class="fa fa-thumbs-up fa-fw"></i><b>Nomination Current Status:</b> {{ (!empty($nominationRequest->status)) ? strtoupper($nominationRequest->status) : 'N/A' }}<br/><br/> 
+                    </div>
+                </div>
 
-                    <i class="fa fa-user fa-fw"></i><b>Beneficiary Staff Name : </b> 
-                        {{ ($nominationRequest->user->full_name) }} <br/>
-                    <i class="fa fa-envelope fa-fw"></i><b>Beneficiary Staff Email : </b> 
-                        {{ ($nominationRequest->user->email) }} <br/>
-                    <i class="fa fa-bank fa-fw"></i><b>Nomination Type : </b> {{ ucwords($nomination_type_str) }} Nomination <br/>
-                    
-                    <i class="fa fa-thumbs-up fa-fw"></i><b>Nomination Current Status:</b> {{ (!empty($nominationRequest->status)) ? strtoupper($nominationRequest->status) : 'N/A' }}<br/><br/>
+                <div class="col-sm-12 col-md-5">
+                    <div class="row alert alert-info">
+                        <div class="col-sm-12" style="border-bottom: 1px solid gray;">
+                            <h6 class="text-center"> 
+                                <strong>
+                                    Attachements
+                                </strong>
+                            </h6>
+                        </div>
+                        @if(count($nomination_request_attachments) > 0)
+                            @foreach($nomination_request_attachments as $attachment)
+                                <div class="container panel">
+                                    <small>
+                                        @php
+                                            $link = $attachment->path;
+                                            $link = str_replace('public/', '', $link);
+                                        @endphp
+                                        <a href="{{ asset($link) }}" target="__blank">
+                                            <strong>{{$attachment->label}}</strong><br>
+                                        </a>
+                                        <i>{{$attachment->description}}</i>
+                                    </small>
+                                    <hr>
+                                </div>
+                            @endforeach
+                        @else
+                            <i> <small> No attachement provided </small> </i>
+                        @endif
+                    </div>
                 </div>
             </div>
             

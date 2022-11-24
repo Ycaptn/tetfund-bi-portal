@@ -127,6 +127,7 @@ class BeneficiaryAPIController extends AppBaseController
         $allRoles = Role::where('guard_name', 'web')
                         ->where('name', '!=', 'admin')
                         ->where('name', 'like', '%bi-%')
+                        ->where('name', 'not like', '%-commitee-head%')
                         ->pluck('name');
         $selectedRoles = [];
 
@@ -201,6 +202,7 @@ class BeneficiaryAPIController extends AppBaseController
         $allRoles = Role::where('guard_name', 'web')
                         ->where('name', '!=', 'admin')
                         ->where('name', 'like', '%bi-%')
+                        ->where('name', 'not like', '%-commitee-head%')
                         ->pluck('name');
         $selectedRoles = [];
 
@@ -213,7 +215,7 @@ class BeneficiaryAPIController extends AppBaseController
         }
 
         //update beneficiary user details
-        /*$beneficiary_member->email = $request->bi_staff_email;*/
+        $beneficiary_member->email = $request->bi_staff_email;
         $beneficiary_member->first_name = $request->bi_staff_fname;
         $beneficiary_member->last_name = $request->bi_staff_lname;
         $beneficiary_member->telephone = $request->bi_telephone;

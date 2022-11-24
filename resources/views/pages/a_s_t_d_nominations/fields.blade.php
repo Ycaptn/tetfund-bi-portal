@@ -1,37 +1,76 @@
-<!-- Email Field -->
-<div id="div-email" class="form-group mb-3 col-md-6">
-    <label for="email" class="col-sm-11 col-form-label">Email:</label>
-    <div class="col-sm-12">
-        {!! Form::text('email', $nominationRequest->user->email ?? '', ['id'=>'email', 'class' => 'form-control', 'disabled'=>'disabled']) !!}
-    </div>
-</div>
+{{-- authenticated user relevant information div --}}
+<div id="user_info_section" class="form-group row col-sm-12">
+    <div class="col-sm-12 col-md-4 mb-3">
+        <label class="col-sm-12"><b>Fullname:</b></label>
+        <div class="col-sm-12 ">
+            <!-- First Name Field -->
+            {!! Form::hidden('first_name', $nominationRequest->user->first_name ?? '', ['id'=>'first_name', 'class'=>'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
 
-<!-- Telephone Field -->
-<div id="div-telephone" class="form-group mb-3 col-md-6">
-    <label for="telephone" class="col-sm-11 col-form-label">Telephone:</label>
-    <div class="col-sm-12">
-        {!! Form::text('telephone', $nominationRequest->user->telephone ?? '', ['id'=>'telephone', 'class' => 'form-control', 'disabled'=>'disabled']) !!}
-    </div>
-</div>
+            <!-- Middle Name Field -->
+            {!! Form::hidden('middle_name', $nominationRequest->user->middle_name ?? '', ['id'=>'middle_name', 'class'=>'form-control middle_name', 'placeholder'=>'optional field', 'disabled'=>'disabled']) !!}
 
-<!-- Beneficiary Institution Field -->
-<div id="div-beneficiary_institution_id" class="form-group mb-3">
-    <label for="beneficiary_institution_id" class="col-sm-11 col-form-label">Beneficiary Institution:</label>
-    <div class="col-sm-12">
-        <select id="beneficiary_institution_id_select" class="form-select" disabled='disabled'>
-            <option value=''>-- None selected --</option>
-            @if(isset($beneficiaries))
-                @foreach($beneficiaries as $benef)
-                    @if($benef->id == $beneficiary->id)
-                        <option selected='selected' value='{{ $benef->id }}'> {{$benef->full_name}}  (  {{$benef->short_name}} ) </option>
-                    @else
-                        <option value='{{ $benef->id }}'> {{$benef->full_name}}  (  {{$benef->short_name}} ) </option>
-                    @endif
-                @endforeach
-            @endif
-        </select>
+            <!-- Last Name Field -->
+            {!! Form::hidden('last_name', $nominationRequest->user->last_name ?? '', ['id'=>'last_name', 'class'=>'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
+
+            <i class="full_name">
+                {{$nominationRequest->user->first_name ?? ''}}
+                {{$nominationRequest->user->middle_name ?? ''}}
+                {{$nominationRequest->user->last_name ?? ''}}
+            </i>
+        </div>
     </div>
+
+    <div class="col-sm-12 col-md-4 mb-3">
+        <label class="col-sm-12"><b>Email:</b></label>
+        <div class="col-sm-12 ">
+            <!-- Email Field -->
+            {!! Form::hidden('email', $nominationRequest->user->email ?? '', ['id'=>'email', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
+
+            <i class="email">
+                {{$nominationRequest->user->email ?? ''}}
+            </i>
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-4 mb-3">
+        <label class="col-sm-12"><b>Telephone:</b></label>
+        <div class="col-sm-12 ">
+            <!-- Telephone Field -->
+            {!! Form::hidden('telephone', $nominationRequest->user->telephone ?? '', ['id'=>'telephone', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
+            
+            <i class="telephone">
+                {{$nominationRequest->user->telephone ?? ''}}
+            </i>
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-8 mb-3">
+        <label class="col-sm-12"><b>Beneficiary Institution:</b></label>
+        <div class="col-sm-12 ">
+            <!-- Beneficiary Institution Field -->
+            {!! Form::hidden('beneficiary_institution_id_select', $beneficiary->id ?? '', ['id'=>'beneficiary_institution_id_select', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
+            
+            <i class="beneficiary_institution_id_select">
+                {{$beneficiary->full_name ?? ''}}
+                {{(isset($beneficiary->short_name) && !empty($beneficiary->short_name)) ? '('.strtoupper($beneficiary->short_name).')' : ''}}
+            </i>
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-4 mb-3">
+        <label class="col-sm-12"><b>Gender:</b></label>
+        <div class="col-sm-12 ">
+            <!-- Gender Field -->
+            {!! Form::hidden('gender', $nominationRequest->user->gender ?? '', ['id'=>'gender', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
+            
+            <i class="gender">
+                {{ ucfirst($nominationRequest->user->gender ?? '')}}                
+            </i>
+        </div>
+    </div>
+
 </div>
+<hr>
 
 <!-- Institution Field -->
 <div id="div-institution_id" class="form-group mb-3 col-md-6">
@@ -63,67 +102,19 @@
     </div>
 </div>
 
-
-<!-- Gender Field -->
-<div id="div-gender" class="form-group mb-3 col-md-4">
-    <label for="gender" class="col-sm-11 col-form-label">Gender:</label>
-     @php
-        $gender = strtolower($nominationRequest->user->gender ?? '');
-        $m = $f = $n = '';
-        if($gender == 'male') {
-            $m = "selected='selected'";
-        } elseif ($gender == 'female') {
-            $f = "selected='selected'";
-        } else {
-            $n = "selected='selected'";
-        }
-    @endphp
-    <div class="col-sm-12">
-        <select class="form-select" id="gender" name="gender" disabled='disabled'>
-            <option value="" {{ $n }}>-- None selected --</option>
-            <option value="Male" {{ $m }}>Male</option>
-            <option value="Female" {{ $f }}>Female</option>
-        </select>
-    </div>
-</div>
-
 <!-- Name Title Field -->
-<div id="div-name_title" class="form-group mb-3 col-md-4">
-    <label for="name_title" class="col-sm-11 col-form-label">Name Title:</label>
+<div id="div-name_title" class="form-group col-md-4">
+    {{-- <label for="name_title" class="col-sm-11 col-form-label">Name Title:</label> --}}
     <div class="col-sm-12">
-        {!! Form::text('name_title', null, ['id'=>'name_title', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
+        {!! Form::hidden('name_title', null, ['id'=>'name_title', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
     </div>
 </div>
 
 <!-- Name Suffix Field -->
-<div id="div-name_suffix" class="form-group mb-3 col-md-4">
-    <label for="name_suffix" class="col-sm-12 col-form-label">Name Suffix:</label>
+<div id="div-name_suffix" class="form-group col-md-4">
+    {{-- <label for="name_suffix" class="col-sm-12 col-form-label">Name Suffix:</label> --}}
     <div class="col-sm-12">
-        {!! Form::text('name_suffix', null, ['id'=>'name_suffix', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
-
-<!-- First Name Field -->
-<div id="div-first_name" class="form-group mb-3 col-md-4">
-    <label for="first_name" class="col-sm-11 col-form-label">First Name:</label>
-    <div class="col-sm-12">
-        {!! Form::text('first_name', $nominationRequest->user->first_name ?? '', ['id'=>'first_name', 'class' => 'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
-    </div>
-</div>
-
-<!-- Middle Name Field -->
-<div id="div-middle_name" class="form-group mb-3 col-md-4">
-    <label for="middle_name" class="col-sm-11 col-form-label">Middle Name:</label>
-    <div class="col-sm-12">
-        {!! Form::text('middle_name', $nominationRequest->user->middle_name ?? '', ['id'=>'middle_name', 'class' => 'form-control', 'placeholder'=>'optional field', 'disabled'=>'disabled']) !!}
-    </div>
-</div>
-
-<!-- Last Name Field -->
-<div id="div-last_name" class="form-group mb-3 col-md-4">
-    <label for="last_name" class="col-sm-11 col-form-label">Last Name:</label>
-    <div class="col-sm-12">
-        {!! Form::text('last_name', $nominationRequest->user->last_name ?? '', ['id'=>'last_name', 'class' => 'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
+        {!! Form::hidden('name_suffix', null, ['id'=>'name_suffix', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
     </div>
 </div>
 
@@ -235,7 +226,57 @@
     </div>
 </div>
 
-<!-- Start Fee Amount Field -->
+<hr>
+<div class="col-sm-12" style="display: none;" id="attachements_info">
+    <small>
+        <i class="text-danger">
+            <strong>NOTE:</strong>
+            Uploading an attachement will authomatically replace older attachement provided initially. 
+        </i>
+    </small>
+</div>
+<!-- passport photo -->
+<div id="div-passport_photo" class="form-group  col-md-4">
+    <label for="passport_photo" class="col-sm-11 col-form-label">Passport Photo:</label>
+    <div class="col-sm-12">
+        <input type="file" id="passport_photo" name="passport_photo" class="form-control">
+        {{-- {!! Form::file('passport_photo', null, ['id'=>'passport_photo', 'class' => 'form-control', 'placeholder'=>'required field']) !!} --}}
+    </div>
+</div>
+
+<!-- admission letter -->
+<div id="div-admission_letter" class="form-group  col-md-4">
+    <label for="admission_letter" class="col-sm-11 col-form-label">Admission Letter:</label>
+    <div class="col-sm-12">
+        <input type="file" id="admission_letter" name="admission_letter" class="form-control">
+    </div>
+</div>
+
+<!-- health report -->
+<div id="div-health_report" class="form-group  col-md-4">
+    <label for="health_report" class="col-sm-11 col-form-label">Health Report:</label>
+    <div class="col-sm-12">
+        <input type="file" id="health_report" name="health_report" class="form-control">
+    </div>
+</div>
+
+<!-- international passport bio page -->
+<div id="div-international_passport_bio_page" class="form-group col-md-6">
+    <label for="international_passport_bio_page" class="col-sm-11 col-form-label">Int'l Passport Bio Page:</label>
+    <div class="col-sm-12">
+        <input type="file" id="international_passport_bio_page" name="international_passport_bio_page" class="form-control">
+    </div>
+</div>
+
+<!-- conference attendence letter -->
+<div id="div-conference_attendence_letter" class="form-group  col-md-6">
+    <label for="conference_attendence_letter" class="col-sm-11 col-form-label">Conference Attendance Letter:</label>
+    <div class="col-sm-12">
+        <input type="file" id="conference_attendence_letter" name="conference_attendence_letter" class="form-control">
+    </div>
+</div>
+
+{{-- <!-- Start Fee Amount Field -->
 <div id="div-fee_amount" class="form-group mb-3 col-md-6">
     <label for="fee_amount" class="col-sm-12 col-form-label">Fee Amount:</label>
     <div class="col-sm-12">
@@ -349,4 +390,4 @@
         {!! Form::text('total_approved_amount', null, ['id'=>'total_approved_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
     </div>
 </div>
-<!-- End Total Approved Amount Field -->
+<!-- End Total Approved Amount Field --> --}}

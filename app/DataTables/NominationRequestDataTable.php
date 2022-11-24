@@ -62,6 +62,7 @@ class NominationRequestDataTable extends DataTable
             if (request()->view_type == 'commitee_approved' && Auth()->user()->hasAnyRole(array_merge($all_commitee_stakeholders, ['bi-desk-officer']))) {
 
                 $query_filter['is_head_commitee_members_check'] = 1;
+                $query_filter['is_desk_officer_check_after_head_commitee_members'] = 0;
 
             } else if (request()->view_type == 'hoi_approved' && Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi'])) {
 

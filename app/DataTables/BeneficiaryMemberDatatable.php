@@ -78,6 +78,7 @@ class BeneficiaryMemberDatatable extends DataTable
                                 "tf_bi_beneficiary_members.beneficiary_id"=>$this->beneficiary_id,
                                 'fc_users.deleted_at'=>null,
                                 'tf_bi_beneficiary_members.deleted_at'=>null])
+                    ->orderBy('fc_users.created_at', 'DESC')
                     ->select('fc_users.*', 'tf_bi_beneficiary_members.beneficiary_id');
         }
 
@@ -85,6 +86,7 @@ class BeneficiaryMemberDatatable extends DataTable
                     ->where([   "fc_users.organization_id"=>$this->organization->id,
                                 'fc_users.deleted_at'=>null,
                                 'tf_bi_beneficiary_members.deleted_at'=>null])
+                    ->orderBy('fc_users.created_at', 'DESC')
                     ->select('fc_users.*', 'tf_bi_beneficiary_members.beneficiary_id');
     }
 
@@ -102,7 +104,6 @@ class BeneficiaryMemberDatatable extends DataTable
             ->parameters([
                 'dom'       => 'Bfrtip',
                 'stateSave' => true,
-                'order'     => [[3, 'desc']],
                 'buttons'   => [
                     //['extend' => 'create', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
                     //['extend' => 'export', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
@@ -125,7 +126,6 @@ class BeneficiaryMemberDatatable extends DataTable
             ['title'=>'Full Name','data'=>'full_name', 'name'=>'fc_users.first_name' ],
             ['title'=>'Email','data'=>'email', 'name'=>'fc_users.email' ],
             ['title'=>'Phone','data'=>'telephone', 'name'=>'fc_users.telephone' ],
-            ['title'=>'Created','data'=>'created_at', 'name'=>'fc_users.created_at' ],
             Column::make('roles'),
         ];
     }

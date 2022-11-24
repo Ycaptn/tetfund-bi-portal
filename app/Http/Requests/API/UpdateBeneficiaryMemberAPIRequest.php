@@ -43,6 +43,7 @@ class UpdateBeneficiaryMemberAPIRequest extends AppBaseFormRequest
         $allRoles = Role::where('guard_name', 'web')
                     ->where('name', '!=', 'admin')
                     ->where('name', 'like', '%bi%')
+                    ->where('name', 'not like', '%-commitee-head%')
                     ->pluck('name');
 
         // checking if any role is set

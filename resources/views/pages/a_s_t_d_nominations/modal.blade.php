@@ -70,8 +70,10 @@ $(document).ready(function() {
 
             let itemName = $(this).attr('data-val');
             let receipiant = '';
-            if (itemName.includes("is_desk_officer_check") == true) {
+            if (itemName.includes("is_desk_officer_check") == true && itemName.includes("is_desk_officer_check_after_head_commitee_members") == false) {
                 receipiant = 'ASTD Committee';
+            } else if(itemName.includes("is_desk_officer_check_after_head_commitee_members") == true) {
+                receipiant = 'Head Of Institution';
             }
 
             let itemArr = itemName.split('$');
@@ -156,6 +158,7 @@ $(document).ready(function() {
     $(document).on('click', ".btn-show-{{$nominationRequest->type ?? 'astd'}}", function(e) {
         e.preventDefault();
         $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+        $('#prefix_info').text("Preview");
 
         //check for internet status 
         if (!window.navigator.onLine) {
@@ -197,7 +200,7 @@ $(document).ready(function() {
     		$('#spn_aSTDNomination_degree_type').html(response.data.degree_type);
     		$('#spn_aSTDNomination_program_title').html(response.data.program_title);
     		$('#spn_aSTDNomination_program_type').html(response.data.program_type);
-    		$('#spn_aSTDNomination_fee_amount').html(response.data.fee_amount);
+    		/*$('#spn_aSTDNomination_fee_amount').html(response.data.fee_amount);
     		$('#spn_aSTDNomination_tuition_amount').html(response.data.tuition_amount);
     		$('#spn_aSTDNomination_upgrade_fee_amount').html(response.data.upgrade_fee_amount);
     		$('#spn_aSTDNomination_stipend_amount').html(response.data.stipend_amount);
@@ -209,7 +212,7 @@ $(document).ready(function() {
     		$('#spn_aSTDNomination_thesis_research_amount').html(response.data.thesis_research_amount);
     		$('#spn_aSTDNomination_final_remarks').html(response.data.final_remarks);
     		$('#spn_aSTDNomination_total_requested_amount').html(response.data.total_requested_amount);
-    		$('#spn_aSTDNomination_total_approved_amount').html(response.data.total_approved_amount);
+    		$('#spn_aSTDNomination_total_approved_amount').html(response.data.total_approved_amount);*/
             $('#spn_aSTDNomination_beneficiary_institution_name').html(response.data.beneficiary.full_name);
             $('#spn_aSTDNomination_institution_name').html(response.data.institution.name); 
             $('#spn_aSTDNomination_country_name').html(response.data.country.name + ' (' + response.data.country.country_code + ')');
@@ -230,6 +233,7 @@ $(document).ready(function() {
         $('#prefix_info').text("Edit");
 
         $("#spinner-a_s_t_d_nominations").show();
+        $("#attachements_info").show();
         $("#btn-save-mdl-aSTDNomination-modal").attr('disabled', true);
 
         $('#div-show-txt-aSTDNomination-primary-id').hide();
@@ -257,7 +261,7 @@ $(document).ready(function() {
     		$('#degree_type').val(response.data.degree_type);
     		$('#program_title').val(response.data.program_title);
     		$('#program_type').val(response.data.program_type);
-    		$('#fee_amount').val(response.data.fee_amount);
+    		/*$('#fee_amount').val(response.data.fee_amount);
     		$('#tuition_amount').val(response.data.tuition_amount);
     		$('#upgrade_fee_amount').val(response.data.upgrade_fee_amount);
     		$('#stipend_amount').val(response.data.stipend_amount);
@@ -269,7 +273,7 @@ $(document).ready(function() {
     		$('#thesis_research_amount').val(response.data.thesis_research_amount);
     		$('#final_remarks').val(response.data.final_remarks);
     		$('#total_requested_amount').val(response.data.total_requested_amount);
-    		$('#total_approved_amount').val(response.data.total_approved_amount);
+    		$('#total_approved_amount').val(response.data.total_approved_amount);*/
             $('#is_science_program').val(response.data.is_science_program ? '1' : '0');
 
             var program_start_date = new Date(response.data.program_start_date).toISOString().slice(0, 10);
@@ -414,7 +418,14 @@ $(document).ready(function() {
         if ($('#is_science_program').length){ formData.append('is_science_program',$('#is_science_program').val());   }
         if ($('#program_start_date').length){ formData.append('program_start_date',$('#program_start_date').val());   }
         if ($('#program_end_date').length){ formData.append('program_end_date',$('#program_end_date').val());   }
-		if ($('#fee_amount').length){	formData.append('fee_amount',$('#fee_amount').val());	}
+        
+        formData.append('passport_photo', $('#passport_photo')[0].files[0]);
+        formData.append('admission_letter', $('#admission_letter')[0].files[0]);          
+        formData.append('health_report', $('#health_report')[0].files[0]);  
+        formData.append('international_passport_bio_page', $('#international_passport_bio_page')[0].files[0]);  
+        formData.append('conference_attendence_letter', $('#conference_attendence_letter')[0].files[0]);  
+                
+		/*if ($('#fee_amount').length){	formData.append('fee_amount',$('#fee_amount').val());	}
 		if ($('#tuition_amount').length){	formData.append('tuition_amount',$('#tuition_amount').val());	}
 		if ($('#upgrade_fee_amount').length){	formData.append('upgrade_fee_amount',$('#upgrade_fee_amount').val());	}
 		if ($('#stipend_amount').length){	formData.append('stipend_amount',$('#stipend_amount').val());	}
@@ -426,7 +437,7 @@ $(document).ready(function() {
 		if ($('#thesis_research_amount').length){	formData.append('thesis_research_amount',$('#thesis_research_amount').val());	}
 		if ($('#final_remarks').length){	formData.append('final_remarks',$('#final_remarks').val());	}
 		if ($('#total_requested_amount').length){	formData.append('total_requested_amount',$('#total_requested_amount').val());	}
-		if ($('#total_approved_amount').length){	formData.append('total_approved_amount',$('#total_approved_amount').val());	}
+		if ($('#total_approved_amount').length){	formData.append('total_approved_amount',$('#total_approved_amount').val());	}*/
 
 
         $.ajax({

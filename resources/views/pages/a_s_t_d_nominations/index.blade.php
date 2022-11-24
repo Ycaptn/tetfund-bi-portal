@@ -99,8 +99,8 @@ All A S T D Nomination
     @include('tf-bi-portal::pages.a_s_t_d_nominations.modal')
     
     {{-- include approval by voting if user is a commitee menber --}}
-    @if (auth()->user()->hasAnyRole(['bi-astd-commitee-head', 'bi-astd-commitee-member', 'bi-tp-commitee-head', 'bi-tp-commitee-member', 'bi-ca-commitee-head', 'bi-ca-commitee-member', 'bi-tsas-commitee-head', 'bi-tsas-commitee-member']))
-        @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.nomination_committee_approval_modal')
+    @if (auth()->user()->hasAnyRole(['bi-astd-commitee-head', 'bi-astd-commitee-member', 'bi-tp-commitee-head', 'bi-tp-commitee-member', 'bi-ca-commitee-head', 'bi-ca-commitee-member', 'bi-tsas-commitee-head', 'bi-tsas-commitee-member', 'bi-hoi']))
+        @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.nomination_hoi_committee_approval_modal')
     @endif
 
 @stop

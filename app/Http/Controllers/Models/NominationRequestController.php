@@ -112,20 +112,24 @@ class NominationRequestController extends BaseController
         $bi_beneficiary =  $nominationRequest->beneficiary;
         $bi_beneficiaries =  Beneficiary::all();
 
-        /*class constructor to fetch countries*/
+        // all possible attachements for this nomination
+        $nomination_request_attachments = $nominationRequest->get_all_attachements($nominationRequest->id);
+
+        // class constructor to fetch countries
         $tETFundServer = new TETFundServer();
         $countries = $tETFundServer->get_all_data_list_from_server("tetfund-astd-api/countries", null);
 
-        /*class constructor to fetch institutions*/
+        // class constructor to fetch institutions
         $tETFundServer = new TETFundServer();
         $institutions = $tETFundServer->get_all_data_list_from_server("tetfund-astd-api/institutions", null);
-        
+            
         return view('pages.nomination_requests.show')
             ->with('nominationRequest', $nominationRequest)
             ->with('countries', $countries)
             ->with('institutions', $institutions)
             ->with('beneficiary', $bi_beneficiary)
-            ->with('beneficiaries', $bi_beneficiaries);
+            ->with('beneficiaries', $bi_beneficiaries)
+            ->with('nomination_request_attachments', $nomination_request_attachments);
     }
 
     /**

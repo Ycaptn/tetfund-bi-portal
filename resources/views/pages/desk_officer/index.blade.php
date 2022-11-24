@@ -90,9 +90,17 @@ Beneficiary Admin Panel
                 $("#btn-new-beneficiary-member").attr('disabled', false);
             });
 
-                        //Show Modal for beneficiary member password reset
+            //Show Modal for beneficiary member password reset
             $(document).on('click', ".btn-reset-password-beneficiary-member", function(e) {
                 e.preventDefault();
+                //check for internet status 
+                if (!window.navigator.onLine) {
+                    $('.offline-beneficiary-member-reset-password').fadeIn(300);
+                    return;
+                }else{
+                    $('.offline-beneficiary-member-reset-password').fadeOut(300);
+                }
+
                 $('#div-beneficiary-member-reset-password-modal-error').hide();
                 $('#mdl-beneficiary-member-reset-password-modal').modal('show');
                 $('#btn-save-beneficiary-member-reset-password-modal').show();
@@ -374,7 +382,6 @@ Beneficiary Admin Panel
                 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
 
                 $('#div-beneficiary-member-modal-error').hide();
-                $('#bi_staff_email').attr('disabled', true);
                 $('.opposite_create').text("Modify");
                 $('#opposite_creating').text("You will be modifying an existing");
                 $('#mdl-beneficiary-member-modal').modal('show');

@@ -146,7 +146,17 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-staff', 'bi-astd-commitee-head', 'bi-ca-commitee-head', 'bi-tp-commitee-head', 'bi-tsas-commitee-head', 'bi-astd-commitee-member', 'bi-ca-commitee-member', 'bi-tp-commitee-member', 'bi-tsas-commitee-member']))
+			@if (Auth()->user()->hasAnyRole(['bi-staff']))
+				<li>
+					<a href="{{ route('tf-bi-portal.nomination_requests.index') }}" class="">
+						<div class="parent-icon"><i class='fa fa-check-square'></i>
+						</div>
+						<div class="menu-title">Nomination Requests</div>
+					</a>
+				</li>
+			@endif
+
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-astd-commitee-head', 'bi-ca-commitee-head', 'bi-tp-commitee-head', 'bi-tsas-commitee-head', 'bi-astd-commitee-member', 'bi-ca-commitee-member', 'bi-tp-commitee-member', 'bi-tsas-commitee-member']))
 
 			<li>
 			    <a href="javascript:void(0);" data-toggle="collapse" data-target="#access_dr" class="collapsed" aria-expanded="false">
@@ -161,7 +171,7 @@
 
 			    {{-- collapse-level-1 collapse --}}
 			    <ul id="access_dr" class="" aria-expanded="false" style="">
-			        @if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-staff']))
+			        @if (Auth()->user()->hasAnyRole(['bi-desk-officer']))
 				        <li>
 							<a href="{{ route('tf-bi-portal.nomination_requests.index') }}" class="">
 								<div class="menu-title col-sm-12">

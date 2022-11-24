@@ -78,6 +78,46 @@ class ASTDNominationAPIController extends AppBaseController
         $nominationRequest->details_submitted = 1;
         $nominationRequest->save();
 
+        /*handling passport_photo upload process*/
+        if($request->hasFile('passport_photo')) {
+            $label = $aSTDNomination->first_name . " " . $aSTDNomination->last_name . "ASTDNomination Passport Photo";
+            $discription = "This " . strtolower("Document contains the $label");
+
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo);
+        }
+
+        /*handling admission_letter upload process*/
+        if($request->hasFile('admission_letter')) {
+            $label = $aSTDNomination->first_name . " " . $aSTDNomination->last_name . "ASTDNomination Admission Letter";
+            $discription = "This " . strtolower("Document contains the $label");
+
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->admission_letter);
+        } 
+
+        /*handling health_report upload process*/
+        if($request->hasFile('health_report')) {
+            $label = $aSTDNomination->first_name . " " . $aSTDNomination->last_name . "ASTDNomination Health Report";
+            $discription = "This " . strtolower("Document contains the $label");
+
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->health_report);
+        } 
+
+        /*handling international_passport_bio_page upload process*/
+        if($request->hasFile('international_passport_bio_page')) {
+            $label = $aSTDNomination->first_name . " " . $aSTDNomination->last_name . "ASTDNomination International Passport Bio Page";
+            $discription = "This " . strtolower("Document contains the $label");
+
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->international_passport_bio_page);
+        } 
+
+        /*handling conference_attendence_letter upload process*/
+        if($request->hasFile('conference_attendence_letter')) {
+            $label = $aSTDNomination->first_name . " " . $aSTDNomination->last_name . "ASTDNomination Conference Attendence Letter";
+            $discription = "This " . strtolower("Document contains the $label");
+
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendence_letter);
+        } 
+
         ASTDNominationCreated::dispatch($aSTDNomination);
         return $this->sendResponse($aSTDNomination->toArray(), 'A S T D Nomination saved successfully');
     }

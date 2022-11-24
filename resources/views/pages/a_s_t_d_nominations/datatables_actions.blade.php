@@ -27,4 +27,24 @@
         </a> &nbsp; &nbsp;
     @endif
 
+    {{-- appears for desk-officer after committee approved --}}
+    @if($is_head_commitee_members_check==1 && $is_desk_officer_check_after_head_commitee_members==0 && auth()->user()->hasAnyRole(['bi-desk-officer']))
+        <a data-toggle="tooltip" 
+            title="Forward  ASTD Nomination details to HOI for Approval" 
+            data-val='{{$id}}$is_desk_officer_check_after_head_commitee_members' 
+            class="btn-forward-{{$type}}" href="#">
+            <i class="fa fa-paper-plane text-danger" style="opacity:80%"></i>
+        </a> &nbsp; &nbsp;
+    @endif
+
+    {{-- appears for all hoi approval only --}}
+    @if($is_desk_officer_check_after_head_commitee_members == 1 && $is_head_of_institution_check == 0 && auth()->user()->hasAnyRole(['bi-hoi']))
+        <a data-toggle="tooltip" 
+            title="Head of Institution Approval for ASTD Nomination Request" 
+            data-val='{{$id}}'
+            class="btn-hoi-approval" href="#">
+            <i class="fa fa-check-square text-danger" style="opacity:80%"></i>
+        </a> &nbsp; &nbsp;
+    @endif
+
 </div>

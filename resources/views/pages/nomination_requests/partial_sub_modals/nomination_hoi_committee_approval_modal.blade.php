@@ -79,6 +79,15 @@
         $(document).ready(function() {
             $('.offline-nomination_request_vote').hide();
 
+            //process nomination approval by Head of institution
+            @if(auth()->user()->hasAnyRole(['bi-hoi']))
+                $(document).on('click', ".btn-hoi-approval", function(e) {
+                    e.preventDefault();
+                    $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+                    /*alert('i arrive');*/
+                });
+            @endif
+
             //process pushing nomination back to Desk officer dashboard
             @if(auth()->user()->hasAnyRole(['bi-astd-commitee-head', 'bi-tp-commitee-head', 'bi-ca-commitee-head', 'bi-tsas-commitee-head']))
                 $(document).on('click', "#btn-save-nomination_request_push", function(e) {
@@ -148,7 +157,7 @@
             @endif
 
 
-            //process approval vote button
+            //process approval vote button for all nomination committee members
             $(document).on('click', "#btn-save-nomination_request_vote", function(e) {
                 e.preventDefault();
                 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
