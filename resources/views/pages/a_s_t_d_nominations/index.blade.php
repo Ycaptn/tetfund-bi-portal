@@ -99,12 +99,24 @@ All A S T D Nomination
     @include('tf-bi-portal::pages.a_s_t_d_nominations.modal')
     
     @if(auth()->user()->hasRole('bi-desk-officer'))
-        @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_to_committee_modal')
+        @if(!isset(request()->view_type))
+            @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_to_committee_modal')
+        @endif
+        
+        @if(isset(request()->view_type) && request()->view_type == 'commitee_approved')
+            @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_to_hoi_modal')
+        @endif
+        
     @endif
 
     {{-- include approval by voting if user is an astd commitee menber --}}
     @if (auth()->user()->hasAnyRole(['bi-astd-commitee-head', 'bi-astd-commitee-member']))
         @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.committee_approval_for_nomination_modal')
+    @endif
+
+    {{-- include approval for Head of Institution --}}
+    @if (auth()->user()->hasRole('bi-hoi'))
+        @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.hoi_approval_for_nomination_modal')
     @endif
 
 @stop
