@@ -24,7 +24,7 @@ class CreateASTDNominationAPIRequest extends AppBaseFormRequest
      * @return array
      */
     public function rules() {
-        return [
+        $return_rules = [
             'organization_id' => 'required',
             'display_ordinal' => 'nullable|min:0|max:365',
             'email' => 'required|email|max:190',
@@ -34,8 +34,6 @@ class CreateASTDNominationAPIRequest extends AppBaseFormRequest
             //'country_id' => 'required|exists:tf_astd_countries,id',
             'tf_iterum_portal_institution_id' => 'required|uuid',
             'tf_iterum_portal_country_id' => 'required|uuid',
-            'nomination_request_id' => 'required|exists:tf_bi_nomination_requests,id',
-            'user_id' => 'required|exists:fc_users,id',
             'gender' => "required|string|max:50|in:". implode(['Male', 'Female'], ','),
             'name_title' => 'nullable|string|max:50',
             'first_name' => 'required|string|max:100',
@@ -56,11 +54,11 @@ class CreateASTDNominationAPIRequest extends AppBaseFormRequest
             'program_start_date' => 'required|date|after:today',
             'program_end_date' => 'required|date|after:program_start_date',
 
-            'passport_photo' => 'required|file|mimes:pdf,png,jpeg,jpg|max:102400',
-            'admission_letter' => 'required|file|mimes:pdf|max:102400',
-            'health_report' => 'required|file|mimes:pdf,doc,docx|max:102400',
-            'international_passport_bio_page' => 'required|file|mimes:pdf,doc,docx|max:102400',
-            'conference_attendence_letter' => 'required|file|mimes:pdf,doc,docx|max:102400',
+            'passport_photo' => 'required|file|mimes:pdf,png,jpeg,jpg|max:5240',
+            'admission_letter' => 'required|file|mimes:pdf|max:5240',
+            'health_report' => 'required|file|mimes:pdf,doc,docx|max:5240',
+            'international_passport_bio_page' => 'required|file|mimes:pdf,doc,docx|max:5240',
+            'conference_attendence_letter' => 'required|file|mimes:pdf,doc,docx|max:5240',
 
             //'program_duration_months' => 'nullable|min:0|max:365',
             //'fee_amount' => 'nullable|numeric|min:0|max:100000000',
@@ -77,6 +75,13 @@ class CreateASTDNominationAPIRequest extends AppBaseFormRequest
             //'total_requested_amount' => 'nullable|numeric|min:0|max:100000000',
             //'total_approved_amount' => 'nullable|numeric|min:0|max:100000000'
         ];
+
+        if (!(request()->has('nomination_request_and_submission'))) {
+            $return_rules['nomination_request_id'] = 'required|exists:tf_bi_nomination_requests,id';
+            $return_rules['user_id'] = 'required|exists:fc_users,id';
+        }
+
+        return $return_rules;
     }
 
     public function attributes() {

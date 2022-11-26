@@ -1,5 +1,5 @@
 <div class="modal fade" id="mdl-requestNomination-modal" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
 
             <div class="modal-header">
@@ -21,6 +21,13 @@
 
                             <div id="div-edit-txt-requestNomination-primary-id">
                                 <div class="row col-sm-12">
+                                    <div class="row col-sm-12 mb-3 text-justify">
+                                        <small>
+                                            <i class="text-danger">
+                                                <strong>Note: </strong> To alter captured beneficiary staff data, proceed to your <strong>profile</strong> settings, make and save changes, thereafter return to <strong>Request Nomination</strong> and proceed with updated profile data.
+                                            </i>
+                                        </small>
+                                    </div><hr>
                                     @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.fields')
                                 </div>
                             </div>
@@ -63,60 +70,7 @@ $(document).ready(function() {
         $('#div-edit-txt-requestNomination-primary-id').show();
 
         $("#spinner-request_nomination").hide();
-        $("#btn-save-mdl-requestNomination-modal").attr('disabled', true);
-    });
-
-    //toggle different nomination forms on changing type
-    $(document).on('change', "#nomination_type", function(e) {
-        $("#spinner-request_nomination").show();
-        $("#btn-save-mdl-requestNomination-modal").attr('disabled', true);
-        let nomination_type = $('#nomination_type').val();
-        $('#div-requestNomination-modal-error').hide();
-
-        if (nomination_type == 'astd') {
-            $('#frm-requestNomination-modal').trigger("reset");
-            $('#astd_nomination_form').show();
-            $('#ca_nomination_form').hide();
-            $('#tp_nomination_form').hide();
-            $('#tsas_nomination_form').hide();
-            $("#spinner-request_nomination").hide();
-            $("#btn-save-mdl-requestNomination-modal").attr('disabled', false);
-        } else if (nomination_type == 'ca') {
-            $('#frm-requestNomination-modal').trigger("reset");
-            $('#ca_nomination_form').show();
-            $('#astd_nomination_form').hide();
-            $('#tp_nomination_form').hide();
-            $('#tsas_nomination_form').hide();
-            $("#spinner-request_nomination").hide();
-            $("#btn-save-mdl-requestNomination-modal").attr('disabled', false);
-        } else if (nomination_type == 'tp') {
-            $('#frm-requestNomination-modal').trigger("reset");
-            $('#tp_nomination_form').show();
-            $('#astd_nomination_form').hide();
-            $('#ca_nomination_form').hide();
-            $('#tsas_nomination_form').hide();
-            $("#spinner-request_nomination").hide();
-            $("#btn-save-mdl-requestNomination-modal").attr('disabled', false);
-        } else if (nomination_type == 'tsas') {
-            $('#frm-requestNomination-modal').trigger("reset");
-            $('#tsas_nomination_form').show();
-            $('#astd_nomination_form').hide();
-            $('#ca_nomination_form').hide();
-            $('#tp_nomination_form').hide();
-            $("#spinner-request_nomination").hide();
-            $("#btn-save-mdl-requestNomination-modal").attr('disabled', false);
-        } else {
-            $('#frm-requestNomination-modal').trigger("reset");
-            $('#astd_nomination_form').hide();
-            $('#ca_nomination_form').hide();
-            $('#tp_nomination_form').hide();
-            $('#tsas_nomination_form').hide();
-            $("#spinner-request_nomination").hide();
-            $("#btn-save-mdl-requestNomination-modal").attr('disabled', true);
-        }
-
-        $('#nomination_type').val(nomination_type);
-
+        $("#btn-save-mdl-requestNomination-modal").attr('disabled', false);
     });
 
     /*//Show Modal for View
@@ -268,24 +222,48 @@ $(document).ready(function() {
         $("#spinner-request_nomination").show();
         $("#btn-save-mdl-requestNomination-modal").attr('disabled', true);
 
+        let actionType = "POST";
+        let endPointUrl = "{{ route('tf-bi-portal-api.nomination_requests.store') }}";
+        let primaryId = $('#txt-requestNomination-primary-id').val();
         
         let formData = new FormData();
         formData.append('_token', $('input[name="_token"]').val());
-        formData.append('_method', 'POST');
-        formData.append('nomination_request_and_submission', '1');
-        if ($('#nomination_type').length){ formData.append('nomination_type',$('#nomination_type').val()); }
 
-        //nomination request data appended
+        if (primaryId != "0"){
+            actionType = "PUT";
+            endPointUrl = "{{ route('tf-bi-portal-api.nomination_requests.update','') }}/"+primaryId;
+            formData.append('id', primaryId);
+        }
+        
+        formData.append('_method', actionType);
         @if (isset($organization) && $organization!=null)
             formData.append('organization_id', '{{$organization->id}}');
         @endif
+        
+        @if (isset($current_user->email) && $current_user->email!=null)
+            formData.append('bi_staff_email', '{{ $current_user->email }}' );
+        @endif
 
-       
-        // astd nomination request data appended
-        @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_append_astd_form_data')
+        @if (isset($current_user->first_name) && $current_user->first_name!=null)
+            formData.append('bi_staff_fname', '{{ $current_user->first_name }}' );
+        @endif
+
+        @if (isset($current_user->last_name) && $current_user->last_name!=null)
+            formData.append('bi_staff_lname', '{{ $current_user->last_name }}' );
+        @endif
+
+        @if (isset($current_user->telephone) && $current_user->telephone!=null)        
+            formData.append('bi_telephone', '{{ $current_user->telephone }}' );
+        @endif
+
+        @if (isset($current_user->gender) && $current_user->gender!=null)       
+            formData.append('bi_staff_gender', '{{ strtolower($current_user->gender) }}' );
+        @endif
+
+        if ($('#nomination_type').length){ formData.append('nomination_type',$('#nomination_type').val()); }
 
         $.ajax({
-            url: "{{ route('tf-bi-portal-api.nomination_requests.store_nomination_request_and_details') }}",
+            url:endPointUrl,
             type: "POST",
             data: formData,
             cache: false,

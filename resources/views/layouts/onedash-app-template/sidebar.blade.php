@@ -182,25 +182,31 @@
 						</li>
 					@endif
 
-					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-astd-commitee-head', 'bi-ca-commitee-head', 'bi-tp-commitee-head', 'bi-tsas-commitee-head', 'bi-astd-commitee-member', 'bi-ca-commitee-member', 'bi-tp-commitee-member', 'bi-tsas-commitee-member']))
+					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-astd-commitee-head', 'bi-astd-commitee-member']))
 						<li>
 							<a href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}" class="">
 								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> ASTD Nominations </div>
 							</a>
 						</li>
+					@endif
 
-						<li>
-							<a href="#" class="">
-								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> CA Nominations </div>
-							</a>
-						</li>
-
+					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-tp-commitee-head', 'bi-tp-commitee-member']))
 						<li>
 							<a href="{{ route('tf-bi-portal.t_p_nominations.index') }}" class="">
 								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> TP Nominations </div>
 							</a>
 						</li>
+					@endif
 
+					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-ca-commitee-head', 'bi-ca-commitee-member']))
+						<li>
+							<a href="#" class="">
+								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> CA Nominations </div>
+							</a>
+						</li>
+					@endif
+
+					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-tsas-commitee-head', 'bi-tsas-commitee-member']))
 						<li>
 							<a href="#" class="">
 								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> TSAS Nominations </div>

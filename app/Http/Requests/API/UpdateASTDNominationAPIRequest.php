@@ -23,7 +23,7 @@ class UpdateASTDNominationAPIRequest extends AppBaseFormRequest
      * @return array
      */
     public function rules() {
-        return [
+        $return_arr =  [
             'organization_id' => 'required',
             'display_ordinal' => 'nullable|min:0|max:365',
             'email' => 'required|email|max:190',
@@ -55,12 +55,6 @@ class UpdateASTDNominationAPIRequest extends AppBaseFormRequest
             'program_start_date' => 'required|date',
             'program_end_date' => 'required|date|after:program_start_date',
 
-            /*'passport_photo' => 'required|file|mimes:pdf,png,jpeg,jpg|max:102400',
-            'admission_letter' => 'required|file|mimes:pdf|max:102400',
-            'health_report' => 'required|file|mimes:pdf,doc,docx|max:102400',
-            'international_passport_bio_page' => 'required|file|mimes:pdf,doc,docx|max:102400',
-            'conference_attendence_letter' => 'required|file|mimes:pdf,doc,docx|max:102400',*/
-
             //'program_duration_months' => 'nullable|min:0|max:365',
             //'fee_amount' => 'nullable|numeric|min:0|max:100000000',
             //'tuition_amount' => 'nullable|numeric|min:0|max:100000000',
@@ -76,6 +70,28 @@ class UpdateASTDNominationAPIRequest extends AppBaseFormRequest
             //'total_requested_amount' => 'nullable|numeric|min:0|max:100000000',
             //'total_approved_amount' => 'nullable|numeric|min:0|max:100000000'
         ];
+
+        if(request()->hasFile('passport_photo') && request()->passport_photo != 'undefined') {
+            $return_arr['passport_photo'] = 'file|mimes:pdf,png,jpeg,jpg|max:5240';
+        }
+
+        if(request()->hasFile('admission_letter') && request()->admission_letter != 'undefined') {
+            $return_arr['admission_letter'] = 'file|mimes:pdf|max:5240';
+        }
+
+        if(request()->hasFile('health_report') && request()->health_report != 'undefined') {
+            $return_arr['health_report'] = 'file|mimes:pdf,doc,docx|max:5240';
+        }
+
+        if(request()->hasFile('international_passport_bio_page') && request()->international_passport_bio_page != 'undefined') {
+            $return_arr['international_passport_bio_page'] = 'file|mimes:pdf,doc,docx|max:5240';
+        }
+
+        if(request()->hasFile('conference_attendence_letter') && request()->conference_attendence_letter != 'undefined') {
+            $return_arr['conference_attendence_letter'] = 'file|mimes:pdf,doc,docx|max:5240';
+        }
+
+        return $return_arr;
     }
 
     public function attributes() {

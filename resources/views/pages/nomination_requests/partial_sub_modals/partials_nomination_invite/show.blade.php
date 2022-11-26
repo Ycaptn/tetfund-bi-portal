@@ -1,5 +1,5 @@
 @if(!empty($nominationRequest->status))
-    <div class="row col-sm-12 alert alert-warning">
+    <div class="row alert alert-warning">
         <div class="col-md-8">
             <i class="icon fa fa-warning"></i> &nbsp; &nbsp;
             <strong>{{ $nomination_type_str }} NOMINATION REQUEST:</strong> 

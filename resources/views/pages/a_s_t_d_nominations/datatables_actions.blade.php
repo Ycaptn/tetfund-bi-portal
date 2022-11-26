@@ -1,44 +1,48 @@
 
 <div class='btn-group' role="group">
-    <a data-toggle="tooltip" 
-        title="Preview ASTD Nomination details" 
-        data-val='{{$id}}' 
-        class="btn-show-{{$type}}" href="#">
-        <i class="fa fa-eye text-primary" style="opacity:80%"></i>
-    </a> &nbsp; &nbsp;
-
-    {{-- appears for desk officer only --}}
+    
+    {{-- appears for desk officer only when request need to be forwarded to committee --}}
     @if($is_desk_officer_check == 0 && auth()->user()->hasAnyRole(['bi-desk-officer']))
         <a data-toggle="tooltip" 
-            title="Forward  ASTD Nomination details to ASTD Committee" 
-            data-val='{{$id}}$is_desk_officer_check' 
-            class="btn-forward-{{$type}}" href="#">
-            <i class="fa fa-paper-plane text-danger" style="opacity:80%"></i>
-        </a> &nbsp; &nbsp;
+            title="Preview ASTD Nomination details" 
+            data-val='{{$id}}'
+            class="btn-show-preview-nomination text-primary" href="#">
+            <i class="fa fa-paper-plane" style="opacity:80%"></i> <span>Manage</span>
+        </a>
     @endif
 
-    {{-- appears for all astd committee members only --}}
-    @if($is_desk_officer_check == 1 && auth()->user()->hasAnyRole(['bi-astd-commitee-head', 'bi-astd-commitee-member']))
+    {{-- appears to all astd committee members when they need to make their individual decisions --}}
+    @if($is_desk_officer_check==1 && $is_average_commitee_members_check==0 && auth()->user()->hasAnyRole(['bi-astd-commitee-head', 'bi-astd-commitee-member']))
         <a data-toggle="tooltip" 
-            title="ASTD Nomination Committee Vote Approval Zone" 
-            data-val='{{$id}}' 
-            class="btn-committee-vote-modal" href="#">
-            <i class="fa fa-vote-yea text-danger" style="opacity:80%"></i>
-        </a> &nbsp; &nbsp;
+            title="ASTDNomination Committee Consideration Approval Zone" 
+            data-val='{{$id}}'
+            class="btn-committee-vote-modal text-primary" href="#">
+            <i class="fa fa-paper-plane" style="opacity:80%"></i> <span>Consideration</span>
+        </a>
+    @endif
+
+     {{-- appears to all astd committee members when approval is accomplished for preview--}}
+    @if($is_average_commitee_members_check==1 && $is_desk_officer_check_after_average_commitee_members_checked==0 && auth()->user()->hasAnyRole(['bi-astd-commitee-head', 'bi-astd-commitee-member']))
+        <a data-toggle="tooltip" 
+            title="Preview ASTDNomination approved but pending action by Desk-Officer" 
+            data-val='{{$id}}'
+            class="btn-committee-preview-modal text-primary" href="#">
+            <i class="fa fa-eye" style="opacity:80%"></i> <span>Preview</span>
+        </a>
     @endif
 
     {{-- appears for desk-officer after committee approved --}}
-    @if($is_head_commitee_members_check==1 && $is_desk_officer_check_after_head_commitee_members==0 && auth()->user()->hasAnyRole(['bi-desk-officer']))
+    @if($is_average_commitee_members_check==1 && $is_desk_officer_check_after_average_commitee_members_checked==0 && auth()->user()->hasAnyRole(['bi-desk-officer']))
         <a data-toggle="tooltip" 
             title="Forward  ASTD Nomination details to HOI for Approval" 
-            data-val='{{$id}}$is_desk_officer_check_after_head_commitee_members' 
+            data-val='{{$id}}$is_desk_officer_check_after_average_commitee_members_checked' 
             class="btn-forward-{{$type}}" href="#">
             <i class="fa fa-paper-plane text-danger" style="opacity:80%"></i>
         </a> &nbsp; &nbsp;
     @endif
 
     {{-- appears for all hoi approval only --}}
-    @if($is_desk_officer_check_after_head_commitee_members == 1 && $is_head_of_institution_check == 0 && auth()->user()->hasAnyRole(['bi-hoi']))
+    @if($is_desk_officer_check_after_average_commitee_members_checked == 1 && $is_head_of_institution_check == 0 && auth()->user()->hasAnyRole(['bi-hoi']))
         <a data-toggle="tooltip" 
             title="Head of Institution Approval for ASTD Nomination Request" 
             data-val='{{$id}}'

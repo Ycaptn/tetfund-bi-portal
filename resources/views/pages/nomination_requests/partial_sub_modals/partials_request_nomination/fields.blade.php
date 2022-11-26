@@ -1,61 +1,3 @@
-
-
-<div class="row col-sm-12 form-group mb-3">
-    <label class="col-sm-12 control-label" for="bi_staff_email">Beneficiary Staff Email</label>
-    <div class="col-sm-12 input-group">
-        <input type="text" name="bi_staff_email" value="{{ $current_user->email }}" placeholder="Staff Email Address" class="form-control" id="bi_staff_email" disabled='disabled'>
-        <span class="input-group-text"><span class="fa fa-envelope"></span></span>
-    </div>
-</div>
-
-<div class="row col-sm-12">
-    <div class="col-sm-6 form-group mb-3">
-        <label class="col-sm-12 control-label" for="bi_staff_fname">Staff First Name</label>
-        <div class="col-sm-12 input-group">
-           <input type="text" name="bi_staff_fname" value="{{ $current_user->first_name }}" placeholder="Staff First Name" class="form-control" id="bi_staff_fname" disabled='disabled'>
-        </div>
-    </div>
-
-    <div class="col-sm-6 form-group mb-3">
-        <label class="col-sm-12 control-label" for="bi_staff_lname">Staff Last Name</label>
-        <div class="col-sm-12 input-group">
-            <input type="text" name="bi_staff_lname" value="{{ $current_user->last_name }}" placeholder="Staff Last Name" class="form-control" id="bi_staff_lname" disabled='disabled'>
-        </div>
-    </div>
-</div>
-
-<div class="row col-sm-12">
-    <div class="col-sm-6 form-group mb-3">
-        <label class="col-sm-12 control-label" for="bi_telephone">Telephone</label>
-        <div class="col-sm-12 input-group">
-           <input type="text" name="bi_telephone" value="{{ $current_user->telephone }}" placeholder="Staff Phone Number" class="form-control" id="bi_telephone" disabled='disabled'>
-        </div>
-    </div>
-
-    <div class="col-sm-6 form-group mb-3">
-        <label class="col-sm-12 control-label" for="bi_staff_gender">Gender</label>
-        <div class="col-sm-12 input-group">
-            @php
-                $gender = strtolower($current_user->gender);
-                $m = $f = $n = '';
-                if($gender == 'male') {
-                    $m = "selected='selected'";
-                } elseif ($gender == 'female') {
-                    $f = "selected='selected'";
-                } else {
-                    $n = "selected='selected'";
-                }
-            @endphp
-
-            <select class="form-select" name="bi_staff_gender" id="bi_staff_gender" disabled='disabled'>
-                <option value="" {{ $n }}>None Selected</option>
-                <option value="male" {{ $m }}>Male</option>
-                <option value="female" {{ $f }}>Female</option>
-            </select>
-        </div>
-    </div>    
-</div>
-
 <div class="row col-sm-12 form-group mb-3">
     <label class="col-sm-12 control-label" for="nomination_type">Type of Nomination</label>
     <div class="col-sm-12 input-group">
@@ -68,4 +10,28 @@
         </select>
         <span class="input-group-text"><span class="fa fa-archive"></span></span>
     </div>
+</div>
+
+
+<div class="row col-sm-12 form-group mb-3" id="astd_nomination_form" style="display: none;">
+    <hr>
+        @include('pages.a_s_t_d_nominations.fields')
+</div>
+
+<div class="row col-sm-12 form-group mb-3" id="ca_nomination_form" style="display: none;">
+    <hr>
+     Conference Attendance Form Inputs display here
+    {{-- @include('pages.a_s_t_d_nominations.fields') --}}
+</div>
+
+<div class="row col-sm-12 form-group mb-3" id="tp_nomination_form" style="display: none;">
+    <hr>
+    Teaching Practice Form Inputs display here
+    {{-- @include('pages.a_s_t_d_nominations.fields') --}}
+</div>
+
+<div class="row col-sm-12 form-group mb-3" id="tsas_nomination_form" style="display: none;">
+    <hr>
+    Tetfund Scholarship for Academic Staff Form Inputs display here
+    {{-- @include('pages.a_s_t_d_nominations.fields') --}}
 </div>

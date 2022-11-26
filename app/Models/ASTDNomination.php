@@ -24,6 +24,7 @@ use Hasob\FoundationCore\Traits\Artifactable;
 use Hasob\FoundationCore\Traits\OrganizationalConstraint;
 use Hasob\FoundationCore\Models\User;
 use App\Models\Beneficiary;
+use App\Models\NominationRequest;
 
 use Eloquent as Model;
 
@@ -199,6 +200,14 @@ class ASTDNomination extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function nomination_request()
+    {
+        return $this->belongsTo(NominationRequest::class, 'nomination_request_id', 'id');
     }
 
 }

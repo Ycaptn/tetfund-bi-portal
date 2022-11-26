@@ -1,21 +1,35 @@
-{{-- authenticated user relevant information div --}}
+{{-- input fields default values --}}
+@php
+    //first_name
+    $first_name = (isset($nominationRequest->user->first_name) ? $nominationRequest->user->first_name : ($current_user->hasRole('bi-staff') ? $current_user->first_name : '') );
+    $middle_name = (isset($nominationRequest->user->middle_name) ? $nominationRequest->user->middle_name : ($current_user->hasRole('bi-staff') ? $current_user->middle_name : '') );
+    $last_name = (isset($nominationRequest->user->last_name) ? $nominationRequest->user->last_name : ($current_user->hasRole('bi-staff') ? $current_user->last_name : '') );
+    $email = (isset($nominationRequest->user->email) ? $nominationRequest->user->email : ($current_user->hasRole('bi-staff') ? $current_user->email : '') );
+    $telephone = (isset($nominationRequest->user->telephone) ? $nominationRequest->user->telephone : ($current_user->hasRole('bi-staff') ? $current_user->telephone : '') );
+    $gender = (isset($nominationRequest->user->gender) ? $nominationRequest->user->gender : ($current_user->hasRole('bi-staff') ? $current_user->gender : '') );
+    $gender = (isset($nominationRequest->user->gender) ? $nominationRequest->user->gender : ($current_user->hasRole('bi-staff') ? $current_user->gender : '') );
+
+@endphp
+
+
+{{-- nomination request nominee relevant information div --}}
 <div id="user_info_section" class="form-group row col-sm-12">
     <div class="col-sm-12 col-md-4 mb-3">
         <label class="col-sm-12"><b>Fullname:</b></label>
         <div class="col-sm-12 ">
             <!-- First Name Field -->
-            {!! Form::hidden('first_name', $nominationRequest->user->first_name ?? '', ['id'=>'first_name', 'class'=>'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
+            {!! Form::hidden('first_name', $first_name, ['id'=>'first_name', 'class'=>'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
 
             <!-- Middle Name Field -->
             {!! Form::hidden('middle_name', $nominationRequest->user->middle_name ?? '', ['id'=>'middle_name', 'class'=>'form-control middle_name', 'placeholder'=>'optional field', 'disabled'=>'disabled']) !!}
 
             <!-- Last Name Field -->
-            {!! Form::hidden('last_name', $nominationRequest->user->last_name ?? '', ['id'=>'last_name', 'class'=>'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
+            {!! Form::hidden('last_name', $last_name, ['id'=>'last_name', 'class'=>'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
 
             <i class="full_name">
-                {{$nominationRequest->user->first_name ?? ''}}
-                {{$nominationRequest->user->middle_name ?? ''}}
-                {{$nominationRequest->user->last_name ?? ''}}
+                {{$first_name}}
+                {{$middle_name}}
+                {{$last_name}}
             </i>
         </div>
     </div>
@@ -24,10 +38,10 @@
         <label class="col-sm-12"><b>Email:</b></label>
         <div class="col-sm-12 ">
             <!-- Email Field -->
-            {!! Form::hidden('email', $nominationRequest->user->email ?? '', ['id'=>'email', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
+            {!! Form::hidden('email', $email, ['id'=>'email', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
 
             <i class="email">
-                {{$nominationRequest->user->email ?? ''}}
+                {{$email}}
             </i>
         </div>
     </div>
@@ -36,10 +50,10 @@
         <label class="col-sm-12"><b>Telephone:</b></label>
         <div class="col-sm-12 ">
             <!-- Telephone Field -->
-            {!! Form::hidden('telephone', $nominationRequest->user->telephone ?? '', ['id'=>'telephone', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
+            {!! Form::hidden('telephone', $telephone, ['id'=>'telephone', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
             
             <i class="telephone">
-                {{$nominationRequest->user->telephone ?? ''}}
+                {{$telephone}}
             </i>
         </div>
     </div>
@@ -49,7 +63,7 @@
         <div class="col-sm-12 ">
             <!-- Beneficiary Institution Field -->
             {!! Form::hidden('beneficiary_institution_id_select', $beneficiary->id ?? '', ['id'=>'beneficiary_institution_id_select', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
-            
+
             <i class="beneficiary_institution_id_select">
                 {{$beneficiary->full_name ?? ''}}
                 {{(isset($beneficiary->short_name) && !empty($beneficiary->short_name)) ? '('.strtoupper($beneficiary->short_name).')' : ''}}
@@ -61,10 +75,10 @@
         <label class="col-sm-12"><b>Gender:</b></label>
         <div class="col-sm-12 ">
             <!-- Gender Field -->
-            {!! Form::hidden('gender', $nominationRequest->user->gender ?? '', ['id'=>'gender', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
+            {!! Form::hidden('gender', $gender, ['id'=>'gender', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
             
             <i class="gender">
-                {{ ucfirst($nominationRequest->user->gender ?? '')}}                
+                {{ ucfirst($gender) }}                
             </i>
         </div>
     </div>

@@ -28,6 +28,7 @@ class NominationRequestController extends BaseController
     {
         $current_user = Auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+        $beneficiary = $beneficiary_member->beneficiary;
 
         $cdv_nomination_requests = new CardDataView(NominationRequest::class, "pages.nomination_requests.card_view_item");
 
@@ -55,6 +56,13 @@ class NominationRequestController extends BaseController
             return $cdv_nomination_requests->render();
         }
 
+        // class constructor to fetch multiple data of countries and Institutions
+        $tETFundServer = new TETFundServer();
+        $countries_and_institutions = $tETFundServer->get_all_countries_and_institutions("tetfund-astd-api/from_country_get_countries_and_institutions", null);
+
+        $countries = $countries_and_institutions->countries;  // fetch countries
+        $institutions = $countries_and_institutions->institutions;  // fetch institutions
+
         $all_beneficiary_users = User::join('tf_bi_beneficiary_members', 'fc_users.id', '=', 'tf_bi_beneficiary_members.beneficiary_user_id')
             ->where('tf_bi_beneficiary_members.beneficiary_id', $beneficiary_member->beneficiary_id)
             ->where('fc_users.id', '!=', $current_user->id)
@@ -64,8 +72,9 @@ class NominationRequestController extends BaseController
 
         return view('pages.nomination_requests.card_view_index')
                 ->with('current_user', $current_user)
-                ->with('months_list', BaseController::monthsList())
-                ->with('states_list', BaseController::statesList())
+                ->with('beneficiary', $beneficiary)
+                ->with('countries', $countries)
+                ->with('institutions', $institutions)
                 ->with('all_beneficiary_users', $all_beneficiary_users)
                 ->with('bi_submission_requests', $bi_submission_requests)
                 ->with('cdv_nomination_requests', $cdv_nomination_requests);
@@ -115,13 +124,12 @@ class NominationRequestController extends BaseController
         // all possible attachements for this nomination
         $nomination_request_attachments = $nominationRequest->get_all_attachements($nominationRequest->id);
 
-        // class constructor to fetch countries
+        // class constructor to fetch multiple data of countries and Institutions
         $tETFundServer = new TETFundServer();
-        $countries = $tETFundServer->get_all_data_list_from_server("tetfund-astd-api/countries", null);
+        $countries_and_institutions = $tETFundServer->get_all_countries_and_institutions("tetfund-astd-api/from_country_get_countries_and_institutions", null);
 
-        // class constructor to fetch institutions
-        $tETFundServer = new TETFundServer();
-        $institutions = $tETFundServer->get_all_data_list_from_server("tetfund-astd-api/institutions", null);
+        $countries = $countries_and_institutions->countries;  // fetch countries
+        $institutions = $countries_and_institutions->institutions;  // fetch institutions
             
         return view('pages.nomination_requests.show')
             ->with('nominationRequest', $nominationRequest)
@@ -129,6 +137,7 @@ class NominationRequestController extends BaseController
             ->with('institutions', $institutions)
             ->with('beneficiary', $bi_beneficiary)
             ->with('beneficiaries', $bi_beneficiaries)
+            ->with('current_user', $current_user)
             ->with('nomination_request_attachments', $nomination_request_attachments);
     }
 

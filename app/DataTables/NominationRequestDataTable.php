@@ -27,12 +27,12 @@ class NominationRequestDataTable extends DataTable
         $query_filter = [   'type'=>$this->type,
                             'status'=>'approved',
                             'details_submitted'=>1,
-                            'beneficiary_id'=>$this->user_beneficiary_id,
+                            'tf_bi_nomination_requests.beneficiary_id'=>$this->user_beneficiary_id,
                             'is_set_for_final_submission'=>0
                         ];
 
         if ($this->organization != null){
-            $query_filter['organization_id'] = $this->organization->id;
+            $query_filter['tf_bi_nomination_requests.organization_id'] = $this->organization->id;
         }
 
         $all_commitee_stakeholders = [
@@ -48,11 +48,11 @@ class NominationRequestDataTable extends DataTable
 
         // addition filters to return newly submitted for respective dashboards
         if (Auth()->user()->hasAnyRole($all_commitee_stakeholders) && !isset(request()->view_type)) {
-            $query_filter['is_head_commitee_members_check'] = 0;
+            $query_filter['is_average_commitee_members_check'] = 0;
             $query_filter['is_desk_officer_check'] = 1;
         } else if (Auth()->user()->hasAnyRole(['bi-hoi']) && !isset(request()->view_type)) {
             $query_filter['is_head_of_institution_check'] = 0;
-            $query_filter['is_desk_officer_check_after_head_commitee_members'] = 1;
+            $query_filter['is_desk_officer_check_after_average_commitee_members_checked'] = 1;
         } else if (Auth()->user()->hasAnyRole(['bi-desk-officer']) && !isset(request()->view_type)) {
             $query_filter['is_desk_officer_check'] = 0;
         }
@@ -61,8 +61,8 @@ class NominationRequestDataTable extends DataTable
         if (isset(request()->view_type) && !empty(request()->view_type)) {
             if (request()->view_type == 'commitee_approved' && Auth()->user()->hasAnyRole(array_merge($all_commitee_stakeholders, ['bi-desk-officer']))) {
 
-                $query_filter['is_head_commitee_members_check'] = 1;
-                $query_filter['is_desk_officer_check_after_head_commitee_members'] = 0;
+                $query_filter['is_average_commitee_members_check'] = 1;
+                $query_filter['is_desk_officer_check_after_average_commitee_members_checked'] = 0;
 
             } else if (request()->view_type == 'hoi_approved' && Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi'])) {
 
@@ -76,7 +76,28 @@ class NominationRequestDataTable extends DataTable
         }
 
         // final query to be returned with respective filter(s) array
-        return $model->newQuery()->with('user')->where($query_filter);
+        return $model->newQuery()->with('user')
+                ->with('nomination_committee_votes')
+                ->where($query_filter)
+                ->when((Auth()->user()->hasAnyRole($all_commitee_stakeholders) == true), function ($q) use ($all_commitee_stakeholders) {
+                    return $q->when((!isset(request()->view_type) || optional(request())->view_type!='commitee_approved'), function ($que) use ($all_commitee_stakeholders) {
+                            return $que->where('is_average_commitee_members_check', 0)
+                                ->WhereHas('nomination_committee_votes', function($query) use ($all_commitee_stakeholders) {
+                                    if (Auth()->user()->hasAnyRole($all_commitee_stakeholders)) {
+                                        return $query->where('user_id','!=',auth()->user()->id);
+                                    }
+                        });
+
+                    });
+                });
+
+        /*return $model->newQuery()->with('user')
+                ->with(['nomination_committee_votes' => function($query) use ($all_commitee_stakeholders) {
+                    if (Auth()->user()->hasAnyRole($all_commitee_stakeholders)) {
+                        return $query->where('user_id','!=',auth()->user()->id);
+                    }
+                }])
+                ->where($query_filter);*/
     }
 
     /**
