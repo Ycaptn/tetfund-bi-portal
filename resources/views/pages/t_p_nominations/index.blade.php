@@ -4,14 +4,27 @@
 @stop
 
 @section('title_postfix')
-All TP Nomination
+All T P Nomination
 @stop
 
 @section('page_title')
-All TP Nomination
+All T P Nomination
 @stop
 
 @section('page_title_suffix')
+    @if(isset(request()->view_type))
+        @if(request()->view_type == 'commitee_approved')
+            Commitee Approved
+        @elseif(request()->view_type == 'hoi_approved')
+            HOI Approved
+        @elseif(request()->view_type == 'final_nominations')
+            Binded Nomination
+        @else
+            Newly Submitted
+        @endif
+    @else
+        Newly Submitted
+    @endif
 @stop
 
 @section('page_title_subtext')
@@ -21,12 +34,13 @@ All TP Nomination
 @stop
 
 @section('page_title_buttons')
-<a id="btn-new-mdl-tPNomination-modal" class="btn btn-sm btn-primary btn-new-mdl-tPNomination-modal">
-    <i class="bx bx-book-add mr-1"></i>New TP Nomination
-</a>
-@if (Auth()->user()->hasAnyRole(['','admin']))
-    @include('tf-bi-portal::pages.t_p_nominations.bulk-upload-modal')
-@endif
+    {{-- @if ($current_user->hasAnyRole(['bi-desk-officer']))
+        <a id="btn-new-mdl-tPNomination-modal" class="btn btn-sm btn-primary btn-new-mdl-tPNomination-modal">
+            <i class="bx bx-book-add mr-1"></i>New T P Nomination
+        </a>
+    @endif --}}
+
+    {{-- @include('tf-bi-portal::pages.t_p_nominations.bulk-upload-modal') --}}
 @stop
 
 
@@ -38,8 +52,43 @@ All TP Nomination
     
     <div class="card">
         <div class="card-body">
-        
             <div class="table-responsive">
+                <p>
+                    <div class="col-sm-12">
+                        @if ($current_user->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-tp-commitee-head', 'bi-tp-commitee-member']))
+
+                            <a  href="{{ route('tf-bi-portal.t_p_nominations.index') }}"
+                                class="btn btn-sm btn-primary"
+                                title="Preview newly submitted nomination details by scholars" >
+                                Newly Submitted {{($current_user->hasAnyRole(['bi-tp-commitee-head', 'bi-tp-commitee-member'])) ? '|| Approval Zone' : ''}}
+                            </a>
+
+                            @if ($current_user->hasAnyRole(['bi-desk-officer', 'bi-tp-commitee-head', 'bi-tp-commitee-member']))
+                                <a  href="{{ route('tf-bi-portal.t_p_nominations.index') }}?view_type=commitee_approved"
+                                    class="btn btn-sm btn-primary me-2"
+                                    title="Preview TP Nomination(s) that have been Considered by TP Commitee" >
+                                    Commitee Approved
+                                </a>
+                            @endif
+
+                            @if ($current_user->hasAnyRole(['bi-desk-officer', 'bi-hoi']))
+                                <a  href="{{ route('tf-bi-portal.t_p_nominations.index') }}?view_type=hoi_approved"
+                                    class="btn btn-sm btn-primary me-2"
+                                    title="Preview TP Nomination(s) that have been Considered by Head of Institution" >
+                                    HOI Approved
+                                </a>
+                            @endif
+
+                            @if ($current_user->hasAnyRole(['bi-desk-officer']))
+                                <a  href="{{ route('tf-bi-portal.t_p_nominations.index') }}?view_type=final_nominations"
+                                    class="btn btn-sm btn-primary"
+                                    title="Preview final nomination set to be binded to an existing Submission Request" >
+                                    Binded Nominations
+                                </a>
+                            @endif
+                        @endif
+                    </div>
+                </p>
                 @include('tf-bi-portal::pages.t_p_nominations.table')
                 
             </div>
@@ -48,6 +97,31 @@ All TP Nomination
     </div>
 
     @include('tf-bi-portal::pages.t_p_nominations.modal')
+    
+    @if(auth()->user()->hasRole('bi-desk-officer'))
+        @if(!isset(request()->view_type))
+            @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_to_committee_modal')
+        @endif
+        
+        @if(isset(request()->view_type) && request()->view_type == 'commitee_approved')
+            @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_to_hoi_modal')
+        @endif
+
+        @if(isset(request()->view_type) && (request()->view_type == 'hoi_approved' || request()->view_type == 'final_nominations'))
+            @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_binding_modal')
+        @endif
+        
+    @endif
+
+    {{-- include approval by voting if user is an tp commitee menber --}}
+    @if (auth()->user()->hasAnyRole(['bi-tp-commitee-head', 'bi-tp-commitee-member']))
+        @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.committee_approval_for_nomination_modal')
+    @endif
+
+    {{-- include approval for Head of Institution --}}
+    @if (auth()->user()->hasRole('bi-hoi'))
+        @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.hoi_approval_for_nomination_modal')
+    @endif
 
 @stop
 

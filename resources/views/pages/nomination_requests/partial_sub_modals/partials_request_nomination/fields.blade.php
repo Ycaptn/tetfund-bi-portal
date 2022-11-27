@@ -4,8 +4,8 @@
         <select name="nomination_type" id="nomination_type" class="form-select">
         <option value="">Select type of Nomination</option> 
             <option value="astd">Academic Staff Training and Development &nbsp; (ASTD)</option>
-            <option value="ca">Conference Attendance &nbsp; (CA)</option> 
             <option value="tp">Teaching Practice &nbsp; (TP)</option> 
+            <option value="ca">Conference Attendance &nbsp; (CA)</option> 
             <option value="tsas">TETFund Scholarship for Academic Staff &nbsp; (TSAS)</option>
         </select>
         <span class="input-group-text"><span class="fa fa-archive"></span></span>
@@ -15,18 +15,17 @@
 
 <div class="row col-sm-12 form-group mb-3" id="astd_nomination_form" style="display: none;">
     <hr>
-        @include('pages.a_s_t_d_nominations.fields')
+       @include('pages.a_s_t_d_nominations.fields')
+</div>
+
+<div class="row col-sm-12 form-group mb-3" id="tp_nomination_form" style="display: none;">
+    <hr>
+    @include('pages.t_p_nominations.fields')
 </div>
 
 <div class="row col-sm-12 form-group mb-3" id="ca_nomination_form" style="display: none;">
     <hr>
      Conference Attendance Form Inputs display here
-    {{-- @include('pages.a_s_t_d_nominations.fields') --}}
-</div>
-
-<div class="row col-sm-12 form-group mb-3" id="tp_nomination_form" style="display: none;">
-    <hr>
-    Teaching Practice Form Inputs display here
     {{-- @include('pages.a_s_t_d_nominations.fields') --}}
 </div>
 

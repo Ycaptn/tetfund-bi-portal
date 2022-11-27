@@ -12,11 +12,11 @@ TP Nomination
 @stop
 
 @section('page_title_suffix')
-{{$tPNomination->title}}
+TP Nomination Details {{-- {{$tPNomination->title}} --}}
 @stop
 
 @section('page_title_subtext')
-<a class="ms-1" href="{{ route('tetfund-astd.t_p_nominations.index') }}">
+<a class="ms-1" href="{{ route('tf-bi-portal.t_p_nominations.index') }}">
     <i class="fa fa-angle-double-left"></i> Back to TP Nomination List
 </a>
 @stop

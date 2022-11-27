@@ -7,7 +7,7 @@
             </div>
             <div class="modal-body">
               <div class="row">
-                    <div class="col-lg-9" id='nomination_request_details'>
+                    <div class="col-lg-8" id='nomination_request_details'>
                         <div id="user_info_section" class="form-group row col-sm-12">
                             <div class="col-sm-12 col-md-4 mb-3">
                                 <label class="col-sm-12"><b>Fullname:</b></label>
@@ -145,7 +145,7 @@
 
 
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <div class="col-sm-12 mb-3 mt-3 text-justify" id="date_details_submitted"></div>
                         <div class="col-sm-12 mb-3 mt-3 text-justify" id="submission_binded_details"></div>
                         <form id="form_desk_officer_nomination_binding_modal" class="form-horizontal" role="form" method="POST">
@@ -158,7 +158,7 @@
                             <div id="div_desk_officer_nomination_binding_modal_errors" class="alert alert-danger" role="alert"></div>
                             <hr>
 
-                            <div id="binding_fields">
+                            <div id="binding_fields" class="col-sm-12 row">
                                 <div class="form-group">
                                     <label class="col-xs-3 control-label"><strong>SELECT BINDING SUBMISSION</strong></label>
                                     <div class="col-xs-9">
@@ -202,7 +202,126 @@
                                             @endif
                                         </select>
                                     </div>
-                                </div><hr>
+                                </div>
+
+<!-- Start Fee Amount Field -->
+<div id="div-fee_amount" class="form-group mb-3 col-md-6">
+    <label for="fee_amount" class="col-sm-12 col-form-label">Fee Amount:</label>
+    <div class="col-sm-12">
+        {!! Form::text('fee_amount', null, ['id'=>'fee_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
+    </div>
+</div>
+<!-- End Fee Amount Field -->
+
+<!-- Start Tuition Amount Field -->
+<div id="div-tuition_amount" class="form-group mb-3 col-md-6">
+    <label for="tuition_amount" class="col-sm-11 col-form-label">Tuition Amount:</label>
+    <div class="col-sm-12">
+        {!! Form::text('tuition_amount', null, ['id'=>'tuition_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
+    </div>
+</div>
+<!-- End Tuition Amount Field -->
+
+<!-- Start Upgrade Fee Amount Field -->
+<div id="div-upgrade_fee_amount" class="form-group mb-3 col-md-6">
+    <label for="upgrade_fee_amount" class="col-sm-11 col-form-label">Upgrade Fee Amount:</label>
+    <div class="col-sm-12">
+        {!! Form::text('upgrade_fee_amount', null, ['id'=>'upgrade_fee_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
+    </div>
+</div>
+<!-- End Upgrade Fee Amount Field -->
+
+<!-- Start Stipend Amount Field -->
+<div id="div-stipend_amount" class="form-group mb-3 col-md-6">
+    <label for="stipend_amount" class="col-sm-11 col-form-label">Stipend Amount:</label>
+    <div class="col-sm-12">
+        {!! Form::text('stipend_amount', null, ['id'=>'stipend_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
+    </div>
+</div>
+<!-- End Stipend Amount Field -->
+
+<!-- Start Passage Amount Field -->
+<div id="div-passage_amount" class="form-group mb-3 col-md-6">
+    <label for="passage_amount" class="col-sm-11 col-form-label">Passage Amount:</label>
+    <div class="col-sm-12">
+        {!! Form::text('passage_amount', null, ['id'=>'passage_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
+    </div>
+</div>
+<!-- End Passage Amount Field -->
+
+<!-- Start Medical Amount Field -->
+<div id="div-medical_amount" class="form-group mb-3 col-md-6">
+    <label for="medical_amount" class="col-sm-11 col-form-label">Medical Amount:</label>
+    <div class="col-sm-12">
+        {!! Form::text('medical_amount', null, ['id'=>'medical_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
+    </div>
+</div>
+<!-- End Medical Amount Field -->
+
+<!-- Start Warm Clothing Amount Field -->
+<div id="div-warm_clothing_amount" class="form-group mb-3 col-md-6">
+    <label for="warm_clothing_amount" class="col-sm-11 col-form-label">Warm Clothing Amount:</label>
+    <div class="col-sm-12">
+        {!! Form::text('warm_clothing_amount', null, ['id'=>'warm_clothing_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
+    </div>
+</div>
+<!-- End Warm Clothing Amount Field -->
+
+<!-- Start Study Tours Amount Field -->
+<div id="div-study_tours_amount" class="form-group mb-3 col-md-6">
+    <label for="study_tours_amount" class="col-sm-11 col-form-label">Study Tours Amount:</label>
+    <div class="col-sm-12">
+        {!! Form::text('study_tours_amount', null, ['id'=>'study_tours_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
+    </div>
+</div>
+<!-- End Study Tours Amount Field -->
+
+<!-- Start Education Materials Amount Field -->
+<div id="div-education_materials_amount" class="form-group mb-3 col-md-6">
+    <label for="education_materials_amount" class="col-sm-11 col-form-label">Education Materials Amount:</label>
+    <div class="col-sm-12">
+        {!! Form::text('education_materials_amount', null, ['id'=>'education_materials_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
+    </div>
+</div>
+<!-- End Education Materials Amount Field -->
+
+<!-- Start Thesis Research Amount Field -->
+<div id="div-thesis_research_amount" class="form-group mb-3 col-md-6">
+    <label for="thesis_research_amount" class="col-sm-11 col-form-label">Thesis Research Amount:</label>
+    <div class="col-sm-12">
+        {!! Form::text('thesis_research_amount', null, ['id'=>'thesis_research_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
+    </div>
+</div>
+<!-- End Thesis Research Amount Field -->
+
+<!-- Final Remarks Field -->
+<div id="div-final_remarks" class="form-group mb-3">
+    <label for="final_remarks" class="col-sm-11 col-form-label">Final Remarks:</label>
+    <div class="col-sm-12">
+        {!! Form::text('final_remarks', null, ['id'=>'final_remarks', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
+    </div>
+</div>
+
+<!-- Start Total Requested Amount Field -->
+<div id="div-total_requested_amount" class="form-group mb-3 col-md-6">
+    <label for="total_requested_amount" class="col-sm-11 col-form-label">Total Requested Amount:</label>
+    <div class="col-sm-12">
+        {!! Form::text('total_requested_amount', null, ['id'=>'total_requested_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
+    </div>
+</div>
+<!-- End Total Requested Amount Field -->
+
+<!-- Start Total Approved Amount Field -->
+<div id="div-total_approved_amount" class="form-group mb-3 col-md-6">
+    <label for="total_approved_amount" class="col-sm-11 col-form-label">Total Approved Amount:</label>
+    <div class="col-sm-12">
+        {!! Form::text('total_approved_amount', null, ['id'=>'total_approved_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
+    </div>
+</div>
+<!-- End Total Approved Amount Field -->
+
+
+                                <hr>
                             </div>
                         </form>
                         <div class="row">
@@ -376,6 +495,22 @@
                         formData.append('_method', 'POST');
                         formData.append('id', itemId);
                         formData.append('submission_id', $('#binding_submission_data').val());
+
+                        //fees fields
+                        formData.append('fee_amount', $('#fee_amount').val());
+                        formData.append('tuition_amount', $('#tuition_amount').val());
+                        formData.append('upgrade_fee_amount', $('#upgrade_fee_amount').val());
+                        formData.append('stipend_amount', $('#stipend_amount').val());
+                        formData.append('passage_amount', $('#passage_amount').val());
+                        formData.append('medical_amount', $('#medical_amount').val());
+                        formData.append('warm_clothing_amount', $('#warm_clothing_amount').val());
+                        formData.append('study_tours_amount', $('#study_tours_amount').val());
+                        formData.append('education_materials_amount', $('#education_materials_amount').val());
+                        formData.append('thesis_research_amount', $('#thesis_research_amount').val());
+                        formData.append('final_remarks', $('#final_remarks').val());
+                        formData.append('total_requested_amount', $('#total_requested_amount').val());
+                        formData.append('total_approved_amount', $('#total_approved_amount').val());
+                        //end fees fields
                         
                         $.ajax({
                             url:endPointUrl,

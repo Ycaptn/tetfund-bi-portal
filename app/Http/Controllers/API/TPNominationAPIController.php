@@ -16,13 +16,14 @@ use App\Http\Requests\API\UpdateTPNominationAPIRequest;
 
 use Hasob\FoundationCore\Traits\ApiResponder;
 use Hasob\FoundationCore\Models\Organization;
+use Hasob\FoundationCore\View\Components\CardDataView;
 use App\Managers\TETFundServer;
 
 use Hasob\FoundationCore\Controllers\BaseController as AppBaseController;
 
 /**
  * Class TPNominationController
- * @package TETFund\ASTD\Controllers\API
+ * @package App\Http\Controllers\API
  */
 
 class TPNominationAPIController extends AppBaseController
@@ -37,7 +38,7 @@ class TPNominationAPIController extends AppBaseController
      * @param Request $request
      * @return Response
      */
-    public function index(Request $request, Organization $organization)
+    public function index(Request $request, Organization $org)
     {
         $query = TPNomination::query();
 
@@ -72,11 +73,62 @@ class TPNominationAPIController extends AppBaseController
 
         /** @var TPNomination $tPNomination */
         $tPNomination = TPNomination::create($input);
-
+        
         $nominationRequest = NominationRequest::find($request->nomination_request_id);
         $nominationRequest->details_submitted = 1;
         $nominationRequest->save();
-        
+
+       //handling attachments
+        $attachement_and_final_response = self::handle_attachments($request, $tPNomination, $nominationRequest);
+        if ($attachement_and_final_response) {
+            return $attachement_and_final_response;
+        }
+
+        return $this->sendError('Error encountered while processing attachments');
+    }
+
+    //handling attachement 
+    public function handle_attachments($request, $tPNomination, $nominationRequest) {
+         /*handling passport_photo upload process*/
+        if($request->hasFile('passport_photo')) {
+            $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Passport Photo";
+            $discription = "This " . strtolower("Document contains the $label");
+
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo);
+        }
+
+        /*handling admission_letter upload process*/
+        if($request->hasFile('admission_letter')) {
+            $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Admission Letter";
+            $discription = "This " . strtolower("Document contains the $label");
+
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->admission_letter);
+        } 
+
+        /*handling health_report upload process*/
+        if($request->hasFile('health_report')) {
+            $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Health Report";
+            $discription = "This " . strtolower("Document contains the $label");
+
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->health_report);
+        } 
+
+        /*handling international_passport_bio_page upload process*/
+        if($request->hasFile('international_passport_bio_page')) {
+            $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination International Passport Bio Page";
+            $discription = "This " . strtolower("Document contains the $label");
+
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->international_passport_bio_page);
+        } 
+
+        /*handling conference_attendence_letter upload process*/
+        if($request->hasFile('conference_attendence_letter')) {
+            $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Conference Attendence Letter";
+            $discription = "This " . strtolower("Document contains the $label");
+
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendence_letter);
+        }
+
         TPNominationCreated::dispatch($tPNomination);
         return $this->sendResponse($tPNomination->toArray(), 'T P Nomination saved successfully');
     }
@@ -99,7 +151,7 @@ class TPNominationAPIController extends AppBaseController
                 return $this->sendError('T P Nomination not found');
             }
 
-            $tPNomination = $nominationRequest->tp_submission;
+            $tPNomination = $nominationRequest->astd_submission;
         }
 
         /*class constructor to fetch institution*/
@@ -142,7 +194,68 @@ class TPNominationAPIController extends AppBaseController
 
         $tPNomination->fill($request->all());
         $tPNomination->save();
+        $nominationRequest = $tPNomination->nomination_request;
         
+        /*handling passport_photo update process*/
+        if($request->hasFile('passport_photo')) {
+            $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Passport Photo";
+            $discription = "This " . strtolower("Document contains the $label");
+
+            $attachement = $nominationRequest->get_specific_attachement($nominationRequest->id, $label); //looking for old passport photo
+            if ($attachement != null) {
+                $nominationRequest->delete_attachment($label); // delete old passport photo
+            }
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo);
+        }
+
+        /*handling admission_letter update process*/
+        if($request->hasFile('admission_letter')) {
+            $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Admission Letter";
+            $discription = "This " . strtolower("Document contains the $label");
+
+            $attachement = $nominationRequest->get_specific_attachement($nominationRequest->id, $label); //looking for old passport photo
+            if ($attachement != null) {
+                $nominationRequest->delete_attachment($label); // delete old passport photo
+            }
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->admission_letter);
+        }
+
+        /*handling health_report update process*/
+        if($request->hasFile('health_report')) {
+            $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Health Report";
+            $discription = "This " . strtolower("Document contains the $label");
+
+            $attachement = $nominationRequest->get_specific_attachement($nominationRequest->id, $label); //looking for old passport photo
+            if ($attachement != null) {
+                $nominationRequest->delete_attachment($label); // delete old passport photo
+            }
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->health_report);
+        }
+
+        /*handling international_passport_bio_page update process*/
+        if($request->hasFile('international_passport_bio_page')) {
+            $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination International Passport Bio Page";
+            $discription = "This " . strtolower("Document contains the $label");
+
+            $attachement = $nominationRequest->get_specific_attachement($nominationRequest->id, $label); //looking for old passport photo
+            if ($attachement != null) {
+                $nominationRequest->delete_attachment($label); // delete old passport photo
+            }
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->international_passport_bio_page);
+        }
+
+        /*handling conference_attendence_letter update process*/
+        if($request->hasFile('conference_attendence_letter')) {
+            $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Conference Attendence Letter";
+            $discription = "This " . strtolower("Document contains the $label");
+
+            $attachement = $nominationRequest->get_specific_attachement($nominationRequest->id, $label); //looking for old passport photo
+            if ($attachement != null) {
+                $nominationRequest->delete_attachment($label); // delete old passport photo
+            }
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendence_letter);
+        }
+
         TPNominationUpdated::dispatch($tPNomination);
         return $this->sendResponse($tPNomination->toArray(), 'TPNomination updated successfully');
     }

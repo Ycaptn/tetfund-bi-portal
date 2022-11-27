@@ -1,10 +1,10 @@
 @component('mail::message')
 
-A S T D Nomination Updated
+T P Nomination Updated
 
 @component('mail::panel')
 
-A S T D Nomination Updated
+T P Nomination Updated
 
 @endcomponent
 

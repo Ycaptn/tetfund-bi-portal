@@ -284,6 +284,9 @@ $(document).ready(function() {
         // astd nomination request data appended
         @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_append_astd_form_data')
 
+        // tp nomination request data appended
+        @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_append_tp_form_data')
+
         $.ajax({
             url: "{{ route('tf-bi-portal-api.nomination_requests.store_nomination_request_and_details') }}",
             type: "POST",

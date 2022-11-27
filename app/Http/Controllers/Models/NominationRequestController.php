@@ -130,7 +130,7 @@ class NominationRequestController extends BaseController
 
         $countries = $countries_and_institutions->countries;  // fetch countries
         $institutions = $countries_and_institutions->institutions;  // fetch institutions
-            
+           
         return view('pages.nomination_requests.show')
             ->with('nominationRequest', $nominationRequest)
             ->with('countries', $countries)

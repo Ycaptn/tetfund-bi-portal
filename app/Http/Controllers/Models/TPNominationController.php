@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Models;
 
 use App\Models\ASTDNomination as TPNomination;
+use App\Models\BeneficiaryMember;
+use App\Models\SubmissionRequest;
 
 use App\Events\TPNominationCreated;
 use App\Events\TPNominationUpdated;
@@ -11,7 +13,7 @@ use App\Events\TPNominationDeleted;
 use App\Http\Requests\CreateTPNominationRequest;
 use App\Http\Requests\UpdateTPNominationRequest;
 
-use App\DataTables\TPNominationDataTable;
+use App\DataTables\NominationRequestDataTable;
 
 use Hasob\FoundationCore\Controllers\BaseController;
 use Hasob\FoundationCore\Models\Organization;
@@ -28,41 +30,27 @@ class TPNominationController extends BaseController
     /**
      * Display a listing of the TPNomination.
      *
-     * @param TPNominationDataTable $tPNominationDataTable
+     * @param NominationRequestDataTable $tPNominationDataTable
      * @return Response
      */
-    public function index(Organization $org, TPNominationDataTable $tPNominationDataTable)
+    public function index(Organization $org, NominationRequestDataTable $tPNominationDataTable)
     {
         $current_user = Auth()->user();
+        $user_beneficiary_id = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first()->beneficiary_id;   //BI beneficiary_id
 
-        $cdv_t_p_nominations = new CardDataView(TPNomination::class, "tf-bi-portal::pages.t_p_nominations.card_view_item");
-        $cdv_t_p_nominations->setDataQuery(['organization_id'=>$org->id, 'type_of_nomination'=>'TP'])
-                        //->addDataGroup('label','field','value')
-                        //->addDataOrder('id','DESC')
-                        ->setSearchFields(['first_name','last_name'])
-                        ->addDataOrder('created_at','DESC')
-                        ->enableSearch(true)
-                        ->enablePagination(true)
-                        ->setPaginationLimit(20)
-                        ->setSearchPlaceholder('Search TPNomination By First or Last Name');
-
-        if (request()->expectsJson()){
-            return $cdv_t_p_nominations->render();
+        if (isset(request()->view_type) && (request()->view_type == 'hoi_approved' || request()->view_type == 'final_nominations') && $current_user->hasRole('bi-desk-officer')) {
+            $all_existing_submissions = SubmissionRequest::where('status', 'not-submitted')
+                            ->orderBy('created_at', 'DESC')
+                            ->get(['id', 'title', 'intervention_year1', 'intervention_year2', 'intervention_year3', 'intervention_year4', 'created_at']);
         }
-
-        return view('tf-bi-portal::pages.t_p_nominations.card_view_index')
-                    ->with('current_user', $current_user)
-                    ->with('months_list', BaseController::monthsList())
-                    ->with('states_list', BaseController::statesList())
-                    ->with('cdv_t_p_nominations', $cdv_t_p_nominations);
-
-        /*
-        return $tPNominationDataTable->render('tf-bi-portal::pages.t_p_nominations.index',[
-            'current_user'=>$current_user,
-            'months_list'=>BaseController::monthsList(),
-            'states_list'=>BaseController::statesList()
-        ]);
-        */
+        
+        return $tPNominationDataTable
+                ->with('type', 'tp')
+                ->with('user_beneficiary_id', $user_beneficiary_id)
+                ->render('tf-bi-portal::pages.t_p_nominations.index', [
+                    'current_user' => $current_user,
+                    'all_existing_submissions' => (isset($all_existing_submissions)) ? $all_existing_submissions : []
+                ]);
     }
 
     /**
@@ -93,7 +81,7 @@ class TPNominationController extends BaseController
         //Flash::success('T P Nomination saved successfully.');
 
         TPNominationCreated::dispatch($tPNomination);
-        return redirect(route('tetfund-astd.tPNominations.index'));
+        return redirect(route('tetfund-tp.tPNominations.index'));
     }
 
     /**
@@ -111,7 +99,7 @@ class TPNominationController extends BaseController
         if (empty($tPNomination)) {
             //Flash::error('T P Nomination not found');
 
-            return redirect(route('tetfund-astd.tPNominations.index'));
+            return redirect(route('tetfund-tp.tPNominations.index'));
         }
 
         return view('tf-bi-portal::pages.t_p_nominations.show')->with('tPNomination', $tPNomination);
@@ -132,7 +120,7 @@ class TPNominationController extends BaseController
         if (empty($tPNomination)) {
             //Flash::error('T P Nomination not found');
 
-            return redirect(route('tetfund-astd.tPNominations.index'));
+            return redirect(route('tetfund-tp.tPNominations.index'));
         }
 
         return view('tf-bi-portal::pages.t_p_nominations.edit')->with('tPNomination', $tPNomination);
@@ -154,7 +142,7 @@ class TPNominationController extends BaseController
         if (empty($tPNomination)) {
             //Flash::error('T P Nomination not found');
 
-            return redirect(route('tetfund-astd.tPNominations.index'));
+            return redirect(route('tetfund-tp.tPNominations.index'));
         }
 
         $tPNomination->fill($request->all());
@@ -163,7 +151,7 @@ class TPNominationController extends BaseController
         //Flash::success('T P Nomination updated successfully.');
         
         TPNominationUpdated::dispatch($tPNomination);
-        return redirect(route('tetfund-astd.tPNominations.index'));
+        return redirect(route('tetfund-tp.tPNominations.index'));
     }
 
     /**
@@ -183,14 +171,14 @@ class TPNominationController extends BaseController
         if (empty($tPNomination)) {
             //Flash::error('T P Nomination not found');
 
-            return redirect(route('tetfund-astd.tPNominations.index'));
+            return redirect(route('tetfund-tp.tPNominations.index'));
         }
 
         $tPNomination->delete();
 
         //Flash::success('T P Nomination deleted successfully.');
         TPNominationDeleted::dispatch($tPNomination);
-        return redirect(route('tetfund-astd.tPNominations.index'));
+        return redirect(route('tetfund-tp.tPNominations.index'));
     }
 
         

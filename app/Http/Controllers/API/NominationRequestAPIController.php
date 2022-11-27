@@ -14,7 +14,9 @@ use Hasob\FoundationCore\Models\Organization;
 use Hasob\FoundationCore\Models\User;
 use App\Http\Requests\API\CreateNominationRequestAPIRequest;
 use App\Http\Requests\API\CreateASTDNominationAPIRequest;
+use App\Http\Requests\API\CreateTPNominationAPIRequest;
 use App\Http\Controllers\API\ASTDNominationAPIController;
+use App\Http\Controllers\API\TPNominationAPIController;
 use App\Http\Traits\BeneficiaryUserTrait;
 use App\Models\BeneficiaryMember;
 use App\Models\Beneficiary;
@@ -117,7 +119,7 @@ class NominationRequestAPIController extends BaseController
 
     //store staff nomination request and nomination request data
     public function store_nomination_request_and_details(Request $request) {
-        if (!$request->has('nomination_type') || $request->nomination_type != 'astd' /*|| $request->nomination_type != 'ca' || $request->nomination_type != 'tp' || $request->nomination_type != 'tsas'*/) {
+        if (!$request->has('nomination_type') || $request->nomination_type != 'astd' || $request->nomination_type != 'tp' /* || $request->nomination_type != 'ca' || $request->nomination_type != 'tsas'*/) {
             $this->sendError('Invalid Nomination Type Selected');
         }
         
@@ -129,7 +131,8 @@ class NominationRequestAPIController extends BaseController
         } else if ($request->nomination_type == 'tp') {
             $request = app('App\Http\Requests\API\CreateTPNominationAPIRequest');
             $this->validate($request, $request->rules()); // validate for TP    
-            //$nominationRequestOBJ = new TPNomination();
+            $nominationRequestOBJ = new TPNomination();
+            $nominationRequestAPIControllerOBJ = new TPNominationAPIController();  //hitting TP API Controller
         } else if ($request->nomination_type == 'ca') {    
             $request = app('App\Http\Requests\API\CreateCANominationAPIRequest');
             $this->validate($request, $request->rules()); // validate for CA
@@ -417,6 +420,30 @@ class NominationRequestAPIController extends BaseController
         $nominationRequest->is_set_for_final_submission = 1;
         $nominationRequest->bi_submission_request_id = $submission->id;
         $nominationRequest->save();
+
+        //saving ammount fields
+        if ($nominationRequest->type == 'astd') {
+            $nominationRequestDetails = $nominationRequest->astd_submission();
+        } elseif ($nominationRequest->type == 'tp') {
+            $nominationRequestDetails = $nominationRequest->tp_submission();
+        }
+
+        $inputs = [
+            'fee_amount' => $request->fee_amount,
+            'tuition_amount' => $request->tuition_amount,
+            'upgrade_fee_amount' => $request->upgrade_fee_amount,
+            'stipend_amount' => $request->stipend_amount,
+            'passage_amount' => $request->passage_amount,
+            'medical_amount' => $request->medical_amount,
+            'warm_clothing_amount' => $request->warm_clothing_amount,
+            'study_tours_amount' => $request->study_tours_amount,
+            'education_materials_amount' => $request->education_materials_amount,
+            'thesis_research_amount' => $request->thesis_research_amount,
+            'final_remarks' => $request->final_remarks,
+            'total_requested_amount' => $request->total_requested_amount,
+            'total_approved_amount' => $request->total_approved_amount,
+        ];
+        $nominationRequestDetails->update($inputs);
 
         return $this->sendSuccess("Nomination Request binded to selected Submission successfully");
     }

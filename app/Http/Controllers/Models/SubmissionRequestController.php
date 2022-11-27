@@ -18,7 +18,6 @@ use App\DataTables\BindedNominationsDataTable;
 use Hasob\FoundationCore\Controllers\BaseController;
 use Hasob\FoundationCore\Models\Organization;
 use Hasob\FoundationCore\View\Components\CardDataView;
-use App\Models\ASTDNomination;
 
 use Flash;
 

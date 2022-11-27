@@ -1,13 +1,12 @@
 <?php
-
 namespace App\Listeners;
 
 use App\Models\ASTDNomination as TPNomination;
-use App\Events\TPNominationCreated;
+use App\Events\TPNominationUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class TPNominationCreatedListener
+class TPNominationUpdatedListener
 {
     /**
      * Create the event listener.
@@ -22,10 +21,10 @@ class TPNominationCreatedListener
     /**
      * Handle the event.
      *
-     * @param  TPNominationCreated  $event
+     * @param  TPNominationUpdated  $event
      * @return void
      */
-    public function handle(TPNominationCreated $event)
+    public function handle(TPNominationUpdated $event)
     {
         //
     }

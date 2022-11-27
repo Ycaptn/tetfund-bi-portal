@@ -81,7 +81,7 @@ Nomination Request Details {{-- {{$nominationRequest->title}} --}}
                                 </strong>
                             </h6>
                         </div>
-                        @if(count($nomination_request_attachments) > 0)
+                        @if(isset($nomination_request_attachments) && count($nomination_request_attachments) > 0)
                             @foreach($nomination_request_attachments as $attachment)
                                 <div class="container panel">
                                     <small>

@@ -4,11 +4,11 @@
 @stop
 
 @section('title_postfix')
-Edit TP Nomination
+Edit T P Nomination
 @stop
 
 @section('page_title')
-Edit TP Nomination
+Edit T P Nomination
 @stop
 
 @section('page_title_suffix')
@@ -17,13 +17,13 @@ Edit TP Nomination
 
 @section('page_title_subtext')
 <a class="ms-1" href="{{ route('tetfund-astd.tPNominations.show', $tPNomination->id) }}">
-    <i class="bx bx-chevron-left"></i> Back to TP Nomination Details
+    <i class="bx bx-chevron-left"></i> Back to T P Nomination Details
 </a>
 @stop
 
 @section('page_title_buttons')
 <a href="{{ route('tetfund-astd.tPNominations.create') }}" id="btn-new-tPNominations" class="btn btn-sm btn-primary">
-    <i class="bx bx-book-add mr-1"></i>New TP Nomination
+    <i class="bx bx-book-add mr-1"></i>New T P Nomination
 </a>
 @stop
 
@@ -35,7 +35,7 @@ Edit TP Nomination
             <div>
                 <i class="bx bxs-user me-1 font-22 text-primary"></i>
             </div>
-            <h5 class="mb-0 text-primary">Modify TP Nomination Details</h5>
+            <h5 class="mb-0 text-primary">Modify T P Nomination Details</h5>
         </div>
 
         {!! Form::model($tPNomination, ['class'=>'form-horizontal', 'route' => ['tetfund-astd.tPNominations.update', $tPNomination->id], 'method' => 'patch']) !!}

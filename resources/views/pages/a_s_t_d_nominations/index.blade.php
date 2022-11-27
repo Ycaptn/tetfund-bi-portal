@@ -82,8 +82,8 @@ All A S T D Nomination
                             @if ($current_user->hasAnyRole(['bi-desk-officer']))
                                 <a  href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}?view_type=final_nominations"
                                     class="btn btn-sm btn-primary"
-                                    title="Preview final nomination set to be binded to an existing Submission Request" >
-                                    Binded Nominations
+                                    title="Preview final nomination set to be bound to an existing Submission Request" >
+                                    Bound Nominations
                                 </a>
                             @endif
                         @endif

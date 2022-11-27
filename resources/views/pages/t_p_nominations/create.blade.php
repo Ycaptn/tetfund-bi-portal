@@ -20,7 +20,7 @@ Create TP Nomination
 @section('page_title_buttons')
 {{--
 <a id="btn-new-mdl-tPNomination-modal" class="btn btn-sm btn-primary btn-new-mdl-tPNomination-modal">
-    <i class="bx bx-book-add me-1"></i>New TP Nomination
+    <i class="bx bx-book-add me-1"></i>New T P Nomination
 </a>
 --}}
 @stop

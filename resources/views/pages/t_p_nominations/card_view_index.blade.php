@@ -1,7 +1,29 @@
+@php
+    $control_id = $cdv_data_response->control_id;
+    $data_set_group_list = [];
+    $data_set_enable_search = true;
+    $search_placeholder_text = 'Search TPNomination by first or last name';
+    $data_set_enable_pagination = $cdv_data_response->paginate ? true : false;
+    $page_number = $cdv_data_response->page_number;
+    $pages_total = $cdv_data_response->pages_total;
+    $result_count = $cdv_data_response->result_count;
+        // +"pages_total": 2
+        // +"paginate": true
+        // +"page_number": 1
+        // +"pages_total": 2
+        // +"search_term": null
+        // +"result_count": 4
+        // +"control_id": "cdv_1665697478"
+        // +"cards_html": """
+        // +"page_limit": 2
+    $div_id_name = $control_id.'-div-card-view';
+    $base_index_url = url('tf-bi-portal/t_p_nominations/');
+@endphp
+
 @extends('layouts.app')
 
 @section('app_css')
-    {!! $cdv_t_p_nominations->render_css() !!}
+    @include('tf-bi-portal::pages.cardview.card-view-css')
 @stop
 
 @section('title_postfix')
@@ -23,7 +45,7 @@ All TP Nominations
 @stop
 
 @section('page_title_buttons')
-<a id="btn-new-mdl-tPNomination-modal" class="btn btn-sm btn-primary btn-new-mdl-tPNomination-modal pt-2">
+<a id="btn-new-mdl-aTNomination-modal" class="btn btn-sm btn-primary btn-new-mdl-aTNomination-modal pt-2">
     <i class="bx bx-book-add me-1"></i>New TP Nomination
 </a>
 {{-- @if (Auth()->user()->hasAnyRole(['','admin']))
@@ -38,7 +60,7 @@ All TP Nominations
     
     <div class="card border-top border-0 border-4 border-primary">
         <div class="card-body">
-            {{ $cdv_t_p_nominations->render() }}
+            @include('tf-bi-portal::pages.cardview.index')
         </div>
     </div>
 
@@ -48,16 +70,14 @@ All TP Nominations
 @section('side-panel')
 <div class="card radius-5 border-top border-0 border-4 border-primary">
     <div class="card-body">
-        <div><h5 class="card-title">More Information</h5></div>
+        <div><h5 class="card-title">TP Nominations</h5></div>
         <p class="small">
-            This is the help message.
-            This is the help message.
-            This is the help message.
+            Staff from your institutions may request to be nominated for TP programs. Use this window to select staff from your institutions that will partipate in TP projects.
         </p>
     </div>
 </div>
 @stop
 
 @push('page_scripts')
-    {!! $cdv_t_p_nominations->render_js() !!}
+    @include('tf-bi-portal::pages.cardview.card-view-js')
 @endpush

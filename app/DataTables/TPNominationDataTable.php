@@ -1,5 +1,4 @@
 <?php
-
 namespace App\DataTables;
 
 use App\Models\ASTDNomination as TPNomination;
@@ -60,8 +59,8 @@ class TPNominationDataTable extends DataTable
                 'stateSave' => true,
                 'order'     => [[0, 'desc']],
                 'buttons'   => [
-                    ['extend' => 'create', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
-                    ['extend' => 'export', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
+                    /*['extend' => 'create', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],*/
+                    /*['extend' => 'export', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],*/
                     ['extend' => 'print', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
                     ['extend' => 'reset', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
                     ['extend' => 'reload', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
@@ -82,32 +81,7 @@ class TPNominationDataTable extends DataTable
             'gender',
             'name_title',
             'first_name',
-            'middle_name',
             'last_name',
-            'name_suffix',
-            'bank_account_name',
-            'bank_account_number',
-            'bank_name',
-            'bank_sort_code',
-            'intl_passport_number',
-            'bank_verification_number',
-            'national_id_number',
-            'degree_type',
-            'program_title',
-            'program_type',
-            'fee_amount',
-            'tuition_amount',
-            'upgrade_fee_amount',
-            'stipend_amount',
-            'passage_amount',
-            'medical_amount',
-            'warm_clothing_amount',
-            'study_tours_amount',
-            'education_materials_amount',
-            'thesis_research_amount',
-            'final_remarks',
-            'total_requested_amount',
-            'total_approved_amount'
         ];
     }
 

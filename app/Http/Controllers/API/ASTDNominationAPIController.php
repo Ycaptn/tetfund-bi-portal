@@ -23,7 +23,7 @@ use Hasob\FoundationCore\Controllers\BaseController as AppBaseController;
 
 /**
  * Class ASTDNominationController
- * @package TETFund\ASTD\Controllers\API
+ * @package App\Http\Controllers\API
  */
 
 class ASTDNominationAPIController extends AppBaseController
@@ -84,7 +84,7 @@ class ASTDNominationAPIController extends AppBaseController
             return $attachement_and_final_response;
         }
 
-        return $this->sendError('Error encountered while processing attachements');
+        return $this->sendError('Error encountered while processing attachments');
     }
 
     //handling attachement 
