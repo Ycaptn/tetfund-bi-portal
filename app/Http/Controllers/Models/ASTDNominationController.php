@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Models;
 
 use App\Models\ASTDNomination;
 use App\Models\BeneficiaryMember;
+use App\Models\SubmissionRequest;
 
 use App\Events\ASTDNominationCreated;
 use App\Events\ASTDNominationUpdated;
@@ -36,12 +37,19 @@ class ASTDNominationController extends BaseController
     {
         $current_user = Auth()->user();
         $user_beneficiary_id = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first()->beneficiary_id;   //BI beneficiary_id
+
+        if (isset(request()->view_type) && (request()->view_type == 'hoi_approved' || request()->view_type == 'final_nominations') && $current_user->hasRole('bi-desk-officer')) {
+            $all_existing_submissions = SubmissionRequest::where('status', 'not-submitted')
+                            ->orderBy('created_at', 'DESC')
+                            ->get(['id', 'title', 'intervention_year1', 'intervention_year2', 'intervention_year3', 'intervention_year4', 'created_at']);
+        }
         
         return $aSTDNominationDataTable
                 ->with('type', 'astd')
                 ->with('user_beneficiary_id', $user_beneficiary_id)
                 ->render('tf-bi-portal::pages.a_s_t_d_nominations.index', [
-                    'current_user'=>$current_user
+                    'current_user' => $current_user,
+                    'all_existing_submissions' => (isset($all_existing_submissions)) ? $all_existing_submissions : []
                 ]);
     }
 

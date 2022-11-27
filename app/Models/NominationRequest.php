@@ -24,6 +24,7 @@ use Hasob\FoundationCore\Traits\Artifactable;
 use Hasob\FoundationCore\Traits\OrganizationalConstraint;
 use Hasob\FoundationCore\Models\User;
 use App\Models\Beneficiary;
+use App\Models\SubmissionRequest;
 use App\Models\NominationCommitteeVotes;
 use App\Models\ASTDNomination;
 use App\Models\ASTDNomination as TPNomination;
@@ -87,6 +88,14 @@ class NominationRequest extends Model
     public function beneficiary()
     {
         return $this->belongsTo(Beneficiary::class, 'beneficiary_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function submission_request()
+    {
+        return $this->belongsTo(SubmissionRequest::class, 'bi_submission_request_id', 'id');
     }
 
     /**

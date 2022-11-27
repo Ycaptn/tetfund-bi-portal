@@ -220,6 +220,7 @@ class NominationRequestAPIController extends BaseController
         }
         $nominationRequestDetails['attachments'] = $nominationRequest->get_all_attachements($nominationRequest->id);
         $nominationRequestDetails['nominee_beneficiary'] = $nominationRequest->beneficiary;
+        $nominationRequestDetails['submission_request'] = $nominationRequest->submission_request;
 
         return $this->sendResponse($nominationRequestDetails, 'Nomination Request details retrieved successfully');
     }
@@ -241,8 +242,20 @@ class NominationRequestAPIController extends BaseController
             ];
 
         // checking if any decision was made or selected
+        $fields_err = [];
         if (!($request->has('decision')) || $request->decision == 'undefined') {
-            return self::createJSONResponse("fail","error",["The Decision option must be selected!"],200);
+            array_push($fields_err, "The Decision option must be selected.");
+        }
+        if (!($request->has('comment')) || $request->comment == null) {
+            array_push($fields_err, "The Decision Comment input is required.");
+        }
+        
+        if (($request->has('comment')) && $request->comment != null && strlen($request->comment) < 10) {
+            array_push($fields_err, "The Decision Comment input must contain more than 10 characters.");
+        }
+
+        if (count($fields_err) > 0) {
+            return self::createJSONResponse("fail","error",$fields_err,200);
         }
 
         //checking if user has role to vote
@@ -275,6 +288,7 @@ class NominationRequestAPIController extends BaseController
         $committee_member_vote->beneficiary_id = $beneficiary_members->beneficiary_id;
         $committee_member_vote->nomination_request_id = $nominationRequest->id;
         $committee_member_vote->approval_status = (strtolower($request->decision) == 'approved' ? true : false);
+        $committee_member_vote->approval_comment = trim($request->comment);
         $committee_member_vote->additional_param = $nomination_request_name;
         $committee_member_vote->save();
 
@@ -369,6 +383,7 @@ class NominationRequestAPIController extends BaseController
         //
     }
 
+    // general function processing forwarding of nomination details
     public function process_forward_details(Request $request, NominationRequest $nominationRequest, $id) {
         $nominationRequest = $nominationRequest->find($id);
         if(empty($nominationRequest)) {
@@ -379,6 +394,78 @@ class NominationRequestAPIController extends BaseController
         $nominationRequest->save();
 
         return $this->sendSuccess("Nomination Request forwarded successfully");
+    }
+
+    // process desk-officer binding of nomination to submission
+    public function process_nomination_binding_to_submission(Request $request, NominationRequest $nominationRequest, $id) {
+        $nominationRequest = $nominationRequest->find($id);
+        if(empty($nominationRequest)) {
+            return $this->sendError("Oops... Nomination Request was not found");
+        }
+
+        // checking if any submissioin is not empty
+        if (!($request->has('submission_id')) || empty(optional($request)->submission_id)) {
+            return self::createJSONResponse("fail", 'error', ['The Binding Submission selection field is required.'], 200);
+        }
+
+        // checking if submission_id is valid
+        $submission = SubmissionRequest::find($request->submission_id);
+        if (empty($submission)) {
+            return self::createJSONResponse("fail", 'error', ['The Binding Submission selected is invalid.'], 200);
+        }
+
+        $nominationRequest->is_set_for_final_submission = 1;
+        $nominationRequest->bi_submission_request_id = $submission->id;
+        $nominationRequest->save();
+
+        return $this->sendSuccess("Nomination Request binded to selected Submission successfully");
+    }
+
+    // process approval decision by head of institution
+    public function process_nomination_details_approval_by_hoi(Request $request, NominationRequest $nominationRequest, $id) {
+        $nominationRequest = $nominationRequest->find($id);
+
+        if(empty($nominationRequest)) {
+            return $this->sendError("Oops... Nomination Request was not found");
+        }
+        
+        // checking if any decision was made or selected
+        $fields_err = [];
+        $current_user = auth()->user();
+        if (!($request->has('decision')) || $request->decision == 'undefined') {
+            array_push($fields_err, "The Decision option must be selected.");
+        }
+        if (!($request->has('comment')) || $request->comment == null) {
+            array_push($fields_err, "The Comment input is required.");
+        }
+        
+        if (($request->has('comment')) && $request->comment != null && strlen($request->comment) < 10) {
+            array_push($fields_err, "The Comment input must contain more than 10 characters.");
+        }
+
+        if (count($fields_err) > 0) {
+            return self::createJSONResponse("fail","error",$fields_err,200);
+        }
+
+        //checking if user has role to vote
+        if (!($current_user->hasRole('bi-hoi'))) {
+            return self::createJSONResponse("fail","error",["Current user doesn't has the role to make HOI approval decision"],200);
+        }
+        
+        //checking commitee member is from same institution
+        $beneficiary_members = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+        $nomination_request_name = strtoupper($nominationRequest->type).'Nomination';
+        if ($nominationRequest->beneficiary_id != optional($beneficiary_members)->beneficiary_id) {
+            $err_msg = "This " . $nomination_request_name . " Request doesn't belong to your Institution";
+            return self::createJSONResponse("fail","error",[$err_msg],200);
+        }
+
+        $nominationRequest->is_head_of_institution_check = 1;
+        $nominationRequest->head_of_institution_checked_status = strtolower($request->decision);
+        $nominationRequest->head_of_institution_checked_comment = trim($request->comment);
+        $nominationRequest->save();
+
+        return $this->sendSuccess("Nomination Request HOI approval decision saved successfully");
     }
 
     public function request_actions(Request $request, NominationRequest $nominationRequest, $id) {

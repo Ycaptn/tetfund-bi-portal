@@ -156,17 +156,17 @@ Submission Request
                     <div class="tab">
                         <ul class="nav">
                             <li class="mt-3" style="margin-right: 3px;">
-                                <a href="#attachments?attachments=attachments" class="tablinks btn btn-primary btn-md shadow-none" onclick="openCity(event,'attachments')" id="defaultOpen">
+                                <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=attachments" class="tablinks btn btn-primary btn-md shadow-none">
                                     Attachments
                                 </a>                        
                             </li>
                             <li class="mt-3" style="margin-right: 3px;">                            
-                                <a href="#astd_nominations?astd_nominations=astd_nominations" class="tablinks btn btn-primary btn-md shadow-none" onclick="openCity(event, 'astd_nominations')">
-                                    Final Nominations
+                                <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=nominations_binded" class="tablinks btn btn-primary btn-md shadow-none">
+                                    Bound Nominations
                                 </a>
                             </li>
                             <li class="mt-3" style="margin-right: 3px;">                                
-                                <a href="#communications?communications=communications" class="tablinks btn btn-primary btn-md shadow-none" onclick="openCity(event, 'communications')">
+                                <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=communications" class="tablinks btn btn-primary btn-md shadow-none">
                                     Communications
                                 </a>
                             </li>
@@ -174,20 +174,24 @@ Submission Request
                     </div><hr>
 
                     {{-- sub menu contents --}}
-                    <div id="attachments" class="tabcontent">
-                        <h4>ATTACHMENTS</h4>
-                        @include('tf-bi-portal::pages.submission_requests.partials.submission_attachments') 
-                    </div>
+                    @if(isset(request()->sub_menu_items) && request()->sub_menu_items == 'nominations_binded')
+                        <div id="astd_nominations" class="col-sm-12 table-responsive">
+                            <h4>BOUND NOMINATIONS LIST</h4>
+                            @include('tf-bi-portal::pages.submission_requests.partials.submission_nominations_table')
+                        </div>
+                    @elseif(isset(request()->sub_menu_items) && request()->sub_menu_items == 'communications')
+                        <div id="communications" class="col-sm-12">
+                            <h4>COMMUNICATIONS</h4>
+                        </div>    
+                    @else
+                        <div id="attachments" class="col-sm-12">
+                            <h4>ATTACHMENTS</h4>
+                            @include('tf-bi-portal::pages.submission_requests.partials.submission_attachments') 
+                        </div>
+                    @endif
+                    
 
-                    <div id="astd_nominations" class="tabcontent">
-                        <h4>FINAL NOMINATIONS DETAILS</h4>
-                        @include('tf-bi-portal::pages.submission_requests.partials.submission_astd_nominations')
-                    </div>
-
-                    <div id="communications" class="tabcontent">
-                        <h4>COMMUNICATIONS</h4>
-                        
-                    </div>                   
+                                   
                 </div>
             </div>
         </div>
@@ -210,7 +214,7 @@ Submission Request
 @push('page_scripts')
     <script type="text/javascript">
 
-        //Show Modal for Allocation Dtails Preview
+        //Show Modal for Allocation Details Preview
         $(document).on('click', ".btn-show-submissionRequestAllocationAmount", function(e) {
             $('#mdl-submissionRequestAllocationAmount-modal').modal('show');
         });
@@ -243,23 +247,5 @@ Submission Request
                 }
             });
         }
-
-
-        function openCity(evt, cityName) {
-          var i, tabcontent, tablinks;
-          tabcontent = document.getElementsByClassName("tabcontent");
-          for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-          }
-          tablinks = document.getElementsByClassName("tablinks");
-          for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
-          }
-          document.getElementById(cityName).style.display = "block";
-          evt.currentTarget.className += " active";
-        }
-
-        // Get the element with id="defaultOpen" and click on it
-        document.getElementById("defaultOpen").click();
     </script>
 @endpush

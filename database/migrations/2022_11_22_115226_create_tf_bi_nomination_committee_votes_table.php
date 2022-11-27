@@ -20,6 +20,7 @@ class CreateTfBiNominationCommitteeVotesTable extends Migration
             $table->foreignUuid('beneficiary_id')->references('id')->on('tf_bi_portal_beneficiaries');
             $table->foreignUuid('nomination_request_id')->references('id')->on('tf_bi_nomination_requests');
             $table->boolean('approval_status');
+            $table->text('approval_comment')->nullable();
             $table->string('additional_param')->nullable();
             $table->timestamps();
             $table->softDeletes();

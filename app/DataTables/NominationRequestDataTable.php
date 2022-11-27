@@ -67,6 +67,7 @@ class NominationRequestDataTable extends DataTable
             } else if (request()->view_type == 'hoi_approved' && Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi'])) {
 
                 $query_filter['is_head_of_institution_check'] = 1;
+                $query_filter['head_of_institution_checked_status'] = 'approved';
 
             } else if (request()->view_type == 'final_nominations') {
 
@@ -77,27 +78,27 @@ class NominationRequestDataTable extends DataTable
 
         // final query to be returned with respective filter(s) array
         return $model->newQuery()->with('user')
-                ->with('nomination_committee_votes')
-                ->where($query_filter)
-                ->when((Auth()->user()->hasAnyRole($all_commitee_stakeholders) == true), function ($q) use ($all_commitee_stakeholders) {
-                    return $q->when((!isset(request()->view_type) || optional(request())->view_type!='commitee_approved'), function ($que) use ($all_commitee_stakeholders) {
-                            return $que->where('is_average_commitee_members_check', 0)
-                                ->WhereHas('nomination_committee_votes', function($query) use ($all_commitee_stakeholders) {
-                                    if (Auth()->user()->hasAnyRole($all_commitee_stakeholders)) {
-                                        return $query->where('user_id','!=',auth()->user()->id);
-                                    }
-                        });
-
+            ->with('nomination_committee_votes')
+            ->with('submission_request')
+            ->where($query_filter)
+            ->when((Auth()->user()->hasAnyRole($all_commitee_stakeholders) == true), function ($q) use ($all_commitee_stakeholders) {
+                return $q->when((!isset(request()->view_type) || optional(request())->view_type!='commitee_approved'), function ($que) use ($all_commitee_stakeholders) {
+                        return $que->where('is_average_commitee_members_check', 0)
+                            ->WhereHas('nomination_committee_votes', function($query) use ($all_commitee_stakeholders) {
+                            return $query->where('user_id','!=',auth()->user()->id);
                     });
-                });
 
-        /*return $model->newQuery()->with('user')
-                ->with(['nomination_committee_votes' => function($query) use ($all_commitee_stakeholders) {
-                    if (Auth()->user()->hasAnyRole($all_commitee_stakeholders)) {
-                        return $query->where('user_id','!=',auth()->user()->id);
-                    }
-                }])
-                ->where($query_filter);*/
+                });
+            })
+            ->when((Auth()->user()->hasRole('bi-desk-officer') == true), function ($q) {
+                return $q->when((isset(request()->view_type) && request()->view_type=='final_nominations'), function ($que) {
+                        return $que->where('is_set_for_final_submission', 1)
+                            ->WhereHas('submission_request', function($query) {
+                            return $query->where('status', 'not-submitted');
+                    });
+
+                });
+            });
     }
 
     /**

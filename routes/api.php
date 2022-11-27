@@ -41,6 +41,8 @@ $orgRoutes = function() {
                 Route::put('nomination_requests/process_forward_details/{id}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'process_forward_details'])->name('nomination_requests.process_forward_details');
                 Route::post('nomination_requests/process_approval_by_vote/{id}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'process_approval_by_vote'])->name('nomination_requests.process_approval_by_vote');
                 Route::post('nomination_requests/store_nomination_request_and_details', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'store_nomination_request_and_details'])->name('nomination_requests.store_nomination_request_and_details');
+                Route::post('nomination_requests/process_nomination_details_approval_by_hoi/{id}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'process_nomination_details_approval_by_hoi'])->name('nomination_requests.process_nomination_details_approval_by_hoi');
+                Route::post('nomination_requests/process_nomination_binding_to_submission/{id}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'process_nomination_binding_to_submission'])->name('nomination_requests.process_nomination_binding_to_submission');
 
                 Route::resource('a_s_t_d_nominations', \App\Http\Controllers\API\ASTDNominationAPIController::class);
                 Route::resource('t_p_nominations', \App\Http\Controllers\API\TPNominationAPIController::class);

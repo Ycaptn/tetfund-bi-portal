@@ -13,6 +13,7 @@ use App\Http\Requests\UpdateSubmissionRequestRequest;
 use App\Http\Requests\ProcessAttachmentsSubmissionRequest;
 
 use App\DataTables\SubmissionRequestDataTable;
+use App\DataTables\BindedNominationsDataTable;
 
 use Hasob\FoundationCore\Controllers\BaseController;
 use Hasob\FoundationCore\Models\Organization;
@@ -277,7 +278,7 @@ class SubmissionRequestController extends BaseController
      *
      * @return Response
      */
-    public function show(Organization $org, $id, Request $request) {
+    public function show(Organization $org, $id, Request $request, BindedNominationsDataTable $binded_nominations_dataTable) {
         /** @var SubmissionRequest $submissionRequest */
         $submissionRequest = SubmissionRequest::find($id);
 
@@ -319,7 +320,19 @@ class SubmissionRequestController extends BaseController
         $tETFundServer = new TETFundServer();   /* server class constructor */
         $submission_allocations = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, array_unique($years), true);
 
-        $aSTDNominations = ASTDNomination::all();
+        if(isset($request->sub_menu_items) && $request->sub_menu_items == 'nominations_binded') {
+             return $binded_nominations_dataTable
+                    ->with('user_beneficiary', $beneficiary)
+                    ->render('pages.submission_requests.show', [
+                        'intervention' => $intervention_types_server_response,
+                        'submissionRequest' => $submissionRequest,
+                        'years' => $years,
+                        'checklist_items' => $checklist_items,
+                        'fund_available' => optional($submission_allocations)->total_funds,
+                        'submission_allocations' => optional($submission_allocations)->allocation_records,
+                        'beneficiary' => $beneficiary                        
+                    ]);
+        }
 
         return view('pages.submission_requests.show')
             ->with('intervention', $intervention_types_server_response)
@@ -328,7 +341,6 @@ class SubmissionRequestController extends BaseController
             ->with('checklist_items', $checklist_items)
             ->with('fund_available', optional($submission_allocations)->total_funds)
             ->with('submission_allocations', optional($submission_allocations)->allocation_records)
-            ->with('aSTDNominations', $aSTDNominations)
             ->with('beneficiary', $beneficiary);
     }
 

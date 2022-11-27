@@ -18,7 +18,7 @@ All A S T D Nomination
         @elseif(request()->view_type == 'hoi_approved')
             HOI Approved
         @elseif(request()->view_type == 'final_nominations')
-            Final Nomination
+            Binded Nomination
         @else
             Newly Submitted
         @endif
@@ -83,7 +83,7 @@ All A S T D Nomination
                                 <a  href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}?view_type=final_nominations"
                                     class="btn btn-sm btn-primary"
                                     title="Preview final nomination set to be binded to an existing Submission Request" >
-                                    Final Nominations
+                                    Binded Nominations
                                 </a>
                             @endif
                         @endif
@@ -105,6 +105,10 @@ All A S T D Nomination
         
         @if(isset(request()->view_type) && request()->view_type == 'commitee_approved')
             @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_to_hoi_modal')
+        @endif
+
+        @if(isset(request()->view_type) && (request()->view_type == 'hoi_approved' || request()->view_type == 'final_nominations'))
+            @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_binding_modal')
         @endif
         
     @endif

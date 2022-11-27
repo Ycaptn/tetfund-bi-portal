@@ -182,7 +182,7 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <center>
-                                    <button id="btn-committee_consideration" class="btn btn-sm btn-primary">
+                                    <button id="btn-hoi_decision" class="btn btn-sm btn-primary">
                                         <div id="spinner-hoi_approval" style="color: white; display:none;" class="spinner-hoi_approval">
                                             <div class="spinner-border" style="width: 1rem; height: 1rem;" role="status">
                                             </div>
@@ -240,7 +240,7 @@
                 $("#button-modal-close-preview").attr('disabled', true);
 
                 $("#decision_fields").hide();
-                $("#btn-committee_consideration").hide();
+                $("#btn-hoi_decision").hide();
                 $("#button-modal-close-preview").show();
 
                 let itemId = $(this).attr('data-val');
@@ -285,7 +285,7 @@
             });
 
 
-            //Show Modal for Nomination preview and approval decision by Committee Members
+            //Show Modal for Nomination preview and approval decision by HOI
             $(document).on('click', ".btn-hoi-approval-modal", function(e) {
                 e.preventDefault();
                 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
@@ -296,11 +296,11 @@
                 $('#form_hoi_approval_for_nomination_modal').trigger("reset");
 
                 $(".spinner-hoi_approval").show();
-                $("#btn-committee_consideration").attr('disabled', true);
+                $("#btn-hoi_decision").attr('disabled', true);
 
                 $("#button-modal-close-preview").hide();
                 $("#decision_fields").show();
-                $("#btn-committee_consideration").show();
+                $("#btn-hoi_decision").show();
 
                 let itemId = $(this).attr('data-val');
                 $('#nomination_request_id').val(itemId);
@@ -339,13 +339,13 @@
                     $('#date_details_submitted').text('This ' + response.data.nomination_request_type.toUpperCase() + ' Nomination Request Details was submitted on ' + new Date(response.data.nominee.created_at).toDateString());
 
                     $(".spinner-hoi_approval").hide();
-                    $("#btn-committee_consideration").attr('disabled', false);
+                    $("#btn-hoi_decision").attr('disabled', false);
                });
             });
 
 
-            //process committee member nomination consideraion decision
-            $(document).on('click', "#btn-committee_consideration", function(e) {
+            //process HOI approval decision
+            $(document).on('click', "#btn-hoi_decision", function(e) {
                 e.preventDefault();
                 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
 
@@ -373,15 +373,16 @@
                 }, function(isConfirm) {
                     if (isConfirm) {
                         $(".spinner-hoi_approval").show();
-                        $("#btn-committee_consideration").attr('disabled', true);
+                        $("#btn-hoi_decision").attr('disabled', true);
 
-                        let endPointUrl = "{{ route('tf-bi-portal-api.nomination_requests.process_approval_by_vote','') }}/"+itemId;
+                        let endPointUrl = "{{ route('tf-bi-portal-api.nomination_requests.process_nomination_details_approval_by_hoi','') }}/"+itemId;
                         
                         let formData = new FormData();
                         formData.append('_token', $('input[name="_token"]').val());
                         formData.append('_method', 'POST');
                         formData.append('id', itemId);
                         formData.append('decision', $('input[name=hoi_decision]:checked').val());
+                        formData.append('comment', $('#approval_notes').val());
                         
                         $.ajax({
                             url:endPointUrl,
@@ -402,7 +403,7 @@
                                     });
 
                                     $(".spinner-hoi_approval").hide();
-                                    $("#btn-committee_consideration").attr('disabled', false);
+                                    $("#btn-hoi_decision").attr('disabled', false);
                                 }else{
                                     swal({
                                         title: "Processed",
@@ -419,7 +420,7 @@
                                 swal("Error", "Oops an error occurred. Please try again.", "error");
 
                                 $(".spinner-hoi_approval").hide();
-                                $("#btn-committee_consideration").attr('disabled', false);
+                                $("#btn-hoi_decision").attr('disabled', false);
 
                             }
                         });
