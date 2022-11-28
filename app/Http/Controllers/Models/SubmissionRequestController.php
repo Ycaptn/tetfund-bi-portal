@@ -112,6 +112,36 @@ class SubmissionRequestController extends BaseController
      */
     public function store(Organization $org, CreateSubmissionRequestRequest $request) {
         $input = $request->all();
+        $input['intervention_year1'] = 0;
+        $input['intervention_year2'] = 0;
+        $input['intervention_year3'] = 0;
+        $input['intervention_year4'] = 0;
+
+        $years = [];
+        if ($request->intervention_year1 != null) {
+            array_push($years, $request->intervention_year1);
+        }
+
+        if ($request->intervention_year2 != null) {
+            array_push($years, $request->intervention_year2);
+        }
+
+        if ($request->intervention_year3 != null) {
+            array_push($years, $request->intervention_year3);
+        }
+
+        if ($request->intervention_year4 != null) {
+            array_push($years, $request->intervention_year4);
+        }
+        $years_unique = array_unique($years);
+        sort($years_unique);
+
+        $counter = 1;
+        foreach($years_unique as $year) {
+            $input['intervention_year'.$counter] = $year;
+            $counter += 1;
+        }
+
         $current_user = auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
         
@@ -195,11 +225,9 @@ class SubmissionRequestController extends BaseController
             array_push($years, $submissionRequest->intervention_year4);
         }
 
-        $unique_years = array_unique($years);
-
         //get total fund available 
         $tETFundServer = new TETFundServer();   /* server class constructor */
-        $fund_availability = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $unique_years, true);
+        $fund_availability = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
         
         //error when no fund allocation for selected year(s) is found
         if (isset($fund_availability->success) && $fund_availability->success == false && $fund_availability->message != null) {
@@ -214,7 +242,7 @@ class SubmissionRequestController extends BaseController
         //error when at least one selected allocation year is found
         if (isset($fund_availability->allocation_records) && count($fund_availability->allocation_records) > 0) {
             $all_valid_allocation_year = array_column($fund_availability->allocation_records, 'year');
-            foreach($unique_years as $year) {
+            foreach($years as $year) {
                 if (!in_array($year, $all_valid_allocation_year)) {
                     array_push($errors_array, "No allocation datails is found for selected Intervention year ". $year);
                 }
@@ -317,7 +345,7 @@ class SubmissionRequestController extends BaseController
 
         //Get the funding data and total_funds for the selected intervention year(s).
         $tETFundServer = new TETFundServer();   /* server class constructor */
-        $submission_allocations = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, array_unique($years), true);
+        $submission_allocations = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
 
         if(isset($request->sub_menu_items) && $request->sub_menu_items == 'nominations_binded') {
              return $binded_nominations_dataTable
@@ -415,6 +443,34 @@ class SubmissionRequestController extends BaseController
 
         if ($submissionRequest->status == 'not-submitted') {
             $input = $request->all();
+            $input['intervention_year1'] = 0;
+            $input['intervention_year2'] = 0;
+            $input['intervention_year3'] = 0;
+            $input['intervention_year4'] = 0;
+
+            $years = [];
+            if ($request->intervention_year1 != null) {
+                array_push($years, $request->intervention_year1);
+            }
+
+            if ($request->intervention_year2 != null) {
+                array_push($years, $request->intervention_year2);
+            }
+
+            if ($request->intervention_year3 != null) {
+                array_push($years, $request->intervention_year3);
+            }
+
+            if ($request->intervention_year4 != null) {
+                array_push($years, $request->intervention_year4);
+            }
+            
+            $counter = 1;
+            foreach($years as $year) {
+                $input['intervention_year'.$counter] = $year;
+                $counter += 1;
+            }
+
             $current_user = auth()->user();
             $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
             
