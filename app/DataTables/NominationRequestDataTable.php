@@ -84,7 +84,7 @@ class NominationRequestDataTable extends DataTable
             ->when((Auth()->user()->hasAnyRole($all_commitee_stakeholders) == true), function ($q) use ($all_commitee_stakeholders) {
                 return $q->when((!isset(request()->view_type) || optional(request())->view_type!='commitee_approved'), function ($que) use ($all_commitee_stakeholders) {
                         return $que->where('is_average_commitee_members_check', 0)
-                            ->WhereHas('nomination_committee_votes', function($query) use ($all_commitee_stakeholders) {
+                            ->with('nomination_committee_votes', function($query) use ($all_commitee_stakeholders) {
                             return $query->where('user_id','!=',auth()->user()->id);
                     });
 
