@@ -201,7 +201,7 @@ class ASTDNominationAPIController extends AppBaseController
             $label = $aSTDNomination->first_name . " " . $aSTDNomination->last_name . " ASTDNomination Passport Photo";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $attachement = $nominationRequest->get_specific_attachement($nominationRequest->id, $label); //looking for old passport photo
+            $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
             if ($attachement != null) {
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }
@@ -213,7 +213,7 @@ class ASTDNominationAPIController extends AppBaseController
             $label = $aSTDNomination->first_name . " " . $aSTDNomination->last_name . " ASTDNomination Admission Letter";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $attachement = $nominationRequest->get_specific_attachement($nominationRequest->id, $label); //looking for old passport photo
+            $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
             if ($attachement != null) {
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }
@@ -225,7 +225,7 @@ class ASTDNominationAPIController extends AppBaseController
             $label = $aSTDNomination->first_name . " " . $aSTDNomination->last_name . " ASTDNomination Health Report";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $attachement = $nominationRequest->get_specific_attachement($nominationRequest->id, $label); //looking for old passport photo
+            $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
             if ($attachement != null) {
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }
@@ -237,7 +237,7 @@ class ASTDNominationAPIController extends AppBaseController
             $label = $aSTDNomination->first_name . " " . $aSTDNomination->last_name . " ASTDNomination International Passport Bio Page";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $attachement = $nominationRequest->get_specific_attachement($nominationRequest->id, $label); //looking for old passport photo
+            $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
             if ($attachement != null) {
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }
@@ -249,7 +249,7 @@ class ASTDNominationAPIController extends AppBaseController
             $label = $aSTDNomination->first_name . " " . $aSTDNomination->last_name . " ASTDNomination Conference Attendence Letter";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $attachement = $nominationRequest->get_specific_attachement($nominationRequest->id, $label); //looking for old passport photo
+            $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
             if ($attachement != null) {
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }

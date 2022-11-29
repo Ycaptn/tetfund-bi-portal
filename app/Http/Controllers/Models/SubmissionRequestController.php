@@ -182,7 +182,7 @@ class SubmissionRequestController extends BaseController
                     $checklist_id = substr("$checklist_input_name",10);
                     $label = $checklist_items_arr[$checklist_id]; 
                     $discription = 'This Document Contains the ' . $label ;
-                    $submissionRequest->attach(auth()->user(), $label, $discription, $attachement_inputs[$checklist_input_name]);
+                    $submissionRequest->attach(auth()->user(), $label, $discription, $attachement_inputs[$checklist_input_name], 's3');
                 }
             }
         }
@@ -191,7 +191,7 @@ class SubmissionRequestController extends BaseController
         if (isset($request->additional_attachment) && $request->hasFile('additional_attachment')) {
             $label = $request->additional_attachment_name . ' Additional Attachment'; 
             $discription = 'This Document Contains the ' . $label ;
-            $submissionRequest->attach(auth()->user(), $label, $discription, $attachement_inputs['additional_attachment']);
+            $submissionRequest->attach(auth()->user(), $label, $discription, $attachement_inputs['additional_attachment'], 's3');
         }   
 
         $success_message = 'Submission Request Attachments saved successfully!';
@@ -250,7 +250,7 @@ class SubmissionRequestController extends BaseController
         }
 
         //error for incomplete attachments
-        if ($submissionRequest->get_all_attachements_count_aside_additional($submissionRequest->id, 'Additional Attachment') < $input['checklist_items_count']) {
+        if ($submissionRequest->get_all_attachments_count_aside_additional($submissionRequest->id, 'Additional Attachment') < $input['checklist_items_count']) {
             array_push($errors_array, "The request submission must contain all required Attachment(s).");
         }
 
@@ -260,7 +260,6 @@ class SubmissionRequestController extends BaseController
         }
         
         //processing submission to tetfund server
-        $tETFundServer = new TETFundServer();   /* server class constructor */
         $tf_beneficiary_id = $beneficiary->tf_iterum_portal_key_id;
         $pay_load = $submissionRequest->toArray();
         $pay_load['tf_beneficiary_id'] = $tf_beneficiary_id;
@@ -269,14 +268,15 @@ class SubmissionRequestController extends BaseController
         $pay_load['requested_tranche'] = 'AIP';
         $pay_load['title'] = 'funding AIP request';
 
-        /*add attachement records to payload*/
-        //$submission_attachemt_arr = array();
-        // $payload['submission_attachemt_arr'] = $submission_attachemt_arr;
+        // add attachment records to payload
+        $submission_attachment_array = $submissionRequest->get_all_attachments($input['submission_request_id']);
+        $pay_load['submission_attachment_array'] = $submission_attachment_array;
 
         /*add nomination details to payload*/
-        //$final_nominations_arr = array();
+        // $final_nominations_arr = array();
         // $payload['final_nominations_arr'] = $final_nominations_arr;
 
+        $tETFundServer = new TETFundServer();   /* server class constructor */
         $final_submission_to_tetfund = $tETFundServer->processSubmissionRequest($pay_load, $tf_beneficiary_id);
 
         if (isset($final_submission_to_tetfund->data) && $final_submission_to_tetfund->data != null) {

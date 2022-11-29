@@ -122,7 +122,7 @@ class NominationRequestController extends BaseController
         $bi_beneficiaries =  Beneficiary::all();
 
         // all possible attachements for this nomination
-        $nomination_request_attachments = $nominationRequest->get_all_attachements($nominationRequest->id);
+        $nomination_request_attachments = $nominationRequest->get_all_attachments($nominationRequest->id);
 
         // class constructor to fetch multiple data of countries and Institutions
         $tETFundServer = new TETFundServer();

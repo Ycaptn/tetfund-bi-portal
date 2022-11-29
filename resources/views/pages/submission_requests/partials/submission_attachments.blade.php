@@ -30,11 +30,11 @@
                             <td width="50%">
                                 <div class="input-group">
                                     @php
-                                        $submission_attachement = $submissionRequest->get_specific_attachement($submissionRequest->id, $item->item_label);
+                                        $submission_attachement = $submissionRequest->get_specific_attachment($submissionRequest->id, $item->item_label);
                                     @endphp
                                     @if($submission_attachement != null)
                                         <div class="col-sm-12">
-                                            <a href="{{url(substr($submission_attachement->path,7))}}" target="__blank" title="Preview this Attachement">{{ ucwords($submission_attachement->label) }}</a> &nbsp; &nbsp;
+                                            <a href="{{ route('tf-bi-portal.preview-attachement', $submission_attachement->id) }}" target="__blank" title="Preview this Attachement">{{ ucwords($submission_attachement->label) }}</a> &nbsp; &nbsp;
                                             @if($submissionRequest->status == 'not-submitted')
                                                 <a data-toggle="tooltip" 
                                                     title="Delete this Attachement"
@@ -63,7 +63,7 @@
                     <th>{{ $x+=1 }}</th>
                     <td>
                         @php
-                            $submission_attachement_addition = $submissionRequest->get_specific_attachement($submissionRequest->id, 'Additional Attachment');
+                            $submission_attachement_addition = $submissionRequest->get_specific_attachment($submissionRequest->id, 'Additional Attachment');
                         @endphp
                         <div class="{{ $errors->has('additional_attachment_name') ? ' has-error' : '' }}" >
                                 <input 
@@ -80,7 +80,7 @@
                         <div class="input-group">
                             @if($submission_attachement_addition != null)
                                 <div class="col-sm-12">
-                                    <a href="{{url(substr($submission_attachement_addition->path,7))}}"
+                                    <a href="{{ route('tf-bi-portal.preview-attachement', $submission_attachement_addition->id) }}"
                                         target="__blank"
                                         title="Preview this Attachement">
                                         {{ ucwords($submission_attachement_addition->label) }}

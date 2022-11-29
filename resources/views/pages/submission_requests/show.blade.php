@@ -61,13 +61,13 @@ Submission Request
 
 @section('page_title_buttons')
 
-    <a data-toggle="tooltip" 
+    {{-- <a data-toggle="tooltip" 
         title="New" 
         href="{{ route('tf-bi-portal.submissionRequests.create') }}" 
         data-val='{{$submissionRequest->id}}' 
         class="btn btn-sm btn-primary btn-new-mdl-submissionRequest-modal">
         <i class="fa fa-eye"></i> New
-    </a>&nbsp;
+    </a>&nbsp; --}}
 
     @if($submissionRequest->status == 'not-submitted')
         <a data-toggle="tooltip" 
@@ -75,7 +75,7 @@ Submission Request
             data-val='{{$submissionRequest->id}}' 
             href="{{route('tf-bi-portal.submissionRequests.edit', $submissionRequest->id)}}" 
             class="btn btn-sm btn-primary btn-edit-mdl-submissionRequest-modal">
-            <i class="fa fa-pencil-square-o"></i> Edit
+            <i class="fa fa-pencil-square-o"></i> Edit Submission Request
         </a>
     @endif
 
@@ -96,7 +96,7 @@ Submission Request
                         <ul>
                             <li>This request has <strong>NOT</strong> been submitted.</li>
 
-                            @if ($submissionRequest->get_all_attachements_count_aside_additional($submissionRequest->id, 'Additional Attachment') < count($checklist_items)) 
+                            @if ($submissionRequest->get_all_attachments_count_aside_additional($submissionRequest->id, 'Additional Attachment') < count($checklist_items)) 
                                 <li>Please attach the <strong>required documents</strong> before submitting your request.</li>
                             @endif 
 

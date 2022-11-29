@@ -13,15 +13,14 @@
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
-        "hasob/hasob-foundation-core-bs-5": "dev-bs-5",
-        "tetfund/tetfund-bi-submission-module": "dev-master",
-
+        "hasob/hasob-foundation-core": "dev-bs-5",
         "knplabs/knp-snappy": "^1.2",
         "laravel/framework": "^8.40",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.3",
         "laravelcollective/html": "^6.2",
+        "league/flysystem-aws-s3-v3": "^1.0",
         "sentry/sentry-laravel": "^2.8",
         "yajra/laravel-datatables": "^1.5"
     },
@@ -46,10 +45,6 @@
         {
             "type": "path",
             "url": "../hasob-foundation-core-bs-5"
-        },
-        {
-            "type": "path",
-            "url" : "../tetfund-bi-submission-module"
         }
     ],
     "autoload-dev": {

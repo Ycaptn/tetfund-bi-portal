@@ -221,7 +221,7 @@ class NominationRequestAPIController extends BaseController
         } elseif (strtolower($nominationRequest->type) == 'tsas') {
             $nominationRequestDetails['nominee'] = $nominationRequest->tsas_submission;
         }
-        $nominationRequestDetails['attachments'] = $nominationRequest->get_all_attachements($nominationRequest->id);
+        $nominationRequestDetails['attachments'] = $nominationRequest->get_all_attachments($nominationRequest->id);
         $nominationRequestDetails['nominee_beneficiary'] = $nominationRequest->beneficiary;
         $nominationRequestDetails['submission_request'] = $nominationRequest->submission_request;
 

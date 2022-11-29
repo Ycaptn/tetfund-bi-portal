@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Dashboard;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 use Hasob\FoundationCore\Models\User;
 use Hasob\FoundationCore\Models\Department;
 use Hasob\FoundationCore\Models\Organization;
+use Hasob\FoundationCore\Models\Attachment;
 use App\Models\BeneficiaryMember;
 
 
@@ -42,6 +44,16 @@ class DashboardController extends BaseController
     }
 
     public function displayASTDNominationsDashboard(Organization $org, Request $request){ 
+    }
+
+    public function displayAttachmentDashboard(Organization $org, Request $request, $id){
+        $attachement = Attachment::find($id);
+        if (empty($attachement)) {
+            abort(404);
+        }
+
+        $path = $attachement->path;
+        return Storage::disk('s3')->response($path);
     }
 
     public function displayFundAvailabilityDashboard(Organization $org, Request $request) {

@@ -96,7 +96,6 @@ Edit Submission Request
         }
 
         $(document).ready(function() {
-
             $('#amount_requested_digit').keyup(function(event){
                 $('#amount_requested_digit').digits();
             });
@@ -145,9 +144,11 @@ Edit Submission Request
                 porpulateInterventionLine();
             });
                 
-            if (("{{ old('intervention_type') }}" != null && "{{ old('intervention_type') }}" != '') || ("{{ isset($submissionRequest) }}" && "{{$submissionRequest->tf_iterum_intervention_line_key_id}}" != null)) {
-                porpulateInterventionLine();
-            }
+            $(document).on('load', function(e) {
+                if (("{{ old('intervention_type') }}" != null && "{{ old('intervention_type') }}" != '') || ("{{ isset($submissionRequest) }}" && "{{$submissionRequest->tf_iterum_intervention_line_key_id}}" != null)) {
+                    porpulateInterventionLine();
+                }
+            });
         });
     </script>
 @endpush
