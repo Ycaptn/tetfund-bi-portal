@@ -23,7 +23,7 @@ Nomination Requests
 @stop
 
 @section('page_title_buttons')
-    @if (auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
+    @if (auth()->user()->hasAnyRole(['bi-desk-officer','bi-head-of-institution']))
         <a data-toggle="tooltip" 
             title="Nomination Invitation" 
             class="btn btn-sm btn-primary  btn-new-mdl-nominationInvitation-modal me-1" href="#">
@@ -59,7 +59,7 @@ Nomination Requests
 <div class="card radius-5 border-top border-0 border-4 border-success">
     <div class="card-body">
         <div><h5 class="card-title">TETFund Nomination Request</h5></div>
-        @if (auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
+        @if (auth()->user()->hasAnyRole(['bi-desk-officer','bi-head-of-institution']))
             <p class="small text-justify">
                 Invite, receive and track nomination requests from this window. You may invite staff for new nomination by clicking the <strong>Nomination Invite</strong> button.
             </p>

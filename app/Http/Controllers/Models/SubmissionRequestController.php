@@ -210,6 +210,10 @@ class SubmissionRequestController extends BaseController
         if (empty($submissionRequest)) {
             return redirect(route('tf-bi-portal.submissionRequests.index'));
         }
+
+        if(auth()->user()->hasRole('bi-desk-officer') == false) {
+            return redirect()->back()->with('error', 'Please, Kindly Contact the Institution TETFund Desk Officer, as only them has the Privilege to Submit This Request');
+        }
         
         //intervention years merge
         if ($submissionRequest->intervention_year1 != null) {

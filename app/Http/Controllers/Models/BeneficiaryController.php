@@ -107,8 +107,7 @@ class BeneficiaryController extends BaseController
 
         $allRoles = Role::where('guard_name', 'web')
                     ->where('name', '!=', 'admin')
-                    ->where('name', 'like', '%bi-%')
-                    ->where('name', 'not like', '%-commitee-head%')
+                    ->where('name', 'like', 'bi-%')
                     ->pluck('name');
         
         return $beneficiaryMembersDatatable->with('beneficiary_id', $beneficiary->id)->render('tf-bi-portal::pages.beneficiaries.show', ['beneficiary'=>$beneficiary, 'roles'=>$allRoles]);

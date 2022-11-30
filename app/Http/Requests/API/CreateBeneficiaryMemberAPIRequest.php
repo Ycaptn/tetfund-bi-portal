@@ -42,8 +42,7 @@ class CreateBeneficiaryMemberAPIRequest extends AppBaseFormRequest
 
         $allRoles = Role::where('guard_name', 'web')
                     ->where('name', '!=', 'admin')
-                    ->where('name', 'like', '%bi%')
-                    ->where('name', 'not like', '%-commitee-head%')
+                    ->where('name', 'like', 'bi-%')
                     ->pluck('name');
 
         // checking if any role is set

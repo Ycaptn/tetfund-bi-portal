@@ -50,7 +50,7 @@ class NominationRequestDataTable extends DataTable
         if (Auth()->user()->hasAnyRole($all_commitee_stakeholders) && !isset(request()->view_type)) {
             $query_filter['is_average_commitee_members_check'] = 0;
             $query_filter['is_desk_officer_check'] = 1;
-        } else if (Auth()->user()->hasAnyRole(['bi-hoi']) && !isset(request()->view_type)) {
+        } else if (Auth()->user()->hasAnyRole(['bi-head-of-institution']) && !isset(request()->view_type)) {
             $query_filter['is_head_of_institution_check'] = 0;
             $query_filter['is_desk_officer_check_after_average_commitee_members_checked'] = 1;
         } else if (Auth()->user()->hasAnyRole(['bi-desk-officer']) && !isset(request()->view_type)) {
@@ -64,7 +64,7 @@ class NominationRequestDataTable extends DataTable
                 $query_filter['is_average_commitee_members_check'] = 1;
                 $query_filter['is_desk_officer_check_after_average_commitee_members_checked'] = 0;
 
-            } else if (request()->view_type == 'hoi_approved' && Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi'])) {
+            } else if (request()->view_type == 'hoi_approved' && Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution'])) {
 
                 $query_filter['is_head_of_institution_check'] = 1;
                 $query_filter['head_of_institution_checked_status'] = 'approved';

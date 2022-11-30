@@ -42,7 +42,7 @@
     @endif
 
     {{-- appears for all hoi approval after forwarded by desk officer --}}
-    @if($is_desk_officer_check_after_average_commitee_members_checked == 1 && $is_head_of_institution_check == 0 && auth()->user()->hasAnyRole(['bi-hoi']))
+    @if($is_desk_officer_check_after_average_commitee_members_checked == 1 && $is_head_of_institution_check == 0 && auth()->user()->hasAnyRole(['bi-head-of-institution']))
         <a data-toggle="tooltip" 
             title="Head of Institution Approval for TP Nomination Request" 
             data-val='{{$id}}'
@@ -52,7 +52,7 @@
     @endif
 
      {{-- appears to HOI when approval is accomplished for preview --}}
-    @if($is_head_of_institution_check==1 && $head_of_institution_checked_status=='approved' && $is_set_for_final_submission==0 && auth()->user()->hasRole('bi-hoi'))
+    @if($is_head_of_institution_check==1 && $head_of_institution_checked_status=='approved' && $is_set_for_final_submission==0 && auth()->user()->hasRole('bi-head-of-institution'))
         <a data-toggle="tooltip" 
             title="Preview HOI TPNomination approved but pending action by Desk-Officer" 
             data-val='{{$id}}'

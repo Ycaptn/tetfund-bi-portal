@@ -14,7 +14,20 @@
 
 {{-- nomination request nominee relevant information div --}}
 <div id="user_info_section" class="form-group row col-sm-12">
-    <div class="col-sm-12 col-md-4 mb-3">
+    <div class="col-sm-12 col-md-8 col-lg-3 mb-3">
+        <label class="col-sm-12"><b>Beneficiary Institution:</b></label>
+        <div class="col-sm-12 ">
+            <!-- Beneficiary Institution Field -->
+            {!! Form::hidden('beneficiary_institution_id_select', $beneficiary->id ?? '', ['id'=>'beneficiary_institution_id_select', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
+
+            <i class="beneficiary_institution_id_select">
+                {{$beneficiary->full_name ?? ''}}
+                {{(isset($beneficiary->short_name) && !empty($beneficiary->short_name)) ? '('.strtoupper($beneficiary->short_name).')' : ''}}
+            </i>
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-4 col-lg-2 mb-3">
         <label class="col-sm-12"><b>Fullname:</b></label>
         <div class="col-sm-12 ">
             <!-- First Name Field -->
@@ -34,7 +47,7 @@
         </div>
     </div>
 
-    <div class="col-sm-12 col-md-4 mb-3">
+    <div class="col-sm-12 col-md-4 col-lg-3 mb-3">
         <label class="col-sm-12"><b>Email:</b></label>
         <div class="col-sm-12 ">
             <!-- Email Field -->
@@ -46,7 +59,7 @@
         </div>
     </div>
 
-    <div class="col-sm-12 col-md-4 mb-3">
+    <div class="col-sm-12 col-md-4 col-lg-2 mb-3">
         <label class="col-sm-12"><b>Telephone:</b></label>
         <div class="col-sm-12 ">
             <!-- Telephone Field -->
@@ -58,20 +71,7 @@
         </div>
     </div>
 
-    <div class="col-sm-12 col-md-8 mb-3">
-        <label class="col-sm-12"><b>Beneficiary Institution:</b></label>
-        <div class="col-sm-12 ">
-            <!-- Beneficiary Institution Field -->
-            {!! Form::hidden('beneficiary_institution_id_select', $beneficiary->id ?? '', ['id'=>'beneficiary_institution_id_select', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
-
-            <i class="beneficiary_institution_id_select">
-                {{$beneficiary->full_name ?? ''}}
-                {{(isset($beneficiary->short_name) && !empty($beneficiary->short_name)) ? '('.strtoupper($beneficiary->short_name).')' : ''}}
-            </i>
-        </div>
-    </div>
-
-    <div class="col-sm-12 col-md-4 mb-3">
+    <div class="col-sm-12 col-md-4 col-lg-2 mb-3">
         <label class="col-sm-12"><b>Gender:</b></label>
         <div class="col-sm-12 ">
             <!-- Gender Field -->
@@ -117,7 +117,7 @@
 </div>
 
 <!-- Name Title Field -->
-<div id="div-name_title" class="form-group col-md-4">
+<div id="div-name_title" class="form-group col-md-4 col-lg-6">
     {{-- <label for="name_title" class="col-sm-11 col-form-label">Name Title:</label> --}}
     <div class="col-sm-12">
         {!! Form::hidden('name_title', null, ['id'=>'name_title', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
@@ -125,7 +125,7 @@
 </div>
 
 <!-- Name Suffix Field -->
-<div id="div-name_suffix" class="form-group col-md-4">
+<div id="div-name_suffix" class="form-group col-md-4 col-lg-6">
     {{-- <label for="name_suffix" class="col-sm-12 col-form-label">Name Suffix:</label> --}}
     <div class="col-sm-12">
         {!! Form::hidden('name_suffix', null, ['id'=>'name_suffix', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
@@ -133,7 +133,7 @@
 </div>
 
 <!-- Bank Account Name Field -->
-<div id="div-bank_account_name" class="form-group mb-3 col-md-6">
+<div id="div-bank_account_name" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="bank_account_name" class="col-sm-11 col-form-label">Bank Account Name:</label>
     <div class="col-sm-12">
         {!! Form::text('bank_account_name', null, ['id'=>'bank_account_name', 'class' => 'form-control','minlength' => 2,'maxlength' => 100, 'placeholder'=>'required field']) !!}
@@ -141,7 +141,7 @@
 </div>
 
 <!-- Bank Account Number Field -->
-<div id="div-bank_account_number" class="form-group mb-3 col-md-6">
+<div id="div-bank_account_number" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="bank_account_number" class="col-sm-11 col-form-label">Bank Account Number:</label>
     <div class="col-sm-12">
         {!! Form::text('bank_account_number', null, ['id'=>'bank_account_number', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
@@ -149,7 +149,7 @@
 </div>
 
 <!-- Bank Name Field -->
-<div id="div-bank_name" class="form-group mb-3 col-md-6">
+<div id="div-bank_name" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="bank_name" class="col-sm-11 col-form-label">Bank Name:</label>
     <div class="col-sm-12">
         {!! Form::text('bank_name', null, ['id'=>'bank_name', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
@@ -157,31 +157,31 @@
 </div>
 
 <!-- Bank Sort Code Field -->
-<div id="div-bank_sort_code" class="form-group mb-3 col-md-6">
+<div id="div-bank_sort_code" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="bank_sort_code" class="col-sm-11 col-form-label">Bank Sort Code:</label>
     <div class="col-sm-12">
         {!! Form::text('bank_sort_code', null, ['id'=>'bank_sort_code', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
     </div>
 </div>
 
-<!-- Intl Passport Number Field -->
-<div id="div-intl_passport_number" class="form-group mb-3 col-md-6">
-    <label for="intl_passport_number" class="col-sm-11 col-form-label">Intl Passport Number:</label>
-    <div class="col-sm-12">
-        {!! Form::text('intl_passport_number', null, ['id'=>'intl_passport_number', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div>
-
 <!-- Bank Verification Number Field -->
-<div id="div-bank_verification_number" class="form-group mb-3 col-md-6">
+<div id="div-bank_verification_number" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="bank_verification_number" class="col-sm-11 col-form-label">Bank Verification Number:</label>
     <div class="col-sm-12">
         {!! Form::text('bank_verification_number', null, ['id'=>'bank_verification_number', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
     </div>
 </div>
 
+<!-- Intl Passport Number Field -->
+<div id="div-intl_passport_number" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="intl_passport_number" class="col-sm-11 col-form-label">Intl Passport Number:</label>
+    <div class="col-sm-12">
+        {!! Form::text('intl_passport_number', null, ['id'=>'intl_passport_number', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+    </div>
+</div>
+
 <!-- National Id Number Field -->
-<div id="div-national_id_number" class="form-group mb-3 col-md-6">
+<div id="div-national_id_number" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="national_id_number" class="col-sm-11 col-form-label">National Id Number:</label>
     <div class="col-sm-12">
         {!! Form::text('national_id_number', null, ['id'=>'national_id_number', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
@@ -189,7 +189,7 @@
 </div>
 
 <!-- Degree Type Field -->
-<div id="div-degree_type" class="form-group mb-3 col-md-6">
+<div id="div-degree_type" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="degree_type" class="col-sm-11 col-form-label">Degree Type:</label>
     <div class="col-sm-12">
         {!! Form::text('degree_type', null, ['id'=>'degree_type', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
@@ -197,7 +197,7 @@
 </div>
 
 <!-- Program Title Field -->
-<div id="div-program_title" class="form-group mb-3 col-md-6">
+<div id="div-program_title" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="program_title" class="col-sm-12 col-form-label">Program Title:</label>
     <div class="col-sm-12">
         {!! Form::text('program_title', null, ['id'=>'program_title', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
@@ -205,7 +205,7 @@
 </div>
 
 <!-- Program Type Field -->
-<div id="div-program_type" class="form-group mb-3 col-md-6">
+<div id="div-program_type" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="program_type" class="col-sm-12 col-form-label">Program Type:</label>
     <div class="col-sm-12">
         {!! Form::text('program_type', null, ['id'=>'program_type', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
@@ -216,7 +216,7 @@
 <div id="div-is_science_program" class="form-group mb-3 col-md-4">
     <label for="is_science_program" class="col-sm-12 col-form-label">Is Science Program ? </label>
     <div class="col-sm-12">
-        <select name="is_science_program" id="is_science_program" class="form-control">
+        <select name="is_science_program" id="is_science_program" class="form-select">
             <option value="">-- None selected --</option>
             <option value="1">Yes</option>
             <option value="0">No</option>

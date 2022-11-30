@@ -68,7 +68,7 @@
                             {{ \Carbon\Carbon::parse($nominationRequest->created_at)->format('l jS F Y') }}.
                         </strong>
                     </li>
-                    <li>This <strong>nomination request</strong> has a <strong>deffered </strong>! </li>
+                    <li>This <strong>nomination request</strong> has a <strong>defered </strong>! </li>
                     <li>This <strong>nomination request</strong> is not totally declined, it <strong>may be approved</strong> in due time! </li>
                 </ul>
             </div>
@@ -95,7 +95,6 @@
                             {{ \Carbon\Carbon::parse($nominationRequest->created_at)->format('l jS F Y') }}.
                         </strong>
                     </li>
-                    <li>This <strong>nomination request</strong> has been <strong>successfully approved!</strong></li>
                     @if($nominationRequest->astd_submission != null || $nominationRequest->tp_submission != null)
                         <li><strong>{{ $nomination_type_str }}</strong> Nomination form data <strong>completed!</strong></li>
                     @else
@@ -104,26 +103,30 @@
                 </ul>
             </div>
             <div class="col-md-4">
-                <div class="col-sm-12 text-success">
+                <div class="col-sm-12">
                     <span class="pull-right">
-                        
-                        <span class="fa fa-check-square"></span>
-                        <strong>
-                            REQUEST APPROVED
-                        </strong>   <br>
-
                         @if($nominationRequest->astd_submission != null || $nominationRequest->tp_submission != null)
                             <span class="fa fa-check-square"></span>
-                            <strong>
+                            <strong class="text-success">
                                 SUBMITTED NOMINATION DATA
-                            </strong>
+                            </strong><br>
                         @endif
 
-                        @if($nominationRequest->is_set_for_final_submission == 1)
+                        @if($nominationRequest->status == 'approved' && $nominationRequest->head_of_institution_checked_status == 'approved')
                             <span class="fa fa-check-square"></span>
                             <strong>
-                                NOMINATION DETAILS CONSIDERED FOR SUBMISSION
-                            </strong>
+                                CONSIDERED FOR SUBMISSION
+                            </strong><br>
+                        @elseif($nominationRequest->status == 'declined' || $nominationRequest->head_of_institution_checked_status == 'declined')
+                            <span class="fa fa-times"></span>
+                            <strong class="text-danger">
+                                NOMINATION DETAILS REJECTED
+                            </strong><br>
+                        @else
+                            <span class="fa fa-calendar-o text-danger"></span>
+                            <strong class="text-danger">
+                                PENDING CONSIDERATION
+                            </strong><br>
                         @endif                        
                     </span>
                 </div>
@@ -183,7 +186,7 @@
                 @else
                     <button title="completed and submit {{ $nomination_type_str }} nomination form" 
                             class="btn btn-sm btn-danger pt-2 pull-right {{ $nomination_type_str }}-nomination-form">
-                            <i class="fa fa-pencil-square-o"></i> {{ $nomination_type_str }} Nomination Form 
+                            <i class="fa fa-pencil-square-o"></i> {{ $nomination_type_str }} Nomination Form
                     </button>
                 @endif
             </div>

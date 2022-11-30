@@ -34,10 +34,10 @@ Beneficiary Admin Panel
                 <div class="col-sm-12 panel panel-default card-view">
                     <h5 class="pt-2"> 
                         <strong>
-                            Beneficiary Members 
+                            Beneficiary Users 
                         </strong>
                          <a title="Create New Beneficiary Member" class="btn btn-primary btn-sm pull-right btn-new-beneficiary-member" href="#">
-                            <span class="fa fa-plus"></span> <small>New Member</small>
+                            <span class="fa fa-plus"></span> <small>Add User</small>
                         </a>
                     </h5>
                     @include('tf-bi-portal::pages.beneficiaries.table')

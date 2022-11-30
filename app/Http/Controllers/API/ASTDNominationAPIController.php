@@ -94,7 +94,7 @@ class ASTDNominationAPIController extends AppBaseController
             $label = $aSTDNomination->first_name . " " . $aSTDNomination->last_name . " ASTDNomination Passport Photo";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo);
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo, 's3');
         }
 
         /*handling admission_letter upload process*/
@@ -102,7 +102,7 @@ class ASTDNominationAPIController extends AppBaseController
             $label = $aSTDNomination->first_name . " " . $aSTDNomination->last_name . " ASTDNomination Admission Letter";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->admission_letter);
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->admission_letter, 's3');
         } 
 
         /*handling health_report upload process*/
@@ -110,7 +110,7 @@ class ASTDNominationAPIController extends AppBaseController
             $label = $aSTDNomination->first_name . " " . $aSTDNomination->last_name . " ASTDNomination Health Report";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->health_report);
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->health_report, 's3');
         } 
 
         /*handling international_passport_bio_page upload process*/
@@ -118,7 +118,7 @@ class ASTDNominationAPIController extends AppBaseController
             $label = $aSTDNomination->first_name . " " . $aSTDNomination->last_name . " ASTDNomination International Passport Bio Page";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->international_passport_bio_page);
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->international_passport_bio_page, 's3');
         } 
 
         /*handling conference_attendence_letter upload process*/
@@ -126,7 +126,7 @@ class ASTDNominationAPIController extends AppBaseController
             $label = $aSTDNomination->first_name . " " . $aSTDNomination->last_name . " ASTDNomination Conference Attendence Letter";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendence_letter);
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendence_letter, 's3');
         }
 
         ASTDNominationCreated::dispatch($aSTDNomination);
@@ -205,7 +205,7 @@ class ASTDNominationAPIController extends AppBaseController
             if ($attachement != null) {
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo);
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo, 's3');
         }
 
         /*handling admission_letter update process*/
@@ -217,7 +217,7 @@ class ASTDNominationAPIController extends AppBaseController
             if ($attachement != null) {
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->admission_letter);
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->admission_letter, 's3');
         }
 
         /*handling health_report update process*/
@@ -229,7 +229,7 @@ class ASTDNominationAPIController extends AppBaseController
             if ($attachement != null) {
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->health_report);
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->health_report, 's3');
         }
 
         /*handling international_passport_bio_page update process*/
@@ -241,7 +241,7 @@ class ASTDNominationAPIController extends AppBaseController
             if ($attachement != null) {
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->international_passport_bio_page);
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->international_passport_bio_page, 's3');
         }
 
         /*handling conference_attendence_letter update process*/
@@ -253,7 +253,7 @@ class ASTDNominationAPIController extends AppBaseController
             if ($attachement != null) {
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendence_letter);
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendence_letter, 's3');
         }
 
         ASTDNominationUpdated::dispatch($aSTDNomination);

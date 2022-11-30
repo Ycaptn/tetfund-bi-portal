@@ -126,8 +126,7 @@ class BeneficiaryAPIController extends AppBaseController
 
         $allRoles = Role::where('guard_name', 'web')
                         ->where('name', '!=', 'admin')
-                        ->where('name', 'like', '%bi-%')
-                        ->where('name', 'not like', '%-commitee-head%')
+                        ->where('name', 'like', 'bi-%')
                         ->pluck('name');
         $selectedRoles = [];
 
@@ -201,8 +200,7 @@ class BeneficiaryAPIController extends AppBaseController
 
         $allRoles = Role::where('guard_name', 'web')
                         ->where('name', '!=', 'admin')
-                        ->where('name', 'like', '%bi-%')
-                        ->where('name', 'not like', '%-commitee-head%')
+                        ->where('name', 'like', 'bi-%')
                         ->pluck('name');
         $selectedRoles = [];
 

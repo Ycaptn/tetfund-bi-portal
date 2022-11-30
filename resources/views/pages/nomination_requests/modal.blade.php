@@ -1,6 +1,6 @@
 {{-- include script if uers is deskofficer, HOI or committee head --}}
 
-@if(auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi']))
+@if(auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution']))
 
     @include('pages.nomination_requests.partial_sub_modals.nomination_invitation_modal')
 

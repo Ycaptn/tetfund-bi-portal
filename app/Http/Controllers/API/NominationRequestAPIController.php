@@ -159,7 +159,7 @@ class NominationRequestAPIController extends BaseController
 
         // handle nomination request details submission
         $input = $request->all();
-        $input['type_of_nomination'] = 'ASTD';
+        $input['type_of_nomination'] = strtoupper($request->nomination_type);
         $input['user_id'] = $current_user->id;
         $input['nomination_request_id'] = $nominationRequest->id;
         $input['beneficiary_institution_id'] = $bi_beneficiary_id;
@@ -475,7 +475,7 @@ class NominationRequestAPIController extends BaseController
         }
 
         //checking if user has role to vote
-        if (!($current_user->hasRole('bi-hoi'))) {
+        if (!($current_user->hasRole('bi-head-of-institution'))) {
             return self::createJSONResponse("fail","error",["Current user doesn't has the role to make HOI approval decision"],200);
         }
         

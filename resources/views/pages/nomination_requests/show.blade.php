@@ -39,8 +39,7 @@ Nomination Request Details {{-- {{$nominationRequest->title}} --}}
 @stop
 
 @php
-    $nomination_type_str_arr = str_split(strtoupper($nominationRequest->type));
-    $nomination_type_str = implode('-', $nomination_type_str_arr);
+    $nomination_type_str = strtoupper($nominationRequest->type);
 @endphp
 
 @section('content')
@@ -85,11 +84,7 @@ Nomination Request Details {{-- {{$nominationRequest->title}} --}}
                             @foreach($nomination_request_attachments as $attachment)
                                 <div class="container panel">
                                     <small>
-                                        @php
-                                            $link = $attachment->path;
-                                            $link = str_replace('public/', '', $link);
-                                        @endphp
-                                        <a href="{{ asset($link) }}" target="__blank">
+                                        <a href="{{ route('tf-bi-portal.preview-attachement', $attachment->id) }}" target="__blank">
                                             <strong>{{$attachment->label}}</strong><br>
                                         </a>
                                         <i>{{$attachment->description}}</i>

@@ -40,18 +40,14 @@
                     <a href='{{$detail_page_url}}'>
                         <h3 class="h6 card-title mb-0">
                             {{ strtoupper($data_item->user->first_name) }}
-                            {{ strtoupper($data_item->user->last_name) }}
-                            @if(empty($data_item->status)==false) 
-                                || 
-                                @if($data_item->status == 'approved')
-                                    <span class="text-success"> REQUEST {{ strtoupper($data_item->status) }} </span>
-                                @elseif($data_item->status == 'declined')
-                                    <span class="text-danger"> REQUEST {{ strtoupper($data_item->status) }} </span>
+                            {{ strtoupper($data_item->user->last_name) }} 
+                                @if($data_item->head_of_institution_checked_status == 'approved')
+                                    || <span class="text-success"> REQUEST {{ strtoupper($data_item->head_of_institution_checked_status) }} </span>
+                                @elseif($data_item->head_of_institution_checked_status == 'declined')
+                                    || <span class="text-danger"> REQUEST {{ strtoupper($data_item->head_of_institution_checked_status) }} </span>
                                 @else
-                                    <span class="text-info"> REQUEST {{ strtoupper($data_item->status) }} </span>
-
+                                    || <span class="text-danger"> REQUEST UNDER REVIEW </span>
                                 @endif
-                            @endif
                         </h3>
                     </a>
                     <p class="card-text mb-0 small">

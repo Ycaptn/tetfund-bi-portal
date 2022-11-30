@@ -37,14 +37,6 @@ class BeneficiaryMemberDatatable extends DataTable
             return "N/A";
         });
 
-        $dataTable->addColumn('created_at', function ($query) {
-            if ($query->created_at != null){
-                $created_at = \Carbon\Carbon::parse($query->created_at)->format('jS M, Y');
-                return $created_at;
-            }
-            return "N/A";
-        });
-
         $dataTable->addColumn('roles', function ($query) {
             if ($query->id != null) {
                 $user = User::find($query->id);

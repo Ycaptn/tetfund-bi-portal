@@ -94,8 +94,7 @@ class DashboardController extends BaseController
         $allRoles = Role::where('guard_name', 'web')
                     ->where('name', '!=', 'admin')
                     ->where('name', '!=', 'bi-desk-officer')
-                    ->where('name', 'like', '%bi-%')
-                    ->where('name', 'not like', '%-commitee-head%')
+                    ->where('name', 'like', 'bi-%')
                     ->pluck('name');
         
         return $beneficiaryMembersDatatable->with('beneficiary_id', $beneficiary_member->beneficiary->id)

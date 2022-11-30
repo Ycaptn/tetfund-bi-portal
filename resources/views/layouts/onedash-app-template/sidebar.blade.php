@@ -126,7 +126,7 @@
 				</a>
 			</li>
 			
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-head-of-institution']))
 			<li>
 				<a href="{{ route('tf-bi-portal.fund-availability') }}" class="">
 					<div class="parent-icon"><i class='bx bx-wallet'></i>
@@ -136,7 +136,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-head-of-institution']))
 			<li>
 				<a href="{{ route('tf-bi-portal.submissionRequests.index') }}" class="">
 					<div class="parent-icon"><i class='bx bx-layer-plus'></i>
@@ -156,7 +156,7 @@
 				</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-astd-commitee-head', 'bi-ca-commitee-head', 'bi-tp-commitee-head', 'bi-tsas-commitee-head', 'bi-astd-commitee-member', 'bi-ca-commitee-member', 'bi-tp-commitee-member', 'bi-tsas-commitee-member']))
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution', 'bi-astd-commitee-head', 'bi-ca-commitee-head', 'bi-tp-commitee-head', 'bi-tsas-commitee-head', 'bi-astd-commitee-member', 'bi-ca-commitee-member', 'bi-tp-commitee-member', 'bi-tsas-commitee-member']))
 
 			<li>
 			    <a href="javascript:void(0);" data-toggle="collapse" data-target="#access_dr" class="collapsed" aria-expanded="false">
@@ -164,14 +164,14 @@
 			        	<i class='bx bx-paper-plane'></i>
 					</div>
 			        <div class="menu-title col-sm-12">
-			        	All Nomination Mgt
+			        	ASTD Nominations Mgt
 			        	&nbsp; <i class="fa fa-caret-down"></i>
 			        </div>
 			    </a>
 
 			    {{-- collapse-level-1 collapse --}}
 			    <ul id="access_dr" class="" aria-expanded="false" style="">
-			        @if (Auth()->user()->hasAnyRole(['bi-desk-officer']))
+			        {{-- @if (Auth()->user()->hasAnyRole(['bi-desk-officer']))
 				        <li>
 							<a href="{{ route('tf-bi-portal.nomination_requests.index') }}" class="">
 								<div class="menu-title col-sm-12">
@@ -180,36 +180,36 @@
 								</div>
 							</a>
 						</li>
-					@endif
+					@endif --}}
 
-					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-astd-commitee-head', 'bi-astd-commitee-member']))
+					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution', 'bi-astd-commitee-head', 'bi-astd-commitee-member']))
 						<li>
 							<a href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}" class="">
-								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> ASTD Nominations </div>
+								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> ASTD Nomination </div>
 							</a>
 						</li>
 					@endif
 
-					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-tp-commitee-head', 'bi-tp-commitee-member']))
+					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution', 'bi-tp-commitee-head', 'bi-tp-commitee-member']))
 						<li>
 							<a href="{{ route('tf-bi-portal.t_p_nominations.index') }}" class="">
-								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> TP Nominations </div>
+								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> TP Nomination </div>
 							</a>
 						</li>
 					@endif
 
-					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-ca-commitee-head', 'bi-ca-commitee-member']))
+					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution', 'bi-ca-commitee-head', 'bi-ca-commitee-member']))
 						<li>
 							<a href="#" class="">
-								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> CA Nominations </div>
+								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> CA Nomination </div>
 							</a>
 						</li>
 					@endif
 
-					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-tsas-commitee-head', 'bi-tsas-commitee-member']))
+					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution', 'bi-tsas-commitee-head', 'bi-tsas-commitee-member']))
 						<li>
 							<a href="#" class="">
-								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> TSAS Nominations </div>
+								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> TSAS Nomination </div>
 							</a>
 						</li>
 					@endif
@@ -217,7 +217,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-hoi']))
+			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-head-of-institution']))
 			<li>
 				<a href="{{ route('tf-bi-portal.monitoring') }}" class="">
 					<div class="parent-icon"><i class='bx bx-location-plus'></i>
@@ -237,7 +237,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-lib']))
+			@if (Auth()->user()->hasAnyRole(['bi-librarian']))
 			<li>
 				<a href="{{ route('tf-bi-portal.librarian') }}" class="">
 					<div class="parent-icon"><i class='bx bx-book-reader'></i>

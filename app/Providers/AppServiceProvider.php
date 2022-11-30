@@ -39,7 +39,7 @@ class AppServiceProvider extends ServiceProvider
         \FoundationCore::register_roles([
             'bi-admin'                  =>  [],
             'bi-desk-officer'           =>  [],
-            'bi-hoi'                    =>  [],
+            'bi-head-of-institution'    =>  [],
             'bi-astd-commitee-head'     =>  [],
             'bi-ca-commitee-head'       =>  [],
             'bi-tp-commitee-head'       =>  [],
@@ -49,7 +49,7 @@ class AppServiceProvider extends ServiceProvider
             'bi-tp-commitee-member'     =>  [],
             'bi-tsas-commitee-member'   =>  [],
             'bi-ict'                    =>  [],
-            'bi-lib'                    =>  [],
+            'bi-librarian'              =>  [],
             'bi-works'                  =>  [],
             'bi-ppd'                    =>  [],
             'bi-staff'                  =>  [],

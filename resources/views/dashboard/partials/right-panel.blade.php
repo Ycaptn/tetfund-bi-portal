@@ -69,7 +69,7 @@
 </div>
 @endif
 
-@if (Auth()->user()->hasAnyRole(['bi-lib']))
+@if (Auth()->user()->hasAnyRole(['bi-librarian']))
 <div class="card radius-5">
     <div class="card-body">
         <div>

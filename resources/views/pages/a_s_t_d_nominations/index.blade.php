@@ -55,7 +55,7 @@ All A S T D Nomination
             <div class="table-responsive">
                 <p>
                     <div class="col-sm-12">
-                        @if ($current_user->hasAnyRole(['bi-desk-officer', 'bi-hoi', 'bi-astd-commitee-head', 'bi-astd-commitee-member']))
+                        @if ($current_user->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution', 'bi-astd-commitee-head', 'bi-astd-commitee-member']))
 
                             <a  href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}"
                                 class="btn btn-sm btn-primary"
@@ -71,7 +71,7 @@ All A S T D Nomination
                                 </a>
                             @endif
 
-                            @if ($current_user->hasAnyRole(['bi-desk-officer', 'bi-hoi']))
+                            @if ($current_user->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution']))
                                 <a  href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}?view_type=hoi_approved"
                                     class="btn btn-sm btn-primary me-2"
                                     title="Preview ASTD Nomination(s) that have been Considered by Head of Institution" >
@@ -119,7 +119,7 @@ All A S T D Nomination
     @endif
 
     {{-- include approval for Head of Institution --}}
-    @if (auth()->user()->hasRole('bi-hoi'))
+    @if (auth()->user()->hasRole('bi-head-of-institution'))
         @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.hoi_approval_for_nomination_modal')
     @endif
 
