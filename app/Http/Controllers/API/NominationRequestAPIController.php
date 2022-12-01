@@ -225,11 +225,33 @@ class NominationRequestAPIController extends BaseController
         $nominationRequestDetails['nominee_beneficiary'] = $nominationRequest->beneficiary;
         $nominationRequestDetails['submission_request'] = $nominationRequest->submission_request;
 
+        if ($current_user->hasRole('bi-'.strtolower($nominationRequest->type).'-committee-head')) {
+            //voters for nominee
+            $nomination_committee_voters = [];  
+            if (count($nominationRequest->nomination_committee_votes) > 0) {
+                foreach ($nominationRequest->nomination_committee_votes as $key => $value) {
+                    array_push($nomination_committee_voters, array_merge($value->user->toArray(), ['approval_comment'=>$value->approval_comment, 'approval_status'=>$value->approval_status,]));
+                }
+            }
+            $nominationRequestDetails['nomination_committee_voters'] = $nomination_committee_voters;
+            $nominationRequestDetails['count_committee_votes'] = count($nomination_committee_voters);
+
+            //all commitee members for specific type of nomination
+            $beneficiary_committee_members = User::role(['bi-'.strtolower($nominationRequest->type).'-committee-member'])
+                    ->join('tf_bi_beneficiary_members', 'tf_bi_beneficiary_members.beneficiary_user_id', 'fc_users.id', )
+                    ->where('tf_bi_beneficiary_members.beneficiary_id', $beneficiary_members->beneficiary_id)
+                    ->select('fc_users.*', 'tf_bi_beneficiary_members.beneficiary_id')
+                    ->get();
+            $nominationRequestDetails['beneficiary_committee_members'] = $beneficiary_committee_members;
+            $nominationRequestDetails['count_committee_members'] = count($beneficiary_committee_members);
+
+        }
+
         return $this->sendResponse($nominationRequestDetails, 'Nomination Request details retrieved successfully');
     }
 
-    //process commitee members approval
-    public function process_approval_by_vote(Request $request, $id) {
+    //process committee members approval
+    public function process_committee_member_vote(Request $request, $id) {
         $nominationRequest = NominationRequest::find($id);
         if (empty($nominationRequest)) {
             return self::createJSONResponse("fail","error",["Nomination Request is not found"],200);
@@ -237,12 +259,6 @@ class NominationRequestAPIController extends BaseController
 
         $current_user = auth()->user();
         $beneficiary_members = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
-
-        //eligible roles that can vote
-        $allowed_roles = [
-                'bi-'.strtolower($nominationRequest->type).'-commitee-head',
-                'bi-'.strtolower($nominationRequest->type).'-commitee-member' 
-            ];
 
         // checking if any decision was made or selected
         $fields_err = [];
@@ -262,11 +278,12 @@ class NominationRequestAPIController extends BaseController
         }
 
         //checking if user has role to vote
-        if (!($current_user->hasAnyRole($allowed_roles))) {
+        $role_allowed = ['bi-'.strtolower($nominationRequest->type).'-committee-member'];
+        if (!($current_user->hasAnyRole($role_allowed))) {
             return self::createJSONResponse("fail","error",["Current user doesn't has the role to make consideration"],200);
         }
         
-        //checking commitee member is from same institution
+        //checking committee member is from same institution
         $nomination_request_name = strtoupper($nominationRequest->type).'Nomination';
         if ($nominationRequest->beneficiary_id != optional($beneficiary_members)->beneficiary_id) {
             $err_msg = "This " . $nomination_request_name . " Request doesn't belong to your Institution";
@@ -293,7 +310,25 @@ class NominationRequestAPIController extends BaseController
         $committee_member_vote->approval_status = (strtolower($request->decision) == 'approved' ? true : false);
         $committee_member_vote->approval_comment = trim($request->comment);
         $committee_member_vote->additional_param = $nomination_request_name;
-        $committee_member_vote->save();
+        $committee_member_vote->save(); 
+
+        return $this->sendSuccess('Your Approval vote has been counted for the selected ' . $nomination_request_name . ' Request');
+    }
+
+    public function process_committee_head_consideration(Request $request, $id) {
+        $nominationRequest = NominationRequest::find($id);
+        if (empty($nominationRequest)) {
+            return self::createJSONResponse("fail","error",["Nomination Request is not found"],200);
+        }
+
+        //checking if user has role to vote
+        $role_allowed = ['bi-'.strtolower($nominationRequest->type).'-committee-head'];
+        if (!($current_user->hasAnyRole($role_allowed))) {
+            return self::createJSONResponse("fail","error",["Current user doesn't has the role to make consideration"],200);
+        }
+
+        $current_user = auth()->user();
+        $beneficiary_members = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
         //voters for nominee with approve status
         $nomination_committee_voters = NominationCommitteeVotes::where([
@@ -304,19 +339,10 @@ class NominationRequestAPIController extends BaseController
                 ])->get();
 
         // possible roles allowed based on nomination
-        $allowed_roles = [];
-        if (strtolower($nominationRequest->type) == 'astd') {
-            array_push($allowed_roles, 'bi-astd-commitee-head', 'bi-astd-commitee-member');
-        } elseif (strtolower($nominationRequest->type) == 'tp') {
-            array_push($allowed_roles, 'bi-tp-commitee-head', 'bi-tp-commitee-member');
-        } elseif (strtolower($nominationRequest->type) == 'ca') {
-            array_push($allowed_roles, 'bi-ca-commitee-head', 'bi-ca-commitee-member');
-        } elseif (strtolower($nominationRequest->type) == 'tsas') {
-            array_push($allowed_roles, 'bi-tsas-commitee-head', 'bi-tsas-commitee-member');
-        }
+        $committee_member_role = ['bi-'.strtolower($nominationRequest->type).'-committee-member'];
 
-        //all commitee members for specific type of nomination
-        $beneficiary_committee_members = User::role($allowed_roles)
+        //all committee members for specific type of nomination
+        $beneficiary_committee_members = User::role($committee_member_role)
             ->join('tf_bi_beneficiary_members', 'tf_bi_beneficiary_members.beneficiary_user_id', 'fc_users.id')
             ->where('tf_bi_beneficiary_members.beneficiary_id', $beneficiary_members->beneficiary_id)
             ->select('fc_users.*', 'tf_bi_beneficiary_members.beneficiary_id')
@@ -324,13 +350,10 @@ class NominationRequestAPIController extends BaseController
 
         // decide if this nomination has maximunm consideration for approval
         if (count($nomination_committee_voters) >= (count($beneficiary_committee_members)/2)) {
-                $nominationRequest->is_average_commitee_members_check = 1;
+                $nominationRequest->is_average_committee_members_check = 1;
                 $nominationRequest->save();
-        } 
-
-        return $this->sendSuccess('Your Approval vote has been counted for the selected ' . $nomination_request_name . ' Request');
+        }
     }
-
 
     // seleect nominee user by  email
     public function show_selected_email(NominationRequest $nominationRequest, $email) {
@@ -399,55 +422,6 @@ class NominationRequestAPIController extends BaseController
         return $this->sendSuccess("Nomination Request forwarded successfully");
     }
 
-    // process desk-officer binding of nomination to submission
-    public function process_nomination_binding_to_submission(Request $request, NominationRequest $nominationRequest, $id) {
-        $nominationRequest = $nominationRequest->find($id);
-        if(empty($nominationRequest)) {
-            return $this->sendError("Oops... Nomination Request was not found");
-        }
-
-        // checking if any submissioin is not empty
-        if (!($request->has('submission_id')) || empty(optional($request)->submission_id)) {
-            return self::createJSONResponse("fail", 'error', ['The Binding Submission selection field is required.'], 200);
-        }
-
-        // checking if submission_id is valid
-        $submission = SubmissionRequest::find($request->submission_id);
-        if (empty($submission)) {
-            return self::createJSONResponse("fail", 'error', ['The Binding Submission selected is invalid.'], 200);
-        }
-
-        $nominationRequest->is_set_for_final_submission = 1;
-        $nominationRequest->bi_submission_request_id = $submission->id;
-        $nominationRequest->save();
-
-        //saving ammount fields
-        if ($nominationRequest->type == 'astd') {
-            $nominationRequestDetails = $nominationRequest->astd_submission();
-        } elseif ($nominationRequest->type == 'tp') {
-            $nominationRequestDetails = $nominationRequest->tp_submission();
-        }
-
-        $inputs = [
-            'fee_amount' => $request->fee_amount,
-            'tuition_amount' => $request->tuition_amount,
-            'upgrade_fee_amount' => $request->upgrade_fee_amount,
-            'stipend_amount' => $request->stipend_amount,
-            'passage_amount' => $request->passage_amount,
-            'medical_amount' => $request->medical_amount,
-            'warm_clothing_amount' => $request->warm_clothing_amount,
-            'study_tours_amount' => $request->study_tours_amount,
-            'education_materials_amount' => $request->education_materials_amount,
-            'thesis_research_amount' => $request->thesis_research_amount,
-            'final_remarks' => $request->final_remarks,
-            'total_requested_amount' => $request->total_requested_amount,
-            'total_approved_amount' => $request->total_approved_amount,
-        ];
-        $nominationRequestDetails->update($inputs);
-
-        return $this->sendSuccess("Nomination Request binded to selected Submission successfully");
-    }
-
     // process approval decision by head of institution
     public function process_nomination_details_approval_by_hoi(Request $request, NominationRequest $nominationRequest, $id) {
         $nominationRequest = $nominationRequest->find($id);
@@ -479,7 +453,7 @@ class NominationRequestAPIController extends BaseController
             return self::createJSONResponse("fail","error",["Current user doesn't has the role to make HOI approval decision"],200);
         }
         
-        //checking commitee member is from same institution
+        //checking committee member is from same institution
         $beneficiary_members = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
         $nomination_request_name = strtoupper($nominationRequest->type).'Nomination';
         if ($nominationRequest->beneficiary_id != optional($beneficiary_members)->beneficiary_id) {
@@ -490,6 +464,9 @@ class NominationRequestAPIController extends BaseController
         $nominationRequest->is_head_of_institution_check = 1;
         $nominationRequest->head_of_institution_checked_status = strtolower($request->decision);
         $nominationRequest->head_of_institution_checked_comment = trim($request->comment);
+        if (strtolower($request->decision) == 'declined') {
+            $nominationRequest->status = 'declined';
+        }
         $nominationRequest->save();
 
         return $this->sendSuccess("Nomination Request HOI approval decision saved successfully");

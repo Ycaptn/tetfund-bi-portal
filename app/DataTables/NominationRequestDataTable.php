@@ -28,52 +28,58 @@ class NominationRequestDataTable extends DataTable
                             'status'=>'approved',
                             'details_submitted'=>1,
                             'tf_bi_nomination_requests.beneficiary_id'=>$this->user_beneficiary_id,
-                            'is_set_for_final_submission'=>0
+                            'is_set_for_final_submission'=>0,
+                            'bi_submission_request_id'=>null
                         ];
 
         if ($this->organization != null){
             $query_filter['tf_bi_nomination_requests.organization_id'] = $this->organization->id;
         }
 
-        $all_commitee_stakeholders = [
-            'bi-astd-commitee-head',
-            'bi-tp-commitee-head',
-            'bi-ca-commitee-head',
-            'bi-tsas-commitee-head',
-            'bi-astd-commitee-member',
-            'bi-tp-commitee-member',
-            'bi-ca-commitee-member',
-            'bi-tsas-commitee-member'
+        $all_committee_members = [
+            'bi-astd-committee-member',
+            'bi-tp-committee-member',
+            'bi-ca-committee-member',
+            'bi-tsas-committee-member'
+        ];
+
+        $all_committee_heads = [
+            'bi-astd-committee-head',
+            'bi-tp-committee-head',
+            'bi-ca-committee-head',
+            'bi-tsas-committee-head',
         ];
 
         // addition filters to return newly submitted for respective dashboards
-        if (Auth()->user()->hasAnyRole($all_commitee_stakeholders) && !isset(request()->view_type)) {
-            $query_filter['is_average_commitee_members_check'] = 0;
+        if (Auth()->user()->hasAnyRole(array_merge($all_committee_heads, $all_committee_members)) && !isset(request()->view_type)) {
+            $query_filter['is_average_committee_members_check'] = 0;
             $query_filter['is_desk_officer_check'] = 1;
         } else if (Auth()->user()->hasAnyRole(['bi-head-of-institution']) && !isset(request()->view_type)) {
             $query_filter['is_head_of_institution_check'] = 0;
-            $query_filter['is_desk_officer_check_after_average_commitee_members_checked'] = 1;
+            $query_filter['is_desk_officer_check_after_average_committee_members_checked'] = 1;
         } else if (Auth()->user()->hasAnyRole(['bi-desk-officer']) && !isset(request()->view_type)) {
             $query_filter['is_desk_officer_check'] = 0;
         }
         
         // request filter for selected sub-menu button
         if (isset(request()->view_type) && !empty(request()->view_type)) {
-            if (request()->view_type == 'commitee_approved' && Auth()->user()->hasAnyRole(array_merge($all_commitee_stakeholders, ['bi-desk-officer']))) {
+            if (request()->view_type == 'committee_approved' && Auth()->user()->hasAnyRole(array_merge($all_committee_members, $all_committee_heads, ['bi-desk-officer']))) {
 
-                $query_filter['is_average_commitee_members_check'] = 1;
-                $query_filter['is_desk_officer_check_after_average_commitee_members_checked'] = 0;
+                $query_filter['is_average_committee_members_check'] = 1;
+                $query_filter['committee_head_checked_status'] = 'approved';
+                $query_filter['is_desk_officer_check_after_average_committee_members_checked'] = 0;
 
             } else if (request()->view_type == 'hoi_approved' && Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution'])) {
 
                 $query_filter['is_head_of_institution_check'] = 1;
                 $query_filter['head_of_institution_checked_status'] = 'approved';
+                $query_filter['is_set_for_final_submission'] = 0;
 
-            } else if (request()->view_type == 'final_nominations') {
+            }/* else if (request()->view_type == 'final_nominations') {
 
                 $query_filter['is_set_for_final_submission'] = 1;
 
-            }
+            }*/
         }
 
         // final query to be returned with respective filter(s) array
@@ -81,18 +87,20 @@ class NominationRequestDataTable extends DataTable
             ->with('nomination_committee_votes')
             ->with('submission_request')
             ->where($query_filter)
-            ->when((Auth()->user()->hasAnyRole($all_commitee_stakeholders) == true), function ($q) use ($all_commitee_stakeholders) {
+            ->when((Auth()->user()->hasAnyRole($all_committee_heads) == true), function ($q) {
+                return $q->where('is_average_committee_members_check', 0);
+            })
+            ->when((Auth()->user()->hasAnyRole($all_committee_members) == true), function ($q) {
                 
-                return $q->when((!isset(request()->view_type) || optional(request())->view_type!='commitee_approved'), function ($que) use ($all_commitee_stakeholders) {
-                        
-                    return $que->where('is_average_commitee_members_check', 0)
+                return $q->when((!isset(request()->view_type) || optional(request())->view_type!='committee_approved'), function ($que) {                        
+                    return $que->where('is_average_committee_members_check', 0)
                     ->whereDoesntHave('nomination_committee_votes', function($query) {
                         $query->where('user_id','=',auth()->user()->id);
                     });
 
                 });
-            })
-            ->when((Auth()->user()->hasRole('bi-desk-officer') == true), function ($q) {
+            });
+            /*->when((Auth()->user()->hasRole('bi-desk-officer') == true), function ($q) {
                 return $q->when((isset(request()->view_type) && request()->view_type=='final_nominations'), function ($que) {
                         return $que->where('is_set_for_final_submission', 1)
                             ->WhereHas('submission_request', function($query) {
@@ -100,7 +108,7 @@ class NominationRequestDataTable extends DataTable
                     });
 
                 });
-            });
+            });*/
     }
 
     /**

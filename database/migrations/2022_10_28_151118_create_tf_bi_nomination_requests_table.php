@@ -24,8 +24,10 @@ class CreateTfBiNominationRequestsTable extends Migration
             $table->string('status');
             $table->boolean('details_submitted')->default(0);
             $table->boolean('is_desk_officer_check')->default(0);
-            $table->boolean('is_average_commitee_members_check')->default(0);
-            $table->boolean('is_desk_officer_check_after_average_commitee_members_checked')->default(0);
+            $table->boolean('is_average_committee_members_check')->default(0);
+            $table->string('committee_head_checked_status')->nullable();
+            $table->text('committee_head_checked_comment')->nullable();
+            $table->boolean('is_desk_officer_check_after_average_committee_members_checked')->default(0);
             $table->boolean('is_head_of_institution_check')->default(0);
             $table->string('head_of_institution_checked_status')->nullable();
             $table->text('head_of_institution_checked_comment')->nullable();

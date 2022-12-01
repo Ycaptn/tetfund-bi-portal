@@ -330,9 +330,7 @@
                     // attachments
                     let = attachments_html = '';
                     $.each(response.data.attachments, function(key, attachment){
-                        let link = attachment.path;
-                        link = link.replace('public/', '');
-                        link = window.location.origin +'/'+ link;
+                        link = window.location.origin +'/tf-bi-portal/preview-attachement/'+attachment.id;
                         attachments_html += "<div class='col-sm-4'><small><a href='"+ link +"' target='__blank'>"+ attachment.label +"</a><br><i>"+ attachment.description +"</i></small></div>";
                     });
                     $('#nomination_request_attachments').html(attachments_html);
@@ -375,7 +373,7 @@
                         $(".spinner-committee_consideration").show();
                         $("#btn-committee_consideration").attr('disabled', true);
 
-                        let endPointUrl = "{{ route('tf-bi-portal-api.nomination_requests.process_approval_by_vote','') }}/"+itemId;
+                        let endPointUrl = "{{ route('tf-bi-portal-api.nomination_requests.process_committee_member_vote','') }}/"+itemId;
                         
                         let formData = new FormData();
                         formData.append('_token', $('input[name="_token"]').val());

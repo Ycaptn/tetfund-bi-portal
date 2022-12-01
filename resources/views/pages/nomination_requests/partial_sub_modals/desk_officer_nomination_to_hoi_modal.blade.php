@@ -237,9 +237,7 @@
                     // attachments
                     let = attachments_html = '';
                     $.each(response.data.attachments, function(key, attachment){
-                        let link = attachment.path;
-                        link = link.replace('public/', '');
-                        link = window.location.origin +'/'+ link;
+                        link = window.location.origin +'/tf-bi-portal/preview-attachement/'+attachment.id;
                         attachments_html += "<div class='col-sm-4'><small><a href='"+ link +"' target='__blank'>"+ attachment.label +"</a><br><i>"+ attachment.description +"</i></small></div>";
                     });
 
@@ -267,7 +265,7 @@
 
                 let itemId = $('#nomination_request_id').val();
                 let itemType = $('#nomination_type').val().toUpperCase()+'Nomination';
-                let column_to_update = 'is_desk_officer_check_after_average_commitee_members_checked';
+                let column_to_update = 'is_desk_officer_check_after_average_committee_members_checked';
 
                 swal({
                     title: "Are you sure you want to forward this " + itemType + " request to H.O.I for approval?",
