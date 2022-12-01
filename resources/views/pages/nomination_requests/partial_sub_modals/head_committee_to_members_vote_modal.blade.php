@@ -42,8 +42,6 @@
                             <input type="hidden" id="nomination_request_id" value="0">
                             <input type="hidden" id="nomination_type" value="">
                             
-                            <div class="offline-flag"><span class="offline-nomination_request">You are currently offline</span></div>
-
                             <div class="col-sm-12 mb-3 mt-3 text-justify" id="date_details_submitted"></div>
                             
                             <hr>
@@ -160,6 +158,91 @@
                     $("#spinner-committee-head-final").hide();
                     $("#btn-committee-head-final").attr('disabled', false);
                });
+            });
+
+            //process head committee final decision
+            $(document).on('click', "#btn-committee-head-final", function(e) {
+                e.preventDefault();
+                $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+                //check for internet status 
+                if (!window.navigator.onLine) {
+                    $('.offline-nomination_request').fadeIn(300);
+                    return;
+                }else{
+                    $('.offline-nomination_request').fadeOut(300);
+                }
+
+                let itemId = $('#nomination_request_id').val();
+                let itemType = $('#nomination_type').val().toUpperCase()+'Nomination';
+
+                swal({
+                    title: "Are you sure you want to save final decision in respect to this " + itemType + " request?",
+                    text: "You will not be able to revert this decision once completed.",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes decide",
+                    cancelButtonText: "No don't decide",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        $(".spinner-committee-head-final").show();
+                        $("#btn-committee-head-final").attr('disabled', true);
+
+                        let endPointUrl = "{{ route('tf-bi-portal-api.nomination_requests.process_committee_head_consideration','') }}/"+itemId;
+                        
+                        let formData = new FormData();
+                        formData.append('_token', $('input[name="_token"]').val());
+                        formData.append('_method', 'POST');
+                        formData.append('id', itemId);
+                        formData.append('decision', $('input[name=committee_head]:checked').val());
+                        formData.append('comment', $('#approval_notes').val());
+                        
+                        $.ajax({
+                            url:endPointUrl,
+                            type: "POST",
+                            data: formData,
+                            cache: false,
+                            processData:false,
+                            contentType: false,
+                            dataType: 'json',
+                            success: function(result){                                
+                                if(result.errors || (result.status && result.status == 'fail' && result.response)) {
+                                    $('#div_head_committee_to_members_vote_modal_error').html('');
+                                    $('#div_head_committee_to_members_vote_modal_error').show();
+                                    
+                                    let response_arr = (result.errors) ? result.errors : result.response;
+                                    $.each(response_arr, function(key, value){
+                                        $('#div_head_committee_to_members_vote_modal_error').append('<li class="">'+value+'</li>');
+                                    });
+
+                                    $(".spinner-committee-head-final").hide();
+                                    $("#btn-committee-head-final").attr('disabled', false);
+                                }else{
+                                    swal({
+                                        title: "Processed",
+                                        text: "Consideration for " + itemType + " request saved successfully",
+                                        type: "success",
+                                        confirmButtonClass: "btn-success",
+                                        confirmButtonText: "OK",
+                                        closeOnConfirm: false
+                                    });
+                                    location.reload(true);
+                                }
+                            }, error: function(data){
+                                console.log(data);
+                                swal("Error", "Oops an error occurred. Please try again.", "error");
+
+                                $(".spinner-committee-head-final").hide();
+                                $("#btn-committee-head-final").attr('disabled', false);
+
+                            }
+                        });
+                    }
+                });
+
             });
 
         });

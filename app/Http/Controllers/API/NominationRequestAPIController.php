@@ -321,21 +321,44 @@ class NominationRequestAPIController extends BaseController
             return self::createJSONResponse("fail","error",["Nomination Request is not found"],200);
         }
 
+        $current_user = auth()->user();
+
         //checking if user has role to vote
         $role_allowed = ['bi-'.strtolower($nominationRequest->type).'-committee-head'];
         if (!($current_user->hasAnyRole($role_allowed))) {
             return self::createJSONResponse("fail","error",["Current user doesn't has the role to make consideration"],200);
         }
 
-        $current_user = auth()->user();
+        // checking if any decision was made or selected
+        $fields_err = [];
+        if (!($request->has('decision')) || $request->decision == 'undefined') {
+            array_push($fields_err, "The Decision option must be selected.");
+        }
+        if (!($request->has('comment')) || $request->comment == null) {
+            array_push($fields_err, "The Comment input is required.");
+        }
+        if (($request->has('comment')) && $request->comment != null && strlen($request->comment) < 10) {
+            array_push($fields_err, "The Comment input must contain more than 10 characters.");
+        }
+        // return input fields errorrs
+        if (count($fields_err) > 0) {
+            return self::createJSONResponse("fail","error",$fields_err,200);
+        }
+
         $beneficiary_members = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
         //voters for nominee with approve status
-        $nomination_committee_voters = NominationCommitteeVotes::where([
-                    'beneficiary_id' => $committee_member_vote->beneficiary_id,
-                    'nomination_request_id' => $committee_member_vote->nomination_request_id,
+        $nomination_committee_voters_for = NominationCommitteeVotes::where([
+                    'beneficiary_id' => $beneficiary_members->beneficiary_id,
+                    'nomination_request_id' => $nominationRequest->id,
                     'approval_status' => true,
-                    'additional_param' => $committee_member_vote->additional_param,
+                ])->get();
+
+        //voters for nominee with declined status
+        $nomination_committee_voters_against = NominationCommitteeVotes::where([
+                    'beneficiary_id' => $beneficiary_members->beneficiary_id,
+                    'nomination_request_id' => $nominationRequest->id,
+                    'approval_status' => false,
                 ])->get();
 
         // possible roles allowed based on nomination
@@ -349,10 +372,26 @@ class NominationRequestAPIController extends BaseController
             ->get();
 
         // decide if this nomination has maximunm consideration for approval
-        if (count($nomination_committee_voters) >= (count($beneficiary_committee_members)/2)) {
-                $nominationRequest->is_average_committee_members_check = 1;
-                $nominationRequest->save();
+        if (count($nomination_committee_voters_for) < (count($beneficiary_committee_members)/2) && $request->decision == 'approved') {
+            $err_mgs = 'Only ' . strval(count($nomination_committee_voters_for)) . ' out of ' . strval(count($beneficiary_committee_members)) . ' committee member(s) considered the approval of this Nomination, the average consideration(s) required for committee\'s approval must be greater or equals average of ' . strval((count($beneficiary_committee_members)/2)) . ' member(s) for this action to be completed.';
+            return self::createJSONResponse("fail","error",[$err_mgs],200);
+        } elseif (count($nomination_committee_voters_against) < (count($beneficiary_committee_members)/2) && $request->decision == 'declined') {
+            $err_mgs = 'Only ' . strval(count($nomination_committee_voters_against)) . ' out of ' . strval(count($beneficiary_committee_members)) . ' committee member(s) supports declining this Nomination, the average consideration(s) required to decline must be greater or equals average of ' . strval((count($beneficiary_committee_members)/2)) . ' member(s) for this action to be completed.';
+            return self::createJSONResponse("fail","error",[$err_mgs],200);
         }
+    
+        $nominationRequest->is_average_committee_members_check = 1;
+        if ($request->decision == 'approved') {
+            $nominationRequest->committee_head_checked_status = 'approved';
+        } elseif ($request->comment == 'declined') {
+            $nominationRequest->committee_head_checked_status = 'declined';
+            $nominationRequest->status = 'declined';
+        }
+        $nominationRequest->committee_head_checked_comment = $request->comment;
+        $nominationRequest->save();
+
+        return $this->sendSuccess("Nomination Request Head of committee decision saved successfully");
+
     }
 
     // seleect nominee user by  email
