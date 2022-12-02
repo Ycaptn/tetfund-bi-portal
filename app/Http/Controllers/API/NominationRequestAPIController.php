@@ -345,40 +345,40 @@ class NominationRequestAPIController extends BaseController
             return self::createJSONResponse("fail","error",$fields_err,200);
         }
 
-        $beneficiary_members = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+        /*$beneficiary_members = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();*/
 
         //voters for nominee with approve status
-        $nomination_committee_voters_for = NominationCommitteeVotes::where([
+        /*$nomination_committee_voters_for = NominationCommitteeVotes::where([
                     'beneficiary_id' => $beneficiary_members->beneficiary_id,
                     'nomination_request_id' => $nominationRequest->id,
                     'approval_status' => true,
-                ])->get();
+                ])->get();*/
 
         //voters for nominee with declined status
-        $nomination_committee_voters_against = NominationCommitteeVotes::where([
+        /*$nomination_committee_voters_against = NominationCommitteeVotes::where([
                     'beneficiary_id' => $beneficiary_members->beneficiary_id,
                     'nomination_request_id' => $nominationRequest->id,
                     'approval_status' => false,
-                ])->get();
+                ])->get();*/
 
         // possible roles allowed based on nomination
-        $committee_member_role = ['bi-'.strtolower($nominationRequest->type).'-committee-member'];
+        /*$committee_member_role = ['bi-'.strtolower($nominationRequest->type).'-committee-member'];*/
 
         //all committee members for specific type of nomination
-        $beneficiary_committee_members = User::role($committee_member_role)
+        /*$beneficiary_committee_members = User::role($committee_member_role)
             ->join('tf_bi_beneficiary_members', 'tf_bi_beneficiary_members.beneficiary_user_id', 'fc_users.id')
             ->where('tf_bi_beneficiary_members.beneficiary_id', $beneficiary_members->beneficiary_id)
             ->select('fc_users.*', 'tf_bi_beneficiary_members.beneficiary_id')
-            ->get();
+            ->get();*/
 
         // decide if this nomination has maximunm consideration for approval
-        if (count($nomination_committee_voters_for) < (count($beneficiary_committee_members)/2) && $request->decision == 'approved') {
+        /*if (count($nomination_committee_voters_for) < (count($beneficiary_committee_members)/2) && $request->decision == 'approved') {
             $err_mgs = 'Only ' . strval(count($nomination_committee_voters_for)) . ' out of ' . strval(count($beneficiary_committee_members)) . ' committee member(s) considered the approval of this Nomination, the average consideration(s) required for committee\'s approval must be greater or equals average of ' . strval((count($beneficiary_committee_members)/2)) . ' member(s) for this action to be completed.';
             return self::createJSONResponse("fail","error",[$err_mgs],200);
         } elseif (count($nomination_committee_voters_against) < (count($beneficiary_committee_members)/2) && $request->decision == 'declined') {
             $err_mgs = 'Only ' . strval(count($nomination_committee_voters_against)) . ' out of ' . strval(count($beneficiary_committee_members)) . ' committee member(s) supports declining this Nomination, the average consideration(s) required to decline must be greater or equals average of ' . strval((count($beneficiary_committee_members)/2)) . ' member(s) for this action to be completed.';
             return self::createJSONResponse("fail","error",[$err_mgs],200);
-        }
+        }*/
     
         $nominationRequest->is_average_committee_members_check = 1;
         if ($request->decision == 'approved') {
