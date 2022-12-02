@@ -70,6 +70,6 @@ if($('#international_passport_bio_page_tp').get(0).files.length != 0){
 	formData.append('international_passport_bio_page', $('#international_passport_bio_page_tp')[0].files[0]);  
 }
 
-if($('#conference_attendence_letter_tp').get(0).files.length != 0){
+{{-- if($('#conference_attendence_letter_tp').get(0).files.length != 0){
 	formData.append('conference_attendence_letter', $('#conference_attendence_letter_tp')[0].files[0]);
-}
+} --}}
