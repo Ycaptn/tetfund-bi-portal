@@ -11,6 +11,7 @@ use Hasob\FoundationCore\Models\Organization;
 class NominationRequestDataTable extends DataTable
 {
     protected $organization;
+    protected $counter = 0;
 
     public function __construct(Organization $organization){
         $this->organization = $organization;
@@ -125,7 +126,7 @@ class NominationRequestDataTable extends DataTable
             ->parameters([
                 'dom'       => 'Bfrtip',
                 'stateSave' => true,
-                'order'     => [[2, 'desc']],
+                'order'     => [[3, 'desc']],
                 'buttons'   => [
                     ['extend' => 'print', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
                     ['extend' => 'reset', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
@@ -143,6 +144,7 @@ class NominationRequestDataTable extends DataTable
     {
         return [
             //['title'=>'Requested on', 'data'=>'full_name', 'name'=>'user.first_name' ],
+            ['title'=>'S/N','data'=>'sn', 'name'=>'user.email'],
             Column::make('full_name')->name('user.first_name'),
             Column::make('email')->name('user.email'),
             ['title'=>'Requested on','data'=>'created_at', 'name'=>'created_at' ],
@@ -158,6 +160,10 @@ class NominationRequestDataTable extends DataTable
     public function dataTable($query)
     {
         $dataTable = new EloquentDataTable($query);
+
+        $dataTable->addColumn('sn', function ($query) {
+            return $this->counter += 1;
+        });
 
         $dataTable->addColumn('full_name', function ($query) {
             if ($query->user->first_name != null && $query->user->last_name != null){

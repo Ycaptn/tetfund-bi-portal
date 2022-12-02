@@ -122,6 +122,30 @@ class NominationRequest extends Model
         return $this->hasOne(TPNomination::class, 'nomination_request_id', 'id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     **/
+    public function ca_submission()
+    {
+        //return $this->hasOne(TPNomination::class, 'nomination_request_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     **/
+    public function tsas_submission()
+    {
+        //return $this->hasOne(TPNomination::class, 'nomination_request_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function attachables()
+    {
+        return $this->hasMany(EloquentAttachable::class, 'attachable_id', 'id');
+    }
+
     // get specific attachement for a nomination request
     public static function get_specific_attachment($nomination_request_id, $item_label) {
         $nomination_request = self::find($nomination_request_id);

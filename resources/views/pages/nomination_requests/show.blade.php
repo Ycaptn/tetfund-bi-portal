@@ -67,7 +67,16 @@ Nomination Request Details {{-- {{$nominationRequest->title}} --}}
                             {{ ($nominationRequest->user->email) }} <br/>
                         <i class="fa fa-bank fa-fw"></i><b>Nomination Type : </b> {{ ucwords($nomination_type_str) }} Nomination <br/>
                         
-                        <i class="fa fa-thumbs-up fa-fw"></i><b>Nomination Current Status:</b> {{ (!empty($nominationRequest->status)) ? strtoupper($nominationRequest->status) : 'N/A' }}<br/><br/> 
+                        <i class="fa fa-thumbs-up fa-fw"></i><b>Nomination Current Status:</b> 
+                            @if($nominationRequest->status == 'approved' && $nominationRequest->head_of_institution_checked_status == 'approved')
+                                Considered for Submission
+                            @elseif($nominationRequest->status == 'declined' || $nominationRequest->head_of_institution_checked_status == 'declined')
+                                Nomination Detials Rejected
+                            @else
+                                Pending Consideration
+                            @endif   
+
+                        <br/><br/> 
                     </div>
                 </div>
 

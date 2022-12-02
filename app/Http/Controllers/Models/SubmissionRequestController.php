@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Models;
 
 use App\Models\SubmissionRequest;
+use App\Models\NominationRequest;
 
 use App\Events\SubmissionRequestCreated;
 use App\Events\SubmissionRequestUpdated;
@@ -211,7 +212,10 @@ class SubmissionRequestController extends BaseController
             return redirect(route('tf-bi-portal.submissionRequests.index'));
         }
 
-        if(auth()->user()->hasRole('bi-desk-officer') == false) {
+        $current_user = auth()->user();
+        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+
+        if($current_user->hasRole('bi-desk-officer') == false) {
             return redirect()->back()->with('error', 'Please, Kindly Contact the Institution TETFund Desk Officer, as only them has the Privilege to Submit This Request');
         }
         
@@ -276,9 +280,28 @@ class SubmissionRequestController extends BaseController
         $submission_attachment_array = $submissionRequest->get_all_attachments($input['submission_request_id']);
         $pay_load['submission_attachment_array'] = $submission_attachment_array;
 
-        /*add nomination details to payload*/
-        // $final_nominations_arr = array();
-        // $payload['final_nominations_arr'] = $final_nominations_arr;
+        // add nomination details and attachements to payload
+        $intervention_names_arr = explode(' ', strtolower(optional($request)->intervention_name));
+        $nomination_table = '';
+        if (in_array('astd', $intervention_names_arr) == true) {
+            $nomination_table = 'astd_submission';
+        } else if (in_array('tp', $intervention_names_arr) == true) {
+            $nomination_table = 'tp_submission';
+        } else if (in_array('ca', $intervention_names_arr) == true) {
+            $nomination_table = 'ca_submission';
+        } else if (in_array('tsas', $intervention_names_arr) == true) {
+            $nomination_table = 'tsas_submission';
+        }
+
+        $final_nominations_arr = NominationRequest::with($nomination_table)
+                ->with('attachables.attachment')
+                ->where('bi_submission_request_id', null)
+                ->where('beneficiary_id', $beneficiary_member->beneficiary_id)
+                ->whereIn('type', $intervention_names_arr)
+                ->where('head_of_institution_checked_status', 'approved')
+                ->get();
+        $pay_load['final_nominations_arr'] = $final_nominations_arr;
+        $pay_load['nomination_table'] = $nomination_table;
 
         $tETFundServer = new TETFundServer();   /* server class constructor */
         $final_submission_to_tetfund = $tETFundServer->processSubmissionRequest($pay_load, $tf_beneficiary_id);
@@ -354,6 +377,7 @@ class SubmissionRequestController extends BaseController
         if(isset($request->sub_menu_items) && $request->sub_menu_items == 'nominations_binded') {
              return $binded_nominations_dataTable
                     ->with('user_beneficiary', $beneficiary)
+                    ->with('intervention_names_arr', explode(' ', strtolower($intervention_types_server_response->name)))
                     ->render('pages.submission_requests.show', [
                         'intervention' => $intervention_types_server_response,
                         'submissionRequest' => $submissionRequest,

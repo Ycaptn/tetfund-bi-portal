@@ -74,6 +74,7 @@ class BindedNominationsDataTable extends DataTable
         if ($this->organization != null){
             return $model->newQuery()->with('user')
                     ->where('beneficiary_id', $this->user_beneficiary->id)
+                    ->whereIn('type', $this->intervention_names_arr)
                     ->where('head_of_institution_checked_status', 'approved')
                     ->where('bi_submission_request_id', null)
                     ->where("organization_id", $this->organization->id);
@@ -81,6 +82,7 @@ class BindedNominationsDataTable extends DataTable
         
         return $model->newQuery()->with('user')
                     ->where('beneficiary_id', $this->user_beneficiary->id)
+                    ->whereIn('type', $this->intervention_names_arr)
                     ->where('head_of_institution_checked_status', 'approved')
                     ->where('bi_submission_request_id', null);
     }

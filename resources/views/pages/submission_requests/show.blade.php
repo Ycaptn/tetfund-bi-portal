@@ -120,6 +120,7 @@ Submission Request
                             @csrf
                             <input type="hidden" name="submission_request_id" value="{{ $submissionRequest->id }}">
                             <input type="hidden" name="checklist_items_count" value="{{ count($checklist_items) }}">
+                            <input type="hidden" name="intervention_name" value="{{ $intervention->name }}">
                             <input type="submit" class="btn btn-sm btn-danger pull-right" value="Submit This Request"> 
                         </form>
                     </div>

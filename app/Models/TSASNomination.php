@@ -32,7 +32,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
-class ASTDNomination extends Model {
+class TSASNomination extends Model {
     use GuidId;
     use OrganizationalConstraint;
     
@@ -40,7 +40,7 @@ class ASTDNomination extends Model {
 
     use HasFactory;
 
-    public $table = 'tf_bi_astd_nominations';
+    public $table = 'tf_bi_tsas_nominations';
     
 
     protected $dates = ['deleted_at'];
@@ -71,26 +71,23 @@ class ASTDNomination extends Model {
         'intl_passport_number',
         'bank_verification_number',
         'national_id_number',
-        'degree_type',
-        'program_title',
-        'program_type',
-        'is_science_program',
-        'program_start_date',
-        'program_end_date',
-        'fee_amount',
-        'tuition_amount',
-        'upgrade_fee_amount',
-        'stipend_amount',
+        'organizer_name',
+        'conference_theme',
+        'accepted_paper_title',
+        'attendee_department_name',
+        'attendee_grade_level',
+        'has_paper_presentation',
+        'is_academic_staff',
+        'conference_start_date',
+        'conference_end_date',
+        'conference_fee_amount',
+        'conference_fee_amount_local',
+        'dta_amount',
+        'local_runs_amount',
         'passage_amount',
-        'medical_amount',
-        'warm_clothing_amount',
-        'study_tours_amount',
-        'education_materials_amount',
-        'thesis_research_amount',
         'final_remarks',
         'total_requested_amount',
-        'total_approved_amount',
-        'type_of_nomination'
+        'total_approved_amount'
     ];
 
     /**
@@ -116,25 +113,22 @@ class ASTDNomination extends Model {
         'intl_passport_number' => 'string',
         'bank_verification_number' => 'string',
         'national_id_number' => 'string',
-        'degree_type' => 'string',
-        'program_title' => 'string',
-        'program_type' => 'string',
-        'is_science_program' => 'boolean',
-        'program_duration_months' => 'integer',
-        'fee_amount' => 'decimal:2',
-        'tuition_amount' => 'decimal:2',
-        'upgrade_fee_amount' => 'decimal:2',
-        'stipend_amount' => 'decimal:2',
+        'organizer_name' => 'string',
+        'conference_theme' => 'string',
+        'accepted_paper_title' => 'string',
+        'attendee_department_name' => 'string',
+        'attendee_grade_level' => 'string',
+        'has_paper_presentation' => 'boolean',
+        'is_academic_staff' => 'boolean',
+        'conference_duration_days' => 'integer',
+        'conference_fee_amount' => 'decimal:2',
+        'conference_fee_amount_local' => 'decimal:2',
+        'dta_amount' => 'decimal:2',
+        'local_runs_amount' => 'decimal:2',
         'passage_amount' => 'decimal:2',
-        'medical_amount' => 'decimal:2',
-        'warm_clothing_amount' => 'decimal:2',
-        'study_tours_amount' => 'decimal:2',
-        'education_materials_amount' => 'decimal:2',
-        'thesis_research_amount' => 'decimal:2',
         'final_remarks' => 'string',
         'total_requested_amount' => 'decimal:2',
-        'total_approved_amount' => 'decimal:2',
-        'type_of_nomination' => 'string'
+        'total_approved_amount' => 'decimal:2'
     ];
 
 
@@ -161,5 +155,6 @@ class ASTDNomination extends Model {
     {
         return $this->belongsTo(NominationRequest::class, 'nomination_request_id', 'id');
     }
+
 
 }

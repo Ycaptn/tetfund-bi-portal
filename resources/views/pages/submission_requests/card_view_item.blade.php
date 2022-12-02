@@ -40,7 +40,18 @@
                 <div class="card-body">
                     <a href='{{$detail_page_url}}'>
                         <h3 class="h6 card-title mb-0">
-                            {{ $data_item->title }} @if(empty($data_item->status)==false) || {!! strtoupper($data_item->status) !!}@endif
+                            {{ $data_item->title }}
+                            @if(empty($data_item->status)==false) || 
+                                @if($data_item->status == 'not-submitted')
+                                    <span class="text-danger">
+                                        {!! strtoupper($data_item->status) !!}
+                                    </span>
+                                @else
+                                    <span class="">
+                                        {!! strtoupper($data_item->status) !!}
+                                    </span>
+                                @endif
+                            @endif
                         </h3>
                     </a>
                     @if (!empty($data_item->amount_requested))
