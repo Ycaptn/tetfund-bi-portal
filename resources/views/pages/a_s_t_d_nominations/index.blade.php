@@ -14,16 +14,28 @@ All A S T D Nomination
 @section('page_title_suffix')
     @if(isset(request()->view_type))
         @if(request()->view_type == 'committee_approved')
-            Committee Approved
+            @if($current_user->hasRole('bi-desk-officer'))
+                Committee Considered Nomination
+            @else
+                Committee Approved
+            @endif
         @elseif(request()->view_type == 'hoi_approved')
-            HOI Approved
-        @elseif(request()->view_type == 'final_nominations')
-            Binded Nomination
-        @else
-            Newly Submitted
+            @if($current_user->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution' ]))
+                Approved Nomination
+            @endif
+        @elseif(request()->view_type == 'committee_head_consideration')
+            @if($current_user->hasRole('bi-astd-committee-head'))
+                Considered Nomination
+            @endif
         @endif
     @else
-        Newly Submitted
+        @if($current_user->hasRole('bi-desk-officer'))
+            Newly Submitted
+        @elseif($current_user->hasRole('bi-head-of-institution'))
+            Nomination Approval
+        @elseif($current_user->hasRole('bi-astd-committee-member'))
+            Nomination Consideration
+        @endif
     @endif
 @stop
 
@@ -55,29 +67,62 @@ All A S T D Nomination
             <div class="table-responsive">
                 <p>
                     <div class="col-sm-12">
-                        @if ($current_user->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution', 'bi-astd-committee-head', 'bi-astd-committee-member']))
+                        @if($current_user->hasRole('bi-desk-officer'))
 
+                        {{-- appears for desk officer to preview newly submitted nomination --}}
                             <a  href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}"
                                 class="btn btn-sm btn-primary"
-                                title="Preview newly submitted nomination details by scholars" >
-                                Newly Submitted {{($current_user->hasAnyRole(['bi-astd-committee-head', 'bi-astd-committee-member'])) ? '|| Approval Zone' : ''}}
+                                title="Preview newly submitted nomination details by Scholars" >
+                                Newly Submitted
                             </a>
 
-                            @if ($current_user->hasAnyRole(['bi-desk-officer', 'bi-astd-committee-head', 'bi-astd-committee-member']))
-                                <a  href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}?view_type=committee_approved"
-                                    class="btn btn-sm btn-primary me-2"
-                                    title="Preview ASTD Nomination(s) that have been Considered by ASTD Committee" >
-                                    Committee Considered
-                                </a>
-                            @endif
+                        {{-- appears for desk officer to preview committee considered nomination --}}
+                            <a  href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}?view_type=committee_approved"
+                                class="btn btn-sm btn-primary"
+                                title="Preview ASTD Nomination(s) that have been Considered by ASTD Committee" >
+                                Committee Considered Nomination
+                            </a>
 
-                            @if ($current_user->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution']))
-                                <a  href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}?view_type=hoi_approved"
-                                    class="btn btn-sm btn-primary me-2"
-                                    title="Preview ASTD Nomination(s) that have been Considered by Head of Institution" >
-                                    HOI Approved
-                                </a>
-                            @endif
+                        {{-- desk officer and HOI to preview finally approved nomination by HOI --}}
+                            <a  href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}?view_type=hoi_approved"
+                                class="btn btn-sm btn-primary"
+                                title="Preview ASTD Nomination(s) that have been considered approved by Head of Institution" >
+                                Approved Nomination
+                            </a>
+                        @endif
+
+                        @if ($current_user->hasAnyRole(['bi-astd-committee-member', 'bi-astd-committee-head']))
+                            {{-- appears for all astd commitee me to preview newly submitted nomination --}}
+                            <a  href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}"
+                                class="btn btn-sm btn-primary"
+                                title="Preview ASTD Nomination(s) forwarded by Desk-Officer and provide your consideration feedback to ASTDNomination committee head" >
+                                Nomination Consideration
+                            </a> 
+                        @endif
+
+                        @if ($current_user->hasRole('bi-astd-committee-head'))
+                            {{-- appears for all astd commitee head and decide final consideration state --}}
+                            <a  href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}?view_type=committee_head_consideration"
+                                class="btn btn-sm btn-primary"
+                                title="Preview ASTD Nomination(s) forwarded by Desk-Officer and take find decision on behalf of ASTDNomination committee" >
+                                Considered Nomination
+                            </a> 
+                        @endif
+
+                        @if($current_user->hasRole('bi-head-of-institution'))
+                            {{-- appeear so HOI can approve nomnations --}}
+                            <a  href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}"
+                                class="btn btn-sm btn-primary"
+                                title="Preview and manage Nomination request pending Head of Institution approval" >
+                                Nomination Approval
+                            </a>
+
+                            {{-- appears to show all approved nominations --}}
+                             <a  href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}?view_type=hoi_approved"
+                                class="btn btn-sm btn-primary"
+                                title="Preview ASTD Nomination(s) that have been considered approved by Head of Institution" >
+                                Approved Nomination
+                            </a>
                         @endif
                     </div>
                 </p>
@@ -90,7 +135,7 @@ All A S T D Nomination
 
     @include('tf-bi-portal::pages.a_s_t_d_nominations.modal')
     
-    @if(auth()->user()->hasRole('bi-desk-officer'))
+    @if($current_user->hasRole('bi-desk-officer'))
         @if(!isset(request()->view_type))
             @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_to_committee_modal')
         @endif
@@ -98,21 +143,25 @@ All A S T D Nomination
         @if(isset(request()->view_type) && request()->view_type == 'committee_approved')
             @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_to_hoi_modal')
         @endif
+
+        @if(isset(request()->view_type) && request()->view_type == 'hoi_approved')
+            @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.hoi_approval_for_nomination_modal')
+        @endif
         
     @endif
 
     {{-- include approval by voting if user is an astd committee menber --}}
-    @if (auth()->user()->hasRole('bi-astd-committee-member'))
+    @if ($current_user->hasRole('bi-astd-committee-member'))
         @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.committee_approval_for_nomination_modal')
     @endif
 
     {{-- include astd commitee head to check committee menber --}}
-    @if (auth()->user()->hasRole('bi-astd-committee-head'))
+    @if ($current_user->hasRole('bi-astd-committee-head'))
         @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.head_committee_to_members_vote_modal')
     @endif
 
     {{-- include approval for Head of Institution --}}
-    @if (auth()->user()->hasRole('bi-head-of-institution'))
+    @if ($current_user->hasRole('bi-head-of-institution'))
         @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.hoi_approval_for_nomination_modal')
     @endif
 
