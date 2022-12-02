@@ -189,31 +189,31 @@
 </div>
 
 <!-- Degree Type Field -->
-<div id="div-degree_type_tp" class="form-group mb-3 col-md-6 col-lg-4">
+{{-- <div id="div-degree_type_tp" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="degree_type_tp" class="col-sm-11 col-form-label">Degree Type:</label>
     <div class="col-sm-12">
         {!! Form::text('degree_type_tp', null, ['id'=>'degree_type_tp', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
     </div>
-</div>
+</div> --}}
 
 <!-- Program Title Field -->
-<div id="div-program_title_tp" class="form-group mb-3 col-md-6 col-lg-4">
+{{-- <div id="div-program_title_tp" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="program_title_tp" class="col-sm-12 col-form-label">Program Title:</label>
     <div class="col-sm-12">
         {!! Form::text('program_title_tp', null, ['id'=>'program_title_tp', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
     </div>
-</div>
+</div> --}}
 
 <!-- Program Type Field -->
-<div id="div-program_type_tp" class="form-group mb-3 col-md-6 col-lg-4">
+{{-- <div id="div-program_type_tp" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="program_type_tp" class="col-sm-12 col-form-label">Program Type:</label>
     <div class="col-sm-12">
         {!! Form::text('program_type_tp', null, ['id'=>'program_type_tp', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
     </div>
-</div>
+</div> --}}
 
 <!-- Is Science Program Field -->
-<div id="div-is_science_program_tp" class="form-group mb-3 col-md-4 col-lg-4">
+{{-- <div id="div-is_science_program_tp" class="form-group mb-3 col-md-4 col-lg-4">
     <label for="is_science_program_tp" class="col-sm-12 col-form-label">Is Science Program ? </label>
     <div class="col-sm-12">
         <select name="is_science_program_tp" id="is_science_program_tp" class="form-select">
@@ -222,7 +222,7 @@
             <option value="0">No</option>
         </select>
     </div>
-</div>
+</div> --}}
 
 <!-- Program Start Date Field -->
 <div id="div-program_start_date_tp" class="form-group mb-3 col-md-4 col-lg-4">
@@ -282,12 +282,12 @@
 </div>
 
 <!-- conference attendence letter -->
-<div id="div-conference_attendence_letter_tp" class="form-group  col-md-6">
+{{-- <div id="div-conference_attendence_letter_tp" class="form-group  col-md-6">
     <label for="conference_attendence_letter_tp" class="col-sm-11 col-form-label">Conference Attendance Letter:</label>
     <div class="col-sm-12">
         <input type="file" id="conference_attendence_letter_tp" name="conference_attendence_letter_tp" class="form-control">
     </div>
-</div>
+</div> --}}
 
 {{-- <!-- Start Fee Amount Field -->
 <div id="div-fee_amount" class="form-group mb-3 col-md-6">

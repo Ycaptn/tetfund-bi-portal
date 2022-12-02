@@ -6,8 +6,8 @@
         <a data-toggle="tooltip" 
             title="Preview and forward Nomination details to TPNomination Committee" 
             data-val='{{$id}}'
-            class="btn-show-preview-nomination text-primary" href="#">
-            <i class="fa fa-paper-plane" style="opacity:80%"></i> <span>Manage</span>
+            class="btn-show-preview-nomination btn btn-info btn-sm text-white" href="#">
+            <i class="fa fa-paper-plane" style="opacity:80%"></i> <span>Move for Consideration</span>
         </a>
     @endif
 
@@ -16,8 +16,8 @@
         <a data-toggle="tooltip" 
             title="TPNomination Committee Consideration Approval Zone" 
             data-val='{{$id}}'
-            class="btn-committee-vote-modal text-primary" href="#">
-            <i class="fa fa-check-square style="opacity:80%"></i> <span>Consideration</span>
+            class="btn-committee-vote-modal btn btn-info btn-sm text-white" href="#">
+            <span class=""><i class="fa fa-check-square style="opacity:80%"></i> Consideration</span>
         </a> &nbsp; &nbsp;
     @endif
 
@@ -26,8 +26,8 @@
         <a data-toggle="tooltip" 
             title="TPNomination committee head manage and finalizing consideration" 
             data-val='{{$id}}'
-            class="btn-committee-head-modal text-primary" href="#">
-            <i class="fa fa-paper-plane style="opacity:80%"></i> <span>Committee</span>
+            class="btn-committee-head-modal btn btn-info btn-sm text-white" href="#">
+            <i class="fa fa-paper-plane style="opacity:80%"></i> <span>Nomination Decision</span>
         </a>
     @endif
 
