@@ -60,7 +60,7 @@ All T P Nomination
                             <a  href="{{ route('tf-bi-portal.t_p_nominations.index') }}"
                                 class="btn btn-sm btn-primary"
                                 title="Preview newly submitted nomination details by scholars" >
-                                Newly Submitted {{($current_user->hasAnyRole(['bi-tp-committee-head', 'bi-tp-committee-member'])) ? '|| Approval Zone' : ''}}
+                                Newly Submitted {{--  {{($current_user->hasAnyRole(['bi-tp-committee-head', 'bi-tp-committee-member'])) ? '|| Approval Zone' : ''}} --}}
                             </a>
 
                             @if ($current_user->hasAnyRole(['bi-desk-officer', 'bi-tp-committee-head', 'bi-tp-committee-member']))
@@ -106,8 +106,8 @@ All T P Nomination
         @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.committee_approval_for_nomination_modal')
     @endif
 
-    {{-- include astd commitee head to check committee menber --}}
-    @if (auth()->user()->hasRole('bi-astd-committee-head'))
+    {{-- include tp commitee head to check committee menber --}}
+    @if (auth()->user()->hasRole('bi-tp-committee-head'))
         @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.head_committee_to_members_vote_modal')
     @endif
 
