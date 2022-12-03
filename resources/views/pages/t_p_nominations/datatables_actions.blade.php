@@ -47,7 +47,7 @@
             title="Preview and forward TPNomination details to Head of Institution" 
             data-val='{{$id}}'
             class="btn-show-preview-nomination_to_hoi btn btn-info btn-sm text-white" href="#">
-            <i class="fa fa-paper-plane" style="opacity:80%"></i> <span>Manage</span>
+            <i class="fa fa-paper-plane" style="opacity:80%"></i> <span>Move for Approval</span>
         </a>
     @endif
 
