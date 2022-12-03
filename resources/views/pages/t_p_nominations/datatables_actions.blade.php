@@ -12,7 +12,7 @@
     @endif
 
     {{-- appears to all tp committee members when they need to make their individual decisions --}}
-    @if($is_desk_officer_check==1 && $is_average_committee_members_check==0 && auth()->user()->hasRole('bi-tp-committee-member') && !isset(request()->view_type))
+    @if($is_desk_officer_check==1 && $is_average_committee_members_check==0 && auth()->user()->hasAnyRole(['bi-tp-committee-head', 'bi-tp-committee-member']) && !isset(request()->view_type))
         <a data-toggle="tooltip" 
             title="TPNomination Committee Consideration Approval Zone" 
             data-val='{{$id}}'

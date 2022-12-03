@@ -151,7 +151,7 @@ All A S T D Nomination
     @endif
 
     {{-- include approval by voting if user is an astd committee menber --}}
-    @if ($current_user->hasRole('bi-astd-committee-member'))
+    @if ($current_user->hasAnyRole(['bi-astd-committee-head', 'bi-astd-committee-member']))
         @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.committee_approval_for_nomination_modal')
     @endif
 

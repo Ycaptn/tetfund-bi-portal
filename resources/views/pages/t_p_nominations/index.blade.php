@@ -151,7 +151,7 @@ All T P Nomination
     @endif
 
     {{-- include approval by voting if user is an tp committee menber --}}
-    @if ($current_user->hasRole('bi-tp-committee-member'))
+    @if ($current_user->hasAnyRole(['bi-tp-committee-head', 'bi-tp-committee-member']))
         @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.committee_approval_for_nomination_modal')
     @endif
 

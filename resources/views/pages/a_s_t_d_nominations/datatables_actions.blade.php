@@ -12,7 +12,7 @@
     @endif
 
     {{-- appears to all astd committee members when they need to make their individual decisions --}}
-    @if($is_desk_officer_check==1 && $is_average_committee_members_check==0 && auth()->user()->hasRole('bi-astd-committee-member') && !isset(request()->view_type))
+    @if($is_desk_officer_check==1 && $is_average_committee_members_check==0 && auth()->user()->hasAnyRole(['bi-astd-committee-head', 'bi-astd-committee-member']) && !isset(request()->view_type))
         <a data-toggle="tooltip" 
             title="ASTDNomination Committee Consideration Approval Zone" 
             data-val='{{$id}}'

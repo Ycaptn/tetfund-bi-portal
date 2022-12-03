@@ -269,16 +269,16 @@ class NominationRequestAPIController extends BaseController
             array_push($fields_err, "The Decision Comment input is required.");
         }
         
-        if (($request->has('comment')) && $request->comment != null && strlen($request->comment) < 10) {
+        /*if (($request->has('comment')) && $request->comment != null && strlen($request->comment) < 10) {
             array_push($fields_err, "The Decision Comment input must contain more than 10 characters.");
-        }
+        }*/
 
         if (count($fields_err) > 0) {
             return self::createJSONResponse("fail","error",$fields_err,200);
         }
 
         //checking if user has role to vote
-        $role_allowed = ['bi-'.strtolower($nominationRequest->type).'-committee-member'];
+        $role_allowed = ['bi-'.strtolower($nominationRequest->type).'-committee-member', 'bi-'.strtolower($nominationRequest->type).'-committee-head'];
         if (!($current_user->hasAnyRole($role_allowed))) {
             return self::createJSONResponse("fail","error",["Current user doesn't has the role to make consideration"],200);
         }
@@ -337,9 +337,9 @@ class NominationRequestAPIController extends BaseController
         if (!($request->has('comment')) || $request->comment == null) {
             array_push($fields_err, "The Comment input is required.");
         }
-        if (($request->has('comment')) && $request->comment != null && strlen($request->comment) < 10) {
+        /*if (($request->has('comment')) && $request->comment != null && strlen($request->comment) < 10) {
             array_push($fields_err, "The Comment input must contain more than 10 characters.");
-        }
+        }*/
         // return input fields errorrs
         if (count($fields_err) > 0) {
             return self::createJSONResponse("fail","error",$fields_err,200);
@@ -479,9 +479,9 @@ class NominationRequestAPIController extends BaseController
             array_push($fields_err, "The Comment input is required.");
         }
         
-        if (($request->has('comment')) && $request->comment != null && strlen($request->comment) < 10) {
+        /*if (($request->has('comment')) && $request->comment != null && strlen($request->comment) < 10) {
             array_push($fields_err, "The Comment input must contain more than 10 characters.");
-        }
+        }*/
 
         if (count($fields_err) > 0) {
             return self::createJSONResponse("fail","error",$fields_err,200);
