@@ -300,7 +300,7 @@ class SubmissionRequestController extends BaseController
         $final_nominations_arr = NominationRequest::with($nomination_table)
                 ->with('attachables.attachment')
                 ->where('bi_submission_request_id', null)
-                //->where('beneficiary_id', $beneficiary_member->beneficiary_id)
+                ->where('beneficiary_id', $beneficiary_member->beneficiary_id)
                 ->where('type', $intervention_name)
                 ->where('head_of_institution_checked_status', 'approved')
                 ->get();
