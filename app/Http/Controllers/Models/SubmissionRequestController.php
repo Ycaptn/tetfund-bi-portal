@@ -281,23 +281,27 @@ class SubmissionRequestController extends BaseController
         $pay_load['submission_attachment_array'] = $submission_attachment_array;
 
         // add nomination details and attachements to payload
-        $intervention_names_arr = explode(' ', strtolower(optional($request)->intervention_name));
+        $intervention_name = '';
         $nomination_table = '';
-        if (in_array('astd', $intervention_names_arr) == true) {
+        if (str_contains(strtolower(optional($request)->intervention_name), 'academic staff training')) {
+            $intervention_name = 'astd';
             $nomination_table = 'astd_submission';
-        } else if (in_array('tp', $intervention_names_arr) == true) {
+        } elseif (str_contains(strtolower(optional($request)->intervention_name), 'teaching practice')) {
+            $intervention_name = 'tp';
             $nomination_table = 'tp_submission';
-        } else if (in_array('ca', $intervention_names_arr) == true) {
+        } elseif (str_contains(strtolower(optional($request)->intervention_name), 'conference attendance')) {
+            $intervention_name = 'ca';
             $nomination_table = 'ca_submission';
-        } else if (in_array('tsas', $intervention_names_arr) == true) {
+        } elseif (str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) {
+            $intervention_name = 'tsas';
             $nomination_table = 'tsas_submission';
         }
 
         $final_nominations_arr = NominationRequest::with($nomination_table)
                 ->with('attachables.attachment')
                 ->where('bi_submission_request_id', null)
-                ->where('beneficiary_id', $beneficiary_member->beneficiary_id)
-                ->whereIn('type', $intervention_names_arr)
+                //->where('beneficiary_id', $beneficiary_member->beneficiary_id)
+                ->where('type', $intervention_name)
                 ->where('head_of_institution_checked_status', 'approved')
                 ->get();
         $pay_load['final_nominations_arr'] = $final_nominations_arr;
@@ -373,11 +377,22 @@ class SubmissionRequestController extends BaseController
         //Get the funding data and total_funds for the selected intervention year(s).
         $tETFundServer = new TETFundServer();   /* server class constructor */
         $submission_allocations = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
+        
+        $intervention_name = '';
+        if (str_contains(strtolower($intervention_types_server_response->name), 'academic staff training')) {
+            $intervention_name = 'astd';
+        } elseif (str_contains(strtolower($intervention_types_server_response->name), 'teaching practice')) {
+            $intervention_name = 'tp';
+        } elseif (str_contains(strtolower($intervention_types_server_response->name), 'conference attendance')) {
+            $intervention_name = 'ca';
+        } elseif (str_contains(strtolower($intervention_types_server_response->name), 'tetfund scholarship')) {
+            $intervention_name = 'tsas';
+        }
 
         if(isset($request->sub_menu_items) && $request->sub_menu_items == 'nominations_binded') {
              return $binded_nominations_dataTable
                     ->with('user_beneficiary', $beneficiary)
-                    ->with('intervention_names_arr', explode(' ', strtolower($intervention_types_server_response->name)))
+                    ->with('intervention_name', $intervention_name)
                     ->render('pages.submission_requests.show', [
                         'intervention' => $intervention_types_server_response,
                         'submissionRequest' => $submissionRequest,
