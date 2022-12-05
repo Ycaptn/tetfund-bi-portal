@@ -274,7 +274,7 @@ class SubmissionRequestController extends BaseController
         $pay_load['_method'] = 'POST';
         $pay_load['is_aip_request'] = true;
         $pay_load['requested_tranche'] = 'AIP';
-        $pay_load['title'] = 'funding AIP request';
+        //$pay_load['title'] = 'funding AIP request';
 
         // add attachment records to payload
         $submission_attachment_array = $submissionRequest->get_all_attachments($input['submission_request_id']);
