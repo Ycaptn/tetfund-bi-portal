@@ -33,7 +33,7 @@ class CreateTPNominationAPIRequest extends AppBaseFormRequest
             //'institution_id' => 'required|exists:tf_astd_institutions,id',
             //'country_id' => 'required|exists:tf_astd_countries,id',
             'tf_iterum_portal_institution_id' => 'required|uuid',
-            'gender' => "required|string|max:50|in:". implode(['male', 'female'], ','),
+            'gender' => "nullable|string|max:50",//|in:". implode(['male', 'female'], ','),
             'name_title' => 'required|string|max:50',
             'first_name' => 'required|string|max:100',
             'middle_name' => 'nullable|string|max:100',
