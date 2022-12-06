@@ -317,7 +317,7 @@ class BeneficiaryAPIController extends AppBaseController
                         "last_name" => 'Desk-Officer',
                         'organization_id' => auth()->user()->organization_id,
                         //'organization_id' => $get_server_beneficiary->organization_id,
-                        "gender" => 'Male',
+                        "gender" => 'male',
                         'beneficiary_bi_id' => $beneficiary_obj->id,
                         'beneficiary_tetfund_iterum_id' => $get_server_beneficiary->id,
                         'beneficiary_synchronization' => true

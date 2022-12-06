@@ -34,7 +34,7 @@ class CreateASTDNominationAPIRequest extends AppBaseFormRequest
             //'country_id' => 'required|exists:tf_astd_countries,id',
             'tf_iterum_portal_institution_id' => 'required|uuid',
             'tf_iterum_portal_country_id' => 'required|uuid',
-            'gender' => "required|string|max:50|in:". implode(['Male', 'Female'], ','),
+            'gender' => "required|string|max:50|in:". implode(['male', 'female'], ','),
             'name_title' => 'nullable|string|max:50',
             'first_name' => 'required|string|max:100',
             'middle_name' => 'nullable|string|max:100',

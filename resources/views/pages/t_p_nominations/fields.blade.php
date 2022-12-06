@@ -87,7 +87,7 @@
 <hr>
 
 <!-- Institution Field -->
-<div id="div-institution_id_select_tp" class="form-group mb-3 col-md-6">
+<div id="div-institution_id_select_tp" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="institution_id_select_tp" class="col-sm-11 col-form-label">Institution:</label>
     <div class="col-sm-12">
         <select id="institution_id_select_tp" class="form-select">
@@ -101,36 +101,22 @@
     </div>
 </div>
 
-<!-- Country Field -->
-<div id="div-country_id_select_tp" class="form-group mb-3 col-md-6">
-    <label for="country_id_select_tp" class="col-sm-11 col-form-label">Country:</label>
+<!-- Name Title Field -->
+<div id="div-name_title_tp" class="form-group col-md-6 col-lg-4">
+    <label for="name_title_tp" class="col-sm-11 col-form-label">Rank/GL. Equivalent:</label>
     <div class="col-sm-12">
-        <select id="country_id_select_tp" class="form-select">
-            <option value=''>-- None selected --</option>
-            @if(isset($countries))
-                @foreach($countries as $cont)
-                    <option value='{{ $cont->id }}'> {{$cont->name}}  (  {{$cont->country_code}} ) </option>
-                @endforeach
-            @endif
+        <select class="form-select" name="name_title_tp" id="name_title_tp" >
+            <option value=''>-- None Selected--</option>
+            <option value='chief lecturer'>Chief Lecturer</option>
+            <option value='prin lecturer'>Prin Lecturer</option>
+            <option value='senior lecturer'>Senior Lecturer</option>
+            <option value='lecturer 1'>Lecturer 1</option>
+            <option value='lecturer 2'>Lecturer 2</option>
         </select>
     </div>
 </div>
 
-<!-- Name Title Field -->
-<div id="div-name_title_tp" class="form-group col-md-4 col-lg-6">
-    {{-- <label for="name_title_tp" class="col-sm-11 col-form-label">Name Title:</label> --}}
-    <div class="col-sm-12">
-        {!! Form::hidden('name_title_tp', null, ['id'=>'name_title_tp', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
-
-<!-- Name Suffix Field -->
-<div id="div-name_suffix_tp" class="form-group col-md-4 col-lg-6">
-    {{-- <label for="name_suffix_tp" class="col-sm-12 col-form-label">Name Suffix:</label> --}}
-    <div class="col-sm-12">
-        {!! Form::hidden('name_suffix_tp', null, ['id'=>'name_suffix_tp', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
+{!! Form::hidden('name_suffix_tp', null, ['id'=>'name_suffix_tp', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
 
 <!-- Bank Account Name Field -->
 <div id="div-bank_account_name_tp" class="form-group mb-3 col-md-6 col-lg-4">
@@ -172,14 +158,6 @@
     </div>
 </div>
 
-<!-- Intl Passport Number Field -->
-<div id="div-intl_passport_number_tp" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="intl_passport_number_tp" class="col-sm-11 col-form-label">Intl Passport Number:</label>
-    <div class="col-sm-12">
-        {!! Form::text('intl_passport_number_tp', null, ['id'=>'intl_passport_number_tp', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div>
-
 <!-- National Id Number Field -->
 <div id="div-national_id_number_tp" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="national_id_number_tp" class="col-sm-11 col-form-label">National Id Number:</label>
@@ -187,42 +165,6 @@
         {!! Form::text('national_id_number_tp', null, ['id'=>'national_id_number_tp', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
     </div>
 </div>
-
-<!-- Degree Type Field -->
-{{-- <div id="div-degree_type_tp" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="degree_type_tp" class="col-sm-11 col-form-label">Degree Type:</label>
-    <div class="col-sm-12">
-        {!! Form::text('degree_type_tp', null, ['id'=>'degree_type_tp', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div> --}}
-
-<!-- Program Title Field -->
-{{-- <div id="div-program_title_tp" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="program_title_tp" class="col-sm-12 col-form-label">Program Title:</label>
-    <div class="col-sm-12">
-        {!! Form::text('program_title_tp', null, ['id'=>'program_title_tp', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div> --}}
-
-<!-- Program Type Field -->
-{{-- <div id="div-program_type_tp" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="program_type_tp" class="col-sm-12 col-form-label">Program Type:</label>
-    <div class="col-sm-12">
-        {!! Form::text('program_type_tp', null, ['id'=>'program_type_tp', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div> --}}
-
-<!-- Is Science Program Field -->
-{{-- <div id="div-is_science_program_tp" class="form-group mb-3 col-md-4 col-lg-4">
-    <label for="is_science_program_tp" class="col-sm-12 col-form-label">Is Science Program ? </label>
-    <div class="col-sm-12">
-        <select name="is_science_program_tp" id="is_science_program_tp" class="form-select">
-            <option value="">-- None selected --</option>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-        </select>
-    </div>
-</div> --}}
 
 <!-- Program Start Date Field -->
 <div id="div-program_start_date_tp" class="form-group mb-3 col-md-4 col-lg-4">
@@ -258,149 +200,9 @@
 </div>
 
 <!-- admission letter -->
-<div id="div-admission_letter_tp" class="form-group  col-md-4">
-    <label for="admission_letter_tp" class="col-sm-11 col-form-label">Admission Letter:</label>
+<div id="div-invitation_letter_tp" class="form-group  col-md-4">
+    <label for="invitation_letter_tp" class="col-sm-11 col-form-label">Invitation Letter:</label>
     <div class="col-sm-12">
-        <input type="file" id="admission_letter_tp" name="admission_letter_tp" class="form-control">
+        <input type="file" id="invitation_letter_tp" name="invitation_letter_tp" class="form-control">
     </div>
 </div>
-
-<!-- health report -->
-<div id="div-health_report_tp" class="form-group  col-md-4">
-    <label for="health_report_tp" class="col-sm-11 col-form-label">Health Report:</label>
-    <div class="col-sm-12">
-        <input type="file" id="health_report_tp" name="health_report_tp" class="form-control">
-    </div>
-</div>
-
-<!-- international passport bio page -->
-<div id="div-international_passport_bio_page_tp" class="form-group col-md-6">
-    <label for="international_passport_bio_page_tp" class="col-sm-11 col-form-label">Int'l Passport Bio Page:</label>
-    <div class="col-sm-12">
-        <input type="file" id="international_passport_bio_page_tp" name="international_passport_bio_page_tp" class="form-control">
-    </div>
-</div>
-
-<!-- conference attendence letter -->
-{{-- <div id="div-conference_attendence_letter_tp" class="form-group  col-md-6">
-    <label for="conference_attendence_letter_tp" class="col-sm-11 col-form-label">Conference Attendance Letter:</label>
-    <div class="col-sm-12">
-        <input type="file" id="conference_attendence_letter_tp" name="conference_attendence_letter_tp" class="form-control">
-    </div>
-</div> --}}
-
-{{-- <!-- Start Fee Amount Field -->
-<div id="div-fee_amount" class="form-group mb-3 col-md-6">
-    <label for="fee_amount" class="col-sm-12 col-form-label">Fee Amount:</label>
-    <div class="col-sm-12">
-        {!! Form::text('fee_amount', null, ['id'=>'fee_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
-<!-- End Fee Amount Field -->
-
-<!-- Start Tuition Amount Field -->
-<div id="div-tuition_amount" class="form-group mb-3 col-md-6">
-    <label for="tuition_amount" class="col-sm-11 col-form-label">Tuition Amount:</label>
-    <div class="col-sm-12">
-        {!! Form::text('tuition_amount', null, ['id'=>'tuition_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
-<!-- End Tuition Amount Field -->
-
-<!-- Start Upgrade Fee Amount Field -->
-<div id="div-upgrade_fee_amount" class="form-group mb-3 col-md-6">
-    <label for="upgrade_fee_amount" class="col-sm-11 col-form-label">Upgrade Fee Amount:</label>
-    <div class="col-sm-12">
-        {!! Form::text('upgrade_fee_amount', null, ['id'=>'upgrade_fee_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
-<!-- End Upgrade Fee Amount Field -->
-
-<!-- Start Stipend Amount Field -->
-<div id="div-stipend_amount" class="form-group mb-3 col-md-6">
-    <label for="stipend_amount" class="col-sm-11 col-form-label">Stipend Amount:</label>
-    <div class="col-sm-12">
-        {!! Form::text('stipend_amount', null, ['id'=>'stipend_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
-<!-- End Stipend Amount Field -->
-
-<!-- Start Passage Amount Field -->
-<div id="div-passage_amount" class="form-group mb-3 col-md-6">
-    <label for="passage_amount" class="col-sm-11 col-form-label">Passage Amount:</label>
-    <div class="col-sm-12">
-        {!! Form::text('passage_amount', null, ['id'=>'passage_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
-<!-- End Passage Amount Field -->
-
-<!-- Start Medical Amount Field -->
-<div id="div-medical_amount" class="form-group mb-3 col-md-6">
-    <label for="medical_amount" class="col-sm-11 col-form-label">Medical Amount:</label>
-    <div class="col-sm-12">
-        {!! Form::text('medical_amount', null, ['id'=>'medical_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
-<!-- End Medical Amount Field -->
-
-<!-- Start Warm Clothing Amount Field -->
-<div id="div-warm_clothing_amount" class="form-group mb-3 col-md-6">
-    <label for="warm_clothing_amount" class="col-sm-11 col-form-label">Warm Clothing Amount:</label>
-    <div class="col-sm-12">
-        {!! Form::text('warm_clothing_amount', null, ['id'=>'warm_clothing_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
-<!-- End Warm Clothing Amount Field -->
-
-<!-- Start Study Tours Amount Field -->
-<div id="div-study_tours_amount" class="form-group mb-3 col-md-6">
-    <label for="study_tours_amount" class="col-sm-11 col-form-label">Study Tours Amount:</label>
-    <div class="col-sm-12">
-        {!! Form::text('study_tours_amount', null, ['id'=>'study_tours_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
-<!-- End Study Tours Amount Field -->
-
-<!-- Start Education Materials Amount Field -->
-<div id="div-education_materials_amount" class="form-group mb-3 col-md-6">
-    <label for="education_materials_amount" class="col-sm-11 col-form-label">Education Materials Amount:</label>
-    <div class="col-sm-12">
-        {!! Form::text('education_materials_amount', null, ['id'=>'education_materials_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
-<!-- End Education Materials Amount Field -->
-
-<!-- Start Thesis Research Amount Field -->
-<div id="div-thesis_research_amount" class="form-group mb-3 col-md-6">
-    <label for="thesis_research_amount" class="col-sm-11 col-form-label">Thesis Research Amount:</label>
-    <div class="col-sm-12">
-        {!! Form::text('thesis_research_amount', null, ['id'=>'thesis_research_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
-<!-- End Thesis Research Amount Field -->
-
-<!-- Final Remarks Field -->
-<div id="div-final_remarks" class="form-group mb-3">
-    <label for="final_remarks" class="col-sm-11 col-form-label">Final Remarks:</label>
-    <div class="col-sm-12">
-        {!! Form::text('final_remarks', null, ['id'=>'final_remarks', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
-
-<!-- Start Total Requested Amount Field -->
-<div id="div-total_requested_amount" class="form-group mb-3 col-md-6">
-    <label for="total_requested_amount" class="col-sm-11 col-form-label">Total Requested Amount:</label>
-    <div class="col-sm-12">
-        {!! Form::text('total_requested_amount', null, ['id'=>'total_requested_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
-<!-- End Total Requested Amount Field -->
-
-<!-- Start Total Approved Amount Field -->
-<div id="div-total_approved_amount" class="form-group mb-3 col-md-6">
-    <label for="total_approved_amount" class="col-sm-11 col-form-label">Total Approved Amount:</label>
-    <div class="col-sm-12">
-        {!! Form::text('total_approved_amount', null, ['id'=>'total_approved_amount', 'class' => 'form-control','min' => 0,'max' => 100000000, 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
-<!-- End Total Approved Amount Field --> --}}

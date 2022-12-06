@@ -32,10 +32,9 @@ class UpdateTPNominationAPIRequest extends AppBaseFormRequest
             //'institution_id' => 'required|exists:tf_astd_institutions,id',
             //'country_id' => 'required|exists:tf_astd_countries,id',
             'tf_iterum_portal_institution_id' => 'required|uuid',
-            'tf_iterum_portal_country_id' => 'required|uuid',
             'nomination_request_id' => 'required|exists:tf_bi_nomination_requests,id',
             'user_id' => 'required|exists:fc_users,id',
-            'gender' => "required|string|max:50|in:". implode(['Male', 'Female'], ','),
+            'gender' => "required|string|max:50|in:". implode(['male', 'female'], ','),
             'name_title' => 'nullable|string|max:50',
             'first_name' => 'required|string|max:100',
             'middle_name' => 'nullable|string|max:100',
@@ -45,7 +44,6 @@ class UpdateTPNominationAPIRequest extends AppBaseFormRequest
             'bank_account_number' => 'required|digits:10',
             'bank_name' => 'required|max:100',
             'bank_sort_code' => 'required|max:100',
-            'intl_passport_number' => 'required|max:100',
             'bank_verification_number' => 'required|numeric',
             'national_id_number' => 'required|numeric',
             'degree_type' => 'required|max:100',
@@ -75,20 +73,12 @@ class UpdateTPNominationAPIRequest extends AppBaseFormRequest
             $return_arr['passport_photo'] = 'file|mimes:pdf,png,jpeg,jpg|max:5240';
         }
 
-        if(request()->hasFile('admission_letter') && request()->admission_letter != 'undefined') {
-            $return_arr['admission_letter'] = 'file|mimes:pdf|max:5240';
+        if(request()->hasFile('invitation_letter') && request()->invitation_letter != 'undefined') {
+            $return_arr['invitation_letter'] = 'file|mimes:pdf|max:5240';
         }
 
         if(request()->hasFile('health_report') && request()->health_report != 'undefined') {
             $return_arr['health_report'] = 'file|mimes:pdf,doc,docx|max:5240';
-        }
-
-        if(request()->hasFile('international_passport_bio_page') && request()->international_passport_bio_page != 'undefined') {
-            $return_arr['international_passport_bio_page'] = 'file|mimes:pdf,doc,docx|max:5240';
-        }
-
-        if(request()->hasFile('conference_attendence_letter') && request()->conference_attendence_letter != 'undefined') {
-            $return_arr['conference_attendence_letter'] = 'file|mimes:pdf,doc,docx|max:5240';
         }
 
         return $return_arr;
@@ -122,10 +112,8 @@ class UpdateTPNominationAPIRequest extends AppBaseFormRequest
             'program_end_date' => 'Program End Date',
             
             'passport_photo' => 'Passport Photo',
-            'admission_letter' => 'Admission Letter',
+            'invitation_letter' => 'Admission Letter',
             'health_report' => 'Health Report',
-            'international_passport_bio_page' => 'International Passport Bio Page',
-            'conference_attendence_letter' => 'Conference Attendence Letter',
 
             //'fee_amount' => 'Fee Amount',
             //'tuition_amount' => 'Tuition Amount',

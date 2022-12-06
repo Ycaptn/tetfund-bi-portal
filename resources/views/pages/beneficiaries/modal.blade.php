@@ -64,6 +64,9 @@ $(document).ready(function() {
                             console.log(result)
                             swal("Error", "Oops an error occurred. Please try again.", "error");
                         }
+                    }, error: function(data){
+                        console.log(data);
+                        swal("Error", "Oops an error occurred. Please try again.", "error");
                     },
                 });
             }
