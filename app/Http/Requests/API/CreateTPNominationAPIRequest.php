@@ -54,7 +54,6 @@ class CreateTPNominationAPIRequest extends AppBaseFormRequest
 
             'passport_photo' => 'required|file|mimes:pdf,png,jpeg,jpg|max:5240',
             'invitation_letter' => 'required|file|mimes:pdf|max:5240',
-            'health_report' => 'required|file|mimes:pdf,doc,docx|max:5240',
 
             //'program_duration_months' => 'nullable|min:0|max:365',
             //'fee_amount' => 'nullable|numeric|min:0|max:100000000',
