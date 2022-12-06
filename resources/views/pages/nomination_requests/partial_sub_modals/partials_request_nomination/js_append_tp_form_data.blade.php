@@ -58,6 +58,6 @@ if($('#invitation_letter_tp').get(0).files.length != 0){
 	formData.append('invitation_letter', $('#invitation_letter_tp')[0].files[0]);      
 }
 
-if($('#health_report_tp').get(0).files.length != 0){
+{{-- if($('#health_report_tp').get(0).files.length != 0){
 	formData.append('health_report', $('#health_report_tp')[0].files[0]);  
-}
+} --}}
