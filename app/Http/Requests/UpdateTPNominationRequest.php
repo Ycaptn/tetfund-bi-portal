@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\AppBaseFormRequest;
-use App\Models\ASTDNomination as TPNomination;
+use App\Models\TPNomination;
 
 class UpdateTPNominationRequest extends AppBaseFormRequest
 {

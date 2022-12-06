@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\ASTDNomination as TPNomination;
+use App\Models\TPNomination;
 use App\Models\NominationRequest;
 
 use App\Events\TPNominationCreated;
@@ -50,7 +50,7 @@ class TPNominationAPIController extends AppBaseController
         }
         
         if ($organization != null){
-            $query->where('organization_id', $organization->id, 'type_of_nomination', 'TP');
+            $query->where('organization_id', $organization->id);
         }
 
         $tPNominations = $this->showAll($query->get());
@@ -69,7 +69,6 @@ class TPNominationAPIController extends AppBaseController
     public function store(CreateTPNominationAPIRequest $request, Organization $organization)
     {
         $input = $request->all();
-        $input['type_of_nomination'] = 'TP';
 
         /** @var TPNomination $tPNomination */
         $tPNomination = TPNomination::create($input);
@@ -135,7 +134,7 @@ class TPNominationAPIController extends AppBaseController
                 return $this->sendError('T P Nomination not found');
             }
 
-            $tPNomination = $nominationRequest->astd_submission;
+            $tPNomination = $nominationRequest->tp_submission;
         }
 
         /*class constructor to fetch institution*/

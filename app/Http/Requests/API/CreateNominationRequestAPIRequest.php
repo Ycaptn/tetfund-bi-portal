@@ -24,7 +24,7 @@ class CreateNominationRequestAPIRequest extends AppBaseFormRequest
      */
     public function rules() {
         $gender_arr = ['male', 'female'];
-        $nomination_type = ['ca', 'tsas', 'tp', 'astd'];
+        $nomination_type = ['ca', 'tsas', 'tp'];
 
         $return_arr = [
             'organization_id' => 'required',

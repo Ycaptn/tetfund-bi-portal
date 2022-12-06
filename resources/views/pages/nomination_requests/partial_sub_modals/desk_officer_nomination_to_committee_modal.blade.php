@@ -214,7 +214,7 @@
             
                 $.get( "{{ route('tf-bi-portal-api.nomination_requests.show','') }}/"+itemId).done(function( response ) {
                     
-                    $('#full_name_data').text(response.data.nominee.first_name +' '+ response.data.nominee.middle_name +' '+ response.data.nominee.last_name);
+                    $('#full_name_data').text(response.data.nominee.first_name +' '+ (response.data.nominee.middle_name) ? response.data.nominee.middle_name : '' +' '+ response.data.nominee.last_name);
                     $('#email_data').text(response.data.nominee.email);
                     $('#telephone_data').text(response.data.nominee.telephone);
                     $('#beneficiary_institution_id_select_data').text(response.data.nominee_beneficiary.full_name +' ('+ response.data.nominee_beneficiary.short_name +')');

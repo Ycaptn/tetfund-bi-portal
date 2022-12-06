@@ -37,23 +37,21 @@ class AppServiceProvider extends ServiceProvider
 
         //Roles in this application with their permissions.
         \FoundationCore::register_roles([
-            'bi-admin'                          =>  [],
-            'bi-desk-officer'                   =>  [],
-            'bi-head-of-institution'            =>  [],
-            'bi-astd-committee-head'            =>  [],
-            'bi-ca-committee-head'              =>  [],
-            'bi-tp-committee-head'              =>  [],
-            'bi-tsas-committee-head'            =>  [],
-            'bi-astd-committee-member'          =>  [],
-            'bi-ca-committee-member'            =>  [],
-            'bi-tp-committee-member'            =>  [],
-            'bi-tsas-committee-member'          =>  [],
-            'bi-ict'                            =>  [],
-            'bi-librarian'                      =>  [],
-            'bi-works'                          =>  [],
-            'bi-physical-planning-department'   =>  [],
-            'bi-staff'                          =>  [],
-            'bi-student'                        =>  [],
+            'BI-admin'                          =>  [],
+            'BI-desk-officer'                   =>  [],
+            'BI-head-of-institution'            =>  [],
+            'BI-CA-committee-head'              =>  [],
+            'BI-TP-committee-head'              =>  [],
+            'BI-TSAS-committee-head'            =>  [],
+            'BI-CA-committee-member'            =>  [],
+            'BI-TP-committee-member'            =>  [],
+            'BI-TSAS-committee-member'          =>  [],
+            'BI-ict'                            =>  [],
+            'BI-librarian'                      =>  [],
+            'BI-works'                          =>  [],
+            'BI-physical-planning-department'   =>  [],
+            'BI-staff'                          =>  [],
+            'BI-student'                        =>  [],
         ]);
 
         Schema::defaultStringLength(125);

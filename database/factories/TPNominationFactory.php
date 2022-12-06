@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\ASTDNomination as TPNomination;
+use App\Models\TPNomination;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Hasob\FoundationCore\Models\Organization;
 

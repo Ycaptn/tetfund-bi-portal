@@ -1,7 +1,7 @@
 <?php
 namespace App\Listeners;
 
-use App\Models\ASTDNomination as TPNomination;
+use App\Models\TPNomination;
 use App\Events\TPNominationDeleted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;

@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-use App\Models\ASTDNomination as TPNomination;
+use App\Models\TPNomination;
 
 class TPNominationDeletedNotification extends Notification
 {

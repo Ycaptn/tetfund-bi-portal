@@ -42,7 +42,6 @@ class NominationRequestController extends BaseController
 
         $cdv_nomination_requests->setDataQuery($setDataQuery)
                         ->addDataGroup('All','deleted_at',null)
-                        ->addDataGroup('ASTD','type','astd')
                         ->addDataGroup('CA','type','ca')
                         ->addDataGroup('TP','type','tp')
                         ->addDataGroup('TSAS','type','tsas')

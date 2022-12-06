@@ -163,7 +163,7 @@ Submission Request
                             </li>
                             <li class="mt-3" style="margin-right: 3px;">                            
                                 <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=nominations_binded" class="tablinks btn btn-primary btn-md shadow-none">
-                                    Bound Nominations
+                                    Nominations
                                 </a>
                             </li>
                             <li class="mt-3" style="margin-right: 3px;">                                
@@ -177,7 +177,7 @@ Submission Request
                     {{-- sub menu contents --}}
                     @if(isset(request()->sub_menu_items) && request()->sub_menu_items == 'nominations_binded')
                         <div id="astd_nominations" class="col-sm-12 table-responsive">
-                            <h4>BOUND NOMINATIONS LIST</h4>
+                            <h4>NOMINATIONS LIST</h4>
                             @include('tf-bi-portal::pages.submission_requests.partials.submission_nominations_table')
                         </div>
                     @elseif(isset(request()->sub_menu_items) && request()->sub_menu_items == 'communications')

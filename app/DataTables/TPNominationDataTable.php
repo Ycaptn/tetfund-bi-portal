@@ -1,7 +1,7 @@
 <?php
 namespace App\DataTables;
 
-use App\Models\ASTDNomination as TPNomination;
+use App\Models\TPNomination;
 use Yajra\DataTables\Services\DataTable;
 use Yajra\DataTables\EloquentDataTable;
 

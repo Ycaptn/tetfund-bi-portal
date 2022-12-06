@@ -283,10 +283,7 @@ class SubmissionRequestController extends BaseController
         // add nomination details and attachements to payload
         $intervention_name = '';
         $nomination_table = '';
-        if (str_contains(strtolower(optional($request)->intervention_name), 'academic staff training')) {
-            $intervention_name = 'astd';
-            $nomination_table = 'astd_submission';
-        } elseif (str_contains(strtolower(optional($request)->intervention_name), 'teaching practice')) {
+        if (str_contains(strtolower(optional($request)->intervention_name), 'teaching practice')) {
             $intervention_name = 'tp';
             $nomination_table = 'tp_submission';
         } elseif (str_contains(strtolower(optional($request)->intervention_name), 'conference attendance')) {
@@ -379,9 +376,7 @@ class SubmissionRequestController extends BaseController
         $submission_allocations = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
         
         $intervention_name = '';
-        if (str_contains(strtolower($intervention_types_server_response->name), 'academic staff training')) {
-            $intervention_name = 'astd';
-        } elseif (str_contains(strtolower($intervention_types_server_response->name), 'teaching practice')) {
+        if (str_contains(strtolower($intervention_types_server_response->name), 'teaching practice')) {
             $intervention_name = 'tp';
         } elseif (str_contains(strtolower($intervention_types_server_response->name), 'conference attendance')) {
             $intervention_name = 'ca';

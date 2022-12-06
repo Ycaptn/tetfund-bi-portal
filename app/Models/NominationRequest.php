@@ -26,8 +26,8 @@ use Hasob\FoundationCore\Models\User;
 use App\Models\Beneficiary;
 use App\Models\SubmissionRequest;
 use App\Models\NominationCommitteeVotes;
-use App\Models\ASTDNomination;
-use App\Models\ASTDNomination as TPNomination;
+use App\Models\TPNomination;
+use App\Models\TSASNomination;
 use Hasob\FoundationCore\Models\Attachable as EloquentAttachable;
 
 use Eloquent as Model;
@@ -109,14 +109,6 @@ class NominationRequest extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      **/
-    public function astd_submission()
-    {
-        return $this->hasOne(ASTDNomination::class, 'nomination_request_id', 'id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     **/
     public function tp_submission()
     {
         return $this->hasOne(TPNomination::class, 'nomination_request_id', 'id');
@@ -130,12 +122,12 @@ class NominationRequest extends Model
         //return $this->hasOne(TPNomination::class, 'nomination_request_id', 'id');
     }
 
-    /**
+   /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      **/
     public function tsas_submission()
     {
-        //return $this->hasOne(TPNomination::class, 'nomination_request_id', 'id');
+        return $this->hasOne(TSASNomination::class, 'nomination_request_id', 'id');
     }
 
     /**

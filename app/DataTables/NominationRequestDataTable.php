@@ -38,14 +38,12 @@ class NominationRequestDataTable extends DataTable
         }
 
         $all_committee_members = [
-            'bi-astd-committee-member',
             'bi-tp-committee-member',
             'bi-ca-committee-member',
             'bi-tsas-committee-member'
         ];
 
         $all_committee_heads = [
-            'bi-astd-committee-head',
             'bi-tp-committee-head',
             'bi-ca-committee-head',
             'bi-tsas-committee-head',

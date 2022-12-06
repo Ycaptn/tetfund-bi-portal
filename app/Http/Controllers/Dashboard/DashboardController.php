@@ -43,9 +43,6 @@ class DashboardController extends BaseController
                     ->with('current_user', $current_user);
     }
 
-    public function displayASTDNominationsDashboard(Organization $org, Request $request){ 
-    }
-
     public function displayAttachmentDashboard(Organization $org, Request $request, $id){
         $attachement = Attachment::find($id);
         if (empty($attachement)) {

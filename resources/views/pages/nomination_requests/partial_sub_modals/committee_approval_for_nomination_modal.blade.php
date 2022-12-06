@@ -165,10 +165,10 @@
                                     <div class="col-xs-9">
                                         <div class="checkbox">
                                             &nbsp; <input id='committee_member_decision_1' name='committee_member_decision' type="radio" value="approved" />
-                                             &nbsp; <label class="form-label" for="committee_member_decision_1">Considered</label> <br/>
+                                             &nbsp; <label class="form-label" for="committee_member_decision_1">Recommended</label> <br/>
 
                                             &nbsp; <input id='committee_member_decision_2' name='committee_member_decision' type="radio" value="declined" /> 
-                                            &nbsp; <label class="form-label" for="committee_member_decision_2">Not Considered</label> <br/>
+                                            &nbsp; <label class="form-label" for="committee_member_decision_2">Not Recommended</label> <br/>
                                         </div>
                                     </div>
                                 </div><hr>
@@ -248,7 +248,7 @@
             
                 $.get( "{{ route('tf-bi-portal-api.nomination_requests.show','') }}/"+itemId).done(function( response ) {
                     
-                    $('#full_name_data').text(response.data.nominee.first_name +' '+ response.data.nominee.middle_name +' '+ response.data.nominee.last_name);
+                    $('#full_name_data').text(response.data.nominee.first_name +' '+ (response.data.nominee.middle_name) ? response.data.nominee.middle_name : '' +' '+ response.data.nominee.last_name);
                     $('#email_data').text(response.data.nominee.email);
                     $('#telephone_data').text(response.data.nominee.telephone);
                     $('#beneficiary_institution_id_select_data').text(response.data.nominee_beneficiary.full_name +' ('+ response.data.nominee_beneficiary.short_name +')');

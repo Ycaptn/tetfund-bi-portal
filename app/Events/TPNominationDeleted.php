@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\ASTDNomination as TPNomination;
+use App\Models\TPNomination;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;

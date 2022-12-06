@@ -183,7 +183,7 @@
 </div>
 
 <hr>
-<div class="col-sm-12" style="display: none;" id="attachements_info">
+<div class="col-sm-12" style="display: none;" id="attachements_info_tp">
     <small>
         <i class="text-danger">
             <strong>NOTE:</strong>

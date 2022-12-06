@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Models;
 
-use App\Models\ASTDNomination as TPNomination;
+use App\Models\TPNomination;
 use App\Models\BeneficiaryMember;
 use App\Models\SubmissionRequest;
 

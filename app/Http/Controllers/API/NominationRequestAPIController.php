@@ -13,17 +13,17 @@ use Hasob\FoundationCore\Traits\ApiResponder;
 use Hasob\FoundationCore\Models\Organization;
 use Hasob\FoundationCore\Models\User;
 use App\Http\Requests\API\CreateNominationRequestAPIRequest;
-use App\Http\Requests\API\CreateASTDNominationAPIRequest;
 use App\Http\Requests\API\CreateTPNominationAPIRequest;
-use App\Http\Controllers\API\ASTDNominationAPIController;
+use App\Http\Requests\API\CreateTSASNominationAPIRequest;
 use App\Http\Controllers\API\TPNominationAPIController;
+use App\Http\Controllers\API\TSASNominationAPIController;
 use App\Http\Traits\BeneficiaryUserTrait;
 use App\Models\BeneficiaryMember;
 use App\Models\Beneficiary;
 use App\Models\SubmissionRequest;
 use App\Models\NominationCommitteeVotes;
-use App\Models\ASTDNomination;
-use App\Models\ASTDNomination as TPNomination;
+use App\Models\TPNomination;
+use App\Models\TSASNomination;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\NominationRequestInviteNotification;
 
@@ -119,16 +119,11 @@ class NominationRequestAPIController extends BaseController
 
     //store staff nomination request and nomination request data
     public function store_nomination_request_and_details(Request $request) {
-        if (!$request->has('nomination_type') || $request->nomination_type != 'astd' || $request->nomination_type != 'tp' /* || $request->nomination_type != 'ca' || $request->nomination_type != 'tsas'*/) {
+        if (!$request->has('nomination_type') || $request->nomination_type != 'tp' || $request->nomination_type != 'ca' || $request->nomination_type != 'tsas') {
             $this->sendError('Invalid Nomination Type Selected');
         }
         
-        if ($request->nomination_type == 'astd') { 
-            $request = app('App\Http\Requests\API\CreateASTDNominationAPIRequest');
-            $this->validate($request, $request->rules());  // validate for ASTD
-            $nominationRequestOBJ = new ASTDNomination();   // hittng ASTD model
-            $nominationRequestAPIControllerOBJ = new ASTDNominationAPIController();  //hitting ASTD API Controller
-        } else if ($request->nomination_type == 'tp') {
+        if ($request->nomination_type == 'tp') {
             $request = app('App\Http\Requests\API\CreateTPNominationAPIRequest');
             $this->validate($request, $request->rules()); // validate for TP    
             $nominationRequestOBJ = new TPNomination();
@@ -140,7 +135,8 @@ class NominationRequestAPIController extends BaseController
         } else if ($request->nomination_type == 'tsas') {
             $request = app('App\Http\Requests\API\CreateTSASNominationAPIRequest');
             $this->validate($request, $request->rules()); // validate for TSAS
-            //$nominationRequestOBJ = new TSASNomination();
+            $nominationRequestOBJ = new TSASNomination();
+            $nominationRequestAPIControllerOBJ = new TSASNominationAPIController();  //hitting TSAS API Controller
         }
         
         // nomination request creation
@@ -212,9 +208,7 @@ class NominationRequestAPIController extends BaseController
 
         $nominationRequestDetails = $nominationRequest->toArray();
         $nominationRequestDetails['nomination_request_type'] = $nominationRequest->type;
-        if (strtolower($nominationRequest->type) == 'astd') {
-            $nominationRequestDetails['nominee'] = $nominationRequest->astd_submission;
-        } elseif (strtolower($nominationRequest->type) == 'tp') {
+        if (strtolower($nominationRequest->type) == 'tp') {
             $nominationRequestDetails['nominee'] = $nominationRequest->tp_submission;
         } elseif (strtolower($nominationRequest->type) == 'ca') {
             $nominationRequestDetails['nominee'] = $nominationRequest->ca_submission;

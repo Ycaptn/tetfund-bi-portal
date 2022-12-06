@@ -31,7 +31,6 @@ $orgRoutes = function() {
 
 
                 Route::get('/monitoring', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayMonitoringDashboard'])->name('monitoring');
-                //Route::get('/astd', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayASTDNominationsDashboard'])->name('astd');
                 Route::get('/fund-availability', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayFundAvailabilityDashboard'])->name('fund-availability');
                 Route::get('/desk-officer', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayDeskOfficerAdminDashboard'])->name('desk-officer');
                 Route::get('/librarian', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayLibrarianAdminDashboard'])->name('librarian');
@@ -40,7 +39,7 @@ $orgRoutes = function() {
                 Route::get('/preview-attachement/{id}', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayAttachmentDashboard'])->name('preview-attachement');
 
                 Route::resource('nomination_requests', \App\Http\Controllers\Models\NominationRequestController::class);
-                Route::resource('a_s_t_d_nominations', \App\Http\Controllers\Models\ASTDNominationController::class);
+                Route::resource('t_s_a_s_nominations', \App\Http\Controllers\Models\TSASNominationController::class);
                 Route::resource('t_p_nominations', \App\Http\Controllers\Models\TPNominationController::class);
 
                 Route::resource('beneficiaries', \App\Http\Controllers\Models\BeneficiaryController::class);

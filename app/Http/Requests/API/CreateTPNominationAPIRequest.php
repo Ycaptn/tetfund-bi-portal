@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\API;
 
-use App\Models\ASTDNomination as TPNomination;
+use App\Models\TPNomination;
 use App\Http\Requests\AppBaseFormRequest;
 
 

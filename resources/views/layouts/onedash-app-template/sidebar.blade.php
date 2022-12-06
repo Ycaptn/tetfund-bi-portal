@@ -182,14 +182,6 @@
 						</li>
 					@endif --}}
 
-					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution', 'bi-astd-committee-head', 'bi-astd-committee-member']))
-						<li>
-							<a href="{{ route('tf-bi-portal.a_s_t_d_nominations.index') }}" class="">
-								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> ASTD Nomination </div>
-							</a>
-						</li>
-					@endif
-
 					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution', 'bi-tp-committee-head', 'bi-tp-committee-member']))
 						<li>
 							<a href="{{ route('tf-bi-portal.t_p_nominations.index') }}" class="">
@@ -208,7 +200,7 @@
 
 					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution', 'bi-tsas-committee-head', 'bi-tsas-committee-member']))
 						<li>
-							<a href="#" class="">
+							<a href="{{ route('tf-bi-portal.t_s_a_s_nominations.index') }}" class="">
 								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> TSAS Nomination </div>
 							</a>
 						</li>

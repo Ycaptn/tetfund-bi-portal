@@ -95,7 +95,7 @@
                             {{ \Carbon\Carbon::parse($nominationRequest->created_at)->format('l jS F Y') }}.
                         </strong>
                     </li>
-                    @if($nominationRequest->astd_submission != null || $nominationRequest->tp_submission != null)
+                    @if($nominationRequest->tsas_submission != null || $nominationRequest->tp_submission != null)
                         <li><strong>{{ $nomination_type_str }}</strong> Nomination form data <strong>completed!</strong></li>
                     @else
                         <li>Submit your <strong>Nomination Details</strong> by clicking on the button <strong> '{{ $nomination_type_str }} Nomination Form'</strong> to complete this process!</li>
@@ -105,7 +105,7 @@
             <div class="col-md-4">
                 <div class="col-sm-12">
                     <span class="pull-right">
-                        @if($nominationRequest->astd_submission != null || $nominationRequest->tp_submission != null)
+                        @if($nominationRequest->tsas_submission != null || $nominationRequest->tp_submission != null)
                             <span class="fa fa-check-square"></span>
                             <strong class="text-success">
                                 SUBMITTED NOMINATION DATA
@@ -132,15 +132,13 @@
                 </div>
                 <br>
                 <div class="row col-sm-12 pull-right">
-                @if($nominationRequest->astd_submission != null || $nominationRequest->tp_submission != null)
+                @if($nominationRequest->tsas_submission != null || $nominationRequest->tp_submission != null)
                     <form action="" method="post">
                         @csrf
                     </form>
 
                     <button title="Preview"
-                            @if($nominationRequest->type == 'astd')
-                                data-val='{{$nominationRequest->astd_submission->id}}'
-                            @elseif($nominationRequest->type == 'tp')
+                            @if($nominationRequest->type == 'tp')
                                 data-val='{{$nominationRequest->tp_submission->id}}'
                             @elseif($nominationRequest->type == 'ca')
                                 data-val='{{$nominationRequest->ca_submission->id}}'
@@ -153,9 +151,7 @@
                     </button>
                     @if($nominationRequest->is_desk_officer_check == 0)
                         <button title="Edit"
-                                @if($nominationRequest->type == 'astd')
-                                    data-val='{{$nominationRequest->astd_submission->id}}'
-                                @elseif($nominationRequest->type == 'tp')
+                                @if($nominationRequest->type == 'tp')
                                     data-val='{{$nominationRequest->tp_submission->id}}'
                                 @elseif($nominationRequest->type == 'ca')
                                     data-val='{{$nominationRequest->ca_submission->id}}'
@@ -167,9 +163,7 @@
                                <i class="fa fa-pencil-square-o"></i>Edit
                         </button>
                         <button title="Delete Nomin"
-                                @if($nominationRequest->type == 'astd')
-                                    data-val='{{$nominationRequest->astd_submission->id}}'
-                                @elseif($nominationRequest->type == 'tp')
+                                @if($nominationRequest->type == 'tp')
                                     data-val='{{$nominationRequest->tp_submission->id}}'
                                 @elseif($nominationRequest->type == 'ca')
                                     data-val='{{$nominationRequest->ca_submission->id}}'
@@ -193,10 +187,12 @@
         </div>
     </div>
 
-        @if($nominationRequest->type == 'astd')
-            @include('tf-bi-portal::pages.a_s_t_d_nominations.modal')
-        @elseif($nominationRequest->type == 'tp')
+        @if($nominationRequest->type == 'tp')
             @include('tf-bi-portal::pages.t_p_nominations.modal')
+        @elseif($nominationRequest->type == 'ca')
+            {{-- @include('tf-bi-portal::pages.c_a_nominations.modal')         --}}
+        @elseif($nominationRequest->type == 'tsas')
+            @include('tf-bi-portal::pages.t_s_a_s_nominations.modal')
         @endif
 
 

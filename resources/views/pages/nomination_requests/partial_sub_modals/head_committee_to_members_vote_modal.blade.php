@@ -22,7 +22,6 @@
                                             <tr>
                                                 <th>S/N</th>
                                                 <th>Member Name</th>
-                                                <th>Member Email</th>
                                                 <th>Decision</th>
                                                 <th>Comment</th>
                                                 <th>Date</th>
@@ -136,7 +135,7 @@
                         $.each(response.data.nomination_committee_voters, function(key, value){
                             var serverDate = new Date(value.created_at).toDateString();
                             let status = (value.approval_status == 1) ? 'Considered' : 'Not Considered';
-                            table_body += "<tr> <td>"+ counter +"</td> <td>"+value.first_name+' '+value.last_name+"</td> <td>"+value.email+"</td> <td>"+status+"</td> <td>"+value.approval_comment+"</td> <td>"+serverDate+"</td> </tr>";
+                            table_body += "<tr> <td>"+ counter +"</td> <td>"+value.first_name+' '+value.last_name+"</td> <td>"+status+"</td> <td>"+value.approval_comment+"</td> <td>"+serverDate+"</td> </tr>";
                             counter += 1;
                         });
                     }
