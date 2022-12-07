@@ -120,14 +120,6 @@ class TSASNominationAPIController extends AppBaseController
             $nominationRequest->attach(auth()->user(), $label, $discription, $request->international_passport_bio_page);
         } 
 
-        /*handling conference_attendence_letter upload process*/
-        if($request->hasFile('conference_attendence_letter')) {
-            $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination Conference Attendence Letter";
-            $discription = "This " . strtolower("Document contains the $label");
-
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendence_letter);
-        }
-
         TSASNominationCreated::dispatch($tSASNomination);
         return $this->sendResponse($tSASNomination->toArray(), 'T S A S Nomination saved successfully');
     }
@@ -241,18 +233,6 @@ class TSASNominationAPIController extends AppBaseController
                 $nominationRequest->delete_attachment($label); // delete old international  passport bio page
             }
             $nominationRequest->attach(auth()->user(), $label, $discription, $request->international_passport_bio_page);
-        }
-
-        /*handling conference_attendence_letter update process*/
-        if($request->hasFile('conference_attendence_letter')) {
-            $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination Conference Attendence Letter";
-            $discription = "This " . strtolower("Document contains the $label");
-
-            $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old conference_attendence letter
-            if ($attachement != null) {
-                $nominationRequest->delete_attachment($label); // delete old conference_attendence letter
-            }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendence_letter);
         }
 
         TSASNominationUpdated::dispatch($tSASNomination);

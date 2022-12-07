@@ -118,24 +118,18 @@ $(document).ready(function() {
     		$('#spn_tSASNomination_bank_name').html(response.data.bank_name);
     		$('#spn_tSASNomination_bank_sort_code').html(response.data.bank_sort_code);
     		$('#spn_tSASNomination_intl_passport_number').html(response.data.intl_passport_number);
-    		$('#spn_tSASNomination_bank_verification_number').html(response.data.bank_verification_number);
+    		$('#spn_tSASNomination_bank_verification_number').html(response.data.bank_verification_number);z
     		$('#spn_tSASNomination_national_id_number').html(response.data.national_id_number);
     		$('#spn_tSASNomination_degree_type').html(response.data.degree_type);
     		$('#spn_tSASNomination_program_title').html(response.data.program_title);
     		$('#spn_tSASNomination_program_type').html(response.data.program_type);
-    		/*$('#spn_tSASNomination_fee_amount').html(response.data.fee_amount);
-    		$('#spn_tSASNomination_tuition_amount').html(response.data.tuition_amount);
-    		$('#spn_tSASNomination_upgrade_fee_amount').html(response.data.upgrade_fee_amount);
-    		$('#spn_tSASNomination_stipend_amount').html(response.data.stipend_amount);
-    		$('#spn_tSASNomination_passage_amount').html(response.data.passage_amount);
-    		$('#spn_tSASNomination_medical_amount').html(response.data.medical_amount);
-    		$('#spn_tSASNomination_warm_clothing_amount').html(response.data.warm_clothing_amount);
-    		$('#spn_tSASNomination_study_tours_amount').html(response.data.study_tours_amount);
-    		$('#spn_tSASNomination_education_materials_amount').html(response.data.education_materials_amount);
-    		$('#spn_tSASNomination_thesis_research_amount').html(response.data.thesis_research_amount);
+    		$('#spn_tSASNomination_is_science_program').html((response.data.is_science_program == true) ? 'Yes' : 'No');
+    		$('#spn_tSASNomination_program_start_date').html(response.data.program_start_date);
+            $('#spn_tSASNomination_program_end_date').html(response.data.program_end_date);
+    		
     		$('#spn_tSASNomination_final_remarks').html(response.data.final_remarks);
     		$('#spn_tSASNomination_total_requested_amount').html(response.data.total_requested_amount);
-    		$('#spn_tSASNomination_total_approved_amount').html(response.data.total_approved_amount);*/
+    		$('#spn_tSASNomination_total_approved_amount').html(response.data.total_approved_amount);
             $('#spn_tSASNomination_beneficiary_institution_name').html(response.data.beneficiary.full_name);
             $('#spn_tSASNomination_institution_name').html(response.data.institution.name); 
             $('#spn_tSASNomination_country_name').html(response.data.country.name + ' (' + response.data.country.country_code + ')');
@@ -185,19 +179,9 @@ $(document).ready(function() {
     		$('#degree_type_tsas').val(response.data.degree_type);
     		$('#program_title_tsas').val(response.data.program_title);
     		$('#program_type_tsas').val(response.data.program_type);
-    		/*$('#fee_amount_tsas').val(response.data.fee_amount);
-    		$('#tuition_amount_tsas').val(response.data.tuition_amount);
-    		$('#upgrade_fee_amount_tsas').val(response.data.upgrade_fee_amount);
-    		$('#stipend_amount_tsas').val(response.data.stipend_amount);
-    		$('#passage_amount_tsas').val(response.data.passage_amount);
-    		$('#medical_amount_tsas').val(response.data.medical_amount);
-    		$('#warm_clothing_amount_tsas').val(response.data.warm_clothing_amount);
-    		$('#study_tours_amount_tsas').val(response.data.study_tours_amount);
-    		$('#education_materials_amount_tsas').val(response.data.education_materials_amount);
-    		$('#thesis_research_amount_tsas').val(response.data.thesis_research_amount);
-    		$('#final_remarks_tsas').val(response.data.final_remarks);
-    		$('#total_requested_amount_tsas').val(response.data.total_requested_amount);
-    		$('#total_approved_amount_tsas').val(response.data.total_approved_amount);*/
+    		/*$('#total_requested_amount_tsas').val(response.data.total_requested_amount);
+    		$('#total_approved_amount_tsas').val(response.data.total_approved_amount);
+    		$('#final_remarks_tsas').val(response.data.final_remarks);*/
             $('#is_science_program_tsas').val(response.data.is_science_program ? '1' : '0');
 
             var program_start_date_tsas = new Date(response.data.program_start_date).toISOString().slice(0, 10);
@@ -366,17 +350,7 @@ $(document).ready(function() {
             formData.append('international_passport_bio_page', $('#international_passport_bio_page_tsas')[0].files[0]);  
         } 
                 
-		/*if ($('#fee_amount_tsas').length){	formData.append('fee_amount',$('#fee_amount_tsas').val());	}
-		if ($('#tuition_amount_tsas').length){	formData.append('tuition_amount',$('#tuition_amount_tsas').val());	}
-		if ($('#upgrade_fee_amount_tsas').length){	formData.append('upgrade_fee_amount',$('#upgrade_fee_amount_tsas').val());	}
-		if ($('#stipend_amount_tsas').length){	formData.append('stipend_amount',$('#stipend_amount_tsas').val());	}
-		if ($('#passage_amount_tsas').length){	formData.append('passage_amount',$('#passage_amount_tsas').val());	}
-		if ($('#medical_amount_tsas').length){	formData.append('medical_amount',$('#medical_amount_tsas').val());	}
-		if ($('#warm_clothing_amount_tsas').length){	formData.append('warm_clothing_amount',$('#warm_clothing_amount_tsas').val());	}
-		if ($('#study_tours_amount_tsas').length){	formData.append('study_tours_amount',$('#study_tours_amount_tsas').val());	}
-		if ($('#education_materials_amount_tsas').length){	formData.append('education_materials_amount',$('#education_materials_amount_tsas').val());	}
-		if ($('#thesis_research_amount_tsas').length){	formData.append('thesis_research_amount',$('#thesis_research_amount_tsas').val());	}
-		if ($('#final_remarks_tsas').length){	formData.append('final_remarks',$('#final_remarks_tsas').val());	}
+		/*if ($('#final_remarks_tsas').length){	formData.append('final_remarks',$('#final_remarks_tsas').val());	}
 		if ($('#total_requested_amount_tsas').length){	formData.append('total_requested_amount',$('#total_requested_amount_tsas').val());	}
 		if ($('#total_approved_amount_tsas').length){	formData.append('total_approved_amount',$('#total_approved_amount_tsas').val());	}*/
 

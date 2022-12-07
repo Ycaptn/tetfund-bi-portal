@@ -352,12 +352,12 @@
 </div>
 
 <!-- Program Start Date Field -->
-<div id="div_program_start_date" class="col-sm-12 mb-10">
+<div id="div_tSASNomination_program_start_date" class="col-sm-12 mb-10">
     <p>
         <strong>
             {!! Form::label('program_start_date', 'Program Start Date:', ['class'=>'control-label']) !!}
         </strong>
-        <span id="spn_program_start_date">
+        <span id="spn_tSASNomination_program_start_date">
         @if (isset($tSASNomination->program_start_date) && empty($tSASNomination->program_start_date)==false)
             {!! date('D, d-M-Y', strtotime($tSASNomination->program_start_date)) !!}
         @else
@@ -368,174 +368,14 @@
 </div>
 
 <!-- Program end date -->
-<div id="div_program_end_date" class="col-sm-12 mb-10">
+<div id="div_tSASNomination_program_end_date" class="col-sm-12 mb-10">
     <p>
         <strong>
             {!! Form::label('program_end_date', 'Program End Date:', ['class'=>'control-label']) !!}
         </strong>
-        <span id="spn_program_end_date">
+        <span id="spn_tSASNomination_program_end_date">
         @if (isset($tSASNomination->program_end_date) && empty($tSASNomination->program_end_date)==false)
             {!! date('D, d-M-Y', strtotime($tSASNomination->program_end_date)) !!}
-        @else
-            N/A
-        @endif
-        </span>
-    </p>
-</div>
-
-<!-- Fee Amount Field -->
-<div id="div_tSASNomination_fee_amount" class="col-sm-12 mb-10">
-    <p>
-        <strong>
-            {!! Form::label('fee_amount', 'Fee Amount:', ['class'=>'control-label']) !!}
-        </strong>
-        <span id="spn_tSASNomination_fee_amount">
-        @if (isset($tSASNomination->fee_amount) && empty($tSASNomination->fee_amount)==false)
-            {!! $tSASNomination->fee_amount !!}
-        @else
-            N/A
-        @endif
-        </span>
-    </p>
-</div>
-
-<!-- Tuition Amount Field -->
-<div id="div_tSASNomination_tuition_amount" class="col-sm-12 mb-10">
-    <p>
-        <strong>
-            {!! Form::label('tuition_amount', 'Tuition Amount:', ['class'=>'control-label']) !!}
-        </strong>
-        <span id="spn_tSASNomination_tuition_amount">
-        @if (isset($tSASNomination->tuition_amount) && empty($tSASNomination->tuition_amount)==false)
-            {!! $tSASNomination->tuition_amount !!}
-        @else
-            N/A
-        @endif
-        </span>
-    </p>
-</div>
-
-<!-- Upgrade Fee Amount Field -->
-<div id="div_tSASNomination_upgrade_fee_amount" class="col-sm-12 mb-10">
-    <p>
-        <strong>
-            {!! Form::label('upgrade_fee_amount', 'Upgrade Fee Amount:', ['class'=>'control-label']) !!} 
-        </strong>
-        <span id="spn_tSASNomination_upgrade_fee_amount">
-        @if (isset($tSASNomination->upgrade_fee_amount) && empty($tSASNomination->upgrade_fee_amount)==false)
-            {!! $tSASNomination->upgrade_fee_amount !!}
-        @else
-            N/A
-        @endif
-        </span>
-    </p>
-</div>
-
-<!-- Stipend Amount Field -->
-<div id="div_tSASNomination_stipend_amount" class="col-sm-12 mb-10">
-    <p>
-        <strong>
-            {!! Form::label('stipend_amount', 'Stipend Amount:', ['class'=>'control-label']) !!}
-        </strong>
-        <span id="spn_tSASNomination_stipend_amount">
-        @if (isset($tSASNomination->stipend_amount) && empty($tSASNomination->stipend_amount)==false)
-            {!! $tSASNomination->stipend_amount !!}
-        @else
-            N/A
-        @endif
-        </span>
-    </p>
-</div>
-
-<!-- Passage Amount Field -->
-<div id="div_tSASNomination_passage_amount" class="col-sm-12 mb-10">
-    <p>
-        <strong>
-            {!! Form::label('passage_amount', 'Passage Amount:', ['class'=>'control-label']) !!}
-        </strong>
-        <span id="spn_tSASNomination_passage_amount">
-        @if (isset($tSASNomination->passage_amount) && empty($tSASNomination->passage_amount)==false)
-            {!! $tSASNomination->passage_amount !!}
-        @else
-            N/A
-        @endif
-        </span>
-    </p>
-</div>
-
-<!-- Medical Amount Field -->
-<div id="div_tSASNomination_medical_amount" class="col-sm-12 mb-10">
-    <p>
-        <strong>
-            {!! Form::label('medical_amount', 'Medical Amount:', ['class'=>'control-label']) !!}
-        </strong>
-        <span id="spn_tSASNomination_medical_amount">
-        @if (isset($tSASNomination->medical_amount) && empty($tSASNomination->medical_amount)==false)
-            {!! $tSASNomination->medical_amount !!}
-        @else
-            N/A
-        @endif
-        </span>
-    </p>
-</div>
-
-<!-- Warm Clothing Amount Field -->
-<div id="div_tSASNomination_warm_clothing_amount" class="col-sm-12 mb-10">
-    <p>
-        <strong>
-            {!! Form::label('warm_clothing_amount', 'Warm Clothing Amount:', ['class'=>'control-label']) !!}
-        </strong>
-        <span id="spn_tSASNomination_warm_clothing_amount">
-        @if (isset($tSASNomination->warm_clothing_amount) && empty($tSASNomination->warm_clothing_amount)==false)
-            {!! $tSASNomination->warm_clothing_amount !!}
-        @else
-            N/A
-        @endif
-        </span>
-    </p>
-</div>
-
-<!-- Study Tours Amount Field -->
-<div id="div_tSASNomination_study_tours_amount" class="col-sm-12 mb-10">
-    <p>
-        <strong>
-            {!! Form::label('study_tours_amount', 'Study Tours Amount:', ['class'=>'control-label']) !!}
-        </strong>
-        <span id="spn_tSASNomination_study_tours_amount">
-        @if (isset($tSASNomination->study_tours_amount) && empty($tSASNomination->study_tours_amount)==false)
-            {!! $tSASNomination->study_tours_amount !!}
-        @else
-            N/A
-        @endif
-        </span>
-    </p>
-</div>
-
-<!-- Education Materials Amount Field -->
-<div id="div_tSASNomination_education_materials_amount" class="col-sm-12 mb-10">
-    <p>
-        <strong>
-            {!! Form::label('education_materials_amount', 'Education Materials Amount:', ['class'=>'control-label']) !!}
-        </strong>
-        <span id="spn_tSASNomination_education_materials_amount">
-        @if (isset($tSASNomination->education_materials_amount) && empty($tSASNomination->education_materials_amount)==false)
-            {!! $tSASNomination->education_materials_amount !!}
-        @else
-            N/A
-        @endif
-        </span>
-    </p>
-</div>
-
-<!-- Thesis Research Amount Field -->
-<div id="div_tSASNomination_thesis_research_amount" class="col-sm-12 mb-10">
-    <p>
-        <strong>
-            {!! Form::label('thesis_research_amount', 'Thesis Research Amount:', ['class'=>'control-label']) !!}
-        </strong>
-        <span id="spn_tSASNomination_thesis_research_amount">
-        @if (isset($tSASNomination->thesis_research_amount) && empty($tSASNomination->thesis_research_amount)==false)
-            {!! $tSASNomination->thesis_research_amount !!}
         @else
             N/A
         @endif
