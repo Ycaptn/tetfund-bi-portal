@@ -87,10 +87,6 @@ class UpdateTSASNominationAPIRequest extends AppBaseFormRequest
             $return_arr['international_passport_bio_page'] = 'file|mimes:pdf,doc,docx|max:5240';
         }
 
-        if(request()->hasFile('conference_attendence_letter') && request()->conference_attendence_letter != 'undefined') {
-            $return_arr['conference_attendence_letter'] = 'file|mimes:pdf,doc,docx|max:5240';
-        }
-
         return $return_arr;
     }
 

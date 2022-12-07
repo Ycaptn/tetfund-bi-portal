@@ -1,13 +1,13 @@
 {{-- input fields default values --}}
 @php
     //first_name
-    $first_name = (isset($nominationRequest->user->first_name) ? $nominationRequest->user->first_name : ($current_user->hasRole('bi-staff') ? $current_user->first_name : '') );
-    $middle_name = (isset($nominationRequest->user->middle_name) ? $nominationRequest->user->middle_name : ($current_user->hasRole('bi-staff') ? $current_user->middle_name : '') );
-    $last_name = (isset($nominationRequest->user->last_name) ? $nominationRequest->user->last_name : ($current_user->hasRole('bi-staff') ? $current_user->last_name : '') );
-    $email = (isset($nominationRequest->user->email) ? $nominationRequest->user->email : ($current_user->hasRole('bi-staff') ? $current_user->email : '') );
-    $telephone = (isset($nominationRequest->user->telephone) ? $nominationRequest->user->telephone : ($current_user->hasRole('bi-staff') ? $current_user->telephone : '') );
-    $gender = (isset($nominationRequest->user->gender) ? $nominationRequest->user->gender : ($current_user->hasRole('bi-staff') ? $current_user->gender : '') );
-    $gender = (isset($nominationRequest->user->gender) ? $nominationRequest->user->gender : ($current_user->hasRole('bi-staff') ? $current_user->gender : '') );
+    $first_name = (isset($nominationRequest->user->first_name) ? $nominationRequest->user->first_name : ($current_user->hasRole('BI-staff') ? $current_user->first_name : '') );
+    $middle_name = (isset($nominationRequest->user->middle_name) ? $nominationRequest->user->middle_name : ($current_user->hasRole('BI-staff') ? $current_user->middle_name : '') );
+    $last_name = (isset($nominationRequest->user->last_name) ? $nominationRequest->user->last_name : ($current_user->hasRole('BI-staff') ? $current_user->last_name : '') );
+    $email = (isset($nominationRequest->user->email) ? $nominationRequest->user->email : ($current_user->hasRole('BI-staff') ? $current_user->email : '') );
+    $telephone = (isset($nominationRequest->user->telephone) ? $nominationRequest->user->telephone : ($current_user->hasRole('BI-staff') ? $current_user->telephone : '') );
+    $gender = (isset($nominationRequest->user->gender) ? $nominationRequest->user->gender : ($current_user->hasRole('BI-staff') ? $current_user->gender : '') );
+    $gender = (isset($nominationRequest->user->gender) ? $nominationRequest->user->gender : ($current_user->hasRole('BI-staff') ? $current_user->gender : '') );
 
 @endphp
 
@@ -241,11 +241,11 @@
 </div>
 
 <hr>
-<div class="col-sm-12" style="display: none;" id="attachements_info_tsas">
+<div class="col-sm-12" style="display: none;" id="attachments_info_tsas">
     <small>
         <i class="text-danger">
             <strong>NOTE:</strong>
-            Uploading an attachement will authomatically replace older attachement provided initially. 
+            Uploading an attachment will authomatically replace older attachment provided initially. 
         </i>
     </small>
 </div>
@@ -278,14 +278,6 @@
     <label for="international_passport_bio_page_tsas" class="col-sm-11 col-form-label">Int'l Passport Bio Page:</label>
     <div class="col-sm-12">
         <input type="file" id="international_passport_bio_page_tsas" name="international_passport_bio_page_tsas" class="form-control">
-    </div>
-</div>
-
-<!-- conference attendence letter -->
-<div id="div-conference_attendence_letter_tsas" class="form-group  col-md-6">
-    <label for="conference_attendence_letter_tsas" class="col-sm-11 col-form-label">Conference Attendance Letter:</label>
-    <div class="col-sm-12">
-        <input type="file" id="conference_attendence_letter_tsas" name="conference_attendence_letter_tsas" class="form-control">
     </div>
 </div>
 

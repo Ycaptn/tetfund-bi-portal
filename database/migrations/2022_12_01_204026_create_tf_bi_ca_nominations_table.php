@@ -18,8 +18,8 @@ class CreateTfBiCaNominationsTable extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('organization_id')->references('id')->on('fc_organizations');
             $table->integer('display_ordinal')->default(0);
-            $table->string('email');
-            $table->string('telephone');
+            $table->string('email')->nullable();
+            $table->string('telephone')->nullable();
             $table->foreignUuid('beneficiary_institution_id')->references('id')->on('tf_bi_portal_beneficiaries');
             $table->foreignUuid('bi_submission_request_id')->nullable()->references('id')->on('tf_bi_submission_requests');
             //$table->foreignUuid('conference_id')->references('id')->on('tf_astd_conferences');
@@ -28,7 +28,7 @@ class CreateTfBiCaNominationsTable extends Migration
             $table->uuid('tf_iterum_portal_country_id')->nullable();
             $table->foreignUuid('nomination_request_id')->references('id')->on('tf_bi_nomination_requests');
             $table->foreignUuid('user_id')->nullable();
-            $table->string('gender');
+            $table->string('gender')->nullable();
             $table->string('name_title')->nullable();
             $table->string('first_name');
             $table->string('middle_name')->nullable();

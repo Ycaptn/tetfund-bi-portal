@@ -145,7 +145,7 @@ class BeneficiaryAPIController extends AppBaseController
             "last_name" => ucwords($request->bi_staff_lname),
             "telephone" => $request->bi_telephone,
             'password' => 'password',
-            "gender" => ucwords($request->bi_staff_gender),
+            "gender" => strtolower($request->bi_staff_gender),
             'organization_id' => $request->organization_id ?? null,
             'beneficiary_bi_id' => $beneficiary->id,
             'beneficiary_tetfund_iterum_id' => $beneficiary->tf_iterum_portal_key_id,

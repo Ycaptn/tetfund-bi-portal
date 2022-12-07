@@ -73,18 +73,9 @@ $(document).ready(function() {
         let nomination_type = $('#nomination_type').val();
         $('#div-requestNomination-modal-error').hide();
 
-        if (nomination_type == 'astd') {
-            $('#frm-requestNomination-modal').trigger("reset");
-            $('#astd_nomination_form').show();
-            $('#ca_nomination_form').hide();
-            $('#tp_nomination_form').hide();
-            $('#tsas_nomination_form').hide();
-            $("#spinner-request_nomination").hide();
-            $("#btn-save-mdl-requestNomination-modal").attr('disabled', false);
-        } else if (nomination_type == 'ca') {
+        if (nomination_type == 'ca') {
             $('#frm-requestNomination-modal').trigger("reset");
             $('#ca_nomination_form').show();
-            $('#astd_nomination_form').hide();
             $('#tp_nomination_form').hide();
             $('#tsas_nomination_form').hide();
             $("#spinner-request_nomination").hide();
@@ -92,7 +83,6 @@ $(document).ready(function() {
         } else if (nomination_type == 'tp') {
             $('#frm-requestNomination-modal').trigger("reset");
             $('#tp_nomination_form').show();
-            $('#astd_nomination_form').hide();
             $('#ca_nomination_form').hide();
             $('#tsas_nomination_form').hide();
             $("#spinner-request_nomination").hide();
@@ -100,14 +90,12 @@ $(document).ready(function() {
         } else if (nomination_type == 'tsas') {
             $('#frm-requestNomination-modal').trigger("reset");
             $('#tsas_nomination_form').show();
-            $('#astd_nomination_form').hide();
             $('#ca_nomination_form').hide();
             $('#tp_nomination_form').hide();
             $("#spinner-request_nomination").hide();
             $("#btn-save-mdl-requestNomination-modal").attr('disabled', false);
         } else {
             $('#frm-requestNomination-modal').trigger("reset");
-            $('#astd_nomination_form').hide();
             $('#ca_nomination_form').hide();
             $('#tp_nomination_form').hide();
             $('#tsas_nomination_form').hide();
@@ -280,12 +268,11 @@ $(document).ready(function() {
             formData.append('organization_id', '{{$organization->id}}');
         @endif
 
-       
-        // astd nomination request data appended
-        @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_append_astd_form_data')
-
         // tp nomination request data appended
         @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_append_tp_form_data')
+        
+        // tsas nomination request data appended
+        @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_append_tsas_form_data')
 
         $.ajax({
             url: "{{ route('tf-bi-portal-api.nomination_requests.store_nomination_request_and_details') }}",

@@ -49,7 +49,7 @@ class AppServiceProvider extends ServiceProvider
             'BI-ict'                            =>  [],
             'BI-librarian'                      =>  [],
             'BI-works'                          =>  [],
-            'BI-physical-planning-department'   =>  [],
+            'BI-physical-planning-dept'         =>  [],
             'BI-staff'                          =>  [],
             'BI-student'                        =>  [],
         ]);

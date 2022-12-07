@@ -39,7 +39,7 @@
     </div>
 </div>
 
-@if (Auth()->user()->hasAnyRole(['bi-staff']))
+@if (Auth()->user()->hasAnyRole(['BI-staff']))
 <div class="card radius-5">
     <div class="card-body">
         <div>
@@ -54,7 +54,7 @@
 </div>
 @endif
 
-@if (Auth()->user()->hasAnyRole(['bi-ict']))
+@if (Auth()->user()->hasAnyRole(['BI-ict']))
 <div class="card radius-5">
     <div class="card-body">
         <div>
@@ -69,7 +69,7 @@
 </div>
 @endif
 
-@if (Auth()->user()->hasAnyRole(['bi-librarian']))
+@if (Auth()->user()->hasAnyRole(['BI-librarian']))
 <div class="card radius-5">
     <div class="card-body">
         <div>
@@ -84,7 +84,7 @@
 </div>
 @endif
 
-@if (Auth()->user()->hasAnyRole(['bi-works']))
+@if (Auth()->user()->hasAnyRole(['BI-works']))
 <div class="card radius-5">
     <div class="card-body">
         <div>

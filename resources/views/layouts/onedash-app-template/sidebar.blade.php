@@ -126,7 +126,7 @@
 				</a>
 			</li>
 			
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-head-of-institution']))
+			@if (Auth()->user()->hasAnyRole(['BI-desk-officer','BI-head-of-institution']))
 			<li>
 				<a href="{{ route('tf-bi-portal.fund-availability') }}" class="">
 					<div class="parent-icon"><i class='bx bx-wallet'></i>
@@ -136,7 +136,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-head-of-institution']))
+			@if (Auth()->user()->hasAnyRole(['BI-desk-officer','BI-head-of-institution']))
 			<li>
 				<a href="{{ route('tf-bi-portal.submissionRequests.index') }}" class="">
 					<div class="parent-icon"><i class='bx bx-layer-plus'></i>
@@ -146,7 +146,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-staff']))
+			@if (Auth()->user()->hasAnyRole(['BI-staff']))
 				<li>
 					<a href="{{ route('tf-bi-portal.nomination_requests.index') }}" class="">
 						<div class="parent-icon"><i class='fa fa-check-square'></i>
@@ -156,7 +156,7 @@
 				</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution', 'bi-astd-committee-head', 'bi-ca-committee-head', 'bi-tp-committee-head', 'bi-tsas-committee-head', 'bi-astd-committee-member', 'bi-ca-committee-member', 'bi-tp-committee-member', 'bi-tsas-committee-member']))
+			@if (Auth()->user()->hasAnyRole(['BI-desk-officer', 'BI-head-of-institution', 'bi-astd-committee-head', 'BI-CA-committee-head', 'BI-TP-committee-head', 'BI-TSAS-committee-head', 'bi-astd-committee-member', 'BI-CA-committee-member', 'BI-TP-committee-member', 'BI-TSAS-committee-member']))
 
 			<li>
 			    <a href="javascript:void(0);" data-toggle="collapse" data-target="#access_dr" class="collapsed" aria-expanded="false">
@@ -171,18 +171,7 @@
 
 			    {{-- collapse-level-1 collapse --}}
 			    <ul id="access_dr" class="" aria-expanded="false" style="">
-			        {{-- @if (Auth()->user()->hasAnyRole(['bi-desk-officer']))
-				        <li>
-							<a href="{{ route('tf-bi-portal.nomination_requests.index') }}" class="">
-								<div class="menu-title col-sm-12">
-									<span class="fa fa-check-square"></span>
-									Nomination Requests
-								</div>
-							</a>
-						</li>
-					@endif --}}
-
-					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution', 'bi-tp-committee-head', 'bi-tp-committee-member']))
+			        @if (Auth()->user()->hasAnyRole(['BI-desk-officer', 'BI-head-of-institution', 'BI-TP-committee-head', 'BI-TP-committee-member']))
 						<li>
 							<a href="{{ route('tf-bi-portal.t_p_nominations.index') }}" class="">
 								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> TP Nomination </div>
@@ -190,7 +179,7 @@
 						</li>
 					@endif
 
-					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution', 'bi-ca-committee-head', 'bi-ca-committee-member']))
+					@if (Auth()->user()->hasAnyRole(['BI-desk-officer', 'BI-head-of-institution', 'BI-CA-committee-head', 'BI-CA-committee-member']))
 						<li>
 							<a href="#" class="">
 								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> CA Nomination </div>
@@ -198,7 +187,7 @@
 						</li>
 					@endif
 
-					@if (Auth()->user()->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution', 'bi-tsas-committee-head', 'bi-tsas-committee-member']))
+					@if (Auth()->user()->hasAnyRole(['BI-desk-officer', 'BI-head-of-institution', 'BI-TSAS-committee-head', 'BI-TSAS-committee-member']))
 						<li>
 							<a href="{{ route('tf-bi-portal.t_s_a_s_nominations.index') }}" class="">
 								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> TSAS Nomination </div>
@@ -209,7 +198,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer','bi-head-of-institution']))
+			@if (Auth()->user()->hasAnyRole(['BI-desk-officer','BI-head-of-institution']))
 			<li>
 				<a href="{{ route('tf-bi-portal.monitoring') }}" class="">
 					<div class="parent-icon"><i class='bx bx-location-plus'></i>
@@ -219,7 +208,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-desk-officer']))
+			@if (Auth()->user()->hasAnyRole(['BI-desk-officer']))
 			<li>
 				<a href="{{ route('tf-bi-portal.desk-officer') }}" class="">
 					<div class="parent-icon"><i class='bx bx-devices'></i>
@@ -229,7 +218,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-librarian']))
+			@if (Auth()->user()->hasAnyRole(['BI-librarian']))
 			<li>
 				<a href="{{ route('tf-bi-portal.librarian') }}" class="">
 					<div class="parent-icon"><i class='bx bx-book-reader'></i>
@@ -239,7 +228,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-ict']))
+			@if (Auth()->user()->hasAnyRole(['BI-ict']))
 			<li>
 				<a href="{{ route('tf-bi-portal.dict') }}" class="">
 					<div class="parent-icon"><i class='bx bx-dish'></i>
@@ -249,7 +238,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-works']))
+			@if (Auth()->user()->hasAnyRole(['BI-works']))
 			<li>
 				<a href="{{ route('tf-bi-portal.dworks') }}" class="">
 					<div class="parent-icon"><i class='bx bx-layer'></i>

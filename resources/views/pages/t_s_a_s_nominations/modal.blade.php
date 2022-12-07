@@ -65,6 +65,7 @@ $(document).ready(function() {
         $('#div-tSASNomination-modal-error').hide();
         $('#frm-tSASNomination-modal').trigger("reset");
         $('#txt-tSASNomination-primary-id').val(0);
+        $("#attachments_info_tsas").hide();
         $('#prefix_info').text("New");
 
         $('#mdl-tSASNomination-modal').modal('show');
@@ -155,7 +156,7 @@ $(document).ready(function() {
         $('#prefix_info').text("Edit");
 
         $("#spinner-t_s_a_s_nominations").show();
-        $("#attachements_info").show();
+        $("#attachments_info_tsas").show();
         $("#btn-save-mdl-tSASNomination-modal").attr('disabled', true);
 
         $('#div-show-txt-tSASNomination-primary-id').hide();

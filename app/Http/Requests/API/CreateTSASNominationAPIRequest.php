@@ -58,7 +58,6 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'admission_letter' => 'required|file|mimes:pdf|max:5240',
             'health_report' => 'required|file|mimes:pdf,doc,docx|max:5240',
             'international_passport_bio_page' => 'required|file|mimes:pdf,doc,docx|max:5240',
-            'conference_attendence_letter' => 'required|file|mimes:pdf,doc,docx|max:5240',
 
             //'program_duration_months' => 'nullable|min:0|max:365',
             //'fee_amount' => 'nullable|numeric|min:0|max:100000000',
@@ -115,7 +114,6 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'admission_letter' => 'Admission Letter',
             'health_report' => 'Health Report',
             'international_passport_bio_page' => 'International Passport Bio Page',
-            'conference_attendence_letter' => 'Conference Attendence Letter',
 
             //'fee_amount' => 'Fee Amount',
             //'tuition_amount' => 'Tuition Amount',

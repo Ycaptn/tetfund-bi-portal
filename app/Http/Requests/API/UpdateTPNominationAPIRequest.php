@@ -77,10 +77,6 @@ class UpdateTPNominationAPIRequest extends AppBaseFormRequest
             $return_arr['invitation_letter'] = 'file|mimes:pdf|max:5240';
         }
 
-        if(request()->hasFile('health_report') && request()->health_report != 'undefined') {
-            $return_arr['health_report'] = 'file|mimes:pdf,doc,docx|max:5240';
-        }
-
         return $return_arr;
     }
 

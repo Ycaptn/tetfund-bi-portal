@@ -89,7 +89,6 @@ class TPNomination extends Model {
         'total_requested_amount',
         'total_approved_amount',
         'final_remarks',
-        'type_of_nomination'
     ];
 
     /**
@@ -120,20 +119,18 @@ class TPNomination extends Model {
         'program_type' => 'string',
         'is_science_program' => 'boolean',
         'program_duration_months' => 'integer',
-        'fee_amount' => 'decimal:2',
-        'tuition_amount' => 'decimal:2',
-        'upgrade_fee_amount' => 'decimal:2',
-        'stipend_amount' => 'decimal:2',
-        'passage_amount' => 'decimal:2',
-        'medical_amount' => 'decimal:2',
-        'warm_clothing_amount' => 'decimal:2',
-        'study_tours_amount' => 'decimal:2',
-        'education_materials_amount' => 'decimal:2',
-        'thesis_research_amount' => 'decimal:2',
-        'final_remarks' => 'string',
+        'rank_gl_equivalent' => 'string',
+        'dta_amount_requested' => 'decimal:2',
+        'dta_amount_approved' => 'decimal:2',
+        'dta_nights_amount_requested' => 'decimal:2',
+        'dta_nights_amount_approved' => 'decimal:2',
+        'local_runs_amount_requested' => 'decimal:2',
+        'local_runs_amount_approved' => 'decimal:2',
+        'taxi_fare_amount_requested' => 'decimal:2',
+        'taxi_fare_amount_approved' => 'decimal:2',
         'total_requested_amount' => 'decimal:2',
         'total_approved_amount' => 'decimal:2',
-        'type_of_nomination' => 'string'
+        'final_remarks' => 'string',
     ];
 
 

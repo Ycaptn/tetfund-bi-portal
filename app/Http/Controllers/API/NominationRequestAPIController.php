@@ -66,7 +66,7 @@ class NominationRequestAPIController extends BaseController
         $bi_beneficiary = Beneficiary::find($bi_beneficiary_id);    //BI beneficiary
 
         //checking if staff is making request themselves
-        if ($current_user->hasAnyRole(['bi-staff'])) {
+        if ($current_user->hasAnyRole(['BI-staff'])) {
 
             $process_response = self::staffMakesNominationRequest($request->all(), $bi_beneficiary_id);
 
@@ -92,7 +92,7 @@ class NominationRequestAPIController extends BaseController
                 'organization_id' => $current_user->organization_id,
                 'beneficiary_bi_id' => $bi_beneficiary_id,
                 'beneficiary_tetfund_iterum_id' => $bi_beneficiary->tf_iterum_portal_key_id,
-                'user_roles_arr' => ['bi-staff']
+                'user_roles_arr' => ['BI-staff']
             ];
             
             // creating beneficiary staff user
@@ -155,7 +155,6 @@ class NominationRequestAPIController extends BaseController
 
         // handle nomination request details submission
         $input = $request->all();
-        $input['type_of_nomination'] = strtoupper($request->nomination_type);
         $input['user_id'] = $current_user->id;
         $input['nomination_request_id'] = $nominationRequest->id;
         $input['beneficiary_institution_id'] = $bi_beneficiary_id;
@@ -219,7 +218,7 @@ class NominationRequestAPIController extends BaseController
         $nominationRequestDetails['nominee_beneficiary'] = $nominationRequest->beneficiary;
         $nominationRequestDetails['submission_request'] = $nominationRequest->submission_request;
 
-        if ($current_user->hasRole('bi-'.strtolower($nominationRequest->type).'-committee-head')) {
+        if ($current_user->hasRole('BI-'.strtoupper($nominationRequest->type).'-committee-head')) {
             //voters for nominee
             $nomination_committee_voters = [];  
             if (count($nominationRequest->nomination_committee_votes) > 0) {
@@ -231,7 +230,7 @@ class NominationRequestAPIController extends BaseController
             $nominationRequestDetails['count_committee_votes'] = count($nomination_committee_voters);
 
             //all commitee members for specific type of nomination
-            $beneficiary_committee_members = User::role(['bi-'.strtolower($nominationRequest->type).'-committee-member'])
+            $beneficiary_committee_members = User::role(['BI-'.strtoupper($nominationRequest->type).'-committee-member', 'BI-'.strtoupper($nominationRequest->type).'-committee-head'])
                     ->join('tf_bi_beneficiary_members', 'tf_bi_beneficiary_members.beneficiary_user_id', 'fc_users.id', )
                     ->where('tf_bi_beneficiary_members.beneficiary_id', $beneficiary_members->beneficiary_id)
                     ->select('fc_users.*', 'tf_bi_beneficiary_members.beneficiary_id')
@@ -272,7 +271,7 @@ class NominationRequestAPIController extends BaseController
         }
 
         //checking if user has role to vote
-        $role_allowed = ['bi-'.strtolower($nominationRequest->type).'-committee-member', 'bi-'.strtolower($nominationRequest->type).'-committee-head'];
+        $role_allowed = ['BI-'.strtoupper($nominationRequest->type).'-committee-member', 'BI-'.strtoupper($nominationRequest->type).'-committee-head'];
         if (!($current_user->hasAnyRole($role_allowed))) {
             return self::createJSONResponse("fail","error",["Current user doesn't has the role to make consideration"],200);
         }
@@ -318,7 +317,7 @@ class NominationRequestAPIController extends BaseController
         $current_user = auth()->user();
 
         //checking if user has role to vote
-        $role_allowed = ['bi-'.strtolower($nominationRequest->type).'-committee-head'];
+        $role_allowed = ['BI-'.strtoupper($nominationRequest->type).'-committee-head'];
         if (!($current_user->hasAnyRole($role_allowed))) {
             return self::createJSONResponse("fail","error",["Current user doesn't has the role to make consideration"],200);
         }
@@ -356,7 +355,7 @@ class NominationRequestAPIController extends BaseController
                 ])->get();*/
 
         // possible roles allowed based on nomination
-        /*$committee_member_role = ['bi-'.strtolower($nominationRequest->type).'-committee-member'];*/
+        /*$committee_member_role = ['BI-'.strtoupper($nominationRequest->type).'-committee-member'];*/
 
         //all committee members for specific type of nomination
         /*$beneficiary_committee_members = User::role($committee_member_role)
@@ -482,7 +481,7 @@ class NominationRequestAPIController extends BaseController
         }
 
         //checking if user has role to vote
-        if (!($current_user->hasRole('bi-head-of-institution'))) {
+        if (!($current_user->hasRole('BI-head-of-institution'))) {
             return self::createJSONResponse("fail","error",["Current user doesn't has the role to make HOI approval decision"],200);
         }
         

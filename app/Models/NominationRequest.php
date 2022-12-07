@@ -59,6 +59,7 @@ class NominationRequest extends Model
         'bi_submission_request_id',
         'organization_id',
         'beneficiary_id',
+        'nomination_request_id',
         'type',
         'request_date',
         'status',

@@ -44,7 +44,7 @@ trait BeneficiaryUserTrait {
             $zUser->syncRoles($pay_load_data['user_roles_arr']);
             $zUser->gender = $pay_load_data['gender'];
         } else if(isset($pay_load_data['beneficiary_synchronization']) && $pay_load_data['beneficiary_synchronization'] == true) {
-            $zUser->syncRoles(['bi-desk-officer']);
+            $zUser->syncRoles(['BI-desk-officer']);
         }
         $zUser->save();
         if (isset($zUser->id) && $zUser->id != null) {

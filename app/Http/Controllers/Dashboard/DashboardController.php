@@ -90,7 +90,7 @@ class DashboardController extends BaseController
 
         $allRoles = Role::where('guard_name', 'web')
                     ->where('name', '!=', 'admin')
-                    ->where('name', '!=', 'bi-desk-officer')
+                    ->where('name', '!=', 'BI-desk-officer')
                     ->where('name', 'like', 'bi-%')
                     ->pluck('name');
         

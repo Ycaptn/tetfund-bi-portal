@@ -90,7 +90,6 @@ class TSASNomination extends Model {
         'final_remarks',
         'total_requested_amount',
         'total_approved_amount',
-        'type_of_nomination'
     ];
 
     /**
@@ -134,7 +133,6 @@ class TSASNomination extends Model {
         'final_remarks' => 'string',
         'total_requested_amount' => 'decimal:2',
         'total_approved_amount' => 'decimal:2',
-        'type_of_nomination' => 'string'
     ];
 
 

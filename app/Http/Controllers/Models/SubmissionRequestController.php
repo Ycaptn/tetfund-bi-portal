@@ -215,7 +215,7 @@ class SubmissionRequestController extends BaseController
         $current_user = auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
-        if($current_user->hasRole('bi-desk-officer') == false) {
+        if($current_user->hasRole('BI-desk-officer') == false) {
             return redirect()->back()->with('error', 'Please, Kindly Contact the Institution TETFund Desk Officer, as only them has the Privilege to Submit This Request');
         }
         
@@ -274,12 +274,10 @@ class SubmissionRequestController extends BaseController
         $pay_load['_method'] = 'POST';
         $pay_load['is_aip_request'] = true;
         $pay_load['requested_tranche'] = 'AIP';
-        //$pay_load['title'] = 'funding AIP request';
 
         // add attachment records to payload
         $submission_attachment_array = $submissionRequest->get_all_attachments($input['submission_request_id']);
-        $pay_load['submission_attachment_array'] = $submission_attachment_array;
-
+        $pay_load['submission_attachment_array'] = ($submission_attachment_array != null) ? $submission_attachment_array : [];
         // add nomination details and attachements to payload
         $intervention_name = '';
         $nomination_table = '';

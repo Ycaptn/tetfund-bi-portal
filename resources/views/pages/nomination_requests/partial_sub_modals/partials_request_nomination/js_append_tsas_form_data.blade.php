@@ -69,7 +69,3 @@ if($('#health_report_tsas').get(0).files.length != 0){
 if($('#international_passport_bio_page_tsas').get(0).files.length != 0){
 	formData.append('international_passport_bio_page', $('#international_passport_bio_page_tsas')[0].files[0]);  
 }
-
-{{-- if($('#conference_attendence_letter_tsas').get(0).files.length != 0){
-	formData.append('conference_attendence_letter', $('#conference_attendence_letter_tsas')[0].files[0]);  
-} --}}

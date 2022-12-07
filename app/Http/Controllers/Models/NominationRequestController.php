@@ -36,7 +36,7 @@ class NominationRequestController extends BaseController
         $setDataQuery = ['organization_id'=>$org->id, 'beneficiary_id'=>$beneficiary_member->beneficiary_id];
 
         //filter if user is a staff
-        if (auth()->user()->hasAnyRole(['bi-staff'])) {
+        if (auth()->user()->hasAnyRole(['BI-staff'])) {
            $setDataQuery['user_id'] = $current_user->id;
         }
 

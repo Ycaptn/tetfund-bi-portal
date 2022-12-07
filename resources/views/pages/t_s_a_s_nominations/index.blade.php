@@ -14,26 +14,26 @@ All T S A S Nomination
 @section('page_title_suffix')
     @if(isset(request()->view_type))
         @if(request()->view_type == 'committee_approved')
-            @if($current_user->hasRole('bi-desk-officer'))
+            @if($current_user->hasRole('BI-desk-officer'))
                 Committee Considered Nomination
             @else
                 Committee Approved
             @endif
         @elseif(request()->view_type == 'hoi_approved')
-            @if($current_user->hasAnyRole(['bi-desk-officer', 'bi-head-of-institution' ]))
+            @if($current_user->hasAnyRole(['BI-desk-officer', 'BI-head-of-institution' ]))
                 Approved Nomination
             @endif
         @elseif(request()->view_type == 'committee_head_consideration')
-            @if($current_user->hasRole('bi-tsas-committee-head'))
+            @if($current_user->hasRole('BI-TSAS-committee-head'))
                 Considered Nomination
             @endif
         @endif
     @else
-        @if($current_user->hasRole('bi-desk-officer'))
+        @if($current_user->hasRole('BI-desk-officer'))
             Newly Submitted
-        @elseif($current_user->hasRole('bi-head-of-institution'))
+        @elseif($current_user->hasRole('BI-head-of-institution'))
             Nomination Approval
-        @elseif($current_user->hasRole('bi-tsas-committee-member'))
+        @elseif($current_user->hasRole('BI-TSAS-committee-member'))
             Nomination Consideration
         @endif
     @endif
@@ -46,7 +46,7 @@ All T S A S Nomination
 @stop
 
 @section('page_title_buttons')
-    {{-- @if ($current_user->hasAnyRole(['bi-desk-officer']))
+    {{-- @if ($current_user->hasAnyRole(['BI-desk-officer']))
         <a id="btn-new-mdl-tSASNomination-modal" class="btn btn-sm btn-primary btn-new-mdl-tSASNomination-modal">
             <i class="bx bx-book-add mr-1"></i>New T S A S Nomination
         </a>
@@ -67,7 +67,7 @@ All T S A S Nomination
             <div class="table-responsive">
                 <p>
                     <div class="col-sm-12">
-                        @if($current_user->hasRole('bi-desk-officer'))
+                        @if($current_user->hasRole('BI-desk-officer'))
 
                         {{-- appears for desk officer to preview newly submitted nomination --}}
                             <a  href="{{ route('tf-bi-portal.t_s_a_s_nominations.index') }}"
@@ -91,7 +91,7 @@ All T S A S Nomination
                             </a>
                         @endif
 
-                        @if ($current_user->hasAnyRole(['bi-tsas-committee-member', 'bi-tsas-committee-head']))
+                        @if ($current_user->hasAnyRole(['BI-TSAS-committee-member', 'BI-TSAS-committee-head']))
                             {{-- appears for all tsas commitee me to preview newly submitted nomination --}}
                             <a  href="{{ route('tf-bi-portal.t_s_a_s_nominations.index') }}"
                                 class="btn btn-sm btn-primary"
@@ -100,7 +100,7 @@ All T S A S Nomination
                             </a> 
                         @endif
 
-                        @if ($current_user->hasRole('bi-tsas-committee-head'))
+                        @if ($current_user->hasRole('BI-TSAS-committee-head'))
                             {{-- appears for all tsas commitee head and decide final consideration state --}}
                             <a  href="{{ route('tf-bi-portal.t_s_a_s_nominations.index') }}?view_type=committee_head_consideration"
                                 class="btn btn-sm btn-primary"
@@ -109,7 +109,7 @@ All T S A S Nomination
                             </a> 
                         @endif
 
-                        @if($current_user->hasRole('bi-head-of-institution'))
+                        @if($current_user->hasRole('BI-head-of-institution'))
                             {{-- appeear so HOI can approve nomnations --}}
                             <a  href="{{ route('tf-bi-portal.t_s_a_s_nominations.index') }}"
                                 class="btn btn-sm btn-primary"
@@ -135,7 +135,7 @@ All T S A S Nomination
 
     @include('tf-bi-portal::pages.t_s_a_s_nominations.modal')
     
-    @if($current_user->hasRole('bi-desk-officer'))
+    @if($current_user->hasRole('BI-desk-officer'))
         @if(!isset(request()->view_type))
             @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_to_committee_modal')
         @endif
@@ -151,17 +151,17 @@ All T S A S Nomination
     @endif
 
     {{-- include approval by voting if user is an tsas committee menber --}}
-    @if ($current_user->hasAnyRole(['bi-tsas-committee-head', 'bi-tsas-committee-member']))
+    @if ($current_user->hasAnyRole(['BI-TSAS-committee-head', 'BI-TSAS-committee-member']))
         @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.committee_approval_for_nomination_modal')
     @endif
 
     {{-- include tsas commitee head to check committee menber --}}
-    @if ($current_user->hasRole('bi-tsas-committee-head'))
+    @if ($current_user->hasRole('BI-TSAS-committee-head'))
         @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.head_committee_to_members_vote_modal')
     @endif
 
     {{-- include approval for Head of Institution --}}
-    @if ($current_user->hasRole('bi-head-of-institution'))
+    @if ($current_user->hasRole('BI-head-of-institution'))
         @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.hoi_approval_for_nomination_modal')
     @endif
 

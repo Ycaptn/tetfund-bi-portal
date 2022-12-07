@@ -9,7 +9,7 @@
                     <option value="">Select the type of Intervention</option>
                 @if (isset($intervention_types) && $intervention_types != null)
                     @foreach ($intervention_types as $idx=>$type)
-                        @if (in_array('bi_ict', $bi_roles) || in_array('bi-desk-officer', $bi_roles))
+                        @if (in_array('bi_ict', $bi_roles) || in_array('BI-desk-officer', $bi_roles))
                             <option {{ (old('intervention_type') == $type || isset($submissionRequest) && $submissionRequest->tf_iterum_intervention_line_key_id==$idx) ? "selected" : '' }} value="{{$type}}"> {{ ucwords($type) }}</option>
                         @endif
                     @endforeach

@@ -66,6 +66,7 @@ $(document).ready(function() {
         $('#frm-tPNomination-modal').trigger("reset");
         $('#txt-tPNomination-primary-id').val(0);
         $('#prefix_info').text("New");
+        $("#attachments_info_tp").hide();
 
         $('#mdl-tPNomination-modal').modal('show');
 
@@ -155,7 +156,7 @@ $(document).ready(function() {
         $('#prefix_info').text("Edit");
 
         $("#spinner-t_p_nominations").show();
-        $("#attachements_info").show();
+        $("#attachments_info_tp").show();
         $("#btn-save-mdl-tPNomination-modal").attr('disabled', true);
 
         $('#div-show-txt-tPNomination-primary-id').hide();
