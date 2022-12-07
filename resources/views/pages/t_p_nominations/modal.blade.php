@@ -244,6 +244,14 @@ $(document).ready(function() {
             }, function(isConfirm) {
                 if (isConfirm) {
 
+                    swal({
+                        title: '<div id="spinner-beneficiaries" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br> Please wait...',
+                        text: 'Deleting TPNomination Details <br><br> Do not refresh this page! ',
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        html: true
+                    });
+
                     let endPointUrl = "{{ route('tf-bi-portal-api.t_p_nominations.destroy','') }}/"+itemId;
 
                     let formData = new FormData();
@@ -273,7 +281,10 @@ $(document).ready(function() {
                                 });
                                 location.reload(true);
                             }
-                        },
+                        }, error: function(errors) {
+                            console.log(errors);
+                            swal("Error", "Oops an error occurred. Please try again.", "error");
+                        }
                     });
                 }
             });
@@ -332,35 +343,19 @@ $(document).ready(function() {
 		if ($('#bank_account_number_tp').length){	formData.append('bank_account_number',$('#bank_account_number_tp').val());	}
 		if ($('#bank_name_tp').length){	formData.append('bank_name',$('#bank_name_tp').val());	}
 		if ($('#bank_sort_code_tp').length){	formData.append('bank_sort_code',$('#bank_sort_code_tp').val());	}
-		if ($('#intl_passport_number_tp').length){	formData.append('intl_passport_number',$('#intl_passport_number_tp').val());	}
 		if ($('#bank_verification_number_tp').length){	formData.append('bank_verification_number',$('#bank_verification_number_tp').val());	}
-		if ($('#national_id_number_tp').length){	formData.append('national_id_number',$('#national_id_number_tp').val());	}
-		if ($('#degree_type_tp').length){	formData.append('degree_type',$('#degree_type_tp').val());	}
-		if ($('#program_title_tp').length){	formData.append('program_title',$('#program_title_tp').val());	}
-		if ($('#program_type_tp').length){	formData.append('program_type',$('#program_type_tp').val());	}
+		if ($('#national_id_number_tp').length){	formData.append('national_id_number',$('#national_id_number_tp').val());	}		
         if ($('#is_science_program_tp').length){ formData.append('is_science_program',$('#is_science_program_tp').val());   }
         if ($('#program_start_date_tp').length){ formData.append('program_start_date',$('#program_start_date_tp').val());   }
         if ($('#program_end_date_tp').length){ formData.append('program_end_date',$('#program_end_date_tp').val());   }
-        
-        formData.append('passport_photo', $('#passport_photo_tp')[0].files[0]);
-        formData.append('admission_letter', $('#admission_letter_tp')[0].files[0]);          
-        formData.append('health_report', $('#health_report_tp')[0].files[0]);  
-        formData.append('international_passport_bio_page', $('#international_passport_bio_page_tp')[0].files[0]);  
-        formData.append('conference_attendence_letter', $('#conference_attendence_letter_tp')[0].files[0]);  
-                
-		/*if ($('#fee_amount').length){	formData.append('fee_amount',$('#fee_amount').val());	}
-		if ($('#tuition_amount').length){	formData.append('tuition_amount',$('#tuition_amount').val());	}
-		if ($('#upgrade_fee_amount').length){	formData.append('upgrade_fee_amount',$('#upgrade_fee_amount').val());	}
-		if ($('#stipend_amount').length){	formData.append('stipend_amount',$('#stipend_amount').val());	}
-		if ($('#passage_amount').length){	formData.append('passage_amount',$('#passage_amount').val());	}
-		if ($('#medical_amount').length){	formData.append('medical_amount',$('#medical_amount').val());	}
-		if ($('#warm_clothing_amount').length){	formData.append('warm_clothing_amount',$('#warm_clothing_amount').val());	}
-		if ($('#study_tours_amount').length){	formData.append('study_tours_amount',$('#study_tours_amount').val());	}
-		if ($('#education_materials_amount').length){	formData.append('education_materials_amount',$('#education_materials_amount').val());	}
-		if ($('#thesis_research_amount').length){	formData.append('thesis_research_amount',$('#thesis_research_amount').val());	}
-		if ($('#final_remarks').length){	formData.append('final_remarks',$('#final_remarks').val());	}
-		if ($('#total_requested_amount').length){	formData.append('total_requested_amount',$('#total_requested_amount').val());	}
-		if ($('#total_approved_amount').length){	formData.append('total_approved_amount',$('#total_approved_amount').val());	}*/
+
+        if($('#passport_photo_tp').get(0).files.length != 0){
+            formData.append('passport_photo', $('#passport_photo_tp')[0].files[0]);
+        }
+
+        if($('#invitation_letter_tp').get(0).files.length != 0){
+            formData.append('invitation_letter', $('#invitation_letter_tp')[0].files[0]);      
+        }
 
 
         $.ajax({
@@ -381,17 +376,13 @@ $(document).ready(function() {
                     });
                 }else{
                     $('#div-tPNomination-modal-error').hide();
-                    window.setTimeout( function(){
-
-                        $('#div-tPNomination-modal-error').hide();
-                        console.log(result.message);
-                        swal({
-                            title: "Saved",
-                            text: "TPNomination saved successfully",
-                            type: "success"
-                        });
-                        location.reload(true);
-                    },20);
+                    console.log(result.message);
+                    swal({
+                        title: "Saved",
+                        text: "TPNomination saved successfully",
+                        type: "success"
+                    });
+                    location.reload(true);
                 }
 
                 $("#spinner-t_p_nominations").hide();

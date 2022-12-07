@@ -93,7 +93,7 @@ class TSASNominationAPIController extends AppBaseController
             $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination Passport Photo";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo, 's3');
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo);
         }
 
         /*handling admission_letter upload process*/
@@ -101,7 +101,7 @@ class TSASNominationAPIController extends AppBaseController
             $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination Admission Letter";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->admission_letter, 's3');
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->admission_letter);
         } 
 
         /*handling health_report upload process*/
@@ -109,7 +109,7 @@ class TSASNominationAPIController extends AppBaseController
             $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination Health Report";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->health_report, 's3');
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->health_report);
         } 
 
         /*handling international_passport_bio_page upload process*/
@@ -117,7 +117,7 @@ class TSASNominationAPIController extends AppBaseController
             $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination International Passport Bio Page";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->international_passport_bio_page, 's3');
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->international_passport_bio_page);
         } 
 
         /*handling conference_attendence_letter upload process*/
@@ -125,7 +125,7 @@ class TSASNominationAPIController extends AppBaseController
             $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination Conference Attendence Letter";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendence_letter, 's3');
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendence_letter);
         }
 
         TSASNominationCreated::dispatch($tSASNomination);
@@ -204,7 +204,7 @@ class TSASNominationAPIController extends AppBaseController
             if ($attachement != null) {
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo, 's3');
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo);
         }
 
         /*handling admission_letter update process*/
@@ -216,7 +216,7 @@ class TSASNominationAPIController extends AppBaseController
             if ($attachement != null) {
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->admission_letter, 's3');
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->admission_letter);
         }
 
         /*handling health_report update process*/
@@ -228,7 +228,7 @@ class TSASNominationAPIController extends AppBaseController
             if ($attachement != null) {
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->health_report, 's3');
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->health_report);
         }
 
         /*handling international_passport_bio_page update process*/
@@ -236,11 +236,11 @@ class TSASNominationAPIController extends AppBaseController
             $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination International Passport Bio Page";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
+            $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old international_passport_bio_page photo
             if ($attachement != null) {
-                $nominationRequest->delete_attachment($label); // delete old passport photo
+                $nominationRequest->delete_attachment($label); // delete old international  passport bio page
             }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->international_passport_bio_page, 's3');
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->international_passport_bio_page);
         }
 
         /*handling conference_attendence_letter update process*/
@@ -248,11 +248,11 @@ class TSASNominationAPIController extends AppBaseController
             $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination Conference Attendence Letter";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
+            $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old conference_attendence letter
             if ($attachement != null) {
-                $nominationRequest->delete_attachment($label); // delete old passport photo
+                $nominationRequest->delete_attachment($label); // delete old conference_attendence letter
             }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendence_letter, 's3');
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendence_letter);
         }
 
         TSASNominationUpdated::dispatch($tSASNomination);
@@ -276,6 +276,18 @@ class TSASNominationAPIController extends AppBaseController
 
         if (empty($tSASNomination)) {
             return $this->sendError('T S A S Nomination not found');
+        }
+
+        $nominationRequest = $tSASNomination->nomination_request;
+        $nominationRequest->details_submitted = false;
+        $nominationRequest->save();
+
+        $attachments = $nominationRequest->get_all_attachments($nominationRequest->id);
+
+        if (count($attachments) > 0) {
+            foreach ($attachments as $attachment) {
+                $nominationRequest->delete_attachment($attachment->label);
+            }
         }
 
         $tSASNomination->delete();

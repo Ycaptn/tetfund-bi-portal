@@ -292,19 +292,12 @@ $(document).ready(function() {
                     });
                 }else{
                     $('#div-requestNomination-modal-error').hide();
-                    window.setTimeout( function(){
-
-                        $('#div-requestNomination-modal-error').hide();
-
-                        swal({
-                            title: "Saved",
-                            text: result.message,
-                            type: "success"
-                        },function(){
-                            location.reload(true);
-                        });
-
-                    },20);
+                    swal({
+                        title: "Saved",
+                        text: result.message,
+                        type: "success"
+                    });
+                    location.reload(true);
                 }
 
                 $("#spinner-request_nomination").hide();

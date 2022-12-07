@@ -246,6 +246,14 @@ $(document).ready(function() {
 
                     let endPointUrl = "{{ route('tf-bi-portal-api.t_s_a_s_nominations.destroy','') }}/"+itemId;
 
+                    swal({
+                        title: '<div id="spinner-beneficiaries" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br> Please wait...',
+                        text: 'Deleting TSASNomination Details <br><br> Do not refresh this page! ',
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        html: true
+                    });
+
                     let formData = new FormData();
                     formData.append('_token', $('input[name="_token"]').val());
                     formData.append('_method', 'DELETE');
@@ -273,7 +281,10 @@ $(document).ready(function() {
                                 });
                                 location.reload(true);
                             }
-                        },
+                        }, error: function(errors) {
+                            console.log(errors);
+                            swal("Error", "Oops an error occurred. Please try again.", "error");
+                        }
                     });
                 }
             });
@@ -341,12 +352,19 @@ $(document).ready(function() {
         if ($('#is_science_program_tsas').length){ formData.append('is_science_program',$('#is_science_program_tsas').val());   }
         if ($('#program_start_date_tsas').length){ formData.append('program_start_date',$('#program_start_date_tsas').val());   }
         if ($('#program_end_date_tsas').length){ formData.append('program_end_date',$('#program_end_date_tsas').val());   }
-        
-        formData.append('passport_photo', $('#passport_photo_tsas')[0].files[0]);
-        formData.append('admission_letter', $('#admission_letter_tsas')[0].files[0]);          
-        formData.append('health_report', $('#health_report_tsas')[0].files[0]);  
-        formData.append('international_passport_bio_page', $('#international_passport_bio_page_tsas')[0].files[0]);  
-        formData.append('conference_attendence_letter', $('#conference_attendence_letter_tsas')[0].files[0]);  
+
+        if($('#passport_photo_tsas').get(0).files.length != 0){
+            formData.append('passport_photo', $('#passport_photo_tsas')[0].files[0]);
+        }
+        if($('#admission_letter_tsas').get(0).files.length != 0){
+            formData.append('admission_letter', $('#admission_letter_tsas')[0].files[0]);      
+        }
+        if($('#health_report_tsas').get(0).files.length != 0){
+            formData.append('health_report', $('#health_report_tsas')[0].files[0]);  
+        }
+        if($('#international_passport_bio_page_tsas').get(0).files.length != 0){
+            formData.append('international_passport_bio_page', $('#international_passport_bio_page_tsas')[0].files[0]);  
+        } 
                 
 		/*if ($('#fee_amount_tsas').length){	formData.append('fee_amount',$('#fee_amount_tsas').val());	}
 		if ($('#tuition_amount_tsas').length){	formData.append('tuition_amount',$('#tuition_amount_tsas').val());	}
@@ -381,17 +399,13 @@ $(document).ready(function() {
                     });
                 }else{
                     $('#div-tSASNomination-modal-error').hide();
-                    window.setTimeout( function(){
-
-                        $('#div-tSASNomination-modal-error').hide();
-                        console.log(result.message);
-                        swal({
-                            title: "Saved",
-                            text: "TSASNomination saved successfully",
-                            type: "success"
-                        });
-                        location.reload(true);
-                    },20);
+                    console.log(result.message);
+                    swal({
+                        title: "Saved",
+                        text: "TSASNomination saved successfully",
+                        type: "success"
+                    });
+                    location.reload(true);
                 }
 
                 $("#spinner-t_s_a_s_nominations").hide();

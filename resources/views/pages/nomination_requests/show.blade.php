@@ -85,7 +85,7 @@ Nomination Request Details {{-- {{$nominationRequest->title}} --}}
                         <div class="col-sm-12" style="border-bottom: 1px solid gray;">
                             <h6 class="text-center"> 
                                 <strong>
-                                    Attachements
+                                    Attachments
                                 </strong>
                             </h6>
                         </div>
@@ -102,7 +102,7 @@ Nomination Request Details {{-- {{$nominationRequest->title}} --}}
                                 </div>
                             @endforeach
                         @else
-                            <i> <small> No attachement provided </small> </i>
+                            <i> <small> No attachment provided </small> </i>
                         @endif
                     </div>
                 </div>

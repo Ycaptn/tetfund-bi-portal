@@ -93,7 +93,7 @@ class TPNominationAPIController extends AppBaseController
             $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Passport Photo";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo, 's3');
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo);
         }
 
         /*handling invitation_letter upload process*/
@@ -101,16 +101,8 @@ class TPNominationAPIController extends AppBaseController
             $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Invitation Letter";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->invitation_letter, 's3');
-        } 
-                                                                                                                                                                                                                                                                                        
-        /*handling health_report upload process*/
-        if($request->hasFile('health_report')) {
-            $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Health Report";
-            $discription = "This " . strtolower("Document contains the $label");
-
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->health_report, 's3');
-        } 
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->invitation_letter);
+        }
 
         TPNominationCreated::dispatch($tPNomination);
         return $this->sendResponse($tPNomination->toArray(), 'T P Nomination saved successfully');
@@ -188,55 +180,19 @@ class TPNominationAPIController extends AppBaseController
             if ($attachement != null) {
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo, 's3');
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo);
         }
 
-        /*handling admission_letter update process*/
-        if($request->hasFile('admission_letter')) {
-            $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Admission Letter";
+        /*handling invitation_letter update process*/
+        if($request->hasFile('invitation_letter')) {
+            $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Invitation Letter";
             $discription = "This " . strtolower("Document contains the $label");
 
-            $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
+            $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old invitation_letter
             if ($attachement != null) {
-                $nominationRequest->delete_attachment($label); // delete old passport photo
+                $nominationRequest->delete_attachment($label); // delete old invitation_letter
             }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->admission_letter, 's3');
-        }
-
-        /*handling health_report update process*/
-        if($request->hasFile('health_report')) {
-            $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Health Report";
-            $discription = "This " . strtolower("Document contains the $label");
-
-            $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
-            if ($attachement != null) {
-                $nominationRequest->delete_attachment($label); // delete old passport photo
-            }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->health_report, 's3');
-        }
-
-        /*handling international_passport_bio_page update process*/
-        if($request->hasFile('international_passport_bio_page')) {
-            $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination International Passport Bio Page";
-            $discription = "This " . strtolower("Document contains the $label");
-
-            $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
-            if ($attachement != null) {
-                $nominationRequest->delete_attachment($label); // delete old passport photo
-            }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->international_passport_bio_page, 's3');
-        }
-
-        /*handling conference_attendence_letter update process*/
-        if($request->hasFile('conference_attendence_letter')) {
-            $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Conference Attendence Letter";
-            $discription = "This " . strtolower("Document contains the $label");
-
-            $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
-            if ($attachement != null) {
-                $nominationRequest->delete_attachment($label); // delete old passport photo
-            }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendence_letter, 's3');
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->invitation_letter);
         }
 
         TPNominationUpdated::dispatch($tPNomination);
@@ -260,6 +216,18 @@ class TPNominationAPIController extends AppBaseController
 
         if (empty($tPNomination)) {
             return $this->sendError('T P Nomination not found');
+        }
+
+        $nominationRequest = $tPNomination->nomination_request;
+        $nominationRequest->details_submitted = false;
+        $nominationRequest->save();
+
+        $attachments = $nominationRequest->get_all_attachments($nominationRequest->id);
+
+        if (count($attachments) > 0) {
+            foreach ($attachments as $attachment) {
+                $nominationRequest->delete_attachment($attachment->label);
+            }
         }
 
         $tPNomination->delete();

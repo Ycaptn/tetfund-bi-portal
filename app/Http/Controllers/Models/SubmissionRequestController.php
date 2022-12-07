@@ -183,7 +183,7 @@ class SubmissionRequestController extends BaseController
                     $checklist_id = substr("$checklist_input_name",10);
                     $label = $checklist_items_arr[$checklist_id]; 
                     $discription = 'This Document Contains the ' . $label ;
-                    $submissionRequest->attach(auth()->user(), $label, $discription, $attachement_inputs[$checklist_input_name], 's3');
+                    $submissionRequest->attach(auth()->user(), $label, $discription, $attachement_inputs[$checklist_input_name]);
                 }
             }
         }
@@ -192,7 +192,7 @@ class SubmissionRequestController extends BaseController
         if (isset($request->additional_attachment) && $request->hasFile('additional_attachment')) {
             $label = $request->additional_attachment_name . ' Additional Attachment'; 
             $discription = 'This Document Contains the ' . $label ;
-            $submissionRequest->attach(auth()->user(), $label, $discription, $attachement_inputs['additional_attachment'], 's3');
+            $submissionRequest->attach(auth()->user(), $label, $discription, $attachement_inputs['additional_attachment']);
         }   
 
         $success_message = 'Submission Request Attachments saved successfully!';

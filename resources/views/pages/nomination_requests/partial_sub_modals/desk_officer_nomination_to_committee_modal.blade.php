@@ -288,7 +288,7 @@
                             showConfirmButton: false,
                             allowOutsideClick: false,
                             html: true
-                        })
+                        });
 
                         let formData = new FormData();
                         formData.append('_token', $('input[name="_token"]').val());
