@@ -194,6 +194,13 @@
 							</a>
 						</li>
 					@endif
+					@if (Auth()->user()->hasRole('BI-desk-officer'))
+						<li>
+							<a href="#" class="">
+								<div class="menu-title"><span class="fa fa-tools"></span> Nomination Settings </div>
+							</a>
+						</li>
+					@endif
 			    </ul>
 			</li>
 			@endif
