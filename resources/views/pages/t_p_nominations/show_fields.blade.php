@@ -80,14 +80,14 @@
 </div>
 
 <!-- Name Title Field -->
-<div id="div_tPNomination_name_title" class="col-sm-12 mb-10">
+<div id="div_tPNomination_rank_gl_equivalent" class="col-sm-12 mb-10">
     <p>
         <strong>
             {!! Form::label('name_title', 'Name Title:', ['class'=>'control-label']) !!} 
         </strong>
-        <span id="spn_tPNomination_name_title">
-        @if (isset($tPNomination->name_title) && empty($tPNomination->name_title)==false)
-            {!! $tPNomination->name_title !!}
+        <span id="spn_tPNomination_rank_gl_equivalent">
+        @if (isset($tPNomination->rank_gl_equivalent) && empty($tPNomination->rank_gl_equivalent)==false)
+            {!! $tPNomination->rank_gl_equivalent !!}
         @else
             N/A
         @endif

@@ -68,6 +68,7 @@ Fund Availability
                             <thead>
                                 <tr>
                                     <th>Type</th>
+                                    <th>Line</th>
                                     <th>Funding Description</th>
                                     <th>Allocation Code</th>
                                     <th>Allocated Amount</th>
@@ -79,6 +80,10 @@ Fund Availability
                                     <tr>
                                         <td name='cdp_li_type_{{$detail->id}}' id='cdp_li_type_{{$detail->id}}'>
                                             {{ ucwords($detail->type) }}
+                                        </td>
+
+                                        <td name='cdp_li_line_{{$detail->id}}' id='cdp_li_line_{{$detail->id}}'>
+                                            {{ ucwords($detail->intervention_beneficiary_type->name) }}
                                         </td>
 
                                         <td name='cdp_li_desc_{{$detail->id}}' id='cdp_li_desc_{{$detail->id}}'>

@@ -44,6 +44,8 @@ if ($('#program_type_tp').length && $('#program_type_tp').val().trim().length > 
 
 if ($('#is_science_program_tp').length && $('#is_science_program_tp').val().trim().length > 0){ formData.append('is_science_program',$('#is_science_program_tp').val());   }
 
+if ($('#rank_gl_equivalent_tp').length && $('#rank_gl_equivalent_tp').val().trim().length > 0){ formData.append('rank_gl_equivalent',$('#rank_gl_equivalent_tp').val());   }
+
 if ($('#program_start_date_tp').length && $('#program_start_date_tp').val().trim().length > 0){ formData.append('program_start_date',$('#program_start_date_tp').val());   }
 
 if ($('#program_end_date_tp').length && $('#program_end_date_tp').val().trim().length > 0){ formData.append('program_end_date',$('#program_end_date_tp').val());   }

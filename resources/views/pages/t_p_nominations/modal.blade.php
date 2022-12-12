@@ -108,7 +108,7 @@ $(document).ready(function() {
             $('#spn_tPNomination_email').html(response.data.email);
     		$('#spn_tPNomination_telephone').html(response.data.telephone);
     		$('#spn_tPNomination_gender').html(response.data.gender);
-    		$('#spn_tPNomination_name_title').html(response.data.name_title);
+    		$('#spn_tPNomination_rank_gl_equivalent').html(response.data.rank_gl_equivalent);
     		$('#spn_tPNomination_first_name').html(response.data.first_name);
     		$('#spn_tPNomination_middle_name').html(response.data.middle_name);
     		$('#spn_tPNomination_last_name').html(response.data.last_name);
@@ -125,14 +125,6 @@ $(document).ready(function() {
     		$('#spn_tPNomination_program_type').html(response.data.program_type);
     		/*$('#spn_tPNomination_fee_amount').html(response.data.fee_amount);
     		$('#spn_tPNomination_tuition_amount').html(response.data.tuition_amount);
-    		$('#spn_tPNomination_upgrade_fee_amount').html(response.data.upgrade_fee_amount);
-    		$('#spn_tPNomination_stipend_amount').html(response.data.stipend_amount);
-    		$('#spn_tPNomination_passage_amount').html(response.data.passage_amount);
-    		$('#spn_tPNomination_medical_amount').html(response.data.medical_amount);
-    		$('#spn_tPNomination_warm_clothing_amount').html(response.data.warm_clothing_amount);
-    		$('#spn_tPNomination_study_tours_amount').html(response.data.study_tours_amount);
-    		$('#spn_tPNomination_education_materials_amount').html(response.data.education_materials_amount);
-    		$('#spn_tPNomination_thesis_research_amount').html(response.data.thesis_research_amount);
     		$('#spn_tPNomination_final_remarks').html(response.data.final_remarks);
     		$('#spn_tPNomination_total_requested_amount').html(response.data.total_requested_amount);
     		$('#spn_tPNomination_total_approved_amount').html(response.data.total_approved_amount);*/
@@ -170,7 +162,7 @@ $(document).ready(function() {
             $('#email_tp').val(response.data.email);
     		$('#telephone_tp').val(response.data.telephone);
     		$('#gender_tp').val(response.data.gender);
-    		$('#name_title_tp').val(response.data.name_title);
+    		$('#rank_gl_equivalent_tp').val(response.data.rank_gl_equivalent);
     		$('#first_name_tp').val(response.data.first_name);
     		$('#middle_name_tp').val(response.data.middle_name);
     		$('#last_name_tp').val(response.data.last_name);
@@ -186,15 +178,6 @@ $(document).ready(function() {
     		$('#program_title_tp').val(response.data.program_title);
     		$('#program_type_tp').val(response.data.program_type);
     		/*$('#fee_amount').val(response.data.fee_amount);
-    		$('#tuition_amount').val(response.data.tuition_amount);
-    		$('#upgrade_fee_amount').val(response.data.upgrade_fee_amount);
-    		$('#stipend_amount').val(response.data.stipend_amount);
-    		$('#passage_amount').val(response.data.passage_amount);
-    		$('#medical_amount').val(response.data.medical_amount);
-    		$('#warm_clothing_amount').val(response.data.warm_clothing_amount);
-    		$('#study_tours_amount').val(response.data.study_tours_amount);
-    		$('#education_materials_amount').val(response.data.education_materials_amount);
-    		$('#thesis_research_amount').val(response.data.thesis_research_amount);
     		$('#final_remarks').val(response.data.final_remarks);
     		$('#total_requested_amount').val(response.data.total_requested_amount);
     		$('#total_approved_amount').val(response.data.total_approved_amount);*/
@@ -334,7 +317,7 @@ $(document).ready(function() {
         if ($('#institution_id_select_tp').length){   formData.append('tf_iterum_portal_institution_id',$('#institution_id_select_tp').val());   }
         if ($('#country_id_select_tp').length){   formData.append('tf_iterum_portal_country_id',$('#country_id_select_tp').val());   }
         if ($('#gender_tp').length){   formData.append('gender',$('#gender_tp').val());   }
-		if ($('#name_title_tp').length){	formData.append('name_title',$('#name_title_tp').val());	}
+		if ($('#rank_gl_equivalent_tp').length){	formData.append('rank_gl_equivalent',$('#rank_gl_equivalent_tp').val());	}
 		if ($('#first_name_tp').length){	formData.append('first_name',$('#first_name_tp').val());	}
 		if ($('#middle_name_tp').length){	formData.append('middle_name',$('#middle_name_tp').val());	}
 		if ($('#last_name_tp').length){	formData.append('last_name',$('#last_name_tp').val());	}

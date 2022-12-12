@@ -79,7 +79,7 @@ class TPNominationDataTable extends DataTable
             'email',
             'telephone',
             'gender',
-            'name_title',
+            'rank_gl_equivalent',
             'first_name',
             'last_name',
         ];

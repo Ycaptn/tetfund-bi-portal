@@ -102,16 +102,16 @@
 </div>
 
 <!-- Name Title Field -->
-<div id="div-name_title_tp" class="form-group col-md-6 col-lg-4">
-    <label for="name_title_tp" class="col-sm-11 col-form-label">Rank/GL. Equivalent:</label>
+<div id="div-rank_gl_equivalent_tp" class="form-group col-md-6 col-lg-4">
+    <label for="rank_gl_equivalent_tp" class="col-sm-11 col-form-label">Rank/GL. Equivalent:</label>
     <div class="col-sm-12">
-        <select class="form-select" name="name_title_tp" id="name_title_tp" >
+        <select class="form-select" name="rank_gl_equivalent_tp" id="rank_gl_equivalent_tp" >
             <option value=''>-- None Selected--</option>
-            <option value='chief lecturer'>Chief Lecturer</option>
-            <option value='prin lecturer'>Prin Lecturer</option>
-            <option value='senior lecturer'>Senior Lecturer</option>
-            <option value='lecturer 1'>Lecturer 1</option>
-            <option value='lecturer 2'>Lecturer 2</option>
+            <option value='chief_lecturer'>Chief Lecturer</option>
+            <option value='prin_lecturer'>Prin Lecturer</option>
+            <option value='senior_lecturer'>Senior Lecturer</option>
+            <option value='lecturer_1'>Lecturer 1</option>
+            <option value='lecturer_2'>Lecturer 2</option>
         </select>
     </div>
 </div>
