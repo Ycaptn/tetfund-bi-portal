@@ -27,6 +27,7 @@ use App\Models\Beneficiary;
 use App\Models\SubmissionRequest;
 use App\Models\NominationCommitteeVotes;
 use App\Models\TPNomination;
+use App\Models\CANomination;
 use App\Models\TSASNomination;
 use Hasob\FoundationCore\Models\Attachable as EloquentAttachable;
 
@@ -120,7 +121,7 @@ class NominationRequest extends Model
      **/
     public function ca_submission()
     {
-        //return $this->hasOne(TPNomination::class, 'nomination_request_id', 'id');
+        return $this->hasOne(CANomination::class, 'nomination_request_id', 'id');
     }
 
    /**

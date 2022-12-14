@@ -207,7 +207,7 @@ class TETFundServer {
         return ($api_response != null && $api_response_data !=null && is_array($api_response_data->data)) ?  $api_response_data->data : [];
     }
 
-    public static function get_all_countries_and_institutions($endpoint_path, $pay_load) {
+    public static function get_all_countries_institutions_and_conferences($endpoint_path, $pay_load) {
         $server_api_url = Config::get('keys.tetfund.server_api_url');
         $token = self::get_auth_token();
         $ch = self::setup_curl($token, "{$server_api_url}/$endpoint_path", $pay_load);

@@ -4,15 +4,15 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\TSASNomination;
+use App\Models\CANomination;
 use App\Models\NominationRequest;
 
-use App\Events\TSASNominationCreated;
-use App\Events\TSASNominationUpdated;
-use App\Events\TSASNominationDeleted;
+use App\Events\CANominationCreated;
+use App\Events\CANominationUpdated;
+use App\Events\CANominationDeleted;
 
-use App\Http\Requests\API\CreateTSASNominationAPIRequest;
-use App\Http\Requests\API\UpdateTSASNominationAPIRequest;
+use App\Http\Requests\API\CreateCANominationAPIRequest;
+use App\Http\Requests\API\UpdateCANominationAPIRequest;
 
 use Hasob\FoundationCore\Traits\ApiResponder;
 use Hasob\FoundationCore\Models\Organization;
@@ -22,25 +22,25 @@ use App\Managers\TETFundServer;
 use Hasob\FoundationCore\Controllers\BaseController as AppBaseController;
 
 /**
- * Class TSASNominationController
+ * Class CANominationController
  * @package App\Http\Controllers\API
  */
 
-class TSASNominationAPIController extends AppBaseController
+class CANominationAPIController extends AppBaseController
 {
 
     use ApiResponder;
 
     /**
-     * Display a listing of the TSASNomination.
-     * GET|HEAD /tSASNominations
+     * Display a listing of the CANomination.
+     * GET|HEAD /cANominations
      *
      * @param Request $request
      * @return Response
      */
     public function index(Request $request, Organization $org)
     {
-        $query = TSASNomination::query();
+        $query = CANomination::query();
 
         if ($request->get('skip')) {
             $query->skip($request->get('skip'));
@@ -55,30 +55,30 @@ class TSASNominationAPIController extends AppBaseController
 
         $tPNominations = $this->showAll($query->get());
 
-        return $this->sendResponse($tPNominations->toArray(), 'T S A S Nominations retrieved successfully');
+        return $this->sendResponse($tPNominations->toArray(), 'C A Nominations retrieved successfully');
     }
 
     /**
-     * Store a newly created TSASNomination in storage.
-     * POST /tSASNominations
+     * Store a newly created CANomination in storage.
+     * POST /cANominations
      *
-     * @param CreateTSASNominationAPIRequest $request
+     * @param CreateCANominationAPIRequest $request
      *
      * @return Response
      */
-    public function store(CreateTSASNominationAPIRequest $request, Organization $organization)
+    public function store(CreateCANominationAPIRequest $request, Organization $organization)
     {
         $input = $request->all();
 
-        /** @var TSASNomination $tSASNomination */
-        $tSASNomination = TSASNomination::create($input);
+        /** @var CANomination $cANomination */
+        $cANomination = CANomination::create($input);
         
         $nominationRequest = NominationRequest::find($request->nomination_request_id);
         $nominationRequest->details_submitted = 1;
         $nominationRequest->save();
 
        //handling attachments
-        $attachement_and_final_response = self::handle_attachments($request, $tSASNomination, $nominationRequest);
+        $attachement_and_final_response = self::handle_attachments($request, $cANomination, $nominationRequest);
         if ($attachement_and_final_response) {
             return $attachement_and_final_response;
         }
@@ -87,26 +87,26 @@ class TSASNominationAPIController extends AppBaseController
     }
 
     //handling attachement 
-    public function handle_attachments($request, $tSASNomination, $nominationRequest) {
+    public function handle_attachments($request, $cANomination, $nominationRequest) {
          /*handling passport_photo upload process*/
         if($request->hasFile('passport_photo')) {
-            $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination Passport Photo";
+            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Passport Photo";
             $discription = "This " . strtolower("Document contains $label");
 
             $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo);
         }
 
-        /*handling admission_letter upload process*/
-        if($request->hasFile('admission_letter')) {
-            $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination Admission Letter";
+        /*handling conference_attendance_letter upload process*/
+        if($request->hasFile('conference_attendance_letter')) {
+            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Admission Letter";
             $discription = "This " . strtolower("Document contains $label");
 
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->admission_letter);
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendance_letter);
         } 
 
         /*handling health_report upload process*/
         if($request->hasFile('health_report')) {
-            $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination Health Report";
+            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Health Report";
             $discription = "This " . strtolower("Document contains $label");
 
             $nominationRequest->attach(auth()->user(), $label, $discription, $request->health_report);
@@ -114,7 +114,7 @@ class TSASNominationAPIController extends AppBaseController
 
         /*handling curriculum_vitae upload process*/
         if($request->hasFile('curriculum_vitae')) {
-            $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination Curriculum Vitae";
+            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Curriculum Vitae";
             $discription = "This " . strtolower("Document contains $label");
 
             $nominationRequest->attach(auth()->user(), $label, $discription, $request->curriculum_vitae);
@@ -122,76 +122,76 @@ class TSASNominationAPIController extends AppBaseController
 
         /*handling international_passport_bio_page upload process*/
         if($request->hasFile('international_passport_bio_page')) {
-            $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination International Passport Bio Page";
+            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination International Passport Bio Page";
             $discription = "This " . strtolower("Document contains $label");
 
             $nominationRequest->attach(auth()->user(), $label, $discription, $request->international_passport_bio_page);
         } 
 
-        TSASNominationCreated::dispatch($tSASNomination);
-        return $this->sendResponse($tSASNomination->toArray(), 'T S A S Nomination saved successfully');
+        CANominationCreated::dispatch($cANomination);
+        return $this->sendResponse($cANomination->toArray(), 'C A Nomination saved successfully');
     }
 
     /**
-     * Display the specified TSASNomination.
-     * GET|HEAD /tSASNominations/{id}
+     * Display the specified CANomination.
+     * GET|HEAD /cANominations/{id}
      *
      * @param int $id
      *
      * @return Response
      */
     public function show($id, Organization $organization) {
-        /** @var TSASNomination $tSASNomination */
-        $tSASNomination = TSASNomination::find($id);
+        /** @var CANomination $cANomination */
+        $cANomination = CANomination::find($id);
 
-        if (empty($tSASNomination)) {
+        if (empty($cANomination)) {
             $nominationRequest = NominationRequest::find($id);
             if (empty($nominationRequest)) {
-                return $this->sendError('T S A S Nomination not found');
+                return $this->sendError('C A Nomination not found');
             }
 
-            $tSASNomination = $nominationRequest->tsas_submission;
+            $cANomination = $nominationRequest->tsas_submission;
         }
 
-        /*class constructor to fetch institution*/
+        /*class constructor to fetch conference*/
         $tETFundServer = new TETFundServer();
-        $url_path ="tetfund-astd-api/institutions/".$tSASNomination->tf_iterum_portal_institution_id;
-        $payload = ['_method'=>'GET', 'id'=>$tSASNomination->tf_iterum_portal_institution_id];
-        $institution = $tETFundServer->get_row_records_from_server($url_path, $payload);
+        $url_path ="tetfund-astd-api/conferences/".$cANomination->tf_iterum_portal_conference_id;
+        $payload = ['_method'=>'GET', 'id'=>$cANomination->tf_iterum_portal_conference_id];
+        $conference = $tETFundServer->get_row_records_from_server($url_path, $payload);
 
-        $tSASNomination->beneficiary = ($tSASNomination->beneficiary_institution_id != null) ? $tSASNomination->beneficiary : [];
-        $tSASNomination->institution = ($institution != null) ? $institution : null;
-        $tSASNomination->country = optional($institution)->country;
-        $tSASNomination->user = ($tSASNomination->user_id != null) ? $tSASNomination->user : [];
+        $cANomination->beneficiary = ($cANomination->beneficiary_conference_id != null) ? $cANomination->beneficiary : [];
+        $cANomination->conference = ($conference != null) ? $conference : null;
+        $cANomination->country = optional($conference)->country;
+        $cANomination->user = ($cANomination->user_id != null) ? $cANomination->user : [];
 
-        return $this->sendResponse($tSASNomination->toArray(), 'T S A S Nomination retrieved successfully');
+        return $this->sendResponse($cANomination->toArray(), 'C A Nomination retrieved successfully');
     }
 
     /**
-     * Update the specified TSASNomination in storage.
-     * PUT/PATCH /tSASNominations/{id}
+     * Update the specified CANomination in storage.
+     * PUT/PATCH /cANominations/{id}
      *
      * @param int $id
-     * @param UpdateTSASNominationAPIRequest $request
+     * @param UpdateCANominationAPIRequest $request
      *
      * @return Response
      */
-    public function update($id, UpdateTSASNominationAPIRequest $request, Organization $organization)
+    public function update($id, UpdateCANominationAPIRequest $request, Organization $organization)
     {
-        /** @var TSASNomination $tSASNomination */
-        $tSASNomination = TSASNomination::find($id);
+        /** @var CANomination $cANomination */
+        $cANomination = CANomination::find($id);
 
-        if (empty($tSASNomination)) {
-            return $this->sendError('T S A S Nomination not found');
+        if (empty($cANomination)) {
+            return $this->sendError('C A Nomination not found');
         }
 
-        $tSASNomination->fill($request->all());
-        $tSASNomination->save();
-        $nominationRequest = $tSASNomination->nomination_request;
+        $cANomination->fill($request->all());
+        $cANomination->save();
+        $nominationRequest = $cANomination->nomination_request;
         
         /*handling passport_photo update process*/
         if($request->hasFile('passport_photo')) {
-            $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination Passport Photo";
+            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Passport Photo";
             $discription = "This " . strtolower("Document contains $label");
 
             $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
@@ -201,21 +201,21 @@ class TSASNominationAPIController extends AppBaseController
             $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo);
         }
 
-        /*handling admission_letter update process*/
-        if($request->hasFile('admission_letter')) {
-            $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination Admission Letter";
+        /*handling conference_attendance_letter update process*/
+        if($request->hasFile('conference_attendance_letter')) {
+            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Admission Letter";
             $discription = "This " . strtolower("Document contains $label");
 
             $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
             if ($attachement != null) {
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->admission_letter);
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendance_letter);
         }
 
         /*handling health_report update process*/
         if($request->hasFile('health_report')) {
-            $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination Health Report";
+            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Health Report";
             $discription = "This " . strtolower("Document contains $label");
 
             $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
@@ -227,7 +227,7 @@ class TSASNominationAPIController extends AppBaseController
 
         /*handling curriculum_vitae update process*/
         if($request->hasFile('curriculum_vitae')) {
-            $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination Curriculum Vitae ";
+            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Curriculum Vitae ";
             $discription = "This " . strtolower("Document contains $label");
 
             $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
@@ -239,7 +239,7 @@ class TSASNominationAPIController extends AppBaseController
 
         /*handling international_passport_bio_page update process*/
         if($request->hasFile('international_passport_bio_page')) {
-            $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination International Passport Bio Page";
+            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination International Passport Bio Page";
             $discription = "This " . strtolower("Document contains $label");
 
             $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old international_passport_bio_page photo
@@ -249,13 +249,13 @@ class TSASNominationAPIController extends AppBaseController
             $nominationRequest->attach(auth()->user(), $label, $discription, $request->international_passport_bio_page);
         }
 
-        TSASNominationUpdated::dispatch($tSASNomination);
-        return $this->sendResponse($tSASNomination->toArray(), 'TSASNomination updated successfully');
+        CANominationUpdated::dispatch($cANomination);
+        return $this->sendResponse($cANomination->toArray(), 'CANomination updated successfully');
     }
 
     /**
-     * Remove the specified TSASNomination from storage.
-     * DELETE /tSASNominations/{id}
+     * Remove the specified CANomination from storage.
+     * DELETE /cANominations/{id}
      *
      * @param int $id
      *
@@ -265,14 +265,14 @@ class TSASNominationAPIController extends AppBaseController
      */
     public function destroy($id, Organization $organization)
     {
-        /** @var TSASNomination $tSASNomination */
-        $tSASNomination = TSASNomination::find($id);
+        /** @var CANomination $cANomination */
+        $cANomination = CANomination::find($id);
 
-        if (empty($tSASNomination)) {
-            return $this->sendError('T S A S Nomination not found');
+        if (empty($cANomination)) {
+            return $this->sendError('C A Nomination not found');
         }
 
-        $nominationRequest = $tSASNomination->nomination_request;
+        $nominationRequest = $cANomination->nomination_request;
         $nominationRequest->details_submitted = false;
         $nominationRequest->save();
 
@@ -284,8 +284,8 @@ class TSASNominationAPIController extends AppBaseController
             }
         }
 
-        $tSASNomination->delete();
-        TSASNominationDeleted::dispatch($tSASNomination);
-        return $this->sendSuccess('T S A S Nomination deleted successfully');
+        $cANomination->delete();
+        CANominationDeleted::dispatch($cANomination);
+        return $this->sendSuccess('C A Nomination deleted successfully');
     }
 }

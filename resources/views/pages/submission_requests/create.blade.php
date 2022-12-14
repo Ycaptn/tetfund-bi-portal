@@ -94,9 +94,14 @@ New Submission
             $("#amount_requested").val(numeric_amount);
             //console.log(numeric_amount);
         }
-
         $(document).ready(function() {
 
+            let all_astd_interventions = [];
+            $("#div_intervention_year2").hide();
+            $("#div_intervention_year3").hide();
+            $("#div_intervention_year4").hide();
+            $("#year_plural").hide();
+            
             $('#amount_requested_digit').keyup(function(event){
                 $('#amount_requested_digit').digits();
             });
@@ -126,9 +131,15 @@ New Submission
                     $.get( "{{ route('tf-bi-portal-api.getAllInterventionLinesForSpecificType', '') }}?intervention_type="+intervention_type_val).done(function( response ) {
                         if (response && response != null) {
                             let type = "{{ old('tf_iterum_intervention_line_key_id') }}";
+
+                            all_astd_interventions.length = 0;
                             $.each(response, function( index, value ) {
                                 var selection = (type == value.id) ? 'selected' : '';
                                 default_option += "<option " + selection + " value='" + value.id + "'>" + upperCaseFirstLetterInString(value.name) + "</option>";
+                                let intervention_name = value.name.toLowerCase();
+                                if (intervention_name.includes('teaching practice') || intervention_name.includes('conference attendance') || intervention_name.includes('tetfund scholarship')) {
+                                    all_astd_interventions.push(value.id);
+                                }
                             });
                             
                             $('#intervention_line').html(default_option);
@@ -143,6 +154,21 @@ New Submission
             /* update intervention line on changing intervention type */
             $(document).on('change', "#intervention_type", function(e) {
                 porpulateInterventionLine();
+            });
+
+            $(document).on('change', "#intervention_line", function(e) {
+                let intervention_line = $('#intervention_line').val();
+                if (all_astd_interventions.includes(intervention_line)) {
+                    $("#div_intervention_year2").hide();
+                    $("#div_intervention_year3").hide();
+                    $("#div_intervention_year4").hide();
+                    $("#year_plural").hide();
+                } else {
+                    $("#div_intervention_year2").show();
+                    $("#div_intervention_year3").show();
+                    $("#div_intervention_year4").show();
+                    $("#year_plural").show();
+                }
             });
                 
             if ("{{ old('intervention_type') }}" != null && "{{ old('intervention_type') }}" != '') {

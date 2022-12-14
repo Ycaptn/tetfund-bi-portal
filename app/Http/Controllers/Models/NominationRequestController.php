@@ -57,10 +57,11 @@ class NominationRequestController extends BaseController
 
         // class constructor to fetch multiple data of countries and Institutions
         $tETFundServer = new TETFundServer();
-        $countries_and_institutions = $tETFundServer->get_all_countries_and_institutions("tetfund-astd-api/from_country_get_countries_and_institutions", null);
+        $countries_institutions_and_conferences = $tETFundServer->get_all_countries_institutions_and_conferences("tetfund-astd-api/from_country_get_countries_institutions_and_conferences", null);
 
-        $countries = $countries_and_institutions->countries;  // fetch countries
-        $institutions = $countries_and_institutions->institutions;  // fetch institutions
+        $countries = $countries_institutions_and_conferences->countries;  // fetch countries
+        $institutions = $countries_institutions_and_conferences->institutions;  // fetch institutions
+        $conferences = $countries_institutions_and_conferences->conferences;  // fetch conferences
 
         $all_beneficiary_users = User::join('tf_bi_beneficiary_members', 'fc_users.id', '=', 'tf_bi_beneficiary_members.beneficiary_user_id')
             ->where('tf_bi_beneficiary_members.beneficiary_id', $beneficiary_member->beneficiary_id)
@@ -74,6 +75,7 @@ class NominationRequestController extends BaseController
                 ->with('beneficiary', $beneficiary)
                 ->with('countries', $countries)
                 ->with('institutions', $institutions)
+                ->with('conferences', $conferences)
                 ->with('all_beneficiary_users', $all_beneficiary_users)
                 ->with('bi_submission_requests', $bi_submission_requests)
                 ->with('cdv_nomination_requests', $cdv_nomination_requests);
@@ -125,15 +127,17 @@ class NominationRequestController extends BaseController
 
         // class constructor to fetch multiple data of countries and Institutions
         $tETFundServer = new TETFundServer();
-        $countries_and_institutions = $tETFundServer->get_all_countries_and_institutions("tetfund-astd-api/from_country_get_countries_and_institutions", null);
+        $countries_institutions_and_conferences = $tETFundServer->get_all_countries_institutions_and_conferences("tetfund-astd-api/from_country_get_countries_institutions_and_conferences", null);
 
-        $countries = $countries_and_institutions->countries;  // fetch countries
-        $institutions = $countries_and_institutions->institutions;  // fetch institutions
+        $countries = $countries_institutions_and_conferences->countries;  // fetch countries
+        $institutions = $countries_institutions_and_conferences->institutions;  // fetch institutions
+        $conferences = $countries_institutions_and_conferences->conferences;  // fetch conferences
            
         return view('pages.nomination_requests.show')
             ->with('nominationRequest', $nominationRequest)
             ->with('countries', $countries)
             ->with('institutions', $institutions)
+            ->with('conferences', $conferences)
             ->with('beneficiary', $bi_beneficiary)
             ->with('beneficiaries', $bi_beneficiaries)
             ->with('current_user', $current_user)

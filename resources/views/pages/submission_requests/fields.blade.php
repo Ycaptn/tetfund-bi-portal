@@ -43,7 +43,7 @@
     </div>
 
     <div id='intervention_years_div' class="form-group mb-3">
-        <label class="col-lg-12 control-label">Intervention Years</label>
+        <label class="col-lg-12 control-label">Intervention Year<span id="year_plural">s</span></label>
         <div class="col-lg-12">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 row-cols-xl-4 g-3">
                 <div class="col">
@@ -57,8 +57,8 @@
                     </select>
                 </div>
 
-                <div class="col">
-                    <select name="intervention_year2" class="form-select">
+                <div class="col" id="div_intervention_year2">
+                    <select name="intervention_year2" id="intervention_year2" class="form-select">
                         <option value="">N/A</option>
                         @if(isset($years))
                             @foreach($years as $idx=>$year)
@@ -68,8 +68,8 @@
                     </select>
                 </div>
 
-                <div class="col">
-                    <select name="intervention_year3" class="form-select">
+                <div class="col" id="div_intervention_year3">
+                    <select name="intervention_year3" id="intervention_year3" class="form-select">
                         <option value="">N/A</option>
                         @if(isset($years))
                             @foreach($years as $idx=>$year)
@@ -79,8 +79,8 @@
                     </select>
                 </div>
 
-                <div class="col">
-                    <select name="intervention_year4" class="form-select">
+                <div class="col" id="div_intervention_year4">
+                    <select name="intervention_year4" id="intervention_year4" class="form-select">
                         <option value="">N/A</option>
                         @if(isset($years))
                             @foreach($years as $idx=>$year)

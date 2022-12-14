@@ -6,11 +6,11 @@ if ($('#beneficiary_institution_id_select_tsas').length && $('#beneficiary_insti
 	formData.append('beneficiary_institution_id',$('#beneficiary_institution_id_select_tsas').val());	
 }
 
+if ($('#country_id_select_tsas').length && $('#country_id_select_tsas').val().trim().length > 0){   formData.append('tf_iterum_portal_country_id',$('#country_id_select_tsas').val());   }
+
 if ($('#institution_id_select_tsas').length && $('#institution_id_select_tsas').val().trim().length > 0){  
 		formData.append('tf_iterum_portal_institution_id',$('#institution_id_select_tsas').val());  
 }
-
-if ($('#country_id_select_tsas').length && $('#country_id_select_tsas').val().trim().length > 0){   formData.append('tf_iterum_portal_country_id',$('#country_id_select_tsas').val());   }
 
 if ($('#gender_tsas').length && $('#gender_tsas').val().trim().length > 0){   formData.append('gender',$('#gender_tsas').val());   }
 
@@ -64,6 +64,10 @@ if($('#admission_letter_tsas').get(0).files.length != 0){
 
 if($('#health_report_tsas').get(0).files.length != 0){
 	formData.append('health_report', $('#health_report_tsas')[0].files[0]);  
+}
+
+if($('#curriculum_vitae_tsas').get(0).files.length != 0){
+	formData.append('curriculum_vitae', $('#curriculum_vitae_tsas')[0].files[0]);  
 }
 
 if($('#international_passport_bio_page_tsas').get(0).files.length != 0){

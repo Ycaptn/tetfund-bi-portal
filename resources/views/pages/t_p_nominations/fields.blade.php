@@ -90,11 +90,18 @@
 <div id="div-institution_id_select_tp" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="institution_id_select_tp" class="col-sm-11 col-form-label">Institution:</label>
     <div class="col-sm-12">
+        @php
+            $country_nigeria_index = array_search('Nigeria', array_column($countries, 'name'));
+            $country_nigeria_id = ($country_nigeria_index !== false) ? optional($countries[$country_nigeria_index])->id : null;
+        @endphp
+
         <select id="institution_id_select_tp" class="form-select">
             <option value=''>-- None selected --</option>
-            @if(isset($institutions))
+            @if(isset($institutions) && $country_nigeria_id != null)
                 @foreach($institutions as $institute)
-                    <option value='{{ $institute->id }}'> {{$institute->name}} </option>
+                    @if($institute->country_id == $country_nigeria_id)
+                        <option value='{{ $institute->id }}'> {{$institute->name}} </option>
+                    @endif
                 @endforeach
             @endif
         </select>
@@ -108,7 +115,7 @@
         <select class="form-select" name="rank_gl_equivalent_tp" id="rank_gl_equivalent_tp" >
             <option value=''>-- None Selected--</option>
             <option value='chief_lecturer'>Chief Lecturer</option>
-            <option value='prin_lecturer'>Prin Lecturer</option>
+            <option value='principal_lecturer'>Principal Lecturer</option>
             <option value='senior_lecturer'>Senior Lecturer</option>
             <option value='lecturer_1'>Lecturer 1</option>
             <option value='lecturer_2'>Lecturer 2</option>
@@ -162,7 +169,7 @@
 <div id="div-national_id_number_tp" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="national_id_number_tp" class="col-sm-11 col-form-label">National Id Number:</label>
     <div class="col-sm-12">
-        {!! Form::text('national_id_number_tp', null, ['id'=>'national_id_number_tp', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+        {!! Form::text('national_id_number_tp', null, ['id'=>'national_id_number_tp', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
     </div>
 </div>
 

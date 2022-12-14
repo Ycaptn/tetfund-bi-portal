@@ -1,7 +1,7 @@
 
 
 <div class="modal fade" id="mdl-tSASNomination-modal" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
 
             <div class="modal-header">
@@ -23,7 +23,7 @@
                             <div id="div-show-txt-tSASNomination-primary-id">
                                 <div class="row">
                                     <div class="col-sm-12">
-                                    @include('tf-bi-portal::pages.t_s_a_s_nominations.show_fields')
+                                        @include('tf-bi-portal::pages.t_s_a_s_nominations.show_fields')
                                     </div>
                                 </div>
                             </div>
@@ -59,6 +59,20 @@
 $(document).ready(function() {
 
     $('.offline-t_s_a_s_nominations').hide();
+
+    let institutions = '{!! json_encode($institutions) !!}';
+    
+    //toggle different institutions based on the selected country for TSAS
+    $(document).on('change', "#country_id_select_tsas", function(e) {
+        let selected_country = $('#country_id_select_tsas').val();
+        let institutions_filtered = "<option value=''>-- None selected --</option>";
+        $.each(JSON.parse(institutions), function(key, institution) {
+            if (institution.country_id == selected_country) {
+                institutions_filtered += "<option value='"+ institution.id +"'>"+ institution.name +"</option>";
+            }
+        });
+        $('#institution_id_select_tsas').html(institutions_filtered);
+    });
 
     //Show Modal for New Entry
     $(document).on('click', ".{{ $nomination_type_str ?? 'tsas' }}-nomination-form", function(e) {
@@ -118,7 +132,7 @@ $(document).ready(function() {
     		$('#spn_tSASNomination_bank_name').html(response.data.bank_name);
     		$('#spn_tSASNomination_bank_sort_code').html(response.data.bank_sort_code);
     		$('#spn_tSASNomination_intl_passport_number').html(response.data.intl_passport_number);
-    		$('#spn_tSASNomination_bank_verification_number').html(response.data.bank_verification_number);z
+    		$('#spn_tSASNomination_bank_verification_number').html(response.data.bank_verification_number);
     		$('#spn_tSASNomination_national_id_number').html(response.data.national_id_number);
     		$('#spn_tSASNomination_degree_type').html(response.data.degree_type);
     		$('#spn_tSASNomination_program_title').html(response.data.program_title);
@@ -179,9 +193,6 @@ $(document).ready(function() {
     		$('#degree_type_tsas').val(response.data.degree_type);
     		$('#program_title_tsas').val(response.data.program_title);
     		$('#program_type_tsas').val(response.data.program_type);
-    		/*$('#total_requested_amount_tsas').val(response.data.total_requested_amount);
-    		$('#total_approved_amount_tsas').val(response.data.total_approved_amount);
-    		$('#final_remarks_tsas').val(response.data.final_remarks);*/
             $('#is_science_program_tsas').val(response.data.is_science_program ? '1' : '0');
 
             var program_start_date_tsas = new Date(response.data.program_start_date).toISOString().slice(0, 10);
@@ -190,9 +201,19 @@ $(document).ready(function() {
             var program_end_date_tsas = new Date(response.data.program_end_date).toISOString().slice(0, 10);
             $('#program_end_date_tsas').val(program_end_date_tsas);
 
-            $('#institution_id_select_tsas option[value="' + response.data.tf_iterum_portal_institution_id + '"]').prop('selected', 'selected');
             $('#country_id_select_tsas option[value="' + response.data.tf_iterum_portal_country_id + '"]').prop('selected', 'selected');
-           
+            
+            let institutions_filtered = "<option value=''>-- None selected --</option>";
+            $.each(JSON.parse(institutions), function(key, institution) {
+                if (institution.country_id == response.data.tf_iterum_portal_country_id && response.data.tf_iterum_portal_institution_id == institution.id) {
+                    institutions_filtered += "<option selected='selected' value='"+ institution.id +"'>"+ institution.name +"</option>";
+                } else if (institution.country_id == response.data.tf_iterum_portal_country_id) {
+                    institutions_filtered += "<option value='"+ institution.id +"'>"+ institution.name +"</option>";
+                }
+            });
+
+            $('#institution_id_select_tsas').html(institutions_filtered);
+            
             $("#spinner-t_s_a_s_nominations").hide();
             $("#div-save-mdl-tSASNomination-modal").show();
             $("#btn-save-mdl-tSASNomination-modal").attr('disabled', false);
@@ -346,13 +367,12 @@ $(document).ready(function() {
         if($('#health_report_tsas').get(0).files.length != 0){
             formData.append('health_report', $('#health_report_tsas')[0].files[0]);  
         }
+        if($('#curriculum_vitae_tsas').get(0).files.length != 0){
+            formData.append('curriculum_vitae', $('#curriculum_vitae_tsas')[0].files[0]);  
+        }
         if($('#international_passport_bio_page_tsas').get(0).files.length != 0){
             formData.append('international_passport_bio_page', $('#international_passport_bio_page_tsas')[0].files[0]);  
-        } 
-                
-		/*if ($('#final_remarks_tsas').length){	formData.append('final_remarks',$('#final_remarks_tsas').val());	}
-		if ($('#total_requested_amount_tsas').length){	formData.append('total_requested_amount',$('#total_requested_amount_tsas').val());	}
-		if ($('#total_approved_amount_tsas').length){	formData.append('total_approved_amount',$('#total_approved_amount_tsas').val());	}*/
+        }
 
 
         $.ajax({

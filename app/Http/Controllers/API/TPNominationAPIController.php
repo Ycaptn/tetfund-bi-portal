@@ -91,7 +91,7 @@ class TPNominationAPIController extends AppBaseController
          /*handling passport_photo upload process*/
         if($request->hasFile('passport_photo')) {
             $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Passport Photo";
-            $discription = "This " . strtolower("Document contains the $label");
+            $discription = "This " . strtolower("Document contains $label");
 
             $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo);
         }
@@ -99,7 +99,7 @@ class TPNominationAPIController extends AppBaseController
         /*handling invitation_letter upload process*/
         if($request->hasFile('invitation_letter')) {
             $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Invitation Letter";
-            $discription = "This " . strtolower("Document contains the $label");
+            $discription = "This " . strtolower("Document contains $label");
 
             $nominationRequest->attach(auth()->user(), $label, $discription, $request->invitation_letter);
         }
@@ -135,15 +135,9 @@ class TPNominationAPIController extends AppBaseController
         $payload = ['_method'=>'GET', 'id'=>$tPNomination->tf_iterum_portal_institution_id];
         $institution = $tETFundServer->get_row_records_from_server($url_path, $payload);
 
-        /*class constructor to fetch country*/
-        $tETFundServer = new TETFundServer();
-        $url_path ="tetfund-astd-api/countries/".$tPNomination->tf_iterum_portal_country_id;
-        $payload = ['_method'=>'GET', 'id'=>$tPNomination->tf_iterum_portal_country_id];
-        $country = $tETFundServer->get_row_records_from_server($url_path, $payload);
-
         $tPNomination->beneficiary = ($tPNomination->beneficiary_institution_id != null) ? $tPNomination->beneficiary : [];
         $tPNomination->institution = ($institution != null) ? $institution : null;
-        $tPNomination->country = ($country != null) ? $country : null;
+        $tPNomination->country = optional($institution)->country;
         $tPNomination->user = ($tPNomination->user_id != null) ? $tPNomination->user : [];
 
         return $this->sendResponse($tPNomination->toArray(), 'T P Nomination retrieved successfully');
@@ -174,7 +168,7 @@ class TPNominationAPIController extends AppBaseController
         /*handling passport_photo update process*/
         if($request->hasFile('passport_photo')) {
             $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Passport Photo";
-            $discription = "This " . strtolower("Document contains the $label");
+            $discription = "This " . strtolower("Document contains $label");
 
             $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
             if ($attachement != null) {
@@ -186,7 +180,7 @@ class TPNominationAPIController extends AppBaseController
         /*handling invitation_letter update process*/
         if($request->hasFile('invitation_letter')) {
             $label = $tPNomination->first_name . " " . $tPNomination->last_name . " TPNomination Invitation Letter";
-            $discription = "This " . strtolower("Document contains the $label");
+            $discription = "This " . strtolower("Document contains $label");
 
             $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old invitation_letter
             if ($attachement != null) {

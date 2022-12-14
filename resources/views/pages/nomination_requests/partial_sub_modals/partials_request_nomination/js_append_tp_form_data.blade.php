@@ -7,7 +7,7 @@ if ($('#beneficiary_institution_id_select_tp').length && $('#beneficiary_institu
 }
 
 if ($('#institution_id_select_tp').length && $('#institution_id_select_tp').val().trim().length > 0){  
-		formData.append('tf_iterum_portal_institution_id',$('#institution_id_select_tp').val());  
+	formData.append('tf_iterum_portal_institution_id',$('#institution_id_select_tp').val());  
 }
 
 if ($('#gender_tp').length && $('#gender_tp').val().trim().length > 0){   formData.append('gender',$('#gender_tp').val());   }

@@ -45,9 +45,8 @@ $orgRoutes = function() {
                 Route::post('nomination_requests/process_nomination_details_approval_by_hoi/{id}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'process_nomination_details_approval_by_hoi'])->name('nomination_requests.process_nomination_details_approval_by_hoi');
 
                 Route::resource('t_s_a_s_nominations', \App\Http\Controllers\API\TSASNominationAPIController::class);
+                Route::resource('c_a_nominations', \App\Http\Controllers\API\CANominationAPIController::class);
                 Route::resource('t_p_nominations', \App\Http\Controllers\API\TPNominationAPIController::class);
-
-                //Route::resource('c_a_nominations', \TETFund\ASTD\Controllers\API\CANominationAPIController::class);
                 
                 Route::get('/getAllInterventionLinesForSpecificType', [\App\Http\Controllers\API\SubmissionRequestAPIController::class, 'getAllInterventionLinesForSpecificType'])->name('getAllInterventionLinesForSpecificType');
                 

@@ -14,8 +14,10 @@ use Hasob\FoundationCore\Models\Organization;
 use Hasob\FoundationCore\Models\User;
 use App\Http\Requests\API\CreateNominationRequestAPIRequest;
 use App\Http\Requests\API\CreateTPNominationAPIRequest;
+use App\Http\Requests\API\CreateCANominationAPIRequest;
 use App\Http\Requests\API\CreateTSASNominationAPIRequest;
 use App\Http\Controllers\API\TPNominationAPIController;
+use App\Http\Controllers\API\CANominationAPIController;
 use App\Http\Controllers\API\TSASNominationAPIController;
 use App\Http\Traits\BeneficiaryUserTrait;
 use App\Models\BeneficiaryMember;
@@ -23,6 +25,7 @@ use App\Models\Beneficiary;
 use App\Models\SubmissionRequest;
 use App\Models\NominationCommitteeVotes;
 use App\Models\TPNomination;
+use App\Models\CANomination;
 use App\Models\TSASNomination;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\NominationRequestInviteNotification;
@@ -125,18 +128,34 @@ class NominationRequestAPIController extends BaseController
         
         if ($request->nomination_type == 'tp') {
             $request = app('App\Http\Requests\API\CreateTPNominationAPIRequest');
-            $this->validate($request, $request->rules()); // validate for TP    
+        
+            // validate for TP    
+            $this->validate($request, $request->rules()); 
+        
             $nominationRequestOBJ = new TPNomination();
-            $nominationRequestAPIControllerOBJ = new TPNominationAPIController();  //hitting TP API Controller
+
+            //hitting TP API Controller
+            $nominationRequestAPIControllerOBJ = new TPNominationAPIController();
         } else if ($request->nomination_type == 'ca') {    
             $request = app('App\Http\Requests\API\CreateCANominationAPIRequest');
-            $this->validate($request, $request->rules()); // validate for CA
-            //$nominationRequestOBJ = new CANomination();
+        
+            // validate for CA
+            $this->validate($request, $request->rules()); 
+        
+            $nominationRequestOBJ = new CANomination();
+        
+            //hitting TSAS API Controller
+            $nominationRequestAPIControllerOBJ = new CANominationAPIController();
         } else if ($request->nomination_type == 'tsas') {
             $request = app('App\Http\Requests\API\CreateTSASNominationAPIRequest');
-            $this->validate($request, $request->rules()); // validate for TSAS
+        
+            // validate for TSAS
+            $this->validate($request, $request->rules()); 
+        
+            $nominationRequestAPIControllerOBJ = new TSASNominationAPIController();  
+
+            //hitting TSAS API Controller
             $nominationRequestOBJ = new TSASNomination();
-            $nominationRequestAPIControllerOBJ = new TSASNominationAPIController();  //hitting TSAS API Controller
         }
         
         // nomination request creation

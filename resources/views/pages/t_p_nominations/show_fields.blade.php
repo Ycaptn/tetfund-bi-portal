@@ -83,7 +83,7 @@
 <div id="div_tPNomination_rank_gl_equivalent" class="col-sm-12 mb-10">
     <p>
         <strong>
-            {!! Form::label('name_title', 'Name Title:', ['class'=>'control-label']) !!} 
+            {!! Form::label('name_title', 'Rank/GL Equivalent:', ['class'=>'control-label']) !!} 
         </strong>
         <span id="spn_tPNomination_rank_gl_equivalent">
         @if (isset($tPNomination->rank_gl_equivalent) && empty($tPNomination->rank_gl_equivalent)==false)
@@ -239,29 +239,13 @@
     </p>
 </div>
 
-<!-- Is Science Program Field -->
-<div id="div_tPNomination_is_science_program" class="col-sm-12 mb-10">
-    <p>
-        <strong>
-            {!! Form::label('is_science_program', 'Is Science Program:', ['class'=>'control-label']) !!} 
-        </strong>
-        <span id="spn_tPNomination_is_science_program">
-        @if (isset($tPNomination->is_science_program))
-            {!! $tPNomination->is_science_program ? 'Yes' : 'No' !!}
-        @else
-            N/A
-        @endif
-        </span>
-    </p>
-</div>
-
 <!-- Program Start Date Field -->
-<div id="div_program_start_date" class="col-sm-12 mb-10">
+<div id="div_tPNomination_program_start_date" class="col-sm-12 mb-10">
     <p>
         <strong>
             {!! Form::label('program_start_date', 'Program Start Date:', ['class'=>'control-label']) !!}
         </strong>
-        <span id="spn_program_start_date">
+        <span id="spn_tPNomination_program_start_date">
         @if (isset($tPNomination->program_start_date) && empty($tPNomination->program_start_date)==false)
             {!! date('D, d-M-Y', strtotime($tPNomination->program_start_date)) !!}
         @else
@@ -272,12 +256,12 @@
 </div>
 
 <!-- Program end date -->
-<div id="div_program_end_date" class="col-sm-12 mb-10">
+<div id="div_tPNomination_program_end_date" class="col-sm-12 mb-10">
     <p>
         <strong>
             {!! Form::label('program_end_date', 'Program End Date:', ['class'=>'control-label']) !!}
         </strong>
-        <span id="spn_program_end_date">
+        <span id="spn_tPNomination_program_end_date">
         @if (isset($tPNomination->program_end_date) && empty($tPNomination->program_end_date)==false)
             {!! date('D, d-M-Y', strtotime($tPNomination->program_end_date)) !!}
         @else

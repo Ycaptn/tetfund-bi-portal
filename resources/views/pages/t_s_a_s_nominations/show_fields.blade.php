@@ -47,22 +47,6 @@
     </p>
 </div>
 
-<!-- Institution Field -->
-<div id="div_tSASNomination_institution_name" class="col-sm-12 mb-10">
-    <p>
-        <strong>
-            {!! Form::label('institution_id', 'Institution:', ['class'=>'control-label']) !!}
-        </strong>
-        <span id="spn_tSASNomination_institution_name">
-        @if (isset($tSASNomination->institution_id) && empty($tSASNomination->institution)==false)
-            {!! $tSASNomination->institution->name !!}
-        @else
-            N/A
-        @endif
-        </span>
-    </p>
-</div>
-
 <!-- country Name Field -->
 <div id="div_tSASNomination_country_name" class="col-sm-12 mb-10">
     <p>
@@ -72,6 +56,22 @@
         <span id="spn_tSASNomination_country_name">
         @if (isset($tSASNomination->country_id) && empty($tSASNomination->country_id)==false)
             {!! $tSASNomination->country->name !!}
+        @else
+            N/A
+        @endif
+        </span>
+    </p>
+</div>
+
+<!-- Institution Field -->
+<div id="div_tSASNomination_institution_name" class="col-sm-12 mb-10">
+    <p>
+        <strong>
+            {!! Form::label('institution_id', 'Institution:', ['class'=>'control-label']) !!}
+        </strong>
+        <span id="spn_tSASNomination_institution_name">
+        @if (isset($tSASNomination->institution_id) && empty($tSASNomination->institution)==false)
+            {!! $tSASNomination->institution->name !!}
         @else
             N/A
         @endif
@@ -152,22 +152,6 @@
         <span id="spn_tSASNomination_last_name">
         @if (isset($tSASNomination->last_name) && empty($tSASNomination->last_name)==false)
             {!! $tSASNomination->last_name !!}
-        @else
-            N/A
-        @endif
-        </span>
-    </p>
-</div>
-
-<!-- Name Suffix Field -->
-<div id="div_tSASNomination_name_suffix" class="col-sm-12 mb-10">
-    <p>
-        <strong>
-            {!! Form::label('name_suffix', 'Name Suffix:', ['class'=>'control-label']) !!}
-        </strong>
-        <span id="spn_tSASNomination_name_suffix">
-        @if (isset($tSASNomination->name_suffix) && empty($tSASNomination->name_suffix)==false)
-            {!! $tSASNomination->name_suffix !!}
         @else
             N/A
         @endif

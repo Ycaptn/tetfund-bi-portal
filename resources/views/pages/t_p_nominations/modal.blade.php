@@ -1,7 +1,7 @@
 
 
 <div class="modal fade" id="mdl-tPNomination-modal" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
 
             <div class="modal-header">
@@ -120,12 +120,9 @@ $(document).ready(function() {
     		$('#spn_tPNomination_intl_passport_number').html(response.data.intl_passport_number);
     		$('#spn_tPNomination_bank_verification_number').html(response.data.bank_verification_number);
     		$('#spn_tPNomination_national_id_number').html(response.data.national_id_number);
-    		$('#spn_tPNomination_degree_type').html(response.data.degree_type);
-    		$('#spn_tPNomination_program_title').html(response.data.program_title);
-    		$('#spn_tPNomination_program_type').html(response.data.program_type);
-    		/*$('#spn_tPNomination_fee_amount').html(response.data.fee_amount);
-    		$('#spn_tPNomination_tuition_amount').html(response.data.tuition_amount);
-    		$('#spn_tPNomination_final_remarks').html(response.data.final_remarks);
+    		$('#spn_tPNomination_program_start_date').html(response.data.program_start_date);
+    		$('#spn_tPNomination_program_end_date').html(response.data.program_end_date);
+    		/*$('#spn_tPNomination_final_remarks').html(response.data.final_remarks);
     		$('#spn_tPNomination_total_requested_amount').html(response.data.total_requested_amount);
     		$('#spn_tPNomination_total_approved_amount').html(response.data.total_approved_amount);*/
             $('#spn_tPNomination_beneficiary_institution_name').html(response.data.beneficiary.full_name);

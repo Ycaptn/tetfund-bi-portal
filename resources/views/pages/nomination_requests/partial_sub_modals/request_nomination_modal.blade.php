@@ -44,13 +44,38 @@
     </div>
 </div>
 
-
-
 @push('page_scripts')
 <script type="text/javascript">
 $(document).ready(function() {
 
     $('.offline-request_nomination').hide();
+
+    let conferences = '{!! json_encode($conferences) !!}';
+    let institutions = '{!! json_encode($institutions) !!}';
+    
+    //toggle different conferences based on the selected country for CA
+    $(document).on('change', "#country_id_select_ca", function(e) {
+        let selected_country = $('#country_id_select_ca').val();
+        let conferences_filtered = "<option value=''>-- None selected --</option>";
+        $.each(JSON.parse(conferences), function(key, conference) {
+            if (conference.country_id == selected_country) {
+                conferences_filtered += "<option value='"+ conference.id +"'>"+ conference.name +"</option>";
+            }
+        });
+        $('#conference_id_select_ca').html(conferences_filtered);
+    });
+
+    //toggle different institutions based on the selected country for TSAS
+    $(document).on('change', "#country_id_select_tsas", function(e) {
+        let selected_country = $('#country_id_select_tsas').val();
+        let institutions_filtered = "<option value=''>-- None selected --</option>";
+        $.each(JSON.parse(institutions), function(key, institution) {
+            if (institution.country_id == selected_country) {
+                institutions_filtered += "<option value='"+ institution.id +"'>"+ institution.name +"</option>";
+            }
+        });
+        $('#institution_id_select_tsas').html(institutions_filtered);
+    });
 
     //Show Modal for New Nomination Invitation Entry
     $(document).on('click', ".btn-new-mdl-request_nomination-modal", function(e) {
@@ -107,138 +132,6 @@ $(document).ready(function() {
 
     });
 
-    /*//Show Modal for View
-    $(document).on('click', ".btn-show-mdl-requestNomination-modal", function(e) {
-        e.preventDefault();
-        $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
-
-        //check for internet status 
-        if (!window.navigator.onLine) {
-            $('.offline-request_nomination').fadeIn(300);
-            return;
-        }else{
-            $('.offline-request_nomination').fadeOut(300);
-        }
-
-        $('#div-requestNomination-modal-error').hide();
-        $('#mdl-requestNomination-modal').modal('show');
-        $('#frm-requestNomination-modal').trigger("reset");
-
-        $("#spinner-request_nomination").show();
-        $("#btn-save-mdl-requestNomination-modal").attr('disabled', true);
-
-        $('#div-show-txt-requestNomination-primary-id').show();
-        $('#div-edit-txt-requestNomination-primary-id').hide();
-        let itemId = $(this).attr('data-val');
-
-        $.get( "{{ route('tf-bi-portal-api.nomination_requests.show','') }}/"+itemId).done(function( response ) {
-            
-            $('#txt-requestNomination-primary-id').val(response.data.id);
-                    $('#spn_requestNomination_title').html(response.data.title);
-        $('#spn_requestNomination_status').html(response.data.status);
-        $('#spn_requestNomination_type').html(response.data.type);
-        $('#spn_requestNomination_tf_iterum_portal_request_status').html(response.data.tf_iterum_portal_request_status);
-
-
-            $("#spinner-request_nomination").hide();
-            $("#btn-save-mdl-requestNomination-modal").attr('disabled', false);
-        });
-    });*/
-
-    //Show Modal for Edit
-    /*$(document).on('click', ".btn-edit-mdl-requestNomination-modal", function(e) {
-        e.preventDefault();
-        $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
-
-        $('#div-requestNomination-modal-error').hide();
-        $('#mdl-requestNomination-modal').modal('show');
-        $('#frm-requestNomination-modal').trigger("reset");
-
-        $("#spinner-request_nomination").show();
-        $("#btn-save-mdl-requestNomination-modal").attr('disabled', true);
-
-        $('#div-show-txt-requestNomination-primary-id').hide();
-        $('#div-edit-txt-requestNomination-primary-id').show();
-        let itemId = $(this).attr('data-val');
-
-        $.get( "{{ route('tf-bi-portal-api.nomination_requests.show','') }}/"+itemId).done(function( response ) {     
-
-            $('#txt-requestNomination-primary-id').val(response.data.id);
-                    $('#title').val(response.data.title);
-        $('#status').val(response.data.status);
-        $('#type').val(response.data.type);
-        $('#tf_iterum_portal_request_status').val(response.data.tf_iterum_portal_request_status);
-
-
-            $("#spinner-request_nomination").hide();
-            $("#btn-save-mdl-requestNomination-modal").attr('disabled', false);
-        });
-    });*/
-
-    //Delete action
-    /*$(document).on('click', ".btn-delete-mdl-requestNomination-modal", function(e) {
-        e.preventDefault();
-        $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
-
-        //check for internet status 
-        if (!window.navigator.onLine) {
-            $('.offline-request_nomination').fadeIn(300);
-            return;
-        }else{
-            $('.offline-request_nomination').fadeOut(300);
-        }
-
-        let itemId = $(this).attr('data-val');
-        swal({
-                title: "Are you sure you want to delete this requestNomination?",
-                text: "You will not be able to recover this requestNomination if deleted.",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonClass: "btn-danger",
-                confirmButtonText: "Yes",
-                cancelButtonText: "No",
-                closeOnConfirm: false,
-                closeOnCancel: true
-            }, function(isConfirm) {
-                if (isConfirm) {
-
-                    let endPointUrl = "{{ route('tf-bi-portal-api.nomination_requests.destroy','') }}/"+itemId;
-
-                    let formData = new FormData();
-                    formData.append('_token', $('input[name="_token"]').val());
-                    formData.append('_method', 'DELETE');
-                    
-                    $.ajax({
-                        url:endPointUrl,
-                        type: "POST",
-                        data: formData,
-                        cache: false,
-                        processData:false,
-                        contentType: false,
-                        dataType: 'json',
-                        success: function(result){
-                            if(result.errors){
-                                console.log(result.errors)
-                                swal("Error", "Oops an error occurred. Please try again.", "error");
-                            }else{
-                                swal({
-                                        title: "Deleted",
-                                        text: "requestNomination deleted successfully",
-                                        type: "success",
-                                        confirmButtonClass: "btn-success",
-                                        confirmButtonText: "OK",
-                                        closeOnConfirm: false
-                                    },function(){
-                                        location.reload(true);
-                                });
-                            }
-                        },
-                    });
-                }
-            });
-
-    });*/
-
 
     //Save details
     $('#btn-save-mdl-requestNomination-modal').click(function(e) {
@@ -270,6 +163,9 @@ $(document).ready(function() {
 
         // tp nomination request data appended
         @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_append_tp_form_data')
+
+        // ca nomination request data appended
+        @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_append_ca_form_data')
         
         // tsas nomination request data appended
         @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_append_tsas_form_data')
