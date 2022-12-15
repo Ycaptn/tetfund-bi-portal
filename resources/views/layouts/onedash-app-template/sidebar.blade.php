@@ -181,7 +181,7 @@
 
 					@if (Auth()->user()->hasAnyRole(['BI-desk-officer', 'BI-head-of-institution', 'BI-CA-committee-head', 'BI-CA-committee-member']))
 						<li>
-							<a href="#" class="">
+							<a href="{{ route('tf-bi-portal.c_a_nominations.index') }}" class="">
 								<div class="menu-title"> <span class="fa fa-pencil-square-o"></span> CA Nomination </div>
 							</a>
 						</li>

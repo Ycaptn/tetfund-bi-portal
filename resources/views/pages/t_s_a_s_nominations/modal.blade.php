@@ -60,7 +60,7 @@ $(document).ready(function() {
 
     $('.offline-t_s_a_s_nominations').hide();
 
-    let institutions = '{!! json_encode($institutions) !!}';
+    let institutions = '{!! json_encode($institutions ?? []) !!}';
     
     //toggle different institutions based on the selected country for TSAS
     $(document).on('change', "#country_id_select_tsas", function(e) {

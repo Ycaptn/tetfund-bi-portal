@@ -136,7 +136,7 @@
                     <form action="" method="post">
                         @csrf
                     </form>
-                    <button title="Preview"
+                    <button title="Preview Nomination Details"
                             @if($nominationRequest->type == 'tp')
                                 data-val='{{$nominationRequest->tp_submission->id}}'
                             @elseif($nominationRequest->type == 'ca')
@@ -149,7 +149,7 @@
                             <i class="fa fa-eye"></i>View
                     </button>
                     @if($nominationRequest->is_desk_officer_check == 0)
-                        <button title="Edit"
+                        <button title="Edit Nomination Details"
                                 @if($nominationRequest->type == 'tp')
                                     data-val='{{$nominationRequest->tp_submission->id}}'
                                 @elseif($nominationRequest->type == 'ca')
@@ -161,7 +161,7 @@
                                 class="col-sm-12 col-md-4 mr-3 text-primary btn-edit-{{$nominationRequest->type}}" href="#">
                                <i class="fa fa-pencil-square-o"></i>Edit
                         </button>
-                        <button title="Delete Nomin"
+                        <button title="Delete Nomination Details"
                                 @if($nominationRequest->type == 'tp')
                                     data-val='{{$nominationRequest->tp_submission->id}}'
                                 @elseif($nominationRequest->type == 'ca')

@@ -91,7 +91,7 @@
     <label for="institution_id_select_tp" class="col-sm-11 col-form-label">Institution:</label>
     <div class="col-sm-12">
         @php
-            $country_nigeria_index = array_search('Nigeria', array_column($countries, 'name'));
+            $country_nigeria_index = array_search('Nigeria', array_column($countries ?? [], 'name'));
             $country_nigeria_id = ($country_nigeria_index !== false) ? optional($countries[$country_nigeria_index])->id : null;
         @endphp
 

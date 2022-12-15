@@ -9,131 +9,7 @@
               <div class="row">
                     <div class="col-lg-9" id='nomination_request_details'>
                         <div id="user_info_section" class="form-group row col-sm-12">
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>Fullname:</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="full_name_data"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>Email:</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="email_data"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>Telephone:</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="telephone_data"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>Beneficiary Institution:</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="beneficiary_institution_id_select_data"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>Gender:</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="gender_data"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>Bank Account Name:</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="bank_account_name_data"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>Bank Account Number:</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="bank_account_number_data"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>Bank Name:</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="bank_name_data"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>Bank Sort Code:</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="bank_sort_code_data"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>Intl Passport Number:</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="intl_passport_number_data"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>Bank Verification Number:</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="bank_verification_number_data"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>National ID Number:</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="national_id_number_data"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>Degree Type:</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="degree_type_data"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>Program Title:</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="program_title_data"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>Program Type:</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="program_type_data"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>Is Sscience Program ?</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="is_science_program_data"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>Program Start Date:</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="program_start_date_data"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 col-md-4 mb-3">
-                                <label class="col-sm-12"><b>Program End Date:</b></label>
-                                <div class="col-sm-12 ">
-                                    <i id="program_end_date_data"></i>
-                                </div>
-                            </div>
+                            @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.partials_request_nomination.preview_all_fields')
                             <hr>
                             <div class="col-sm-12">
                                 <div class="col-sm-12 text-center" style="border-bottom: 1px solid lightgray;">
@@ -247,25 +123,30 @@
                 $('#nomination_request_id').val(itemId);
             
                 $.get( "{{ route('tf-bi-portal-api.nomination_requests.show','') }}/"+itemId).done(function( response ) {
+                                        
+                    let nomination_type_lower_case = response.data.nomination_request_type.toLowerCase();
+                    if (nomination_type_lower_case == 'tp') {
+                        $('#preview_tp_details').show();
+                        $('#preview_ca_details').hide();
+                        $('#preview_tsas_details').hide();
+                    } else if (nomination_type_lower_case == 'ca') {
+                        $('#preview_ca_details').show();
+                        $('#preview_tp_details').hide();
+                        $('#preview_tsas_details').hide();
+                    } else if (nomination_type_lower_case == 'tsas') {
+                        $('#preview_tsas_details').show();
+                        $('#preview_ca_details').hide();
+                        $('#preview_tp_details').hide();
+                    } else {
+                        $('#preview_tp_details').hide();
+                        $('#preview_ca_details').hide();
+                        $('#preview_tsas_details').hide();
+                    }
+                    
                     let middle_name = (response.data.nominee.middle_name) ? response.data.nominee.middle_name : '';
-                    $('#full_name_data').text(response.data.nominee.first_name +' '+ middle_name +' '+ response.data.nominee.last_name);
-                    $('#email_data').text(response.data.nominee.email);
-                    $('#telephone_data').text(response.data.nominee.telephone);
-                    $('#beneficiary_institution_id_select_data').text(response.data.nominee_beneficiary.full_name +' ('+ response.data.nominee_beneficiary.short_name +')');
-                    $('#gender_data').text(response.data.nominee.gender);
-                    $('#bank_account_name_data').text(response.data.nominee.bank_account_name);
-                    $('#bank_account_number_data').text(response.data.nominee.bank_account_number);
-                    $('#bank_name_data').text(response.data.nominee.bank_name);
-                    $('#bank_sort_code_data').text(response.data.nominee.bank_sort_code);
-                    $('#intl_passport_number_data').text(response.data.nominee.intl_passport_number);
-                    $('#bank_verification_number_data').text(response.data.nominee.bank_verification_number);
-                    $('#national_id_number_data').text(response.data.nominee.national_id_number);
-                    $('#degree_type_data').text(response.data.nominee.degree_type);
-                    $('#program_title_data').text(response.data.nominee.program_title);
-                    $('#program_type_data').text(response.data.nominee.program_type);
-                    $('#is_science_program_data').text((response.data.nominee.is_science_program == 'true') ? 'Yes' : 'No');
-                    $('#program_start_date_data').text(new Date(response.data.nominee.program_start_date).toDateString());
-                    $('#program_end_date_data').text(new Date(response.data.nominee.program_end_date).toDateString());
+                    
+                    @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_preview_all_fields')
+                    
                     $('#nomination_type').val(response.data.nomination_request_type);
                     
                     // attachments
@@ -304,27 +185,32 @@
                 $('#nomination_request_id').val(itemId);
             
                 $.get( "{{ route('tf-bi-portal-api.nomination_requests.show','') }}/"+itemId).done(function( response ) {
-                    let middle_name = (response.data.nominee.middle_name) ? response.data.nominee.middle_name : '';
-                    $('#full_name_data').text(response.data.nominee.first_name +' '+ middle_name +' '+ response.data.nominee.last_name);
-                    $('#email_data').text(response.data.nominee.email);
-                    $('#telephone_data').text(response.data.nominee.telephone);
-                    $('#beneficiary_institution_id_select_data').text(response.data.nominee_beneficiary.full_name +' ('+ response.data.nominee_beneficiary.short_name +')');
-                    $('#gender_data').text(response.data.nominee.gender);
-                    $('#bank_account_name_data').text(response.data.nominee.bank_account_name);
-                    $('#bank_account_number_data').text(response.data.nominee.bank_account_number);
-                    $('#bank_name_data').text(response.data.nominee.bank_name);
-                    $('#bank_sort_code_data').text(response.data.nominee.bank_sort_code);
-                    $('#intl_passport_number_data').text(response.data.nominee.intl_passport_number);
-                    $('#bank_verification_number_data').text(response.data.nominee.bank_verification_number);
-                    $('#national_id_number_data').text(response.data.nominee.national_id_number);
-                    $('#degree_type_data').text(response.data.nominee.degree_type);
-                    $('#program_title_data').text(response.data.nominee.program_title);
-                    $('#program_type_data').text(response.data.nominee.program_type);
-                    $('#is_science_program_data').text((response.data.nominee.is_science_program == 'true') ? 'Yes' : 'No');
-                    $('#program_start_date_data').text(new Date(response.data.nominee.program_start_date).toDateString());
-                    $('#program_end_date_data').text(new Date(response.data.nominee.program_end_date).toDateString());
-                    $('#nomination_type').val(response.data.nomination_request_type);
+                                        
+                    let nomination_type_lower_case = response.data.nomination_request_type.toLowerCase();
+                    if (nomination_type_lower_case == 'tp') {
+                        $('#preview_tp_details').show();
+                        $('#preview_ca_details').hide();
+                        $('#preview_tsas_details').hide();
+                    } else if (nomination_type_lower_case == 'ca') {
+                        $('#preview_ca_details').show();
+                        $('#preview_tp_details').hide();
+                        $('#preview_tsas_details').hide();
+                    } else if (nomination_type_lower_case == 'tsas') {
+                        $('#preview_tsas_details').show();
+                        $('#preview_ca_details').hide();
+                        $('#preview_tp_details').hide();
+                    } else {
+                        $('#preview_tp_details').hide();
+                        $('#preview_ca_details').hide();
+                        $('#preview_tsas_details').hide();
+                    }
                     
+                    let middle_name = (response.data.nominee.middle_name) ? response.data.nominee.middle_name : '';
+                    
+                    @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_preview_all_fields')
+                    
+                    $('#nomination_type').val(response.data.nomination_request_type);
+
                     // attachments
                     let = attachments_html = '';
                     $.each(response.data.attachments, function(key, attachment){

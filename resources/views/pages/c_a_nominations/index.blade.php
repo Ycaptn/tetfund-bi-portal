@@ -12,6 +12,31 @@ All C A Nomination
 @stop
 
 @section('page_title_suffix')
+    @if(isset(request()->view_type))
+        @if(request()->view_type == 'committee_approved')
+            @if($current_user->hasRole('BI-desk-officer'))
+                Committee Considered Nomination
+            @else
+                Committee Approved
+            @endif
+        @elseif(request()->view_type == 'hoi_approved')
+            @if($current_user->hasAnyRole(['BI-desk-officer', 'BI-head-of-institution' ]))
+                Approved Nomination
+            @endif
+        @elseif(request()->view_type == 'committee_head_consideration')
+            @if($current_user->hasRole('BI-CA-committee-head'))
+                Considered Nomination
+            @endif
+        @endif
+    @else
+        @if($current_user->hasRole('BI-desk-officer'))
+            Newly Submitted
+        @elseif($current_user->hasRole('BI-head-of-institution'))
+            Nomination Approval
+        @elseif($current_user->hasRole('BI-CA-committee-member'))
+            Nomination Consideration
+        @endif
+    @endif
 @stop
 
 @section('page_title_subtext')
@@ -21,12 +46,13 @@ All C A Nomination
 @stop
 
 @section('page_title_buttons')
-<a id="btn-new-mdl-cANomination-modal" class="btn btn-sm btn-primary btn-new-mdl-cANomination-modal">
-    <i class="bx bx-book-add mr-1"></i>New C A Nomination
-</a>
-@if (Auth()->user()->hasAnyRole(['','admin']))
-    @include('tetfund-astd-module::pages.c_a_nominations.bulk-upload-modal')
-@endif
+    {{-- @if ($current_user->hasAnyRole(['BI-desk-officer']))
+        <a id="btn-new-mdl-cANomination-modal" class="btn btn-sm btn-primary btn-new-mdl-cANomination-modal">
+            <i class="bx bx-book-add mr-1"></i>New C A Nomination
+        </a>
+    @endif --}}
+
+    {{-- @include('tf-bi-portal::pages.c_a_nominations.bulk-upload-modal') --}}
 @stop
 
 
@@ -38,16 +64,106 @@ All C A Nomination
     
     <div class="card">
         <div class="card-body">
-        
             <div class="table-responsive">
-                @include('tetfund-astd-module::pages.c_a_nominations.table')
+                <p>
+                    <div class="col-sm-12">
+                        @if($current_user->hasRole('BI-desk-officer'))
+
+                        {{-- appears for desk officer to preview newly submitted nomination --}}
+                            <a  href="{{ route('tf-bi-portal.c_a_nominations.index') }}"
+                                class="btn btn-sm btn-primary"
+                                title="Preview newly submitted nomination details by Scholars" >
+                                Newly Submitted
+                            </a>
+
+                        {{-- appears for desk officer to preview committee considered nomination --}}
+                            <a  href="{{ route('tf-bi-portal.c_a_nominations.index') }}?view_type=committee_approved"
+                                class="btn btn-sm btn-primary"
+                                title="Preview CA Nomination(s) that have been Considered by CA Committee" >
+                                Committee Considered Nomination
+                            </a>
+
+                        {{-- desk officer and HOI to preview finally approved nomination by HOI --}}
+                            <a  href="{{ route('tf-bi-portal.c_a_nominations.index') }}?view_type=hoi_approved"
+                                class="btn btn-sm btn-primary"
+                                title="Preview CA Nomination(s) that have been considered approved by Head of Institution" >
+                                Approved Nomination
+                            </a>
+                        @endif
+
+                        @if ($current_user->hasAnyRole(['BI-CA-committee-member', 'BI-CA-committee-head']))
+                            {{-- appears for all ca commitee me to preview newly submitted nomination --}}
+                            <a  href="{{ route('tf-bi-portal.c_a_nominations.index') }}"
+                                class="btn btn-sm btn-primary"
+                                title="Preview CA Nomination(s) forwarded by Desk-Officer and provide your consideration feedback to CANomination committee head" >
+                                Nomination Consideration
+                            </a> 
+                        @endif
+
+                        @if ($current_user->hasRole('BI-CA-committee-head'))
+                            {{-- appears for all ca commitee head and decide final consideration state --}}
+                            <a  href="{{ route('tf-bi-portal.c_a_nominations.index') }}?view_type=committee_head_consideration"
+                                class="btn btn-sm btn-primary"
+                                title="Preview CA Nomination(s) forwarded by Desk-Officer and take find decision on behalf of CANomination committee" >
+                                Considered Nomination
+                            </a> 
+                        @endif
+
+                        @if($current_user->hasRole('BI-head-of-institution'))
+                            {{-- appeear so HOI can approve nomnations --}}
+                            <a  href="{{ route('tf-bi-portal.c_a_nominations.index') }}"
+                                class="btn btn-sm btn-primary"
+                                title="Preview and manage Nomination request pending Head of Institution approval" >
+                                Nomination Approval
+                            </a>
+
+                            {{-- appears to show all approved nominations --}}
+                             <a  href="{{ route('tf-bi-portal.c_a_nominations.index') }}?view_type=hoi_approved"
+                                class="btn btn-sm btn-primary"
+                                title="Preview CA Nomination(s) that have been considered approved by Head of Institution" >
+                                Approved Nomination
+                            </a>
+                        @endif
+                    </div>
+                </p>
+                @include('tf-bi-portal::pages.c_a_nominations.table')
                 
             </div>
         
         </div>
     </div>
 
-    @include('tetfund-astd-module::pages.c_a_nominations.modal')
+    @include('tf-bi-portal::pages.c_a_nominations.modal')
+    
+    @if($current_user->hasRole('BI-desk-officer'))
+        @if(!isset(request()->view_type))
+            @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_to_committee_modal')
+        @endif
+        
+        @if(isset(request()->view_type) && request()->view_type == 'committee_approved')
+            @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_to_hoi_modal')
+        @endif
+
+        @if(isset(request()->view_type) && request()->view_type == 'hoi_approved')
+            @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.hoi_approval_for_nomination_modal')
+        @endif
+        
+    @endif
+
+    {{-- include approval by voting if user is an ca committee menber --}}
+    @if ($current_user->hasAnyRole(['BI-CA-committee-head', 'BI-CA-committee-member']))
+        @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.committee_approval_for_nomination_modal')
+    @endif
+
+    {{-- include ca commitee head to check committee menber --}}
+    @if ($current_user->hasRole('BI-CA-committee-head'))
+        @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.head_committee_to_members_vote_modal')
+    @endif
+
+    {{-- include approval for Head of Institution --}}
+    @if ($current_user->hasRole('BI-head-of-institution'))
+        @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.hoi_approval_for_nomination_modal')
+    @endif
 
 @stop
 

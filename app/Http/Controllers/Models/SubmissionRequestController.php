@@ -242,9 +242,16 @@ class SubmissionRequestController extends BaseController
             array_push($errors_array, $fund_availability->message);
         }
         
-        //error for requested fund mismatched to allocated fund
-        if (isset($fund_availability->total_funds) && $fund_availability->total_funds != $submissionRequest->amount_requested) {
+
+        if (isset($fund_availability->total_funds) && $fund_availability->total_funds != $submissionRequest->amount_requested && (!str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') && !str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') && !str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) ) {
+           
+            //error for requested fund mismatched to allocated fund non-astd interventions
             array_push($errors_array, "Fund requested must be equal to the Allocated amount.");
+       
+        } else if (isset($fund_availability->total_funds) && $submissionRequest->amount_requested > $fund_availability->total_funds && (str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') || str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') || str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) ) {
+            
+            //error for requested fund mismatched to allocated fund for all ASTD interventions
+            array_push($errors_array, "Fund requested cannot be greater than allocated amount.");
         }
 
         //error when at least one selected allocation year is found

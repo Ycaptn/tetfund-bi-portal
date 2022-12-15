@@ -100,8 +100,21 @@ Submission Request
                                 <li>Please attach the <strong>required documents</strong> before submitting your request.</li>
                             @endif 
 
-                            @if (isset($fund_available) && $fund_available != $submissionRequest->amount_requested)
+                            @if (isset($fund_available) && $fund_available != $submissionRequest->amount_requested && (!str_contains(strtolower(optional($intervention)->name), 'teaching practice') && !str_contains(strtolower(optional($intervention)->name), 'conference attendance') && !str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship')) )
+           
+                                {{-- error for requested fund mismatched to allocated fund for non-astd interventions --}}
                                 <li>Fund requested must be equal to the 
+                                    <strong>
+                                        <a title="Preview allocation amount details" data-val='{{$submissionRequest->id}}' href="#" class="btn-show-submissionRequestAllocationAmount text-primary"> 
+                                            <u>allocated amount</u>.
+                                        </a>
+                                    </strong>
+                                </li>
+                           
+                            @elseif (isset($fund_available) && $submissionRequest->amount_requested > $fund_available && (str_contains(strtolower(optional($intervention)->name), 'teaching practice') || str_contains(strtolower(optional($intervention)->name), 'conference attendance') || str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship')) )
+                                
+                                {{-- error for requested fund mismatched to allocated fund for all ASTD interventions --}}
+                                <li>Fund requested cannot be greater than 
                                     <strong>
                                         <a title="Preview allocation amount details" data-val='{{$submissionRequest->id}}' href="#" class="btn-show-submissionRequestAllocationAmount text-primary"> 
                                             <u>allocated amount</u>.
@@ -110,9 +123,6 @@ Submission Request
                                 </li>
                             @endif
                             
-                            {{-- @if(true)
-                                <li>No allocation datails exist for 2020 intervention year.</li>
-                            @endif --}}
                         </ul>
                     </div>
                     <div class="col-md-3">

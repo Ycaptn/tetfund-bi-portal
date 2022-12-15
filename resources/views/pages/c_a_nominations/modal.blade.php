@@ -60,7 +60,7 @@ $(document).ready(function() {
 
     $('.offline-c_a_nominations').hide();
 
-    let conferences = '{!! json_encode($conferences) !!}';
+    let conferences = '{!! json_encode($conferences ?? []) !!}';
     
     //toggle different conferences based on the selected country for TSAS
     $(document).on('change', "#country_id_select_ca", function(e) {
@@ -75,12 +75,12 @@ $(document).ready(function() {
     });
 
     //Show Modal for New Entry
-    $(document).on('click', ".btn-new-mdl-cANomination-modal", function(e) {
+    $(document).on('click', ".{{ $nomination_type_str ?? 'ca' }}-nomination-form", function(e) {
         $('#div-cANomination-modal-error').hide();
         $('#frm-cANomination-modal').trigger("reset");
         $('#txt-cANomination-primary-id').val(0);
-        $('#prefix_info').text("New");
         $("#attachments_info_ca").hide();
+        $('#prefix_info').text("New");
 
         $('#mdl-cANomination-modal').modal('show');
         

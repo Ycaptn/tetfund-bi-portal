@@ -40,6 +40,7 @@ $orgRoutes = function() {
 
                 Route::resource('nomination_requests', \App\Http\Controllers\Models\NominationRequestController::class);
                 Route::resource('t_s_a_s_nominations', \App\Http\Controllers\Models\TSASNominationController::class);
+                Route::resource('c_a_nominations', \App\Http\Controllers\Models\CANominationController::class);
                 Route::resource('t_p_nominations', \App\Http\Controllers\Models\TPNominationController::class);
 
                 Route::resource('beneficiaries', \App\Http\Controllers\Models\BeneficiaryController::class);
