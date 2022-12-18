@@ -72,25 +72,9 @@ class SubmissionRequestController extends BaseController
      * @return Response
      */
     public function create(Organization $org) {
-        $bi_roles = auth()->user()->roles;
-        $bi_roles_arr = array();
-        $intervention_types_arr = [];
-
-        if (count($bi_roles) > 0) {
-            foreach ($bi_roles as $role) {
-                array_push($bi_roles_arr, $role->name);
-            }
-        }
-
         $pay_load = ['_method'=>'GET'];
         $tETFundServer = new TETFundServer();   /* server class constructor */
         $intervention_types_server_response = $tETFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
-
-        if (count($intervention_types_server_response) > 0) {
-            foreach ($intervention_types_server_response as $intervention_type) {
-                array_push($intervention_types_arr, $intervention_type->type);        
-            }
-        }
 
           $years = [];
           for ($i=0; $i < 6; $i++) { 
@@ -100,8 +84,7 @@ class SubmissionRequestController extends BaseController
         return view('pages.submission_requests.create')
             ->with("type", 'AIP')
             ->with("years", $years)
-            ->with("intervention_types", array_unique($intervention_types_arr))
-            ->with('bi_roles', $bi_roles_arr);
+            ->with("intervention_types", $intervention_types_server_response);
     }
 
     /**
@@ -431,36 +414,30 @@ class SubmissionRequestController extends BaseController
         }
 
         if ($submissionRequest->status == 'not-submitted') {
-            $bi_roles = auth()->user()->roles;
-            $bi_roles_arr = array();
-            $intervention_types_arr = [];
-
-            if (count($bi_roles) > 0) {
-                foreach ($bi_roles as $role) {
-                    array_push($bi_roles_arr, $role->name);
-                }
-            }
 
             $pay_load = ['_method'=>'GET'];
             $tETFundServer = new TETFundServer();   /* server class constructor */
             $intervention_types_server_response = $tETFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
-
-            if (count($intervention_types_server_response) > 0) {
-                foreach ($intervention_types_server_response as $intervention_type) {
-                    $intervention_types_arr[$intervention_type->id] = $intervention_type->type;
-                }
-            }
 
             $years = [];
             for ($i=0; $i < 6; $i++) { 
               array_push($years, date("Y")-$i);
             }
 
+            if (count($intervention_types_server_response) > 0) {
+                foreach ($intervention_types_server_response as $key => $value) {
+                    if ($value->id == optional($submissionRequest)->tf_iterum_intervention_line_key_id) {
+                        $selected_intervention_line = $value;
+                        break;
+                    }
+                }
+            }
+
             return view('pages.submission_requests.edit')
                 ->with('submissionRequest', $submissionRequest)
+                ->with('selected_intervention_line', $selected_intervention_line ?? [])
                 ->with("years", $years)
-                ->with("intervention_types", array_unique($intervention_types_arr))
-                ->with('bi_roles', $bi_roles_arr);
+                ->with("intervention_types", $intervention_types_server_response);
         }
         
         return redirect(route('tf-bi-submission.submissionRequests.index'));

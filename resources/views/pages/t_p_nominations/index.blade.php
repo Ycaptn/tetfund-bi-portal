@@ -33,7 +33,7 @@ All T P Nomination
             Newly Submitted
         @elseif($current_user->hasRole('BI-head-of-institution'))
             Nomination Approval
-        @elseif($current_user->hasRole('BI-TP-committee-member'))
+        @elseif($current_user->hasAnyRole(['BI-TP-committee-member', 'BI-TP-committee-head']))
             Nomination Consideration
         @endif
     @endif
@@ -71,22 +71,22 @@ All T P Nomination
                         
                         {{-- appears for desk officer to preview newly submitted nomination --}}
                             <a  href="{{ route('tf-bi-portal.t_p_nominations.index') }}"
-                                class="btn btn-sm btn-primary"
-                                title="Preview newly submitted nomination details by scholars" >
+                                class="mb-3 btn btn-sm {{ (!isset(request()->view_type)) ? 'btn-primary' : 'btn-secondary'}}"
+                                title="Preview newly submitted nomination details by scholars" ><i class="fas fa-bell"></i><b><sup class="fa-layers-counter text-danger" style="background-color:white; border-radius: 20%;">{{number_format($count_array_returned['desk_officer_newly_submitted'] ?? 0)}}</sup></b>
                                 Newly Submitted
                             </a>
 
                         {{-- appears for desk officer to preview committee considered nomination --}}
                             <a  href="{{ route('tf-bi-portal.t_p_nominations.index') }}?view_type=committee_approved"
-                                class="btn btn-sm btn-primary"
-                                title="Preview TP Nomination(s) that have been Considered by TP Committee" >
+                                class="mb-3 btn btn-sm {{ (isset(request()->view_type) && request()->view_type == 'committee_approved') ? 'btn-primary' : 'btn-secondary'}}"
+                                title="Preview TP Nomination(s) that have been Considered by TP Committee" ><i class="fas fa-bell"></i><b><sup class="fa-layers-counter text-danger" style="background-color:white; border-radius: 20%;">{{number_format($count_array_returned['desk_officer_committee_considered'] ?? 0)}}</sup></b>
                                 Committee Considered Nomination
                             </a>
 
                         {{-- desk officer and HOI to preview finally approved nomination by HOI --}}
                             <a  href="{{ route('tf-bi-portal.t_p_nominations.index') }}?view_type=hoi_approved"
-                                class="btn btn-sm btn-primary"
-                                title="Preview TP Nomination(s) that have been considered approved by Head of Institution" >
+                                class="mb-3 btn btn-sm {{ (isset(request()->view_type) && request()->view_type == 'hoi_approved') ? 'btn-primary' : 'btn-secondary'}}"
+                                title="Preview TP Nomination(s) that have been considered approved by Head of Institution" ><i class="fas fa-bell"></i><b><sup class="fa-layers-counter text-danger" style="background-color:white; border-radius: 20%;">{{number_format($count_array_returned['desk_officer_hoi_approved'] ?? 0)}}</sup></b>
                                 Approved Nomination
                             </a>
                         @endif
@@ -94,8 +94,8 @@ All T P Nomination
                         @if ($current_user->hasAnyRole(['BI-TP-committee-member', 'BI-TP-committee-head']))
                             {{-- appears for all tp commitee me to preview newly submitted nomination --}}
                             <a  href="{{ route('tf-bi-portal.t_p_nominations.index') }}"
-                                class="btn btn-sm btn-primary"
-                                title="Preview TP Nomination(s) forwarded by Desk-Officer and provide your consideration feedback to TPNomination committee head" >
+                                class="btn btn-sm {{ !isset(request()->view_type) ? 'btn-primary' : 'btn-secondary'}}"
+                                title="Preview TP Nomination(s) forwarded by Desk-Officer and provide your consideration feedback to TPNomination committee head" ><i class="fas fa-bell"></i><b><sup class="fa-layers-counter text-danger" style="background-color:white; border-radius: 20%;">{{number_format($count_array_returned['committee_members_newly_submitted'] ?? 0)}}</sup></b>
                                 Nomination Consideration
                             </a> 
                         @endif
@@ -103,8 +103,8 @@ All T P Nomination
                         @if ($current_user->hasRole('BI-TP-committee-head'))
                             {{-- appears for all tp commitee head and decide final consideration state --}}
                             <a  href="{{ route('tf-bi-portal.t_p_nominations.index') }}?view_type=committee_head_consideration"
-                                class="btn btn-sm btn-primary"
-                                title="Preview TP Nomination(s) forwarded by Desk-Officer and take find decision on behalf of TPNomination committee" >
+                                class="btn btn-sm {{ (isset(request()->view_type) && request()->view_type == 'committee_head_consideration') ? 'btn-primary' : 'btn-secondary'}}"
+                                title="Preview TP Nomination(s) forwarded by Desk-Officer and take find decision on behalf of TPNomination committee" ><i class="fas fa-bell"></i><b><sup class="fa-layers-counter text-danger" style="background-color:white; border-radius: 20%;">{{number_format($count_array_returned['committee_members_considered_nomination'] ?? 0)}}</sup></b>
                                 Considered Nomination
                             </a> 
                         @endif
@@ -112,19 +112,40 @@ All T P Nomination
                         @if($current_user->hasRole('BI-head-of-institution'))
                             {{-- appeear so HOI can approve nomnations --}}
                             <a  href="{{ route('tf-bi-portal.t_p_nominations.index') }}"
-                                class="btn btn-sm btn-primary"
-                                title="Preview and manage Nomination request pending Head of Institution approval" >
+                                class="btn btn-sm {{ !isset(request()->view_type) ? 'btn-primary' : 'btn-secondary'}}"
+                                title="Preview and manage Nomination request pending Head of Institution approval" ><i class="fas fa-bell"></i><b><sup class="fa-layers-counter text-danger" style="background-color:white; border-radius: 20%;">{{number_format($count_array_returned['hoi_nomination_approval'] ?? 0)}}</sup></b>
                                 Nomination Approval
                             </a>
 
                             {{-- appears to show all approved nominations --}}
                              <a  href="{{ route('tf-bi-portal.t_p_nominations.index') }}?view_type=hoi_approved"
-                                class="btn btn-sm btn-primary"
-                                title="Preview TP Nomination(s) that have been considered approved by Head of Institution" >
+                                class="btn btn-sm {{ (isset(request()->view_type) && request()->view_type == 'hoi_approved') ? 'btn-primary' : 'btn-secondary'}}"
+                                title="Preview TP Nomination(s) that have been considered approved by Head of Institution" ><i class="fas fa-bell"></i><b><sup class="fa-layers-counter text-danger" style="background-color:white; border-radius: 20%;">{{number_format($count_array_returned['hoi_approved_nominations'] ?? 0)}}</sup></b>
                                 Approved Nomination
                             </a>
 
                         @endif
+
+                        @if($current_user->hasRole('BI-desk-officer') && !isset(request()->view_type))
+                            {{-- appears to desk-officer to forward all tp nominations to committee --}}
+                            <a  class="mb-3 btn btn-sm btn-secondary pull-right move_all_for_consideration text-white"
+                                data-val="tp"
+                                title="Move all TP Nomination(s) to TPNomination Committee for Consideration" >
+                                <span class="fa fa-paper-plane"></span><sup>*</sup>
+                                Move All for Consideration
+                            </a>
+                        @endif
+
+                        @if($current_user->hasRole('BI-desk-officer') && isset(request()->view_type) && request()->view_type == 'committee_approved')
+                            {{-- appears for desk-officer to forward all tp nominations for approval --}}
+                            <a  class="mb-3 btn btn-sm btn-secondary pull-right move_all_for_approval text-white"
+                                data-val="tp"
+                                title="Move all TP Nomination(s) to HOI for Approval" >
+                                <span class="fa fa-paper-plane"></span><sup>*</sup>
+                                Move All for Approval
+                            </a>
+                        @endif
+                        
                     </div>
                 </p>
                 @include('tf-bi-portal::pages.t_p_nominations.table')

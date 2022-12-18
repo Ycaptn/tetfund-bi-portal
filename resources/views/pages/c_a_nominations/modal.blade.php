@@ -92,6 +92,27 @@ $(document).ready(function() {
 
     });
 
+    // toggle CA presention paper attachement input filed
+    $('#has_paper_presentation_ca').on('change', function() {
+        let has_paper_presentation_set_ca = $(this).val();
+        if (has_paper_presentation_set_ca != '' && has_paper_presentation_set_ca == '1') {
+            $('#div-paper_presentation_ca').show();
+        } else if (has_paper_presentation_set_ca == '' || has_paper_presentation_set_ca == 0) {
+            $('#div-paper_presentation_ca').hide();
+        }
+    });
+
+    // toggle CA international passport attachement input filed
+    $('#intl_passport_number_ca').on('keyup', function() {
+        let intl_passport_number_set_ca = $(this).val();
+        if (intl_passport_number_set_ca != '' && intl_passport_number_set_ca.length == 1) {
+            $('#div-paper_presentation_ca').show();
+            $('#div-international_passport_bio_page_ca').show();
+        } else if (intl_passport_number_set_ca == '' || intl_passport_number_set_ca.length == 0) {
+            $('#div-international_passport_bio_page_ca').hide();
+        }
+    });
+
     //Show Modal for View
     $(document).on('click', ".btn-show-{{$nominationRequest->type ?? 'ca'}}", function(e) {
         e.preventDefault();
@@ -198,6 +219,9 @@ $(document).ready(function() {
     		$('#attendee_grade_level_ca').val(response.data.attendee_grade_level);
             $('#has_paper_presentation_ca').val(response.data.has_paper_presentation ? '1' : '0');
             $('#is_academic_staff_ca').val(response.data.is_academic_staff ? '1' : '0');
+
+            $('#div-paper_presentation_ca').show();
+            $('#div-international_passport_bio_page_ca').show();
     		
             initially_selected_beneficiary_institution_id = response.data.beneficiary_institution_id;
             initially_selected_conference_id = response.data.conference_id;

@@ -64,6 +64,7 @@ class NominationRequest extends Model
         'type',
         'request_date',
         'status',
+        'is_desk_officer_check',
     ];
 
     /**
@@ -106,6 +107,14 @@ class NominationRequest extends Model
     public function nomination_committee_votes()
     {
         return $this->hasMany(NominationCommitteeVotes::class, 'nomination_request_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     **/
+    public function nomination_committee_vote()
+    {
+        return $this->hasOne(NominationCommitteeVotes::class, 'nomination_request_id', 'id')->where('user_id', auth()->user()->id);
     }
 
     /**

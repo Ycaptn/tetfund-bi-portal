@@ -91,6 +91,16 @@ $(document).ready(function() {
         $("#btn-save-mdl-tSASNomination-modal").attr('disabled', false);
     });
 
+    // toggle TSAS international passport attachement input filed
+    $('#intl_passport_number_tsas').on('keyup', function() {
+        let intl_passport_number_set_tsas = $(this).val();
+        if (intl_passport_number_set_tsas != '' && intl_passport_number_set_tsas.length == 1) {
+            $('#div-international_passport_bio_page_tsas').show();
+        } else if (intl_passport_number_set_tsas == '' || intl_passport_number_set_tsas.length == 0) {
+            $('#div-international_passport_bio_page_tsas').hide();
+        }
+    });
+
     //Show Modal for View
     $(document).on('click', ".btn-show-{{$nominationRequest->type ?? 'tsas'}}", function(e) {
         e.preventDefault();
@@ -194,6 +204,7 @@ $(document).ready(function() {
     		$('#program_title_tsas').val(response.data.program_title);
     		$('#program_type_tsas').val(response.data.program_type);
             $('#is_science_program_tsas').val(response.data.is_science_program ? '1' : '0');
+            $('#div-international_passport_bio_page_tsas').show();
 
             var program_start_date_tsas = new Date(response.data.program_start_date).toISOString().slice(0, 10);
             $('#program_start_date_tsas').val(program_start_date_tsas);

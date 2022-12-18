@@ -31,24 +31,6 @@ New Submission
 
 @section('content')
     <div class="card border-top border-0 border-4 border-success">
-       
-        {{-- fainted loader --}}
-        <div class="col-sm-12 text-center" id="spinner-submission_requests" style="display: none; width:100%; height: 100%; position: absolute; z-index: 2;">
-            
-            <div style="position: absolute; background-color: lightgrey; width:100%; height: 100%; opacity:0.5;">
-            </div>
-
-            <div class="col-sm-12 text-center" style="position: absolute; width:100%; height: 100%; padding-top: 150px;">
-                <div class="spinner-border text-primary" role="status"> 
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <br>
-                <div class="col-sm-12">
-                    <h3><strong>Please Wait...</strong></h3>
-                    <h5><strong><i>Loading related intervention lines !</i></strong></h5>
-                </div>
-            </div>
-        </div>
 
         <div class="card-body p-4">   
             <div class="card-title d-flex align-items-center">
@@ -69,6 +51,37 @@ New Submission
                     <a href="{{ route('tf-bi-portal.submissionRequests.index') }}" class="btn btn-default btn-warning">Cancel Submission</a>
                 </div>
 
+                <div class="form-group mb-3" style="display: none;" id="div_current_nomination_details_submitted">
+                    <br><hr>
+                    <div class="col-lg-12 text-center"><b>ALL SUBMITTED <span id="nomination_type"></span> DETAILS </b></div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="10%">
+                                        S/N
+                                    </th>
+                                    <th width="50%">
+                                        Nominees' Fullname
+                                    </th>
+                                    <th width="25%">
+                                        Total amount requested
+                                    </th>
+                                    <th width="20%" class="text-center">
+                                        Date
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="current_nomination_details_submitted">
+                                <tr>
+                                   <td colspan="4" class="text-danger text-center">
+                                       <i>No record found!</i>
+                                   </td> 
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             {!! Form::close() !!}
         </div>
     </div>
@@ -94,9 +107,12 @@ New Submission
             $("#amount_requested").val(numeric_amount);
             //console.log(numeric_amount);
         }
-        $(document).ready(function() {
 
-            let all_astd_interventions = [];
+        $(document).ready(function() {
+            let all_intervention_records = '{!! json_encode($intervention_types) ?? [] !!}';
+            let all_astd_interventions_id = [];
+
+            // hide 3 intervention years input fields
             $("#div_intervention_year2").hide();
             $("#div_intervention_year3").hide();
             $("#div_intervention_year4").hide();
@@ -106,7 +122,7 @@ New Submission
                 $('#amount_requested_digit').digits();
             });
 
-            /* Converting string words to upper-case */
+            // Converting string words to upper-case
             function upperCaseFirstLetterInString(str){
                 var splitStr = str.toLowerCase().split(" ");
                 for(var i=0; i<splitStr.length; i++){
@@ -115,54 +131,90 @@ New Submission
                 return splitStr.join(" ");
             }
 
-            function porpulateInterventionLine(){
-                let intervention_type_val = $('#intervention_type').val();
-                let default_option = "<option value=''>Select an Intervention Line</option>"
-                $("#btn_submit_request").attr('disabled', true);
-                if (intervention_type_val == '') {
-                    $("#intervention_line").html(default_option);
-                    $("#btn_submit_request").attr('disabled', false);
-                } else {
-                    
-                    $("#spinner-submission_requests").show();
-                    $("#spinner-submission_requests").focus();
-
-                    /* get all related Intervention Lines */
-                    $.get( "{{ route('tf-bi-portal-api.getAllInterventionLinesForSpecificType', '') }}?intervention_type="+intervention_type_val).done(function( response ) {
-                        if (response && response != null) {
-                            let type = "{{ old('tf_iterum_intervention_line_key_id') }}";
-
-                            all_astd_interventions.length = 0;
-                            $.each(response, function( index, value ) {
-                                var selection = (type == value.id) ? 'selected' : '';
-                                default_option += "<option " + selection + " value='" + value.id + "'>" + upperCaseFirstLetterInString(value.name) + "</option>";
-                                let intervention_name = value.name.toLowerCase();
-                                if (intervention_name.includes('teaching practice') || intervention_name.includes('conference attendance') || intervention_name.includes('tetfund scholarship')) {
-                                    all_astd_interventions.push(value.id);
-                                }
-                            });
-                            
-                            $('#intervention_line').html(default_option);
-
-                            $("#spinner-submission_requests").hide();
-                        }
-                    });
-                    $("#btn_submit_request").attr('disabled', false);
-                }
+            // hiding 3 intervention years
+            function hide_3_intervention_years() {
+                $("#div_intervention_year2").hide();
+                $("#div_intervention_year3").hide();
+                $("#div_intervention_year4").hide();
+                $("#year_plural").hide();
             }
 
-            /* update intervention line on changing intervention type */
-            $(document).on('change', "#intervention_type", function(e) {
-                porpulateInterventionLine();
+            // triggered on changing intervention type
+            $('#intervention_type').on('change', function() {
+                let selected_intevention_type = $(this).val();
+                let intervention_line_html = "<option value=''>Select an Intervention Line</option>";
+                if (selected_intevention_type != '' && all_intervention_records != null) {
+
+                    all_astd_interventions_id.length = 0; /* resetting array to empty */
+                    $.each(JSON.parse(all_intervention_records), function(key, intervention) {
+                        // appending intervention lines options
+                        if (intervention.type == selected_intevention_type) {
+                            intervention_line_html += "<option value='"+ intervention.id +"'>"+ upperCaseFirstLetterInString(intervention.name) +"</option>";
+                        }
+
+                        // setting all astd interventions into the array
+                        let intervention_name = intervention.name.toLowerCase();
+                        if (intervention_name.includes('teaching practice') || intervention_name.includes('conference attendance') || intervention_name.includes('tetfund scholarship')) {
+                            all_astd_interventions_id[intervention.id] = intervention_name;
+                        }
+                    });
+                }
+                $('#intervention_line').html(intervention_line_html);
             });
 
-            $(document).on('change', "#intervention_line", function(e) {
-                let intervention_line = $('#intervention_line').val();
-                if (all_astd_interventions.includes(intervention_line)) {
-                    $("#div_intervention_year2").hide();
-                    $("#div_intervention_year3").hide();
-                    $("#div_intervention_year4").hide();
-                    $("#year_plural").hide();
+            // triggered on changing intervention line
+            $('#intervention_line').on('change', function() {
+                let selected_intervention_line = $(this).val();
+                $('#div_current_nomination_details_submitted').hide();
+                if (selected_intervention_line != '' && selected_intervention_line in all_astd_interventions_id) {
+
+                    let intevention_line_name = all_astd_interventions_id[selected_intervention_line];
+                    let line_type_short = '';
+                    let nomination_label = '';
+                    let relationship_name = 'user';
+                    if (intevention_line_name.includes('teaching practice')) {
+                        line_type_short = 'tp';
+                        relationship_name = 'tp_submission';
+                        nomination_label = 'TP NOMINATION';
+                        hide_3_intervention_years();
+                    } else if(intevention_line_name.includes('conference attendance')) {
+                        line_type_short = 'ca';
+                        relationship_name = 'ca_submission';
+                        nomination_label = 'CA NOMINATION';
+                        hide_3_intervention_years();
+                    } else if (intevention_line_name.includes('tetfund scholarship')) {
+                        line_type_short = 'tsas';
+                        relationship_name = 'tsas_submission';
+                        nomination_label = 'TSAS NOMINATION';
+                        hide_3_intervention_years();
+                    }
+
+                    if (line_type_short != '') {
+                        let html_to_return = '';
+                        $.get( "{{ route('tf-bi-portal-api.submission_requests.get_all_related_nomination_request','') }}/"+line_type_short).done(function( response ) {
+                           
+                            if (response.data) {
+                                let s_n_counter = 1;
+                                $.each(response.data, function(key, nominee) {
+                                    
+                                    let formated_date = new Date(nominee[relationship_name]['updated_at']).toDateString();
+
+                                    let middle_name = (nominee[relationship_name]['middle_name']) ? nominee[relationship_name]['middle_name'] : '';
+
+                                    let total_request_amount = nominee[relationship_name]['total_requested_amount'] ? nominee[relationship_name]['total_requested_amount'] : "0.00";
+
+                                    html_to_return += "<tr><td>"+ s_n_counter +"</td>  <td>"+ nominee[relationship_name]['first_name'] + " " + middle_name + " " + nominee[relationship_name]['last_name'] +"</td>  <td> &#8358 "+ total_request_amount +"</td>  <td>"+ formated_date +"</td>  </tr>";
+
+                                    s_n_counter += 1;
+
+                                }); 
+                                
+                                $('#nomination_type').text(nomination_label);
+                                $('#div_current_nomination_details_submitted').show();
+                                $('#current_nomination_details_submitted').html(html_to_return);
+                            }
+                        });
+                    }
                 } else {
                     $("#div_intervention_year2").show();
                     $("#div_intervention_year3").show();
@@ -170,10 +222,7 @@ New Submission
                     $("#year_plural").show();
                 }
             });
-                
-            if ("{{ old('intervention_type') }}" != null && "{{ old('intervention_type') }}" != '') {
-                porpulateInterventionLine();
-            }
+
         });
     </script>
 @endpush

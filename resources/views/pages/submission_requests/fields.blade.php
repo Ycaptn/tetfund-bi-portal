@@ -7,13 +7,21 @@
             <div class="input-group">
                 <select name="intervention_type" id="intervention_type" class="form-select">
                     <option value="">Select the type of Intervention</option>
-                @if (isset($intervention_types) && $intervention_types != null)
-                    @foreach ($intervention_types as $idx=>$type)
-                        @if (in_array('bi_ict', $bi_roles) || in_array('BI-desk-officer', $bi_roles))
-                            <option {{ (old('intervention_type') == $type || isset($submissionRequest) && $submissionRequest->tf_iterum_intervention_line_key_id==$idx) ? "selected" : '' }} value="{{$type}}"> {{ ucwords($type) }}</option>
-                        @endif
-                    @endforeach
-                @endif
+                    @if (isset($intervention_types) && $intervention_types != null)
+                        @php
+                            $unique_intervention = [];
+                            foreach ($intervention_types as $intervention) {
+                                if (!in_array($intervention->type, $unique_intervention)) {
+                                    array_push($unique_intervention, $intervention->type);
+                                    if (isset($selected_intervention_line) && !empty($selected_intervention_line) && $selected_intervention_line->type == $intervention->type) {
+                                        echo "<option selected='selected' value='". $intervention->type ."' >" . ucwords($intervention->type) . "</option>";
+                                    } else {
+                                        echo "<option value='". $intervention->type ."' >" . ucwords($intervention->type) . "</option>";
+                                    }
+                                }
+                            }
+                        @endphp
+                    @endif
                 </select>
                 <span class="input-group-text"><span class="fa fa-folder-open"></span></span>
             </div>

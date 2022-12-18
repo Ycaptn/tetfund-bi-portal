@@ -46,7 +46,7 @@ class UpdateTSASNominationRequest extends AppBaseFormRequest
             'bank_account_number' => 'required|digits:10',
             'bank_name' => 'required|max:100',
             'bank_sort_code' => 'required|max:100',
-            'intl_passport_number' => 'required|max:100',
+            'intl_passport_number' => 'sometimes|numeric|max:100',
             'bank_verification_number' => 'required|numeric',
             'national_id_number' => 'required|numeric',
             'degree_type' => 'required|max:100',

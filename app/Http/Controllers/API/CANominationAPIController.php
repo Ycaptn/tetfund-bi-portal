@@ -104,20 +104,12 @@ class CANominationAPIController extends AppBaseController
             $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendance_letter);
         } 
 
-        /*handling health_report upload process*/
-        if($request->hasFile('health_report')) {
-            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Health Report";
+        /*handling paper_presentation upload process*/
+        if($request->hasFile('paper_presentation')) {
+            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Presentation Paper ";
             $discription = "This " . strtolower("Document contains $label");
 
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->health_report);
-        } 
-
-        /*handling curriculum_vitae upload process*/
-        if($request->hasFile('curriculum_vitae')) {
-            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Curriculum Vitae";
-            $discription = "This " . strtolower("Document contains $label");
-
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->curriculum_vitae);
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->paper_presentation);
         } 
 
         /*handling international_passport_bio_page upload process*/
@@ -213,28 +205,16 @@ class CANominationAPIController extends AppBaseController
             $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendance_letter);
         }
 
-        /*handling health_report update process*/
-        if($request->hasFile('health_report')) {
-            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Health Report";
+        /*handling paper_presentation update process*/
+        if($request->hasFile('paper_presentation')) {
+            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Presentation Paper ";
             $discription = "This " . strtolower("Document contains $label");
 
             $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
             if ($attachement != null) {
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->health_report);
-        }
-
-        /*handling curriculum_vitae update process*/
-        if($request->hasFile('curriculum_vitae')) {
-            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Curriculum Vitae ";
-            $discription = "This " . strtolower("Document contains $label");
-
-            $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
-            if ($attachement != null) {
-                $nominationRequest->delete_attachment($label); // delete old passport photo
-            }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->curriculum_vitae);
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->paper_presentation);
         }
 
         /*handling international_passport_bio_page update process*/

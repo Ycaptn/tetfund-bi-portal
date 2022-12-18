@@ -73,12 +73,7 @@ class NominationRequestDataTable extends DataTable
                 $query_filter['is_head_of_institution_check'] = 1;
                 $query_filter['head_of_institution_checked_status'] = 'approved';
                 $query_filter['is_set_for_final_submission'] = 0;
-
-            }/* else if (request()->view_type == 'final_nominations') {
-
-                $query_filter['is_set_for_final_submission'] = 1;
-
-            }*/
+            }
         }
 
         // final query to be returned with respective filter(s) array

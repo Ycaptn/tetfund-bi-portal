@@ -52,7 +52,37 @@ $(document).ready(function() {
 
     let conferences = '{!! json_encode($conferences) !!}';
     let institutions = '{!! json_encode($institutions) !!}';
-    
+
+    // toggle TSAS international passport attachement input filed
+    $('#intl_passport_number_tsas').on('keyup', function() {
+        let intl_passport_number_set_tsas = $(this).val();
+        if (intl_passport_number_set_tsas != '' && intl_passport_number_set_tsas.length == 1) {
+            $('#div-international_passport_bio_page_tsas').show();
+        } else if (intl_passport_number_set_tsas == '' || intl_passport_number_set_tsas.length == 0) {
+            $('#div-international_passport_bio_page_tsas').hide();
+        }
+    });
+
+    // toggle CA presention paper attachement input filed
+    $('#has_paper_presentation_ca').on('change', function() {
+        let has_paper_presentation_set_ca = $(this).val();
+        if (has_paper_presentation_set_ca != '' && has_paper_presentation_set_ca == '1') {
+            $('#div-paper_presentation_ca').show();
+        } else if (has_paper_presentation_set_ca == '' || has_paper_presentation_set_ca == 0) {
+            $('#div-paper_presentation_ca').hide();
+        }
+    });
+
+    // toggle CA international passport attachement input filed
+    $('#intl_passport_number_ca').on('keyup', function() {
+        let intl_passport_number_set_ca = $(this).val();
+        if (intl_passport_number_set_ca != '' && intl_passport_number_set_ca.length == 1) {
+            $('#div-international_passport_bio_page_ca').show();
+        } else if (intl_passport_number_set_ca == '' || intl_passport_number_set_ca.length == 0) {
+            $('#div-international_passport_bio_page_ca').hide();
+        }
+    });
+
     //toggle different conferences based on the selected country for CA
     $(document).on('change', "#country_id_select_ca", function(e) {
         let selected_country = $('#country_id_select_ca').val();

@@ -22,31 +22,13 @@ Edit Submission Request
 @stop
 
 @section('page_title_buttons')
-<a href="{{ route('tf-bi-portal.submissionRequests.create') }}" id="btn-new-submissionRequests" class="btn btn-sm btn-primary">
+{{-- <a href="{{ route('tf-bi-portal.submissionRequests.create') }}" id="btn-new-submissionRequests" class="btn btn-sm btn-primary">
     <i class="bx bx-book-add mr-1"></i>New Submission Request
-</a>
+</a> --}}
 @stop
 
 @section('content')
 <div class="card border-top border-0 border-4 border-primary">
-    
-    {{-- fainted loader --}}
-    <div class="col-sm-12 text-center" id="spinner-submission_requests" style="display: none; width:100%; height: 100%; position: absolute; z-index: 2;">
-        
-        <div style="position: absolute; background-color: lightgrey; width:100%; height: 100%; opacity:0.5;">
-        </div>
-
-        <div class="col-sm-12 text-center" style="position: absolute; width:100%; height: 100%; padding-top: 150px;">
-            <div class="spinner-border text-primary" role="status"> 
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            <br>
-            <div class="col-sm-12">
-                <h3><strong>Please Wait...</strong></h3>
-                <h5><strong><i>Loading related intervention lines !</i></strong></h5>
-            </div>
-        </div>
-    </div>
 
     <div class="card-body p-4">
 
@@ -63,7 +45,7 @@ Edit Submission Request
 
             <div class="col-lg-offset-3 col-lg-9">
                 <hr/>
-                {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
+                {!! Form::submit('Update Request', ['class' => 'btn btn-primary']) !!}
                 <a href="{{ route('tf-bi-portal.submissionRequests.index') }}" class="btn btn-warning btn-default">Cancel</a>
             </div>
         {!! Form::close() !!}                
@@ -96,11 +78,11 @@ Edit Submission Request
         }
 
         $(document).ready(function() {
-            $('#amount_requested_digit').keyup(function(event){
-                $('#amount_requested_digit').digits();
-            });
+            let all_intervention_records = '{!! json_encode($intervention_types) ?? [] !!}';
+            let selected_intervention_line = JSON.parse('{!! json_encode($selected_intervention_line) !!}');
+            let all_astd_interventions_id = [];
 
-            /* Converting string words to upper-case */
+            // Converting string words to upper-case
             function upperCaseFirstLetterInString(str){
                 var splitStr = str.toLowerCase().split(" ");
                 for(var i=0; i<splitStr.length; i++){
@@ -109,46 +91,88 @@ Edit Submission Request
                 return splitStr.join(" ");
             }
 
-            function porpulateInterventionLine(){
-                let intervention_type_val = $('#intervention_type').val();
-                let default_option = "<option value=''>Select an Intervention Line</option>"
-                $("#btn_submit_request").attr('disabled', true);
-                if (intervention_type_val == '') {
-                    $("#intervention_line").html(default_option);
-                    $("#btn_submit_request").attr('disabled', false);
-                } else {
-
-                    $("#spinner-submission_requests").show();
-                    $("#spinner-submission_requests").focus();
-
-                    /* get all related Intervention Lines */
-                    $.get( "{{ route('tf-bi-portal-api.getAllInterventionLinesForSpecificType', '') }}?intervention_type="+intervention_type_val).done(function( response ) {
-                        if (response && response != null) {
-                            let type = "{{ (isset($submissionRequest) && old('tf_iterum_intervention_line_key_id') == null) ? $submissionRequest->tf_iterum_intervention_line_key_id : old('tf_iterum_intervention_line_key_id') }}";
-                            $.each(response, function( index, value ) {
-                                var selection = (type == value.id) ? 'selected' : '';
-                                default_option += "<option " + selection + " value='" + value.id + "'>" + upperCaseFirstLetterInString(value.name) + "</option>";
-                            });
-                            
-                            $('#intervention_line').html(default_option);
-
-                            $("#spinner-submission_requests").hide();
-                        }
-                    });
-                    $("#btn_submit_request").attr('disabled', false);
-                }
+            // function to always hide intervention years
+            function hide_3_intervention_years() {
+                $("#div_intervention_year2").hide();
+                $("#div_intervention_year3").hide();
+                $("#div_intervention_year4").hide();
+                $("#year_plural").hide();
             }
 
-            /* update intervention line on changing intervention type */
-            $(document).on('change', "#intervention_type", function(e) {
-                porpulateInterventionLine();
-            });
+            // function to always show intervention years
+            function show_3_intervention_years() {
+                $("#div_intervention_year2").show();
+                $("#div_intervention_year3").show();
+                $("#div_intervention_year4").show();
+                $("#year_plural").show();
+            }
+
+
+
+            @if (!isset(request()->tf_iterum_intervention_line_key_id))
+                let intervention_line_html = "<option value=''>Select an Intervention Line</option>";
+                all_astd_interventions_id.length = 0; /* resetting array to empty */
                 
-            $(document).on('load', function(e) {
-                if (("{{ old('intervention_type') }}" != null && "{{ old('intervention_type') }}" != '') || ("{{ isset($submissionRequest) }}" && "{{$submissionRequest->tf_iterum_intervention_line_key_id}}" != null)) {
-                    porpulateInterventionLine();
+                $.each(JSON.parse(all_intervention_records), function(key, intervention) {
+                    if (intervention.type == selected_intervention_line.type && intervention.id == selected_intervention_line.id) {
+                        intervention_line_html += "<option selected='selected' value='"+ intervention.id +"'>"+ upperCaseFirstLetterInString(intervention.name) +"</option>";
+                    } else if (intervention.type == selected_intervention_line.type) {
+                        intervention_line_html += "<option value='"+ intervention.id +"'>"+ upperCaseFirstLetterInString(intervention.name) +"</option>";
+                    }
+
+                    // setting all astd interventions into the array
+                    let intervention_name = intervention.name.toLowerCase();
+                    if (intervention_name.includes('teaching practice') || intervention_name.includes('conference attendance') || intervention_name.includes('tetfund scholarship')) {
+                        all_astd_interventions_id[intervention.id] = intervention_name;
+                    }
+                });
+
+                //hiding intervention years
+                let intervention_name = selected_intervention_line.name.toLowerCase();
+                if (intervention_name.includes('teaching practice') || intervention_name.includes('conference attendance') || intervention_name.includes('tetfund scholarship')) {
+                    hide_3_intervention_years();
+                } else {
+                    show_3_intervention_years();
+                }
+
+                $('#intervention_line').html(intervention_line_html);
+            @endif
+
+            // triggered on changing intervention type
+            $('#intervention_type').on('change', function() {
+                let selected_intevention_type = $(this).val();
+                let intervention_line_html = "<option value=''>Select an Intervention Line</option>";
+                
+                if (selected_intevention_type != '' && all_intervention_records != null) {
+                    all_astd_interventions_id.length = 0; /* resetting array to empty */
+                    $.each(JSON.parse(all_intervention_records), function(key, intervention) {
+                        // appending intervention lines options
+                        if (intervention.type == selected_intevention_type) {
+                            intervention_line_html += "<option value='"+ intervention.id +"'>"+ upperCaseFirstLetterInString(intervention.name) +"</option>";
+                        }
+
+                        // setting all astd interventions into the array
+                        let intervention_name = intervention.name.toLowerCase();
+                        if (intervention_name.includes('teaching practice') || intervention_name.includes('conference attendance') || intervention_name.includes('tetfund scholarship')) {
+                            all_astd_interventions_id[intervention.id] = intervention_name;
+                        }
+
+                    });
+                }
+                $('#intervention_line').html(intervention_line_html);
+            });
+
+            // triggered on changing intervention line
+            $('#intervention_line').on('change', function() {
+                let view_selected_intervention_line = $(this).val();
+                
+                if (view_selected_intervention_line != '' && view_selected_intervention_line in all_astd_interventions_id) {
+                    hide_3_intervention_years();
+                } else {
+                    show_3_intervention_years();
                 }
             });
+
         });
     </script>
 @endpush

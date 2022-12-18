@@ -157,7 +157,7 @@
 <div id="div-intl_passport_number_ca" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="intl_passport_number_ca" class="col-sm-11 col-form-label">Intl Passport Number:</label>
     <div class="col-sm-12">
-        {!! Form::text('intl_passport_number_ca', null, ['id'=>'intl_passport_number_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+        {!! Form::text('intl_passport_number_ca', null, ['id'=>'intl_passport_number_ca', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
     </div>
 </div>
 
@@ -210,7 +210,7 @@
 
 <!-- Has Paper Presentation Field -->
 <div id="div-has_paper_presentation_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="has_paper_presentation_ca" class="col-sm-11 col-form-label">Has Paper Presentation ?</label>
+    <label for="has_paper_presentation_ca" class="col-sm-11 col-form-label">Any Paper Presentation ?</label>
     <div class="col-sm-12">
         <select name="has_paper_presentation_ca" id="has_paper_presentation_ca" class="form-control">
             <option value="">-- None selected --</option>
@@ -222,12 +222,12 @@
 
 <!-- Is Academic Program Field -->
 <div id="div-is_academic_staff_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="is_academic_staff_ca" class="col-sm-11 col-form-label">Is Academic Staff ? </label>
+    <label for="is_academic_staff_ca" class="col-sm-11 col-form-label">Staff Type </label>
     <div class="col-sm-12">
         <select name="is_academic_staff_ca" id="is_academic_staff_ca" class="form-control">
             <option value="">-- None selected --</option>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
+            <option value="1">Academic Staff</option>
+            <option value="0">None Academic Staff</option>
         </select>
     </div>
 </div>
@@ -274,24 +274,16 @@
     </div>
 </div>
 
-<!-- health report -->
-<div id="div-health_report_ca" class="form-group  col-md-4">
-    <label for="health_report_ca" class="col-sm-11 col-form-label">Health Report:</label>
+<!-- paper presentation -->
+<div id="div-paper_presentation_ca" class="form-group col-md-4" style="display: none;">
+    <label for="paper_presentation_ca" class="col-sm-11 col-form-label">Presentaion paper:</label>
     <div class="col-sm-12">
-        <input type="file" id="health_report_ca" name="health_report_ca" class="form-control">
-    </div>
-</div>
-
-<!-- curricullum vitae -->
-<div id="div-international_passport_bio_page_ca" class="form-group col-md-6">
-    <label for="curriculum_vitae_ca" class="col-sm-11 col-form-label">Curriculum Vitae:</label>
-    <div class="col-sm-12">
-        <input type="file" id="curriculum_vitae_ca" name="curriculum_vitae_ca" class="form-control">
+        <input type="file" id="paper_presentation_ca" name="paper_presentation_ca" class="form-control">
     </div>
 </div>
 
 <!-- international passport bio page -->
-<div id="div-international_passport_bio_page_ca" class="form-group col-md-6">
+<div id="div-international_passport_bio_page_ca" class="form-group col-md-4" style="display: none;">
     <label for="international_passport_bio_page_ca" class="col-sm-11 col-form-label">Int'l Passport Bio Page:</label>
     <div class="col-sm-12">
         <input type="file" id="international_passport_bio_page_ca" name="international_passport_bio_page_ca" class="form-control">

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\SubmissionRequest;
+use App\Models\BeneficiaryMember;
+use App\Models\NominationRequest;
 
 use App\Events\SubmissionRequestCreated;
 use App\Events\SubmissionRequestUpdated;
@@ -55,15 +57,6 @@ class SubmissionRequestAPIController extends AppBaseController
         return $this->sendResponse($submissionRequests->toArray(), 'Submission Requests retrieved successfully');
     }
 
-    public function getAllInterventionLinesForSpecificType(Organization $org, Request $request){
-        $pay_load = ['_method'=>'GET', 'intervention_type'=>$request->intervention_type];
-
-        $tETFundServer = new TETFundServer();   /* server class constructor */
-        $intervention_lines_server_response = $tETFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
-        
-        return $intervention_lines_server_response;
-    }
-
     /**
      * Store a newly created SubmissionRequest in storage.
      * POST /submissionRequests
@@ -102,6 +95,35 @@ class SubmissionRequestAPIController extends AppBaseController
 
         return $this->sendResponse($submissionRequest->toArray(), 'Submission Request retrieved successfully');
     }
+
+    /*
+        return related nominations type
+    */
+    public function get_all_related_nomination_request(Request $request, $type) {
+        $relationship = 'user';
+        if ($type == 'tp') {
+            $relationship = 'tp_submission';
+        } elseif ($type == 'ca') {
+            $relationship = 'ca_submission';
+        } elseif ($type == 'tsas') {
+            $relationship = 'tsas_submission';
+        }
+
+        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', auth()->user()->id)->first();
+        $related_nomination_request = NominationRequest::with($relationship)
+                            ->where('type', $type)
+                            ->where('beneficiary_id', optional($beneficiary_member)->beneficiary_id)
+                            ->where('status', 'approved')
+                            ->where('details_submitted', true)
+                            ->where('is_desk_officer_check', true)
+                            ->where('is_average_committee_members_check', true)
+                            ->orderBy('updated_at', 'DESC')
+                            ->whereNull('bi_submission_request_id')
+                            ->get();
+
+        return $this->sendResponse($related_nomination_request->toArray(), 'All Nominmation requests retrieved successfully!');
+    }
+
 
     /**
      * Update the specified SubmissionRequest in storage.

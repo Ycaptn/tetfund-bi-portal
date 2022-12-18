@@ -45,7 +45,7 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
             'bank_name' => 'required|max:100',
             'bank_sort_code' => 'required|max:100',
             'bank_verification_number' => 'required|numeric',
-            'intl_passport_number' => 'required|max:100',
+            'intl_passport_number' => 'sometimes|max:100',
             'national_id_number' => 'required|numeric',
             'organizer_name' => 'required|string|max:190',
             'conference_theme' => 'required|string|max:190',
@@ -76,12 +76,8 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
             $return_arr['conference_attendance_letter'] = 'file|mimes:pdf|max:5240';
         }
 
-        if(request()->hasFile('health_report') && request()->health_report != 'undefined') {
-            $return_arr['health_report'] = 'file|mimes:pdf,doc,docx|max:5240';
-        }
-
-        if(request()->hasFile('curriculum_vitae') && request()->curriculum_vitae != 'undefined') {
-            $return_arr['curriculum_vitae'] = 'file|mimes:pdf,doc,docx|max:5240';
+        if(request()->hasFile('paper_presentation') && request()->paper_presentation != 'undefined') {
+            $return_arr['paper_presentation'] = 'file|mimes:pdf,doc,docx|max:5240';
         }
 
         if(request()->hasFile('international_passport_bio_page') && request()->international_passport_bio_page != 'undefined') {
@@ -91,6 +87,12 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
         return $return_arr;
     }
 
+    public function messages() {
+        return [
+            'paper_presentation.required_if' => 'The Presentation Paper attachment is required when Any Paper Presentation is YES.',
+        ];
+    }
+    
     public function attributes() {
         return [
             'email' => 'Email',
@@ -117,8 +119,8 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
             'accepted_paper_title' => 'Accepted Paper Title',
             'attendee_department_name' => 'Attendee Department Name',
             'attendee_grade_level' => 'Attendee Grade Level',
-            'has_paper_presentation' => 'Has Paper Presentation',
-            'is_academic_staff' => 'Is Academic Staff',
+            'has_paper_presentation' => 'Any Paper Presentation',
+            'is_academic_staff' => 'Staff Type',
             'conference_start_date' => 'Conference Start Date',
             'conference_end_date' => 'Conference End Date',
             'conference_fee_amount' => 'Conference Fee Amount',
@@ -132,8 +134,7 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
         
             'passport_photo' => 'Passport Photo',
             'conference_attendance_letter' => 'Conference Attendance Letter',
-            'health_report' => 'Health Report',
-            'curriculum_vitae' => 'Curriculum Vitae',
+            'paper_presentation' => 'Presentation Paper',
             'international_passport_bio_page' => 'International Passport Bio Page',
         ];
     }

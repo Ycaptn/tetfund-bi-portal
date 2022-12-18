@@ -199,7 +199,89 @@
                                     });
                                     location.reload(true);
                                 }
-                            },
+                            }, error: function(errors) {
+                                console.log(errors);
+                                swal("Error", "Oops an error occurred. Please try again.", "error");
+                            }
+                        });
+                    }
+                });
+
+            });
+
+            //process bulk nomination forwarding to hoi 
+            $(document).on('click', ".move_all_for_approval", function(e) {
+                e.preventDefault();
+                $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+                //check for internet status 
+                if (!window.navigator.onLine) {
+                    $('.offline-nomination_request').fadeIn(300);
+                    return;
+                }else{
+                    $('.offline-nomination_request').fadeOut(300);
+                }
+
+                let itemIdType = $(this).attr('data-val');
+                let itemType = $('#nomination_type').val().toUpperCase()+'Nomination';
+                let column_to_update = 'is_desk_officer_check_after_average_committee_members_checked';
+
+                swal({
+                    title: "Are you sure you want to forward all " + itemType + " request to H.O.I for approval?",
+                    text: "You will not be able to revert this process once initiated.",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, forward all",
+                    cancelButtonText: "No, don't forward all",
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+                }, function(isConfirm) {
+                    if (isConfirm) {
+
+                        let endPointUrl = "{{ route('tf-bi-portal-api.nomination_requests.process_forward_all_details','') }}/"+itemIdType;
+
+                        swal({
+                            title: '<div id="spinner-beneficiaries" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br> Please wait...',
+                            text: 'Forwarding all '+ itemType +' request to H.O.I <br><br> Do not refresh this page! ',
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            html: true
+                        })
+
+                        let formData = new FormData();
+                        formData.append('_token', $('input[name="_token"]').val());
+                        formData.append('_method', 'PUT');
+                        formData.append('id', itemIdType);
+                        formData.append('column_to_update', column_to_update);
+                        
+                        $.ajax({
+                            url:endPointUrl,
+                            type: "POST",
+                            data: formData,
+                            cache: false,
+                            processData:false,
+                            contentType: false,
+                            dataType: 'json',
+                            success: function(result){
+                                if(result.errors){
+                                    console.log(result.errors);
+                                    swal("Error", "Oops an error occurred. Please try again.", "error");
+                                }else{
+                                    swal({
+                                        title: "Forwarded",
+                                        text: 'All ' + itemType + " request forwarded to H.O.I for approval successfully",
+                                        type: "success",
+                                        confirmButtonClass: "btn-success",
+                                        confirmButtonText: "OK",
+                                        closeOnConfirm: false
+                                    });
+                                    location.reload(true);
+                                }
+                            }, error: function(errors) {
+                                console.log(errors);
+                                swal("Error", "Oops an error occurred. Please try again.", "error");
+                            }
                         });
                     }
                 });

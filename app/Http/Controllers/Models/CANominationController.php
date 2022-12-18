@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Models;
 
+use App\Models\NominationRequest;
 use App\Models\CANomination;
 use App\Models\BeneficiaryMember;
 use App\Models\SubmissionRequest;
@@ -38,6 +39,64 @@ class CANominationController extends BaseController
         $current_user = Auth()->user();
         $user_beneficiary_id = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first()->beneficiary_id;   //BI beneficiary_id
 
+        $allNominationRequest = NominationRequest::with('nomination_committee_vote')
+                ->where('beneficiary_id', $user_beneficiary_id)
+                ->whereNull('bi_submission_request_id')
+                ->where('type', 'ca')
+                ->where('status', 'approved')
+                ->where('details_submitted', true)
+                ->get();
+
+        $count_array_returned = [
+            'desk_officer_newly_submitted' => 0,
+            'desk_officer_committee_considered' => 0,
+            'desk_officer_hoi_approved' => 0,
+            'committee_members_newly_submitted' => 0,
+            'committee_members_considered_nomination' => 0,
+            'hoi_nomination_approval' => 0,
+            'hoi_approved_nominations' => 0,
+        ];
+
+        if (count($allNominationRequest) > 0) {
+            foreach ($allNominationRequest as $key => $nomination) {
+            /* start for desk oficer tabs */
+                if ($nomination->is_desk_officer_check == false) {
+                    $count_array_returned['desk_officer_newly_submitted'] += 1;
+                }
+
+                if ($nomination->is_average_committee_members_check == true && $nomination->committee_head_checked_status == 'approved' && $nomination->is_desk_officer_check_after_average_committee_members_checked == false) {
+                    $count_array_returned['desk_officer_committee_considered'] += 1;
+                }
+
+                if ($nomination->is_head_of_institution_check == true && $nomination->head_of_institution_checked_status == 'approved' && $nomination->is_set_for_final_submission == false) {
+                    $count_array_returned['desk_officer_hoi_approved'] += 1;
+                }
+            /* end for desk oficer tabs */
+
+            /* start for committee members and head tabs */
+                $user_voted_id = isset($nomination->nomination_committee_vote->user_id) ? $nomination->nomination_committee_vote->user_id : null;
+                if ($nomination->is_average_committee_members_check == false && $nomination->is_desk_officer_check == true && !isset($nomination->nomination_committee_vote) && $user_voted_id != $current_user->id ) {
+                    $count_array_returned['committee_members_newly_submitted'] += 1;
+                }
+
+                if ($nomination->is_average_committee_members_check == false && $nomination->is_desk_officer_check == true) {
+                    $count_array_returned['committee_members_considered_nomination'] += 1;
+                }
+            /* end for committee members and head tabs */
+
+            /* start for hoi submitted tabs */
+                if ($nomination->is_head_of_institution_check == false && $nomination->is_desk_officer_check_after_average_committee_members_checked == true) {
+                    $count_array_returned['hoi_nomination_approval'] += 1;
+                }
+
+                if ($nomination->is_head_of_institution_check == true && $nomination->head_of_institution_checked_status == 'approved' && $nomination->is_set_for_final_submission == false) {
+                    $count_array_returned['hoi_approved_nominations'] += 1;
+                }
+            /* end for hoi submitted tabs */
+
+            }
+        }
+
         if (isset(request()->view_type) && (request()->view_type == 'hoi_approved' || request()->view_type == 'final_nominations') && $current_user->hasRole('BI-desk-officer')) {
             $all_existing_submissions = SubmissionRequest::where('status', 'not-submitted')
                             ->orderBy('created_at', 'DESC')
@@ -49,7 +108,8 @@ class CANominationController extends BaseController
                 ->with('user_beneficiary_id', $user_beneficiary_id)
                 ->render('tf-bi-portal::pages.c_a_nominations.index', [
                     'current_user' => $current_user,
-                    'all_existing_submissions' => (isset($all_existing_submissions)) ? $all_existing_submissions : []
+                    'all_existing_submissions' => (isset($all_existing_submissions)) ? $all_existing_submissions : [],
+                    'count_array_returned' => $count_array_returned
                 ]);
     }
 

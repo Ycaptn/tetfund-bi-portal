@@ -44,8 +44,8 @@ class CreateCANominationRequest extends AppBaseFormRequest
             'bank_account_number' => 'required|digits:10',
             'bank_name' => 'required|max:100',
             'bank_sort_code' => 'required|max:100',
-            'intl_passport_number' => 'required|max:100',
             'bank_verification_number' => 'required|numeric',
+            'intl_passport_number' => 'sometimes|numeric|max:100',
             'national_id_number' => 'required|numeric',
             'organizer_name' => 'required|string|max:190',
             'conference_theme' => 'required|string|max:190',
@@ -107,7 +107,7 @@ class CreateCANominationRequest extends AppBaseFormRequest
             'accepted_paper_title' => 'Accepted Paper Title',
             'attendee_department_name' => 'Attendee Department Name',
             'attendee_grade_level' => 'Attendee Grade Level',
-            'has_paper_presentation' => 'Has Paper Presentation',
+            'has_paper_presentation' => 'Any Paper Presentation',
             'is_academic_staff' => 'Is Academic Staff',
             'conference_start_date' => 'Conference Start Date',
             'conference_end_date' => 'Conference End Date',
@@ -122,8 +122,7 @@ class CreateCANominationRequest extends AppBaseFormRequest
         
             'passport_photo' => 'Passport Photo',
             'conference_attendance_letter' => 'Conference Attendance Letter',
-            'health_report' => 'Health Report',
-            'curriculum_vitae' => 'Curriculum Vitae',
+            'paper_presentation' => 'Presentation Paper',
             'international_passport_bio_page' => 'International Passport Bio Page',
 
         ];

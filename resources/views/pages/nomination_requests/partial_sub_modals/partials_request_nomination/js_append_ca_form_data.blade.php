@@ -66,12 +66,8 @@ if($('#conference_attendance_letter_ca').get(0).files.length != 0){
 	formData.append('conference_attendance_letter', $('#conference_attendance_letter_ca')[0].files[0]);      
 }
 
-if($('#health_report_ca').get(0).files.length != 0){
-	formData.append('health_report', $('#health_report_ca')[0].files[0]);  
-}
-
-if($('#curriculum_vitae_ca').get(0).files.length != 0){
-	formData.append('curriculum_vitae', $('#curriculum_vitae_ca')[0].files[0]);  
+if($('#paper_presentation_ca').get(0).files.length != 0){
+	formData.append('paper_presentation', $('#paper_presentation_ca')[0].files[0]);  
 }
 
 if($('#international_passport_bio_page_ca').get(0).files.length != 0){

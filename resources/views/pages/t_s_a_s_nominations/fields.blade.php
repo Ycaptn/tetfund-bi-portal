@@ -171,7 +171,7 @@
 <div id="div-intl_passport_number_tsas" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="intl_passport_number_tsas" class="col-sm-11 col-form-label">Intl Passport Number:</label>
     <div class="col-sm-12">
-        {!! Form::text('intl_passport_number_tsas', null, ['id'=>'intl_passport_number_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+        {!! Form::text('intl_passport_number_tsas', null, ['id'=>'intl_passport_number_tsas', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
     </div>
 </div>
 
@@ -187,7 +187,7 @@
 <div id="div-degree_type_tsas" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="degree_type_tsas" class="col-sm-11 col-form-label">Degree Type:</label>
     <div class="col-sm-12">
-        {!! Form::text('degree_type_tsas', null, ['id'=>'degree_type_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+        {!! Form::text('degree_type_tsas', null, ['id'=>'degree_type_tsas', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
     </div>
 </div>
 
@@ -269,7 +269,7 @@
 </div>
 
 <!-- curricullum vitae -->
-<div id="div-international_passport_bio_page_tsas" class="form-group col-md-6">
+<div id="div-curriculum_vitae_tsas" class="form-group col-md-4">
     <label for="curriculum_vitae_tsas" class="col-sm-11 col-form-label">Curriculum Vitae:</label>
     <div class="col-sm-12">
         <input type="file" id="curriculum_vitae_tsas" name="curriculum_vitae_tsas" class="form-control">
@@ -277,7 +277,7 @@
 </div>
 
 <!-- international passport bio page -->
-<div id="div-international_passport_bio_page_tsas" class="form-group col-md-6">
+<div id="div-international_passport_bio_page_tsas" class="form-group col-md-4" style="display: none;">
     <label for="international_passport_bio_page_tsas" class="col-sm-11 col-form-label">Int'l Passport Bio Page:</label>
     <div class="col-sm-12">
         <input type="file" id="international_passport_bio_page_tsas" name="international_passport_bio_page_tsas" class="form-control">

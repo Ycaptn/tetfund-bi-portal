@@ -39,6 +39,7 @@ $orgRoutes = function() {
                 Route::resource('nomination_requests', \App\Http\Controllers\API\NominationRequestAPIController::class);
                 Route::get('nomination_requests/show_selected_email/{email}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'show_selected_email'])->name('nomination_requests.show_selected_email');
                 Route::put('nomination_requests/process_forward_details/{id}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'process_forward_details'])->name('nomination_requests.process_forward_details');
+                Route::put('nomination_requests/process_forward_all_details/{itemIdType}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'process_forward_all_details'])->name('nomination_requests.process_forward_all_details');
                 Route::post('nomination_requests/process_committee_member_vote/{id}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'process_committee_member_vote'])->name('nomination_requests.process_committee_member_vote');
                 Route::post('nomination_requests/store_nomination_request_and_details', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'store_nomination_request_and_details'])->name('nomination_requests.store_nomination_request_and_details');
                 Route::post('nomination_requests/process_committee_head_consideration/{id}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'process_committee_head_consideration'])->name('nomination_requests.process_committee_head_consideration');
@@ -48,9 +49,8 @@ $orgRoutes = function() {
                 Route::resource('c_a_nominations', \App\Http\Controllers\API\CANominationAPIController::class);
                 Route::resource('t_p_nominations', \App\Http\Controllers\API\TPNominationAPIController::class);
                 
-                Route::get('/getAllInterventionLinesForSpecificType', [\App\Http\Controllers\API\SubmissionRequestAPIController::class, 'getAllInterventionLinesForSpecificType'])->name('getAllInterventionLinesForSpecificType');
-                
                 Route::resource('submission_requests', \App\Http\Controllers\API\SubmissionRequestAPIController::class);
+                Route::get('submission_requests/get_all_related_nomination_request/{type}', [\App\Http\Controllers\API\SubmissionRequestAPIController::class, 'get_all_related_nomination_request'])->name('submission_requests.get_all_related_nomination_request');
             });
 
         });

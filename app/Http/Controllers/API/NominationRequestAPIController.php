@@ -473,6 +473,15 @@ class NominationRequestAPIController extends BaseController
         return $this->sendSuccess("Nomination Request forwarded successfully");
     }
 
+    // general function processing forwarding of all nomination details
+    public function process_forward_all_details(Request $request, NominationRequest $nominationRequest, $itemIdType) {
+        $nominationRequest = $nominationRequest->where('type', $itemIdType)
+                ->where($request->column_to_update, 0)
+                ->update([$request->column_to_update => 1]);
+
+        return $this->sendSuccess("All Nomination Request forwarded successfully");
+    }
+
     // process approval decision by head of institution
     public function process_nomination_details_approval_by_hoi(Request $request, NominationRequest $nominationRequest, $id) {
         $nominationRequest = $nominationRequest->find($id);
