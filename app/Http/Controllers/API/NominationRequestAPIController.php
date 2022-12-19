@@ -29,6 +29,7 @@ use App\Models\CANomination;
 use App\Models\TSASNomination;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\NominationRequestInviteNotification;
+use App\Managers\TETFundServer;
 
 class NominationRequestAPIController extends BaseController
 {
@@ -126,21 +127,36 @@ class NominationRequestAPIController extends BaseController
             $this->sendError('Invalid Nomination Type Selected');
         }
         
+        $input = $request->all();
+
         if ($request->nomination_type == 'tp') {
             $request = app('App\Http\Requests\API\CreateTPNominationAPIRequest');
-        
-            // validate for TP    
-            $this->validate($request, $request->rules()); 
-        
+          
+            $this->validate($request, $request->rules());   // validate for TP  
             $nominationRequestOBJ = new TPNomination();
 
-            //hitting TP API Controller
-            $nominationRequestAPIControllerOBJ = new TPNominationAPIController();
+            $nominationRequestAPIControllerOBJ = new TPNominationAPIController();   // hitting TP API Controller
+
+            /* server class constructor to retrieve amout settings */
+            $pay_load = [ '_method' => 'GET', 'query_like_parameters' => 'tp_', ];
+            $tETFundServer = new TETFundServer(); 
+            $tp_amount_settings = $tETFundServer->get_all_data_list_from_server('tetfund-astd-api/dashboard/get_configured_amounts', $pay_load);
+
+            $dta_amount = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_dta_amount'}) ?? 0;
+            $dta_no_days = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_dta_nights_amount'}) ?? 0;
+            $taxi_fare_amount = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_taxi_fare_amount'}) ?? 0;
+
+            // setting amount colums
+            $input['dta_amount_requested'] = $dta_amount;
+            $input['dta_nights_amount_requested'] = $dta_amount * $dta_no_days;
+            $input['local_runs_amount_requested'] = (30 * ($dta_amount * $dta_no_days)) / 100;
+            $input['taxi_fare_amount_requested'] = $taxi_fare_amount;
+            $input['total_requested_amount'] = $input['dta_nights_amount_requested'] + $input['local_runs_amount_requested'] + $taxi_fare_amount;
+
         } else if ($request->nomination_type == 'ca') {    
             $request = app('App\Http\Requests\API\CreateCANominationAPIRequest');
         
-            // validate for CA
-            $this->validate($request, $request->rules()); 
+            $this->validate($request, $request->rules());   // validate for CA
         
             $nominationRequestOBJ = new CANomination();
         
@@ -149,8 +165,7 @@ class NominationRequestAPIController extends BaseController
         } else if ($request->nomination_type == 'tsas') {
             $request = app('App\Http\Requests\API\CreateTSASNominationAPIRequest');
         
-            // validate for TSAS
-            $this->validate($request, $request->rules()); 
+            $this->validate($request, $request->rules());   // validate for TSAS
         
             $nominationRequestAPIControllerOBJ = new TSASNominationAPIController();  
 
@@ -173,10 +188,10 @@ class NominationRequestAPIController extends BaseController
         $nominationRequest->save();
 
         // handle nomination request details submission
-        $input = $request->all();
         $input['user_id'] = $current_user->id;
         $input['nomination_request_id'] = $nominationRequest->id;
         $input['beneficiary_institution_id'] = $bi_beneficiary_id;
+
         $nomination_details = $nominationRequestOBJ->create($input);
         
         /*handling attachemnt upload process*/
@@ -349,9 +364,7 @@ class NominationRequestAPIController extends BaseController
         if (!($request->has('comment')) || $request->comment == null) {
             array_push($fields_err, "The Comment input is required.");
         }
-        /*if (($request->has('comment')) && $request->comment != null && strlen($request->comment) < 10) {
-            array_push($fields_err, "The Comment input must contain more than 10 characters.");
-        }*/
+        
         // return input fields errorrs
         if (count($fields_err) > 0) {
             return self::createJSONResponse("fail","error",$fields_err,200);
@@ -391,11 +404,10 @@ class NominationRequestAPIController extends BaseController
             $err_mgs = 'Only ' . strval(count($nomination_committee_voters_against)) . ' out of ' . strval(count($beneficiary_committee_members)) . ' committee member(s) supports declining this Nomination, the average consideration(s) required to decline must be greater or equals average of ' . strval((count($beneficiary_committee_members)/2)) . ' member(s) for this action to be completed.';
             return self::createJSONResponse("fail","error",[$err_mgs],200);
         }*/
-    
         $nominationRequest->is_average_committee_members_check = 1;
         if ($request->decision == 'approved') {
             $nominationRequest->committee_head_checked_status = 'approved';
-        } elseif ($request->comment == 'declined') {
+        } elseif ($request->decision == 'declined') {
             $nominationRequest->committee_head_checked_status = 'declined';
             $nominationRequest->status = 'declined';
         }
@@ -477,6 +489,10 @@ class NominationRequestAPIController extends BaseController
     public function process_forward_all_details(Request $request, NominationRequest $nominationRequest, $itemIdType) {
         $nominationRequest = $nominationRequest->where('type', $itemIdType)
                 ->where($request->column_to_update, 0)
+                ->when(($request->column_to_update == 'is_desk_officer_check_after_average_committee_members_checked'), function ($query) {
+                    return $query->where('is_average_committee_members_check', 1)
+                                 ->where('committee_head_checked_status', 'approved');
+                });
                 ->update([$request->column_to_update => 1]);
 
         return $this->sendSuccess("All Nomination Request forwarded successfully");

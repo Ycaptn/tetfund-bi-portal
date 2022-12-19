@@ -154,10 +154,10 @@
 </div>
 
 <!-- Intl Passport Number Field -->
-<div id="div-intl_passport_number_ca" class="form-group mb-3 col-md-6 col-lg-4">
+<div id="div-intl_passport_number_ca" class="form-group mb-3 col-md-6 col-lg-4" style="display: none;">
     <label for="intl_passport_number_ca" class="col-sm-11 col-form-label">Intl Passport Number:</label>
     <div class="col-sm-12">
-        {!! Form::text('intl_passport_number_ca', null, ['id'=>'intl_passport_number_ca', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
+        {!! Form::text('intl_passport_number_ca', null, ['id'=>'intl_passport_number_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
     </div>
 </div>
 
@@ -185,14 +185,6 @@
     </div>
 </div>
 
-<!-- Accepted Paper Title Field -->
-<div id="div-accepted_paper_title_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="accepted_paper_title_ca" class="col-sm-11 col-form-label">Accepted Paper Title:</label>
-    <div class="col-sm-12">
-        {!! Form::text('accepted_paper_title_ca', null, ['id'=>'accepted_paper_title_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div>
-
 <!-- Attendee Department Name Field -->
 <div id="div-attendee_department_name_ca" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="attendee_department_name_ca" class="col-sm-11 col-form-label">Attendee Department Name:</label>
@@ -200,11 +192,19 @@
         {!! Form::text('attendee_department_name_ca', null, ['id'=>'attendee_department_name_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
     </div>
 </div>
+
 <!-- Attendee Grade Level Field -->
 <div id="div-attendee_grade_level_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="attendee_grade_level_ca" class="col-sm-11 col-form-label">Attendee Grade Level:</label>
+    <label for="attendee_grade_level_ca" class="col-sm-11 col-form-label">Attendee Rank/GL. Equivalent:</label>
     <div class="col-sm-12">
-        {!! Form::text('attendee_grade_level_ca', null, ['id'=>'attendee_grade_level_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+        <select class="form-select" name="attendee_grade_level_ca" id="attendee_grade_level_ca" >
+            <option value=''>-- None Selected--</option>
+            <option value='chief_lecturer'>Chief Lecturer</option>
+            <option value='principal_lecturer'>Principal Lecturer</option>
+            <option value='senior_lecturer'>Senior Lecturer</option>
+            <option value='lecturer_1'>Lecturer 1</option>
+            <option value='lecturer_2'>Lecturer 2</option>
+        </select>
     </div>
 </div>
 
@@ -220,9 +220,17 @@
     </div>
 </div>
 
+<!-- Accepted Paper Title Field -->
+<div id="div-accepted_paper_title_ca" class="form-group mb-3 col-md-6 col-lg-4" style="display: none;">
+    <label for="accepted_paper_title_ca" class="col-sm-11 col-form-label">Accepted Paper Title:</label>
+    <div class="col-sm-12">
+        {!! Form::text('accepted_paper_title_ca', null, ['id'=>'accepted_paper_title_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+    </div>
+</div>
+
 <!-- Is Academic Program Field -->
 <div id="div-is_academic_staff_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="is_academic_staff_ca" class="col-sm-11 col-form-label">Staff Type </label>
+    <label for="is_academic_staff_ca" class="col-sm-11 col-form-label">Staff Type: </label>
     <div class="col-sm-12">
         <select name="is_academic_staff_ca" id="is_academic_staff_ca" class="form-control">
             <option value="">-- None selected --</option>

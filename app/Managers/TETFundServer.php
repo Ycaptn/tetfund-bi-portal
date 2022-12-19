@@ -204,7 +204,7 @@ class TETFundServer {
         $api_response = curl_exec($ch);
         $api_response_data = json_decode($api_response);
         curl_close ($ch);
-        return ($api_response != null && $api_response_data !=null && is_array($api_response_data->data)) ?  $api_response_data->data : [];
+        return ($api_response != null && $api_response_data !=null && isset($api_response_data->data)) ?  $api_response_data->data : [];
     }
 
     public static function get_all_countries_institutions_and_conferences($endpoint_path, $pay_load) {

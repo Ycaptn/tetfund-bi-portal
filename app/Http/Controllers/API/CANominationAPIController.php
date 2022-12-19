@@ -98,7 +98,7 @@ class CANominationAPIController extends AppBaseController
 
         /*handling conference_attendance_letter upload process*/
         if($request->hasFile('conference_attendance_letter')) {
-            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Admission Letter";
+            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Attendance Letter";
             $discription = "This " . strtolower("Document contains $label");
 
             $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendance_letter);
@@ -195,7 +195,7 @@ class CANominationAPIController extends AppBaseController
 
         /*handling conference_attendance_letter update process*/
         if($request->hasFile('conference_attendance_letter')) {
-            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Admission Letter";
+            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Attendance Letter";
             $discription = "This " . strtolower("Document contains $label");
 
             $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo

@@ -46,11 +46,10 @@ class UpdateTSASNominationAPIRequest extends AppBaseFormRequest
             'bank_name' => 'required|max:100',
             'bank_sort_code' => 'required|max:100',
             'bank_verification_number' => 'required|numeric',
-            'intl_passport_number' => 'sometimes|max:100',
+            'intl_passport_number' => 'required_unless:tf_iterum_portal_country_id,'.request()->country_nigeria_id.'|max:100',
             'national_id_number' => 'required|numeric',
             'degree_type' => 'required|max:100',
             'program_title' => 'required|string|max:100',
-            'program_type' => 'required|max:100',
             'is_science_program' => "required|string|max:50|in:". implode(['0', '1'], ','),
             'program_start_date' => 'required|date',
             'program_end_date' => 'required|date|after:program_start_date',
@@ -87,11 +86,21 @@ class UpdateTSASNominationAPIRequest extends AppBaseFormRequest
             $return_arr['curriculum_vitae'] = 'file|mimes:pdf,doc,docx|max:5240';
         }
 
+        if(request()->hasFile('signed_bond_with_beneficiary') && request()->signed_bond_with_beneficiary != 'undefined') {
+            $return_arr['signed_bond_with_beneficiary'] = 'file|mimes:pdf,doc,docx|max:5240';
+        }
+
         if(request()->hasFile('international_passport_bio_page') && request()->international_passport_bio_page != 'undefined') {
             $return_arr['international_passport_bio_page'] = 'file|mimes:pdf,doc,docx|max:5240';
         }
 
         return $return_arr;
+    }
+
+    public function messages() {
+        return [
+            'intl_passport_number.required_unless' => 'The :attribute field is required when the selected country isn\'t Nigeria.',
+        ];
     }
 
     public function attributes() {
@@ -124,8 +133,9 @@ class UpdateTSASNominationAPIRequest extends AppBaseFormRequest
             'passport_photo' => 'Passport Photo',
             'admission_letter' => 'Admission Letter',
             'health_report' => 'Health Report',
+            'curriculum_vitae' => 'Curriculum Vitae',
             'international_passport_bio_page' => 'International Passport Bio Page',
-            'conference_attendence_letter' => 'Conference Attendence Letter',
+            'signed_bond_with_beneficiary' => 'Signed Bond With Beneficiary',
 
             //'fee_amount' => 'Fee Amount',
             //'tuition_amount' => 'Tuition Amount',

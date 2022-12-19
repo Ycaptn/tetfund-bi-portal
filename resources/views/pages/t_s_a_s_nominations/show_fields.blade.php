@@ -303,22 +303,6 @@
     </p>
 </div>
 
-<!-- Program Type Field -->
-<div id="div_tSASNomination_program_type" class="col-sm-12 mb-10">
-    <p>
-        <strong>
-            {!! Form::label('program_type', 'Program Type:', ['class'=>'control-label']) !!}
-        </strong>
-        <span id="spn_tSASNomination_program_type">
-        @if (isset($tSASNomination->program_type) && empty($tSASNomination->program_type)==false)
-            {!! $tSASNomination->program_type !!}
-        @else
-            N/A
-        @endif
-        </span>
-    </p>
-</div>
-
 <!-- Is Science Program Field -->
 <div id="div_tSASNomination_is_science_program" class="col-sm-12 mb-10">
     <p>

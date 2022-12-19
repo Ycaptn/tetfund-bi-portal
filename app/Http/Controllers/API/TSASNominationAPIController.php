@@ -118,6 +118,14 @@ class TSASNominationAPIController extends AppBaseController
             $discription = "This " . strtolower("Document contains $label");
 
             $nominationRequest->attach(auth()->user(), $label, $discription, $request->curriculum_vitae);
+        }
+
+        /*handling signed_bond_with_beneficiary upload process*/
+        if($request->hasFile('signed_bond_with_beneficiary')) {
+            $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination Signed Bond with Beneficiary";
+            $discription = "This " . strtolower("Document contains $label");
+
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->signed_bond_with_beneficiary);
         } 
 
         /*handling international_passport_bio_page upload process*/
@@ -235,6 +243,18 @@ class TSASNominationAPIController extends AppBaseController
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }
             $nominationRequest->attach(auth()->user(), $label, $discription, $request->curriculum_vitae);
+        }
+
+        /*handling signed_bond_with_beneficiary update process*/
+        if($request->hasFile('signed_bond_with_beneficiary')) {
+            $label = $tSASNomination->first_name . " " . $tSASNomination->last_name . " TSASNomination Signed Bond with Beneficiary ";
+            $discription = "This " . strtolower("Document contains $label");
+
+            $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
+            if ($attachement != null) {
+                $nominationRequest->delete_attachment($label); // delete old passport photo
+            }
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->signed_bond_with_beneficiary);
         }
 
         /*handling international_passport_bio_page update process*/

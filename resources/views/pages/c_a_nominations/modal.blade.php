@@ -1,4 +1,8 @@
 
+@php
+    $country_nigeria_index = array_search('Nigeria', array_column($countries ?? [], 'name'));
+    $country_nigeria_id = ($country_nigeria_index !== false) ? optional($countries[$country_nigeria_index])->id : null;
+@endphp
 
 <div class="modal fade" id="mdl-cANomination-modal" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
@@ -61,11 +65,22 @@ $(document).ready(function() {
     $('.offline-c_a_nominations').hide();
 
     let conferences = '{!! json_encode($conferences ?? []) !!}';
+    let country_nigeria_id = '{!! $country_nigeria_id !!}';
     
-    //toggle different conferences based on the selected country for TSAS
+    //toggle different conferences based on the selected country for CA and International Passport
     $(document).on('change', "#country_id_select_ca", function(e) {
         let selected_country = $('#country_id_select_ca').val();
         let conferences_filtered = "<option value=''>-- None selected --</option>";
+        
+        // actions if Nigeria is selected
+        if (selected_country == country_nigeria_id || selected_country == '') {
+            $('#div-intl_passport_number_ca').hide();
+            $('#div-international_passport_bio_page_ca').hide();
+        } else {
+            $('#div-intl_passport_number_ca').show();
+        }
+
+        // conferences based on country selected
         $.each(JSON.parse(conferences), function(key, conference) {
             if (conference.country_id == selected_country) {
                 conferences_filtered += "<option value='"+ conference.id +"'>"+ conference.name +"</option>";
@@ -97,21 +112,23 @@ $(document).ready(function() {
         let has_paper_presentation_set_ca = $(this).val();
         if (has_paper_presentation_set_ca != '' && has_paper_presentation_set_ca == '1') {
             $('#div-paper_presentation_ca').show();
+            $('#div-accepted_paper_title_ca').show();
         } else if (has_paper_presentation_set_ca == '' || has_paper_presentation_set_ca == 0) {
             $('#div-paper_presentation_ca').hide();
+            $('#div-accepted_paper_title_ca').hide();
         }
     });
 
     // toggle CA international passport attachement input filed
     $('#intl_passport_number_ca').on('keyup', function() {
         let intl_passport_number_set_ca = $(this).val();
-        if (intl_passport_number_set_ca != '' && intl_passport_number_set_ca.length == 1) {
-            $('#div-paper_presentation_ca').show();
+        if (intl_passport_number_set_ca != '' && intl_passport_number_set_ca.length >= 1) {
             $('#div-international_passport_bio_page_ca').show();
         } else if (intl_passport_number_set_ca == '' || intl_passport_number_set_ca.length == 0) {
             $('#div-international_passport_bio_page_ca').hide();
         }
     });
+
 
     //Show Modal for View
     $(document).on('click', ".btn-show-{{$nominationRequest->type ?? 'ca'}}", function(e) {
@@ -210,6 +227,15 @@ $(document).ready(function() {
     		$('#bank_name_ca').val(response.data.bank_name);
     		$('#bank_sort_code_ca').val(response.data.bank_sort_code);
     		$('#intl_passport_number_ca').val(response.data.intl_passport_number);
+            
+            if (response.data.intl_passport_number.length > 0) {
+                $('#div-intl_passport_number_ca').show();
+                $('#div-international_passport_bio_page_ca').show();
+            }  else {
+                $('#div-intl_passport_number_ca').hide();
+                $('#div-international_passport_bio_page_ca').hide();
+            }
+
     		$('#bank_verification_number_ca').val(response.data.bank_verification_number);
     		$('#national_id_number_ca').val(response.data.national_id_number);
     		$('#organizer_name_ca').val(response.data.organizer_name);
@@ -218,10 +244,16 @@ $(document).ready(function() {
     		$('#attendee_department_name_ca').val(response.data.attendee_department_name);
     		$('#attendee_grade_level_ca').val(response.data.attendee_grade_level);
             $('#has_paper_presentation_ca').val(response.data.has_paper_presentation ? '1' : '0');
-            $('#is_academic_staff_ca').val(response.data.is_academic_staff ? '1' : '0');
+            
+            if (response.data.has_paper_presentation) {
+                $('#div-accepted_paper_title_ca').show();
+                $('#div-paper_presentation_ca').show();
+            } else {
+                $('#div-accepted_paper_title_ca').hide();
+                $('#div-paper_presentation_ca').hide();
+            }
 
-            $('#div-paper_presentation_ca').show();
-            $('#div-international_passport_bio_page_ca').show();
+            $('#is_academic_staff_ca').val(response.data.is_academic_staff ? '1' : '0');
     		
             initially_selected_beneficiary_institution_id = response.data.beneficiary_institution_id;
             initially_selected_conference_id = response.data.conference_id;
@@ -358,6 +390,7 @@ $(document).ready(function() {
             formData.append('organization_id', '{{ $nominationRequest->user->organization_id }}');
             formData.append('user_id', '{{ $nominationRequest->user->id }}');
             formData.append('nomination_request_id', '{{ $nominationRequest->id }}');
+            formData.append('country_nigeria_id', '{{$country_nigeria_id}}');
         @endif
 
         if ($('#email_ca').length && $('#email_ca').val().trim().length > 0){   formData.append('email',$('#email_ca').val());  }
@@ -400,11 +433,8 @@ $(document).ready(function() {
         if($('#conference_attendance_letter_ca').get(0).files.length != 0){
             formData.append('conference_attendance_letter', $('#conference_attendance_letter_ca')[0].files[0]);      
         }
-        if($('#health_report_ca').get(0).files.length != 0){
-            formData.append('health_report', $('#health_report_ca')[0].files[0]);  
-        }
-        if($('#curriculum_vitae_ca').get(0).files.length != 0){
-            formData.append('curriculum_vitae', $('#curriculum_vitae_ca')[0].files[0]);  
+        if($('#paper_presentation_ca').get(0).files.length != 0){
+            formData.append('paper_presentation', $('#paper_presentation_ca')[0].files[0]);  
         }
         if($('#international_passport_bio_page_ca').get(0).files.length != 0){
             formData.append('international_passport_bio_page', $('#international_passport_bio_page_ca')[0].files[0]);  

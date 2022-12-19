@@ -45,11 +45,10 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'bank_name' => 'required|max:100',
             'bank_sort_code' => 'required|max:100',
             'bank_verification_number' => 'required|numeric',
-            'intl_passport_number' => 'sometimes|max:100',
+            'intl_passport_number' => 'required_unless:tf_iterum_portal_country_id,'.request()->country_nigeria_id.'|max:100',
             'national_id_number' => 'required|numeric',
             'degree_type' => 'required|max:100',
             'program_title' => 'required|string|max:100',
-            'program_type' => 'required|max:100',
             'is_science_program' => "required|string|max:50|in:". implode(['0', '1'], ','),
             'program_start_date' => 'required|date|after:today',
             'program_end_date' => 'required|date|after:program_start_date',
@@ -58,6 +57,7 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'admission_letter' => 'required|file|mimes:pdf|max:5240',
             'health_report' => 'required|file|mimes:pdf,doc,docx|max:5240',
             'curriculum_vitae' => 'required|file|mimes:pdf,doc,docx|max:5240',
+            'signed_bond_with_beneficiary' => 'required|file|mimes:pdf,doc,docx|max:5240',
             'international_passport_bio_page' => 'required_with:intl_passport_number|file|mimes:pdf,doc,docx|max:5240',
             //'program_duration_months' => 'nullable|min:0|max:365',
             //'fee_amount' => 'nullable|numeric|min:0|max:100000000',
@@ -81,6 +81,12 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
         }
 
         return $return_rules;
+    }
+
+    public function messages() {
+        return [
+            'intl_passport_number.required_unless' => 'The :attribute field is required when the selected country isn\'t Nigeria.',
+        ];
     }
 
     public function attributes() {
@@ -114,6 +120,7 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'admission_letter' => 'Admission Letter',
             'health_report' => 'Health Report',
             'curriculum_vitae' => 'Curriculum Vitae',
+            'signed_bond_with_beneficiary' => 'Signed Bond With Beneficiary',
             'international_passport_bio_page' => 'International Passport Bio Page',
 
             //'fee_amount' => 'Fee Amount',

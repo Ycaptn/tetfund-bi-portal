@@ -45,14 +45,14 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
             'bank_name' => 'required|max:100',
             'bank_sort_code' => 'required|max:100',
             'bank_verification_number' => 'required|numeric',
-            'intl_passport_number' => 'sometimes|max:100',
+            'intl_passport_number' => 'required_unless:tf_iterum_portal_country_id,'.request()->country_nigeria_id.'|max:100',
             'national_id_number' => 'required|numeric',
             'organizer_name' => 'required|string|max:190',
             'conference_theme' => 'required|string|max:190',
-            'accepted_paper_title' => 'required|string|max:190',
             'attendee_department_name' => 'required|string|max:190',
             'attendee_grade_level' => 'required|string|max:190',
             'has_paper_presentation' => "required|string|max:50|in:". implode(['0', '1'], ','),
+            'accepted_paper_title' => 'required_if:has_paper_presentation,=,1|nullable|string|max:190',
             'is_academic_staff' => "required|string|max:50|in:". implode(['0', '1'], ','),
             'conference_start_date' => 'required|date|after:today',
             'conference_end_date' => 'required|date|after:conference_start_date',
@@ -90,6 +90,8 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
     public function messages() {
         return [
             'paper_presentation.required_if' => 'The Presentation Paper attachment is required when Any Paper Presentation is YES.',
+            'accepted_paper_title.required_if' => 'The :attribute field is required when Any Paper Presentation is YES.',
+            'intl_passport_number.required_unless' => 'The :attribute field is required when the selected country isn\'t Nigeria.',
         ];
     }
     
@@ -118,7 +120,7 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
             'conference_theme' => 'Conference Theme',
             'accepted_paper_title' => 'Accepted Paper Title',
             'attendee_department_name' => 'Attendee Department Name',
-            'attendee_grade_level' => 'Attendee Grade Level',
+            'attendee_grade_level' => 'Attendee Rank or GL Equivalent',
             'has_paper_presentation' => 'Any Paper Presentation',
             'is_academic_staff' => 'Staff Type',
             'conference_start_date' => 'Conference Start Date',

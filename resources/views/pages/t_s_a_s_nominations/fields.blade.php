@@ -168,10 +168,10 @@
 </div>
 
 <!-- Intl Passport Number Field -->
-<div id="div-intl_passport_number_tsas" class="form-group mb-3 col-md-6 col-lg-4">
+<div id="div-intl_passport_number_tsas" class="form-group mb-3 col-md-6 col-lg-4" style="display: none;">
     <label for="intl_passport_number_tsas" class="col-sm-11 col-form-label">Intl Passport Number:</label>
     <div class="col-sm-12">
-        {!! Form::text('intl_passport_number_tsas', null, ['id'=>'intl_passport_number_tsas', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
+        {!! Form::text('intl_passport_number_tsas', null, ['id'=>'intl_passport_number_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
     </div>
 </div>
 
@@ -187,7 +187,13 @@
 <div id="div-degree_type_tsas" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="degree_type_tsas" class="col-sm-11 col-form-label">Degree Type:</label>
     <div class="col-sm-12">
-        {!! Form::text('degree_type_tsas', null, ['id'=>'degree_type_tsas', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
+        <select name="degree_type_tsas" id="degree_type_tsas" class="form-select">
+            <option value="">-- None selected --</option>
+            <option value="Ph.D">Ph.D</option>
+            <option value="M.Sc">M.Sc</option>
+            <option value="Bench-Work">Bench-Work</option>
+            <option value="Post-Doc">Post-Doc</option>
+        </select>
     </div>
 </div>
 
@@ -196,14 +202,6 @@
     <label for="program_title_tsas" class="col-sm-12 col-form-label">Program Title:</label>
     <div class="col-sm-12">
         {!! Form::text('program_title_tsas', null, ['id'=>'program_title_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div>
-
-<!-- Program Type Field -->
-<div id="div-program_type_tsas" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="program_type_tsas" class="col-sm-12 col-form-label">Program Type:</label>
-    <div class="col-sm-12">
-        {!! Form::text('program_type_tsas', null, ['id'=>'program_type_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
     </div>
 </div>
 
@@ -273,6 +271,14 @@
     <label for="curriculum_vitae_tsas" class="col-sm-11 col-form-label">Curriculum Vitae:</label>
     <div class="col-sm-12">
         <input type="file" id="curriculum_vitae_tsas" name="curriculum_vitae_tsas" class="form-control">
+    </div>
+</div>
+
+<!-- copy of singed bond with beneficiary vitae -->
+<div id="div-signed_bond_with_beneficiary_tsas" class="form-group col-md-4">
+    <label for="signed_bond_with_beneficiary_tsas" class="col-sm-11 col-form-label">Signed Bond with Beneficiary:</label>
+    <div class="col-sm-12">
+        <input type="file" id="signed_bond_with_beneficiary_tsas" name="signed_bond_with_beneficiary" class="form-control">
     </div>
 </div>
 

@@ -1,3 +1,8 @@
+@php
+    $country_nigeria_index = array_search('Nigeria', array_column($countries ?? [], 'name'));
+    $country_nigeria_id = ($country_nigeria_index !== false) ? optional($countries[$country_nigeria_index])->id : null;
+@endphp
+
 <div class="modal fade" id="mdl-requestNomination-modal" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
@@ -52,11 +57,12 @@ $(document).ready(function() {
 
     let conferences = '{!! json_encode($conferences) !!}';
     let institutions = '{!! json_encode($institutions) !!}';
+    let country_nigeria_id = '{!! $country_nigeria_id !!}';
 
     // toggle TSAS international passport attachement input filed
     $('#intl_passport_number_tsas').on('keyup', function() {
         let intl_passport_number_set_tsas = $(this).val();
-        if (intl_passport_number_set_tsas != '' && intl_passport_number_set_tsas.length == 1) {
+        if (intl_passport_number_set_tsas != '' && intl_passport_number_set_tsas.length >= 1) {
             $('#div-international_passport_bio_page_tsas').show();
         } else if (intl_passport_number_set_tsas == '' || intl_passport_number_set_tsas.length == 0) {
             $('#div-international_passport_bio_page_tsas').hide();
@@ -68,25 +74,37 @@ $(document).ready(function() {
         let has_paper_presentation_set_ca = $(this).val();
         if (has_paper_presentation_set_ca != '' && has_paper_presentation_set_ca == '1') {
             $('#div-paper_presentation_ca').show();
+            $('#div-accepted_paper_title_ca').show();
         } else if (has_paper_presentation_set_ca == '' || has_paper_presentation_set_ca == 0) {
             $('#div-paper_presentation_ca').hide();
+            $('#div-accepted_paper_title_ca').hide();
         }
     });
 
     // toggle CA international passport attachement input filed
     $('#intl_passport_number_ca').on('keyup', function() {
         let intl_passport_number_set_ca = $(this).val();
-        if (intl_passport_number_set_ca != '' && intl_passport_number_set_ca.length == 1) {
+        if (intl_passport_number_set_ca != '' && intl_passport_number_set_ca.length >= 1) {
             $('#div-international_passport_bio_page_ca').show();
         } else if (intl_passport_number_set_ca == '' || intl_passport_number_set_ca.length == 0) {
             $('#div-international_passport_bio_page_ca').hide();
         }
     });
 
-    //toggle different conferences based on the selected country for CA
+    //toggle different conferences based on the selected country for CA and International Passport
     $(document).on('change', "#country_id_select_ca", function(e) {
         let selected_country = $('#country_id_select_ca').val();
         let conferences_filtered = "<option value=''>-- None selected --</option>";
+        
+        // actions if Nigeria is selected
+        if (selected_country == country_nigeria_id || selected_country == '') {
+            $('#div-intl_passport_number_ca').hide();
+            $('#div-international_passport_bio_page_ca').hide();
+        } else {
+            $('#div-intl_passport_number_ca').show();
+        }
+
+        // conferences based on country selected
         $.each(JSON.parse(conferences), function(key, conference) {
             if (conference.country_id == selected_country) {
                 conferences_filtered += "<option value='"+ conference.id +"'>"+ conference.name +"</option>";
@@ -95,10 +113,19 @@ $(document).ready(function() {
         $('#conference_id_select_ca').html(conferences_filtered);
     });
 
-    //toggle different institutions based on the selected country for TSAS
+    //toggle different institutions based on the selected country for TSAS and International Passport
     $(document).on('change', "#country_id_select_tsas", function(e) {
         let selected_country = $('#country_id_select_tsas').val();
         let institutions_filtered = "<option value=''>-- None selected --</option>";
+        
+        // actions if Nigeria is selected
+        if (selected_country == country_nigeria_id || selected_country == '') {
+            $('#div-intl_passport_number_tsas').hide();
+            $('#div-international_passport_bio_page_tsas').hide();
+        } else {
+            $('#div-intl_passport_number_tsas').show();
+        }
+
         $.each(JSON.parse(institutions), function(key, institution) {
             if (institution.country_id == selected_country) {
                 institutions_filtered += "<option value='"+ institution.id +"'>"+ institution.name +"</option>";

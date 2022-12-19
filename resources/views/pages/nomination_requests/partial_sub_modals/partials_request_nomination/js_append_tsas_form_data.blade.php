@@ -70,6 +70,12 @@ if($('#curriculum_vitae_tsas').get(0).files.length != 0){
 	formData.append('curriculum_vitae', $('#curriculum_vitae_tsas')[0].files[0]);  
 }
 
+if($('#signed_bond_with_beneficiary_tsas').get(0).files.length != 0){
+	formData.append('signed_bond_with_beneficiary', $('#signed_bond_with_beneficiary_tsas')[0].files[0]);  
+}
+
 if($('#international_passport_bio_page_tsas').get(0).files.length != 0){
 	formData.append('international_passport_bio_page', $('#international_passport_bio_page_tsas')[0].files[0]);  
 }
+
+formData.append('country_nigeria_id', '{{$country_nigeria_id}}');

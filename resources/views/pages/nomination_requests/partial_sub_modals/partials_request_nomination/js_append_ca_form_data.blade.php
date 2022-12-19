@@ -73,3 +73,5 @@ if($('#paper_presentation_ca').get(0).files.length != 0){
 if($('#international_passport_bio_page_ca').get(0).files.length != 0){
 	formData.append('international_passport_bio_page', $('#international_passport_bio_page_ca')[0].files[0]);  
 }
+
+formData.append('country_nigeria_id', '{{$country_nigeria_id}}');

@@ -1,4 +1,7 @@
-
+@php
+    $country_nigeria_index = array_search('Nigeria', array_column($countries ?? [], 'name'));
+    $country_nigeria_id = ($country_nigeria_index !== false) ? optional($countries[$country_nigeria_index])->id : null;
+@endphp
 
 <div class="modal fade" id="mdl-tSASNomination-modal" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
@@ -61,11 +64,21 @@ $(document).ready(function() {
     $('.offline-t_s_a_s_nominations').hide();
 
     let institutions = '{!! json_encode($institutions ?? []) !!}';
+    let country_nigeria_id = '{!! $country_nigeria_id !!}';
     
-    //toggle different institutions based on the selected country for TSAS
+    //toggle different institutions based on the selected country for TSAS and International Passport
     $(document).on('change', "#country_id_select_tsas", function(e) {
         let selected_country = $('#country_id_select_tsas').val();
         let institutions_filtered = "<option value=''>-- None selected --</option>";
+        
+        // actions if Nigeria is selected
+        if (selected_country == country_nigeria_id || selected_country == '') {
+            $('#div-intl_passport_number_tsas').hide();
+            $('#div-international_passport_bio_page_tsas').hide();
+        } else {
+            $('#div-intl_passport_number_tsas').show();
+        }
+
         $.each(JSON.parse(institutions), function(key, institution) {
             if (institution.country_id == selected_country) {
                 institutions_filtered += "<option value='"+ institution.id +"'>"+ institution.name +"</option>";
@@ -94,7 +107,7 @@ $(document).ready(function() {
     // toggle TSAS international passport attachement input filed
     $('#intl_passport_number_tsas').on('keyup', function() {
         let intl_passport_number_set_tsas = $(this).val();
-        if (intl_passport_number_set_tsas != '' && intl_passport_number_set_tsas.length == 1) {
+        if (intl_passport_number_set_tsas != '' && intl_passport_number_set_tsas.length >= 1) {
             $('#div-international_passport_bio_page_tsas').show();
         } else if (intl_passport_number_set_tsas == '' || intl_passport_number_set_tsas.length == 0) {
             $('#div-international_passport_bio_page_tsas').hide();
@@ -146,7 +159,6 @@ $(document).ready(function() {
     		$('#spn_tSASNomination_national_id_number').html(response.data.national_id_number);
     		$('#spn_tSASNomination_degree_type').html(response.data.degree_type);
     		$('#spn_tSASNomination_program_title').html(response.data.program_title);
-    		$('#spn_tSASNomination_program_type').html(response.data.program_type);
     		$('#spn_tSASNomination_is_science_program').html((response.data.is_science_program == true) ? 'Yes' : 'No');
     		$('#spn_tSASNomination_program_start_date').html(response.data.program_start_date);
             $('#spn_tSASNomination_program_end_date').html(response.data.program_end_date);
@@ -198,11 +210,19 @@ $(document).ready(function() {
     		$('#bank_name_tsas').val(response.data.bank_name);
     		$('#bank_sort_code_tsas').val(response.data.bank_sort_code);
     		$('#intl_passport_number_tsas').val(response.data.intl_passport_number);
+            
+            if (response.data.intl_passport_number.length > 0) {
+                $('#div-intl_passport_number_tsas').show();
+                $('#div-international_passport_bio_page_tsas').show();
+            } else {
+                $('#div-intl_passport_number_tsas').hide();
+                $('#div-international_passport_bio_page_tsas').hide();
+            }
+
     		$('#bank_verification_number_tsas').val(response.data.bank_verification_number);
     		$('#national_id_number_tsas').val(response.data.national_id_number);
     		$('#degree_type_tsas').val(response.data.degree_type);
     		$('#program_title_tsas').val(response.data.program_title);
-    		$('#program_type_tsas').val(response.data.program_type);
             $('#is_science_program_tsas').val(response.data.is_science_program ? '1' : '0');
             $('#div-international_passport_bio_page_tsas').show();
 
@@ -342,6 +362,7 @@ $(document).ready(function() {
             formData.append('organization_id', '{{ $nominationRequest->user->organization_id }}');
             formData.append('user_id', '{{ $nominationRequest->user->id }}');
             formData.append('nomination_request_id', '{{ $nominationRequest->id }}');
+            formData.append('country_nigeria_id', '{{$country_nigeria_id}}');
         @endif
 
         if ($('#email_tsas').length){	formData.append('email',$('#email_tsas').val());	}
@@ -380,6 +401,9 @@ $(document).ready(function() {
         }
         if($('#curriculum_vitae_tsas').get(0).files.length != 0){
             formData.append('curriculum_vitae', $('#curriculum_vitae_tsas')[0].files[0]);  
+        }
+        if($('#signed_bond_with_beneficiary_tsas').get(0).files.length != 0){
+            formData.append('signed_bond_with_beneficiary', $('#signed_bond_with_beneficiary_tsas')[0].files[0]);  
         }
         if($('#international_passport_bio_page_tsas').get(0).files.length != 0){
             formData.append('international_passport_bio_page', $('#international_passport_bio_page_tsas')[0].files[0]);  

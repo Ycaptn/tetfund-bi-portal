@@ -46,29 +46,34 @@ class UpdateTSASNominationRequest extends AppBaseFormRequest
             'bank_account_number' => 'required|digits:10',
             'bank_name' => 'required|max:100',
             'bank_sort_code' => 'required|max:100',
-            'intl_passport_number' => 'sometimes|numeric|max:100',
+            'intl_passport_number' => 'required_unless:tf_iterum_portal_country_id,'.request()->country_nigeria_id.'|max:100',
             'bank_verification_number' => 'required|numeric',
             'national_id_number' => 'required|numeric',
             'degree_type' => 'required|max:100',
             'program_title' => 'required|string|max:100',
-            'program_type' => 'required|max:100',
             'is_science_program' => "required|string|max:50|in:". implode(['0', '1'], ','),
             'program_start_date' => 'nullable|date|after:today',
             'program_end_date' => 'nullable|date|after:program_start_date',
-            /*'program_duration_months' => 'nullable|min:0|max:365',*/
-            'fee_amount' => 'nullable|numeric|min:0|max:100000000',
-            'tuition_amount' => 'nullable|numeric|min:0|max:100000000',
-            'upgrade_fee_amount' => 'nullable|numeric|min:0|max:100000000',
-            'stipend_amount' => 'nullable|numeric|min:0|max:100000000',
-            'passage_amount' => 'nullable|numeric|min:0|max:100000000',
-            'medical_amount' => 'nullable|numeric|min:0|max:100000000',
-            'warm_clothing_amount' => 'nullable|numeric|min:0|max:100000000',
-            'study_tours_amount' => 'nullable|numeric|min:0|max:100000000',
-            'education_materials_amount' => 'nullable|numeric|min:0|max:100000000',
-            'thesis_research_amount' => 'nullable|numeric|min:0|max:100000000',
-            'final_remarks' => 'nullable|string|max:500',
-            'total_requested_amount' => 'nullable|numeric|min:0|max:100000000',
-            'total_approved_amount' => 'nullable|numeric|min:0|max:100000000'
+            // 'program_duration_months' => 'nullable|min:0|max:365',
+            // 'fee_amount' => 'nullable|numeric|min:0|max:100000000',
+            // 'tuition_amount' => 'nullable|numeric|min:0|max:100000000',
+            // 'upgrade_fee_amount' => 'nullable|numeric|min:0|max:100000000',
+            // 'stipend_amount' => 'nullable|numeric|min:0|max:100000000',
+            // 'passage_amount' => 'nullable|numeric|min:0|max:100000000',
+            // 'medical_amount' => 'nullable|numeric|min:0|max:100000000',
+            // 'warm_clothing_amount' => 'nullable|numeric|min:0|max:100000000',
+            // 'study_tours_amount' => 'nullable|numeric|min:0|max:100000000',
+            // 'education_materials_amount' => 'nullable|numeric|min:0|max:100000000',
+            // 'thesis_research_amount' => 'nullable|numeric|min:0|max:100000000',
+            // 'final_remarks' => 'nullable|string|max:500',
+            // 'total_requested_amount' => 'nullable|numeric|min:0|max:100000000',
+            // 'total_approved_amount' => 'nullable|numeric|min:0|max:100000000'
+        ];
+    }
+
+    public function messages() {
+        return [
+            'intl_passport_number.required_unless' => 'The :attribute field is required when the selected country isn\'t Nigeria.',
         ];
     }
 
