@@ -492,7 +492,7 @@ class NominationRequestAPIController extends BaseController
                 ->when(($request->column_to_update == 'is_desk_officer_check_after_average_committee_members_checked'), function ($query) {
                     return $query->where('is_average_committee_members_check', 1)
                                  ->where('committee_head_checked_status', 'approved');
-                });
+                })
                 ->update([$request->column_to_update => 1]);
 
         return $this->sendSuccess("All Nomination Request forwarded successfully");

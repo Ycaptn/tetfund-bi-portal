@@ -46,6 +46,13 @@ All T S A S Nomination
 @stop
 
 @section('page_title_buttons')
+    @if ($current_user->hasAnyRole(['BI-TSAS-committee-head']) && isset(request()->view_type) && request()->view_type == 'committee_head_consideration')
+         <a  class="btn btn-sm btn-primary modal_committee_minutes_meetings"
+            data-val="tsas"
+            title="Upload and avail to Desk-Officer a copy of TSASNomination Committee minutes of Meetings" >
+            <span class="fa fa-upload"></span> TSASNomination Comittee Minutes of Meeting
+        </a>
+    @endif
     {{-- @if ($current_user->hasAnyRole(['BI-desk-officer']))
         <a id="btn-new-mdl-tSASNomination-modal" class="btn btn-sm btn-primary btn-new-mdl-tSASNomination-modal">
             <i class="bx bx-book-add mr-1"></i>New T S A S Nomination
@@ -127,7 +134,7 @@ All T S A S Nomination
 
                         @if($current_user->hasRole('BI-desk-officer') && !isset(request()->view_type))
                             {{-- appears to desk-officer to forward all tsas nominations to committee --}}
-                            <a  class="mb-3 btn btn-sm btn-secondary pull-right move_all_for_consideration text-white"
+                            <a  class="mb-3 btn btn-sm btn-danger pull-right move_all_for_consideration text-white"
                                 data-val="tsas"
                                 title="Move all TSAS Nomination(s) to TSASNomination Committee for Consideration" >
                                 <span class="fa fa-paper-plane"></span><sup>*</sup>
@@ -137,7 +144,7 @@ All T S A S Nomination
 
                         @if($current_user->hasRole('BI-desk-officer') && isset(request()->view_type) && request()->view_type == 'committee_approved')
                             {{-- appears for desk-officer to forward all tsas nominations for approval --}}
-                            <a  class="mb-3 btn btn-sm btn-secondary pull-right move_all_for_approval text-white"
+                            <a  class="mb-3 btn btn-sm btn-danger pull-right move_all_for_approval text-white"
                                 data-val="tsas"
                                 title="Move all TSAS Nomination(s) to HOI for Approval" >
                                 <span class="fa fa-paper-plane"></span><sup>*</sup>

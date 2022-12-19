@@ -82,7 +82,10 @@ class NominationRequestDataTable extends DataTable
             ->with('submission_request')
             ->where($query_filter)
             ->when((Auth()->user()->hasAnyRole($all_committee_heads) == true), function ($q) {
-                return $q->where('is_average_committee_members_check', 0);
+                return $q->where('is_average_committee_members_check', 0)
+                        ->when((isset(request()->view_type) && request()->view_type == 'committee_head_consideration'), function ($q2) {
+                            return $q2->where('is_desk_officer_check', 1);
+                        });
             })
             ->when((Auth()->user()->hasAnyRole(array_merge($all_committee_members, $all_committee_heads)) == true && !isset(request()->view_type)), function ($q) {
                 

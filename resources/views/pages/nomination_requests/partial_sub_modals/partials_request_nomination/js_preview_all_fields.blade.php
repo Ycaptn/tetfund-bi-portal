@@ -55,7 +55,6 @@ if (nomination_type_lower_case == 'tp') {
 	$('#national_id_number_data_tsas').text(response.data.nominee.national_id_number);
 	$('#degree_type_data_tsas').text(response.data.nominee.degree_type);
 	$('#program_title_data_tsas').text(response.data.nominee.program_title);
-	$('#program_type_data_tsas').text(response.data.nominee.program_type);
 	$('#is_science_program_data_tsas').text((response.data.nominee.is_science_program == true) ? 'Yes' : 'No');
 	$('#program_start_date_data_tsas').text(new Date(response.data.nominee.program_start_date).toDateString());
 	$('#program_end_date_data_tsas').text(new Date(response.data.nominee.program_end_date).toDateString());

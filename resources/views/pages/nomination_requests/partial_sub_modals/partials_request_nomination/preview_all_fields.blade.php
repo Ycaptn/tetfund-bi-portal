@@ -346,13 +346,6 @@
     </div>
 
     <div class="col-sm-12 col-md-4 mb-3">
-        <label class="col-sm-12"><b>Program Type:</b></label>
-        <div class="col-sm-12 ">
-            <i id="program_type_data_tsas"></i>
-        </div>
-    </div>
-
-    <div class="col-sm-12 col-md-4 mb-3">
         <label class="col-sm-12"><b>Is Science Program ?</b></label>
         <div class="col-sm-12 ">
             <i id="is_science_program_data_tsas"></i>
