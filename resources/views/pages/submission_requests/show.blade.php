@@ -79,6 +79,39 @@ Submission Request
         </a>
     @endif
 
+    @if (str_contains(strtolower(optional($intervention)->name), 'teaching practice'))
+        &nbsp;
+        <a data-toggle="tooltip" 
+            title="Preview the last uploaded minute of meeting by TPNomination Committee"
+            data-val='tp' 
+            href="#" 
+            class="btn btn-sm btn-danger btn-committee-last-minute-of-meeting-modal">
+            <i class="fa fa-clock"></i> TPNomination Committee Last Minute of Meeting
+        </a>&nbsp;
+    @endif
+
+    @if (str_contains(strtolower(optional($intervention)->name), 'conference attendance'))
+        &nbsp;
+        <a data-toggle="tooltip" 
+            title="Preview the last uploaded minute of meeting by CANomination Committee"
+            data-val='ca' 
+            href="#" 
+            class="btn btn-sm btn-danger btn-committee-last-minute-of-meeting-modal">
+            <i class="fa fa-square"></i> CANomination Committee Last Minute of Meeting
+        </a>&nbsp;
+    @endif
+
+    @if (str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship'))
+        &nbsp;
+        <a data-toggle="tooltip" 
+            title="Preview the last uploaded minute of meeting by TSASNomination Committee"
+            data-val='tsas' 
+            href="#" 
+            class="btn btn-sm btn-danger btn-committee-last-minute-of-meeting-modal">
+            <i class="fa fa-square"></i> TSASNomination Committee Last Minute of Meeting
+        </a>&nbsp;
+    @endif
+
 @stop
 
 

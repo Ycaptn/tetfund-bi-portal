@@ -264,6 +264,7 @@ class SubmissionRequestController extends BaseController
         $pay_load['_method'] = 'POST';
         $pay_load['is_aip_request'] = true;
         $pay_load['requested_tranche'] = 'AIP';
+        $pay_load['submission_user'] = $current_user;
 
         // add attachment records to payload
         $submission_attachment_array = $submissionRequest->get_all_attachments($input['submission_request_id']);
@@ -305,6 +306,16 @@ class SubmissionRequestController extends BaseController
             $submissionRequest->tf_iterum_portal_response_meta_data = json_encode($response);
             $submissionRequest->tf_iterum_portal_response_at = date('Y-m-d');
             $submissionRequest->save();
+
+            //update attached final_nominations_arr
+            NominationRequest::where('bi_submission_request_id', null)
+                ->where('beneficiary_id', $beneficiary_member->beneficiary_id)
+                ->where('type', $intervention_name)
+                ->where('head_of_institution_checked_status', 'approved')
+                ->update([
+                    'bi_submission_request_id' => $submissionRequest->id,
+                    'is_set_for_final_submission' => 1,
+                ]);
 
             $success_message = "This Request Has Now Been Successfully Submitted To TETFund!!";
             return redirect()->back()->with('success', $success_message);
