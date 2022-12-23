@@ -71,20 +71,22 @@ class BindedNominationsDataTable extends DataTable
      */
     public function query(NominationRequest $model)
     {
-        if ($this->organization != null){
-            return $model->newQuery()->with('user')
-                    ->where('beneficiary_id', $this->user_beneficiary->id)
-                    ->where('type', $this->intervention_name)
-                    ->where('head_of_institution_checked_status', 'approved')
-                    ->where('bi_submission_request_id', null)
-                    ->where("organization_id", $this->organization->id);
-        }
         
         return $model->newQuery()->with('user')
-                    ->where('beneficiary_id', $this->user_beneficiary->id)
-                    ->where('type', $this->intervention_name)
-                    ->where('head_of_institution_checked_status', 'approved')
-                    ->where('bi_submission_request_id', null);
+            ->where('beneficiary_id', $this->user_beneficiary->id)
+            ->where('type', $this->intervention_name)
+            ->where('head_of_institution_checked_status', 'approved')
+            ->when((isset($this->organization) && $this->organization != null), function ($que) {
+                return $que->where("organization_id", $this->organization->id);
+            })
+            ->when($this->submission_request->status != 'not-submitted', function ($que) {
+                return $que->where('bi_submission_request_id', $this->submission_request->id)
+                        ->where('is_set_for_final_submission', 1);
+            })
+            ->when($this->submission_request->status == 'not-submitted', function ($que) {
+                return $que->whereNull('bi_submission_request_id')
+                        ->where('is_set_for_final_submission', 0);
+            });
     }
 
     /**

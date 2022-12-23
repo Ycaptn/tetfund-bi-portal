@@ -386,6 +386,7 @@ class SubmissionRequestController extends BaseController
         if(isset($request->sub_menu_items) && $request->sub_menu_items == 'nominations_binded') {
              return $binded_nominations_dataTable
                     ->with('user_beneficiary', $beneficiary)
+                    ->with('submission_request', $submissionRequest)
                     ->with('intervention_name', $intervention_name)
                     ->render('pages.submission_requests.show', [
                         'intervention' => $intervention_types_server_response,
