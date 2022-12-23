@@ -194,13 +194,7 @@
 							</a>
 						</li>
 					@endif
-					@if (Auth()->user()->hasRole('BI-desk-officer'))
-						<li>
-							<a href="#" class="">
-								<div class="menu-title"><span class="fa fa-tools"></span> Nomination Settings </div>
-							</a>
-						</li>
-					@endif
+					
 			    </ul>
 			</li>
 			@endif
@@ -223,6 +217,16 @@
 					<div class="menu-title">Desk Officer Mgt</div>
 				</a>
 			</li>
+			@endif
+
+			@if (Auth()->user()->hasAnyRole(['BI-desk-officer']))
+				<li>
+					<a href="{{ route('tf-bi-portal.nomination_settings.index') }}" class="">
+						<div class="parent-icon"><span class="fa fa-tools"></span>
+						</div>
+						<div class="menu-title">Settings</div>
+					</a>
+				</li>
 			@endif
 
 			@if (Auth()->user()->hasAnyRole(['BI-librarian']))
