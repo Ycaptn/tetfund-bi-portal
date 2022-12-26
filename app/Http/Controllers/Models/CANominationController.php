@@ -6,6 +6,7 @@ use App\Models\NominationRequest;
 use App\Models\CANomination;
 use App\Models\BeneficiaryMember;
 use App\Models\SubmissionRequest;
+use App\Models\NominationSetting;
 
 use App\Events\CANominationCreated;
 use App\Events\CANominationUpdated;

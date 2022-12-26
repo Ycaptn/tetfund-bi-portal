@@ -6,6 +6,7 @@ use App\Models\NominationRequest;
 use App\Models\TSASNomination;
 use App\Models\BeneficiaryMember;
 use App\Models\SubmissionRequest;
+use App\Models\NominationSetting;
 
 use App\Events\TSASNominationCreated;
 use App\Events\TSASNominationUpdated;

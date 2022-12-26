@@ -6,6 +6,7 @@ use App\Models\NominationRequest;
 use App\Models\TPNomination;
 use App\Models\BeneficiaryMember;
 use App\Models\SubmissionRequest;
+use App\Models\NominationSetting;
 
 use App\Events\TPNominationCreated;
 use App\Events\TPNominationUpdated;
