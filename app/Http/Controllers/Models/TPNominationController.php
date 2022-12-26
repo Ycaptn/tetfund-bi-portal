@@ -38,7 +38,11 @@ class TPNominationController extends BaseController
     {
         $current_user = Auth()->user();
         $user_beneficiary_id = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first()->beneficiary_id;   //BI beneficiary_id
-
+        $astd_settings = [];
+        $nomination_settings = NominationSetting::where('beneficiary_institution_id', $user_beneficiary_id)->get();
+        foreach ($nomination_settings as $key => $nomination_setting) {
+            $astd_settings[$nomination_setting->key] = $nomination_setting;
+        }
         $allNominationRequest = NominationRequest::with('nomination_committee_vote')
                 ->where('beneficiary_id', $user_beneficiary_id)
                 ->whereNull('bi_submission_request_id')
@@ -109,7 +113,8 @@ class TPNominationController extends BaseController
                 ->render('tf-bi-portal::pages.t_p_nominations.index', [
                     'current_user' => $current_user,
                     'all_existing_submissions' => (isset($all_existing_submissions)) ? $all_existing_submissions : [],
-                    'count_array_returned' => $count_array_returned
+                    'count_array_returned' => $count_array_returned,
+                    'astd_settings' => $astd_settings
                 ]);
     }
 

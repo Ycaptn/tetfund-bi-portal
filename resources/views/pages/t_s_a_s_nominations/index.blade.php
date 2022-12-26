@@ -12,15 +12,37 @@ All T S A S Nomination
 @stop
 
 @section('page_title_suffix')
+    @php
+
+        if (array_key_exists('tsas_nomination_sent_to', $astd_settings)) {
+            $tsas_nomination_sent_to = $astd_settings['tsas_nomination_sent_to']->value;
+        } else {
+            $tsas_nomination_sent_to = 'BI-desk-officer';
+        }
+
+        if (array_key_exists('tsas_committee_considered_sent_to', $astd_settings)) {
+            $tsas_committee_considered_sent_to = $astd_settings['tsas_committee_considered_sent_to']->value;
+        } else {
+            $tsas_committee_considered_sent_to = 'BI-desk-officer';
+        }
+
+        if (array_key_exists('tsas_approved_nomination_sent_to', $astd_settings)) {
+            $tsas_approved_nomination_sent_to = [$astd_settings['tsas_approved_nomination_sent_to']->value];
+        } else {
+            $tsas_approved_nomination_sent_to = ['BI-desk-officer', 'BI-head-of-institution'];
+        }
+        
+        
+    @endphp
     @if(isset(request()->view_type))
         @if(request()->view_type == 'committee_approved')
-            @if($current_user->hasRole('BI-desk-officer'))
+            @if($current_user->hasRole($tsas_committee_considered_sent_to))
                 Committee Considered Nomination
             @else
                 Committee Approved
             @endif
         @elseif(request()->view_type == 'hoi_approved')
-            @if($current_user->hasAnyRole(['BI-desk-officer', 'BI-head-of-institution' ]))
+            @if($current_user->hasAnyRole($tsas_approved_nomination_sent_to))
                 Approved Nomination
             @endif
         @elseif(request()->view_type == 'committee_head_consideration')
@@ -29,7 +51,7 @@ All T S A S Nomination
             @endif
         @endif
     @else
-        @if($current_user->hasRole('BI-desk-officer'))
+        @if($current_user->hasRole($tsas_nomination_sent_to))
             Newly Submitted
         @elseif($current_user->hasRole('BI-head-of-institution'))
             Nomination Approval
@@ -74,7 +96,7 @@ All T S A S Nomination
             <div class="table-responsive">
                 <p>
                     <div class="col-sm-12">
-                        @if($current_user->hasRole('BI-desk-officer'))
+                        @if($current_user->hasRole($tsas_nomination_sent_to))
 
                         {{-- appears for desk officer to preview newly submitted nomination --}}
                             <a  href="{{ route('tf-bi-portal.t_s_a_s_nominations.index') }}"
@@ -83,20 +105,34 @@ All T S A S Nomination
                                 Newly Submitted
                             </a>
 
-                        {{-- appears for desk officer to preview committee considered nomination --}}
-                            <a  href="{{ route('tf-bi-portal.t_s_a_s_nominations.index') }}?view_type=committee_approved"
-                                class="mb-3 btn btn-sm {{ (isset(request()->view_type) && request()->view_type == 'committee_approved') ? 'btn-primary' : 'btn-secondary'}}"
-                                title="Preview TSAS Nomination(s) that have been Considered by TSAS Committee" ><i class="fas fa-bell"></i><b><sup class="fa-layers-counter text-danger" style="background-color:white; border-radius: 20%;">{{number_format($count_array_returned['desk_officer_committee_considered'] ?? 0)}}</sup></b>
+                         @endif
+
+                         @if ($current_user->hasRole($tsas_committee_considered_sent_to))
+
+                           {{-- appears for desk officer to preview committee considered nomination --}}
+                           <a  href="{{ route('tf-bi-portal.t_s_a_s_nominations.index') }}?view_type=committee_approved"
+                            class="mb-3 btn btn-sm {{ (isset(request()->view_type) && request()->view_type == 'committee_approved') ? 'btn-primary' : 'btn-secondary'}}"
+                            title="Preview TSAS Nomination(s) that have been Considered by TSAS Committee" ><i class="fas fa-bell"></i><b><sup class="fa-layers-counter text-danger" style="background-color:white; border-radius: 20%;">{{number_format($count_array_returned['desk_officer_committee_considered'] ?? 0)}}</sup></b>
                                 Committee Considered Nomination
                             </a>
+                             
+                         @endif
 
-                        {{-- desk officer and HOI to preview finally approved nomination by HOI --}}
+                         @if ($current_user->hasAnyRole($tsas_approved_nomination_sent_to))
+
+                            {{-- desk officer and HOI to preview finally approved nomination by HOI --}}
                             <a  href="{{ route('tf-bi-portal.t_s_a_s_nominations.index') }}?view_type=hoi_approved"
                                 class="mb-3 btn btn-sm {{ (isset(request()->view_type) && request()->view_type == 'hoi_approved') ? 'btn-primary' : 'btn-secondary'}}"
                                 title="Preview TSAS Nomination(s) that have been considered approved by Head of Institution" ><i class="fas fa-bell"></i><b><sup class="fa-layers-counter text-danger" style="background-color:white; border-radius: 20%;">{{number_format($count_array_returned['desk_officer_hoi_approved'] ?? 0)}}</sup></b>
                                 Approved Nomination
                             </a>
-                        @endif
+                             
+                         @endif
+
+                        
+
+                            
+                        
 
                         @if ($current_user->hasAnyRole(['BI-TSAS-committee-member', 'BI-TSAS-committee-head']))
                             {{-- appears for all tsas commitee me to preview newly submitted nomination --}}
@@ -125,14 +161,14 @@ All T S A S Nomination
                             </a>
 
                             {{-- appears to show all approved nominations --}}
-                             <a  href="{{ route('tf-bi-portal.t_s_a_s_nominations.index') }}?view_type=hoi_approved"
+                             {{-- <a  href="{{ route('tf-bi-portal.t_s_a_s_nominations.index') }}?view_type=hoi_approved"
                                 class="btn btn-sm {{ (isset(request()->view_type) && request()->view_type == 'hoi_approved') ? 'btn-primary' : 'btn-secondary'}}"
                                 title="Preview TSAS Nomination(s) that have been considered approved by Head of Institution" ><i class="fas fa-bell"></i><b><sup class="fa-layers-counter text-danger" style="background-color:white; border-radius: 20%;">{{number_format($count_array_returned['hoi_approved_nominations'] ?? 0)}}</sup></b>
                                 Approved Nomination
-                            </a>
+                            </a> --}}
                         @endif
 
-                        @if($current_user->hasRole('BI-desk-officer') && !isset(request()->view_type))
+                        @if($current_user->hasRole($tsas_nomination_sent_to) && !isset(request()->view_type))
                             {{-- appears to desk-officer to forward all tsas nominations to committee --}}
                             <a  class="mb-3 btn btn-sm btn-danger pull-right move_all_for_consideration text-white"
                                 data-val="tsas"
@@ -142,7 +178,7 @@ All T S A S Nomination
                             </a>
                         @endif
 
-                        @if($current_user->hasRole('BI-desk-officer') && isset(request()->view_type) && request()->view_type == 'committee_approved')
+                        @if($current_user->hasRole($tsas_committee_considered_sent_to) && isset(request()->view_type) && request()->view_type == 'committee_approved')
                             {{-- appears for desk-officer to forward all tsas nominations for approval --}}
                             <a  class="mb-3 btn btn-sm btn-danger pull-right move_all_for_approval text-white"
                                 data-val="tsas"
@@ -162,19 +198,18 @@ All T S A S Nomination
 
     @include('tf-bi-portal::pages.t_s_a_s_nominations.modal')
     
-    @if($current_user->hasRole('BI-desk-officer'))
+    @if($current_user->hasRole($tsas_nomination_sent_to))
         @if(!isset(request()->view_type))
             @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_to_committee_modal')
         @endif
+    @endif
         
-        @if(isset(request()->view_type) && request()->view_type == 'committee_approved')
-            @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_to_hoi_modal')
-        @endif
+    @if($current_user->hasRole($tsas_committee_considered_sent_to) && isset(request()->view_type) && request()->view_type == 'committee_approved')
+        @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_to_hoi_modal')
+    @endif
 
-        @if(isset(request()->view_type) && request()->view_type == 'hoi_approved')
-            @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.hoi_approval_for_nomination_modal')
-        @endif
-        
+    @if($current_user->hasAnyRole($tsas_approved_nomination_sent_to) && isset(request()->view_type) && request()->view_type == 'hoi_approved')
+        @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.hoi_approval_for_nomination_modal')
     @endif
 
     {{-- include approval by voting if user is an tsas committee menber --}}
@@ -188,9 +223,9 @@ All T S A S Nomination
     @endif
 
     {{-- include approval for Head of Institution --}}
-    @if ($current_user->hasRole('BI-head-of-institution'))
+    {{-- @if ($current_user->hasRole('BI-head-of-institution'))
         @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.hoi_approval_for_nomination_modal')
-    @endif
+    @endif --}}
 
 @stop
 
