@@ -85,6 +85,7 @@ class CANomination extends Model {
         'dta_amount',
         'local_runs_amount',
         'passage_amount',
+        'paper_presentation_fee',
         'final_remarks',
         'total_requested_amount',
         'total_approved_amount'

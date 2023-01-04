@@ -142,26 +142,51 @@ class NominationRequestAPIController extends BaseController
             $tETFundServer = new TETFundServer(); 
             $tp_amount_settings = $tETFundServer->get_all_data_list_from_server('tetfund-astd-api/dashboard/get_configured_amounts', $pay_load);
 
-            $dta_amount = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_dta_amount'}) ?? 0;
-            $dta_no_days = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_dta_nights_amount'}) ?? 0;
-            $taxi_fare_amount = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_taxi_fare_amount'}) ?? 0;
+            $dta_amount = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_dta_amount'} ?? 0);
+            $dta_no_days = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_dta_nights_amount'} ?? 0);
+            $local_runs_percentage = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_local_runs_percentage'} ?? 0);
+            $taxi_fare_amount = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_taxi_fare_amount'} ?? 0);
 
-            // setting amount colums
+            // setting amount colunm
             $input['dta_amount_requested'] = $dta_amount;
             $input['dta_nights_amount_requested'] = $dta_amount * $dta_no_days;
-            $input['local_runs_amount_requested'] = (30 * ($dta_amount * $dta_no_days)) / 100;
+            $input['local_runs_amount_requested'] = ($local_runs_percentage * floatval($input['dta_nights_amount_requested'])) / 100;
             $input['taxi_fare_amount_requested'] = $taxi_fare_amount;
             $input['total_requested_amount'] = $input['dta_nights_amount_requested'] + $input['local_runs_amount_requested'] + $taxi_fare_amount;
 
         } else if ($request->nomination_type == 'ca') {    
             $request = app('App\Http\Requests\API\CreateCANominationAPIRequest');
-        
+            
             $this->validate($request, $request->rules());   // validate for CA
         
             $nominationRequestOBJ = new CANomination();
-        
             //hitting TSAS API Controller
             $nominationRequestAPIControllerOBJ = new CANominationAPIController();
+
+            /* server class constructor to retrieve amout settings */
+            $pay_load = [ '_method' => 'GET', 'query_like_parameters' => 'ca_', ];
+            $tETFundServer = new TETFundServer(); 
+            $ca_amount_settings = $tETFundServer->get_all_data_list_from_server('tetfund-astd-api/dashboard/get_configured_amounts', $pay_load);
+
+            $beneficiary = BeneficiaryMember::where('beneficiary_user_id', auth()->user()->id)->first()->beneficiary ?? null;
+            $user_institution_type = optional($beneficiary)->type == 'university' ? 'uni' : 'poly_coe';
+            $user_staff_type = isset($request->is_academic_staff) && $request->is_academic_staff == 1 ? 'ts' : 'nts';
+            $field_to_fetch = "ca_{$user_institution_type}_{$user_staff_type}_{$request->attendee_grade_level}_daily_tour_allowance";
+
+            $conference_fee_amount_local = floatval($ca_amount_settings->ca_conference_reg_fees_local ?? 0);
+            $dta_amount = floatval($ca_amount_settings->{$field_to_fetch} ?? 0);
+            $local_runs_amount = floatval($ca_amount_settings->ca_local_runs_fees ?? 0);
+            $paper_presentation_fee = isset($request->has_paper_presentation) && $request->has_paper_presentation == 1 ? floatval($ca_amount_settings->ca_paper_presentation_fees ?? 0) : 0;
+            $passage_amount = floatval($ca_amount_settings->ca_passage_amount ?? 0);
+
+            // setting amount colunm
+            $input['conference_fee_amount_local'] = $conference_fee_amount_local;
+            $input['dta_amount'] = $dta_amount;
+            $input['local_runs_amount'] = $local_runs_amount;
+            $input['passage_amount'] = $passage_amount;
+            $input['paper_presentation_fee'] = $paper_presentation_fee;
+            $input['total_requested_amount'] = $input['conference_fee_amount_local'] + $input['dta_amount'] + $input['local_runs_amount'] + $input['passage_amount'] + $input['paper_presentation_fee'];
+
         } else if ($request->nomination_type == 'tsas') {
             $request = app('App\Http\Requests\API\CreateTSASNominationAPIRequest');
         

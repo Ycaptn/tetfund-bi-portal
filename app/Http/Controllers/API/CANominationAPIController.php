@@ -18,6 +18,7 @@ use Hasob\FoundationCore\Traits\ApiResponder;
 use Hasob\FoundationCore\Models\Organization;
 use Hasob\FoundationCore\View\Components\CardDataView;
 use App\Managers\TETFundServer;
+use App\Models\BeneficiaryMember;
 
 use Hasob\FoundationCore\Controllers\BaseController as AppBaseController;
 
@@ -69,6 +70,30 @@ class CANominationAPIController extends AppBaseController
     public function store(CreateCANominationAPIRequest $request, Organization $organization)
     {
         $input = $request->all();
+
+        /* server class constructor to retrieve amout settings */
+        $pay_load = [ '_method' => 'GET', 'query_like_parameters' => 'ca_', ];
+        $tETFundServer = new TETFundServer(); 
+        $ca_amount_settings = $tETFundServer->get_all_data_list_from_server('tetfund-astd-api/dashboard/get_configured_amounts', $pay_load);
+
+        $beneficiary = BeneficiaryMember::where('beneficiary_user_id', auth()->user()->id)->first()->beneficiary ?? null;
+        $user_institution_type = optional($beneficiary)->type == 'university' ? 'uni' : 'poly_coe';
+        $user_staff_type = isset($request->is_academic_staff) && $request->is_academic_staff == 1 ? 'ts' : 'nts';
+        $field_to_fetch = "ca_{$user_institution_type}_{$user_staff_type}_{$request->attendee_grade_level}_daily_tour_allowance";
+
+        $conference_fee_amount_local = floatval($ca_amount_settings->ca_conference_reg_fees_local ?? 0);
+        $dta_amount = floatval($ca_amount_settings->{$field_to_fetch} ?? 0);
+        $local_runs_amount = floatval($ca_amount_settings->ca_local_runs_fees ?? 0);
+        $paper_presentation_fee = isset($request->has_paper_presentation) && $request->has_paper_presentation == 1 ? floatval($ca_amount_settings->ca_paper_presentation_fees ?? 0) : 0;
+        $passage_amount = floatval($ca_amount_settings->ca_passage_amount ?? 0);
+
+        // setting amount colunm
+        $input['conference_fee_amount_local'] = $conference_fee_amount_local;
+        $input['dta_amount'] = $dta_amount;
+        $input['local_runs_amount'] = $local_runs_amount;
+        $input['passage_amount'] = $passage_amount;
+        $input['paper_presentation_fee'] = $paper_presentation_fee;
+        $input['total_requested_amount'] = $input['conference_fee_amount_local'] + $input['dta_amount'] + $input['local_runs_amount'] + $input['passage_amount'] + $input['paper_presentation_fee'];
 
         /** @var CANomination $cANomination */
         $cANomination = CANomination::create($input);

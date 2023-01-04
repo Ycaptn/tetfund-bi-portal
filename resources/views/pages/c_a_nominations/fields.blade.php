@@ -195,15 +195,16 @@
 
 <!-- Attendee Grade Level Field -->
 <div id="div-attendee_grade_level_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="attendee_grade_level_ca" class="col-sm-11 col-form-label">Attendee Rank/GL. Equivalent:</label>
+    <label for="attendee_grade_level_ca" class="col-sm-11 col-form-label">Attendee Grade Level:</label>
     <div class="col-sm-12">
         <select class="form-select" name="attendee_grade_level_ca" id="attendee_grade_level_ca" >
             <option value=''>-- None Selected--</option>
-            <option value='chief_lecturer'>Chief Lecturer</option>
-            <option value='principal_lecturer'>Principal Lecturer</option>
-            <option value='senior_lecturer'>Senior Lecturer</option>
-            <option value='lecturer_1'>Lecturer 1</option>
-            <option value='lecturer_2'>Lecturer 2</option>
+            <option value='gl_16-17'>GL 16-17</option>
+            <option value='gl_14-15'>GL 14-15</option>
+            <option value='gl_12-13'>GL 12-13</option>
+            <option value='gl_7-10'>GL 7-10</option>
+            <option value='gl_5-6'>GL 5-6</option>
+            <option value='gl_1-4'>GL 1-4</option>
         </select>
     </div>
 </div>
