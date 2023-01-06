@@ -112,9 +112,11 @@ $(document).ready(function() {
         let has_paper_presentation_set_ca = $(this).val();
         if (has_paper_presentation_set_ca != '' && has_paper_presentation_set_ca == '1') {
             $('#div-paper_presentation_ca').show();
+            $('#div-paper_presentation_fee_ca').show();
             $('#div-accepted_paper_title_ca').show();
         } else if (has_paper_presentation_set_ca == '' || has_paper_presentation_set_ca == 0) {
             $('#div-paper_presentation_ca').hide();
+            $('#div-paper_presentation_fee_ca').hide();
             $('#div-accepted_paper_title_ca').hide();
         }
     });
@@ -185,7 +187,13 @@ $(document).ready(function() {
             $('#spn_cANomination_country_name').html(response.data.country.name + ' (' + response.data.country.country_code + ')');
             $('#spn_cANomination_conference_name').html(response.data.conference.name); 
 
+            /*$('#spn_cANomination_conference_name').html(response.data.conference_fee_amount_local); 
+            $('#spn_cANomination_conference_name').html(response.data.local_runs_amount); 
+            $('#spn_cANomination_conference_name').html(response.data.passage_amount); 
+            $('#spn_cANomination_conference_name').html(response.data.dta_amount); 
+            $('#spn_cANomination_conference_name').html(response.data.paper_presentation_fee); */
 
+            $('#spn_cANomination_total_requested_amount').html(response.data.total_requested_amount); 
             $("#spinner-c_a_nominations").hide();
             $("#div-save-mdl-cANomination-modal").hide();
             $("#btn-save-mdl-cANomination-modal").attr('disabled', false);
@@ -226,11 +234,11 @@ $(document).ready(function() {
     		$('#bank_account_number_ca').val(response.data.bank_account_number);
     		$('#bank_name_ca').val(response.data.bank_name);
     		$('#bank_sort_code_ca').val(response.data.bank_sort_code);
-    		$('#intl_passport_number_ca').val(response.data.intl_passport_number);
             
-            if (response.data.intl_passport_number.length > 0) {
+            if (response.data.intl_passport_number != null && response.data.intl_passport_number.length > 0) {
                 $('#div-intl_passport_number_ca').show();
                 $('#div-international_passport_bio_page_ca').show();
+    		    $('#intl_passport_number_ca').val(response.data.intl_passport_number);
             }  else {
                 $('#div-intl_passport_number_ca').hide();
                 $('#div-international_passport_bio_page_ca').hide();
@@ -241,15 +249,25 @@ $(document).ready(function() {
     		$('#organizer_name_ca').val(response.data.organizer_name);
     		$('#conference_theme_ca').val(response.data.conference_theme);
     		$('#accepted_paper_title_ca').val(response.data.accepted_paper_title);
+            $('#paper_presentation_fee_ca').val(response.data.paper_presentation_fee);
     		$('#attendee_department_name_ca').val(response.data.attendee_department_name);
     		$('#attendee_grade_level_ca').val(response.data.attendee_grade_level);
+            /* amounts */
+            $('#conference_fee_amount_local_ca').val(response.data.conference_fee_amount_local);
+            $('#local_runs_amount_ca').val(response.data.local_runs_amount);
+            $('#passage_amount_ca').val(response.data.passage_amount);
+            $('#paper_presentation_fee_ca').val(response.data.paper_presentation_fee);
+            /* amounts */
+
             $('#has_paper_presentation_ca').val(response.data.has_paper_presentation ? '1' : '0');
             
             if (response.data.has_paper_presentation) {
                 $('#div-accepted_paper_title_ca').show();
+                $('#div-paper_presentation_fee_ca').show();
                 $('#div-paper_presentation_ca').show();
             } else {
                 $('#div-accepted_paper_title_ca').hide();
+                $('#div-paper_presentation_fee_ca').hide();
                 $('#div-paper_presentation_ca').hide();
             }
 
@@ -360,6 +378,18 @@ $(document).ready(function() {
         e.preventDefault();
         $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
 
+        $('#conference_fee_amount_local_ca').keyup(function(event) {
+            $('#conference_fee_amount_local_ca').digits();
+        });
+        $('#local_runs_amount_ca').keyup(function(event) {
+            $('#local_runs_amount_ca').digits();
+        });
+        $('#passage_amount_ca').keyup(function(event) {
+            $('#passage_amount_ca').digits();
+        });
+        $('#paper_presentation_fee_ca').keyup(function(event) {
+            $('#paper_presentation_fee_ca').digits();
+        });
 
         //check for internet status 
         if (!window.navigator.onLine) {
@@ -426,7 +456,14 @@ $(document).ready(function() {
         if ($('#is_academic_staff_ca').length){ formData.append('is_academic_staff',$('#is_academic_staff_ca').val());   }
         if ($('#conference_start_date_ca').length){ formData.append('conference_start_date',$('#conference_start_date_ca').val());   }
         if ($('#conference_end_date_ca').length){ formData.append('conference_end_date',$('#conference_end_date_ca').val());   }
-        
+
+        /* amounts */
+        if ($('#conference_fee_amount_local_ca').length){ formData.append('conference_fee_amount_local',$('#conference_fee_amount_local_ca').val().replace(/,/g,""));   }
+        if ($('#local_runs_amount_ca').length){ formData.append('local_runs_amount',$('#local_runs_amount_ca').val().replace(/,/g,""));   }
+        if ($('#passage_amount_ca').length){ formData.append('passage_amount',$('#passage_amount_ca').val().replace(/,/g,""));   }
+        if ($('#paper_presentation_fee_ca').length){ formData.append('paper_presentation_fee',$('#paper_presentation_fee_ca').val().replace(/,/g,""));   }
+        /* amounts */
+
         if($('#passport_photo_ca').get(0).files.length != 0){
             formData.append('passport_photo', $('#passport_photo_ca')[0].files[0]);
         }

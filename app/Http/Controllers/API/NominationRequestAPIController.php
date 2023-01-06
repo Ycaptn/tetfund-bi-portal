@@ -180,12 +180,17 @@ class NominationRequestAPIController extends BaseController
             $passage_amount = floatval($ca_amount_settings->ca_passage_amount ?? 0);
 
             // setting amount colunm
-            $input['conference_fee_amount_local'] = $conference_fee_amount_local;
+            $input['conference_fee_amount_local'] = $request->conference_fee_amount_local ?? 0;
+            //$input['conference_fee_amount_local'] = $conference_fee_amount_local;
             $input['dta_amount'] = $dta_amount;
-            $input['local_runs_amount'] = $local_runs_amount;
-            $input['passage_amount'] = $passage_amount;
-            $input['paper_presentation_fee'] = $paper_presentation_fee;
+            $input['local_runs_amount'] = $request->local_runs_amount ?? 0;
+            //$input['local_runs_amount'] = $local_runs_amount;
+            $input['passage_amount'] = $request->passage_amount ?? 0;
+            //$input['passage_amount'] = $passage_amount;
+            $input['paper_presentation_fee'] = $request->paper_presentation_fee ?? 0;
+            //$input['paper_presentation_fee'] = $paper_presentation_fee;
             $input['total_requested_amount'] = $input['conference_fee_amount_local'] + $input['dta_amount'] + $input['local_runs_amount'] + $input['passage_amount'] + $input['paper_presentation_fee'];
+            //$input['total_requested_amount'] = $input['conference_fee_amount_local'] + $input['dta_amount'] + $input['local_runs_amount'] + $input['passage_amount'] + $input['paper_presentation_fee'];
 
         } else if ($request->nomination_type == 'tsas') {
             $request = app('App\Http\Requests\API\CreateTSASNominationAPIRequest');

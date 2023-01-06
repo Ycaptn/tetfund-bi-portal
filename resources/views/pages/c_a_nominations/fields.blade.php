@@ -257,6 +257,41 @@
     </div>
 </div>
 
+{{--  --}}
+<!-- conference_fee_amount_local Field -->
+<div id="div-conference_fee_amount_local_ca" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="conference_fee_amount_local_ca" class="col-sm-11 col-form-label">Conference Fee Amount (₦):</label>
+    <div class="col-sm-12">
+        {!! Form::text('conference_fee_amount_local_ca', null, ['id'=>'conference_fee_amount_local_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+    </div>
+</div>
+
+<!-- local_runs_amount Field -->
+<div id="div-local_runs_amount_ca" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="local_runs_amount_ca" class="col-sm-11 col-form-label">Local Runs Amount (₦):</label>
+    <div class="col-sm-12">
+        {!! Form::text('local_runs_amount_ca', null, ['id'=>'local_runs_amount_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+    </div>
+</div>
+
+<!-- Passage Amount Field -->
+<div id="div-passage_amount_ca" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="passage_amount_ca" class="col-sm-11 col-form-label">Passage Amount (₦):</label>
+    <div class="col-sm-12">
+        {!! Form::text('passage_amount_ca', null, ['id'=>'passage_amount_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+    </div>
+</div>
+
+<!-- Paper Presentation Fee Amount Field -->
+<div id="div-paper_presentation_fee_ca" class="form-group mb-3 col-md-6 col-lg-4" style="display: none;">
+    <label for="paper_presentation_fee_ca" class="col-sm-11 col-form-label">Paper Presentation Fee (₦):</label>
+    <div class="col-sm-12">
+        {!! Form::text('paper_presentation_fee_ca', null, ['id'=>'paper_presentation_fee_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+    </div>
+</div>
+
+{{--  --}}
+
 <hr>
 <div class="col-sm-12" style="display: none;" id="attachments_info_ca">
     <small>

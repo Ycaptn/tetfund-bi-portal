@@ -58,13 +58,14 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             'conference_end_date' => 'required|date|after:conference_start_date',
             /*'conference_duration_days' => 'nullable|min:0|max:365',
             'conference_fee_amount' => 'nullable|numeric|min:0|max:100000000',
-            'conference_fee_amount_local' => 'nullable|numeric|min:0|max:100000000',
             'dta_amount' => 'nullable|numeric|min:0|max:100000000',
-            'local_runs_amount' => 'nullable|numeric|min:0|max:100000000',
-            'passage_amount' => 'nullable|numeric|min:0|max:100000000',
             'final_remarks' => 'nullable|string|max:500',
             'total_requested_amount' => 'nullable|numeric|min:0|max:100000000',
             'total_approved_amount' => 'nullable|numeric|min:0|max:100000000'*/
+            'conference_fee_amount_local' => 'required|numeric|min:0|max:100000000',
+            'local_runs_amount' => 'required|numeric|min:0|max:100000000',
+            'passage_amount' => 'required|numeric|min:0|max:100000000',
+            'paper_presentation_fee' => 'required_if:has_paper_presentation,=,1|nullable|numeric|min:0|max:100000000',
             
             'passport_photo' => 'required|file|mimes:pdf,png,jpeg,jpg|max:5240',
             'conference_attendance_letter' => 'required|file|mimes:pdf|max:5240',
@@ -83,6 +84,7 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
     public function messages() {
         return [
             'paper_presentation.required_if' => 'The Presentation Paper attachment is required when Any Paper Presentation is YES.',
+            'paper_presentation_fee.required_if' => 'The :attribute is required when Any Paper Presentation is YES.',
             'accepted_paper_title.required_if' => 'The :attribute field is required when Any Paper Presentation is YES.',
             'intl_passport_number.required_unless' => 'The :attribute field is required when the selected country isn\'t Nigeria.',
         ];
@@ -119,10 +121,11 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             'conference_start_date' => 'Conference Start Date',
             'conference_end_date' => 'Conference End Date',
             'conference_fee_amount' => 'Conference Fee Amount',
-            'conference_fee_amount_local' => 'Conference Fee Amount Local',
-            'dta_amount' => 'DTA Amount',
-            'local_runs_amount' => 'Local Runs Amount',
-            'passage_amount' => 'Passage Amount',
+            'conference_fee_amount_local' => 'Conference Fee Amount (₦)',
+            'dta_amount' => 'DTA Amount (₦)',
+            'local_runs_amount' => 'Local Runs Amount (₦)',
+            'passage_amount' => 'Passage Amount (₦)',
+            'paper_presentation_fee' => 'Paper Presentation Fee (₦)',
             'final_remarks' => 'Final Remarks',
             'total_requested_amount' => 'Total Requested Amount',
             'total_approved_amount' => 'Total Approved Aamount',

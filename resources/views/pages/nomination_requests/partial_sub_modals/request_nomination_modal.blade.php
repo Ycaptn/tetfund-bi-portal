@@ -59,6 +59,20 @@ $(document).ready(function() {
     let institutions = '{!! json_encode($institutions) !!}';
     let country_nigeria_id = '{!! $country_nigeria_id !!}';
 
+    // CA DIgit amoutn input 
+    $('#conference_fee_amount_local_ca').keyup(function(event) {
+        $('#conference_fee_amount_local_ca').digits();
+    });
+    $('#local_runs_amount_ca').keyup(function(event) {
+        $('#local_runs_amount_ca').digits();
+    });
+    $('#passage_amount_ca').keyup(function(event) {
+        $('#passage_amount_ca').digits();
+    });
+    $('#paper_presentation_fee_ca').keyup(function(event) {
+        $('#paper_presentation_fee_ca').digits();
+    });
+
     // toggle TSAS international passport attachement input filed
     $('#intl_passport_number_tsas').on('keyup', function() {
         let intl_passport_number_set_tsas = $(this).val();
@@ -74,9 +88,11 @@ $(document).ready(function() {
         let has_paper_presentation_set_ca = $(this).val();
         if (has_paper_presentation_set_ca != '' && has_paper_presentation_set_ca == '1') {
             $('#div-paper_presentation_ca').show();
+            $('#div-paper_presentation_fee_ca').show();
             $('#div-accepted_paper_title_ca').show();
         } else if (has_paper_presentation_set_ca == '' || has_paper_presentation_set_ca == 0) {
             $('#div-paper_presentation_ca').hide();
+            $('#div-paper_presentation_fee_ca').hide();
             $('#div-accepted_paper_title_ca').hide();
         }
     });

@@ -58,6 +58,24 @@ if ($('#conference_start_date_ca').length){ formData.append('conference_start_da
 
 if ($('#conference_end_date_ca').length){ formData.append('conference_end_date',$('#conference_end_date_ca').val());   }
 
+/* amounts */
+if ($('#conference_fee_amount_local_ca').length){
+	formData.append('conference_fee_amount_local',$('#conference_fee_amount_local_ca').val().replace(/,/g,""));
+}
+
+if ($('#local_runs_amount_ca').length){
+	formData.append('local_runs_amount',$('#local_runs_amount_ca').val().replace(/,/g,""));
+}
+
+if ($('#passage_amount_ca').length){
+	formData.append('passage_amount',$('#passage_amount_ca').val().replace(/,/g,""));
+}
+
+if ($('#paper_presentation_fee_ca').length){
+	formData.append('paper_presentation_fee',$('#paper_presentation_fee_ca').val().replace(/,/g,""));
+}
+/* amounts */
+
 if($('#passport_photo_ca').get(0).files.length != 0){
 	formData.append('passport_photo', $('#passport_photo_ca')[0].files[0]);
 }
