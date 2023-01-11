@@ -79,17 +79,54 @@
 </div>
 
 
-<div class="col-sm-12">
-    <div class="container">
-        {{-- <i class="fa fa-briefcase fa-fw"></i> <b>File_Number:</b> &nbsp; ______ {{ optional($submissionRequest)->file_number }} <br/> --}}
+<div class="col-sm-12 row">
+    <div class="container col-md-9">
+        @if(!empty($submitted_request_data))
+            <i class="fa fa-briefcase fa-fw"></i> <b>File_Number:</b> &nbsp; {{ optional($submitted_request_data)->file_number }} <br/>
+        @endif
         <i class="fa fa-calendar-o fa-fw"></i> <strong>Created on </strong> {{ \Carbon\Carbon::parse($submissionRequest->created_at)->format('l jS F Y') }} - {!! \Carbon\Carbon::parse($submissionRequest->created_at)->diffForHumans() !!} </span> <br />
 
         <i class="fa fa-bank fa-fw"></i> <b>{{ ucwords($intervention->type) }} Intervention &nbsp; - &nbsp; </b> &nbsp; {{ $intervention->name }} <br/>
         <i class="fa fa-crosshairs fa-fw"></i> <b>Intervention Year(s) &nbsp; - &nbsp; </b> &nbsp; {{ $years_str }} <br/>
         <i class="fa fa-money fa-fw"></i> <b>Total Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($fund_available) ? $fund_available : 0), 2) }} <br/>
         <i class="fa fa-money fa-fw"></i> <b>Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>
-        <i class="fa fa-thumbs-up fa-fw"> </i><b>Current Stage &nbsp; - &nbsp; </b> &nbsp; {{ strtoupper($submissionRequest->status) }}<br/><br/>
+        <i class="fa fa-thumbs-up fa-fw"> </i><b>Current Stage &nbsp; - &nbsp; </b> &nbsp; {{ strtoupper($submitted_request_data->work_item->active_assignment->assigned_user->department->long_name ?? $submissionRequest->status) }}<br/><br/>
 
-        {{-- @include('tf-bi-portal::pages.submission_requests.show_fields') --}}
+    </div>
+
+    <div class="list-group col-md-3">
+        <div class="col-sm-12">
+            <span class="text-success pull-right"> 
+                <strong>
+                    <span class="fa fa-check-square"></span>
+                    Request Submitted
+                </strong> 
+            </span>
+        </div>
+        <div class="col-sm-12 text-danger text-justify">
+            <small>
+                Please note that your Approval-In-Principle (AIP) is in the final stage of approval and you will be contacted for collection.                
+            </small>
+        </div>
+        {{-- @if(count($submitted_request_data->work_item->assignments ?? []) > 0)
+            @foreach($submitted_request_data->work_item->assignments as $idx=>$assign)
+                <small>
+                    <span class="p-1 list-group-item list-group-item-{{isset($assign->assigner_user->is_principal_officer) ? 'danger': 'info'}}">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-primary label label-default small">{{$idx+1}}</span>
+                            <div class="flex-grow-1 ms-2">
+                                <p class="mb-0 pb-0">
+                                    {{ $assign->assigner_user->full_name }} <i class="fa fa-long-arrow-right text-primary"></i> {{ $assign->assigned_user->full_name }}
+                                </p>
+                                <small class="fst-italic">
+                                    {{ \Carbon\Carbon::parse($assign->created_at)->format("M d, Y"); }} - {!! \Carbon\Carbon::now()->diffForHumans(\Carbon\Carbon::parse($assign->created_at), true). " ago"; !!}
+                                </small>
+                            </div>
+                        </div>
+                    </span>
+                </small>
+
+            @endforeach
+        @endif --}}
     </div>
 </div>

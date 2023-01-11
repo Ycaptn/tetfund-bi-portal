@@ -97,6 +97,16 @@ class TETFundServer {
         return ($api_response != null && $api_response_data !=null && is_array($api_response_data->data)) ?  $api_response_data->data : [];
     }
 
+    public static function getSubmittedRequestData($submitted_request_id) {
+        $server_api_url = Config::get('keys.tetfund.server_api_url');
+        $token = self::get_auth_token();
+        $submitted_request = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/submitted-request-data/$submitted_request_id", null);
+        $api_response = curl_exec($submitted_request);
+        $api_response_data = json_decode($api_response);
+        curl_close ($submitted_request);
+        return ($api_response != null && $api_response_data !=null) ? $api_response_data->data : [];
+    }
+
     public static function getFundAvailabilityData($beneficiary_id, $tf_iterum_intervention_line_key_id, $years=null, $allocation_details=false) {
         $server_api_url = Config::get('keys.tetfund.server_api_url');
         $token = self::get_auth_token();

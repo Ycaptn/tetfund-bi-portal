@@ -50,7 +50,8 @@ Submission Request
 @stop
 
 @section('page_title_suffix')
-{{$submissionRequest->title}} | <b>({{ strtoupper($submissionRequest->status) }})</b>
+    {{$submitted_request_data->title ?? $submissionRequest->title}} | 
+    <b>({{ strtoupper($submitted_request_data->request_status ?? $submissionRequest->status) }})</b>
 @stop
 
 @section('page_title_subtext')
@@ -77,39 +78,39 @@ Submission Request
             class="btn btn-sm btn-primary btn-edit-mdl-submissionRequest-modal">
             <i class="fa fa-pencil-square-o"></i> Edit Submission Request
         </a>
-    @endif
 
-    @if (str_contains(strtolower(optional($intervention)->name), 'teaching practice'))
-        &nbsp;
-        <a data-toggle="tooltip" 
-            title="Preview the last uploaded minute of meeting by TPNomination Committee"
-            data-val='tp' 
-            href="#" 
-            class="btn btn-sm btn-danger btn-committee-last-minute-of-meeting-modal">
-            <i class="fa fa-clock"></i> TPNomination Committee Last Minute of Meeting
-        </a>&nbsp;
-    @endif
+        @if (str_contains(strtolower(optional($intervention)->name), 'teaching practice'))
+            &nbsp;
+            <a data-toggle="tooltip" 
+                title="Preview the last uploaded minute of meeting by TPNomination Committee"
+                data-val='tp' 
+                href="#" 
+                class="btn btn-sm btn-danger btn-committee-last-minute-of-meeting-modal">
+                <i class="fa fa-clock"></i> TPNomination Committee Last Minute of Meeting
+            </a>&nbsp;
+        @endif
 
-    @if (str_contains(strtolower(optional($intervention)->name), 'conference attendance'))
-        &nbsp;
-        <a data-toggle="tooltip" 
-            title="Preview the last uploaded minute of meeting by CANomination Committee"
-            data-val='ca' 
-            href="#" 
-            class="btn btn-sm btn-danger btn-committee-last-minute-of-meeting-modal">
-            <i class="fa fa-square"></i> CANomination Committee Last Minute of Meeting
-        </a>&nbsp;
-    @endif
+        @if (str_contains(strtolower(optional($intervention)->name), 'conference attendance'))
+            &nbsp;
+            <a data-toggle="tooltip" 
+                title="Preview the last uploaded minute of meeting by CANomination Committee"
+                data-val='ca' 
+                href="#" 
+                class="btn btn-sm btn-danger btn-committee-last-minute-of-meeting-modal">
+                <i class="fa fa-square"></i> CANomination Committee Last Minute of Meeting
+            </a>&nbsp;
+        @endif
 
-    @if (str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship'))
-        &nbsp;
-        <a data-toggle="tooltip" 
-            title="Preview the last uploaded minute of meeting by TSASNomination Committee"
-            data-val='tsas' 
-            href="#" 
-            class="btn btn-sm btn-danger btn-committee-last-minute-of-meeting-modal">
-            <i class="fa fa-square"></i> TSASNomination Committee Last Minute of Meeting
-        </a>&nbsp;
+        @if (str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship'))
+            &nbsp;
+            <a data-toggle="tooltip" 
+                title="Preview the last uploaded minute of meeting by TSASNomination Committee"
+                data-val='tsas' 
+                href="#" 
+                class="btn btn-sm btn-danger btn-committee-last-minute-of-meeting-modal">
+                <i class="fa fa-square"></i> TSASNomination Committee Last Minute of Meeting
+            </a>&nbsp;
+        @endif
     @endif
 
 @stop
@@ -168,8 +169,8 @@ Submission Request
                         </form>
                     </div>
                 </div>
-            @else
-                <div class="row container alert alert-success">
+            {{-- @else --}}
+                {{-- <div class="row container alert alert-success">
                     <div class="col-md-9">
                         <i class="icon fa fa-success"></i>
                         <strong>SUBMISSION COMPLETED:</strong> 
@@ -181,14 +182,20 @@ Submission Request
                         </ul>
                     </div>
                     <div class="col-md-3">
-                        <span class="text-success pull-right"> 
-                            <strong>
-                                <span class="fa fa-check-square"></span>
-                                Request Submitted 
-                            </strong> 
-                        </span>
+                        <div class="col-sm-12">
+                            <span class="text-success pull-right"> 
+                                <strong>
+                                    <span class="fa fa-check-square"></span>
+                                    Request Submitted
+                                </strong> 
+                            </span>
+                        </div>
+                        <div class="col-sm-12 text-danger text-justify">
+                            Please note that your Approval-In-Principle (AIP) is in the final stage of approval and you will be contacted for collection.
+                        </div>
                     </div>
-                </div>
+                    
+                </div> --}}
             @endif           
             <div class="row col-sm-12">
                 
@@ -233,8 +240,6 @@ Submission Request
                             @include('tf-bi-portal::pages.submission_requests.partials.submission_attachments') 
                         </div>
                     @endif
-                    
-
                                    
                 </div>
             </div>

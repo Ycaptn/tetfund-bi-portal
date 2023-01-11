@@ -340,40 +340,53 @@ class SubmissionRequestController extends BaseController
             //Flash::error('Submission Request not found');
             return redirect(route('tf-bi-portal.submissionRequests.index'));
         }
-        
-        /* get checklist binded to specified intervention model artifact */
-        $tETFundServer = new TETFundServer();   /* server class constructor */
-        $checklist_items = $tETFundServer->getInterventionChecklistData($submissionRequest->tf_iterum_intervention_line_key_id,);
+            
+        $beneficiary = $submissionRequest->beneficiary; // beneficiary
 
+        // tracking Iterum records if submission has been completed to tetfund
+        if($submissionRequest->status != 'not-submitted') {
+            
+            $tETFundServer = new TETFundServer();   // server class constructor
+            $submitted_request_data = $tETFundServer->getSubmittedRequestData($submissionRequest->tf_iterum_portal_key_id);
+            
+            $checklist_items = $submitted_request_data->checklist_items;
+            $intervention_types_server_response = $submitted_request_data->intervention_beneficiary_type;
+            $submission_allocations = $submitted_request_data->submission_allocations;
+            $years = $submitted_request_data->years;
 
-        /* get all interventions from server */
-        $pay_load = ['_method'=>'GET', 'id'=>$submissionRequest->tf_iterum_intervention_line_key_id];
-        $tETFundServer = new TETFundServer();   /* server class constructor */
-        $intervention_types_server_response = $tETFundServer->get_row_records_from_server("tetfund-ben-mgt-api/interventions/".$submissionRequest->tf_iterum_intervention_line_key_id, $pay_load);
+        } else {
 
-        $beneficiary = $submissionRequest->beneficiary;
-        $years = array();
+            /* get checklist binded to specified intervention model artifact */
+            $tETFundServer = new TETFundServer();   /* server class constructor */
+            $checklist_items = $tETFundServer->getInterventionChecklistData($submissionRequest->tf_iterum_intervention_line_key_id);
 
-        if ($submissionRequest->intervention_year1 != null) {
-            array_push($years, $submissionRequest->intervention_year1);
+            /* get all interventions from server */
+            $pay_load = ['_method'=>'GET', 'id'=>$submissionRequest->tf_iterum_intervention_line_key_id];
+            $tETFundServer = new TETFundServer();   /* server class constructor */
+            $intervention_types_server_response = $tETFundServer->get_row_records_from_server("tetfund-ben-mgt-api/interventions/".$submissionRequest->tf_iterum_intervention_line_key_id, $pay_load);
+            
+            $years = array();
+            if ($submissionRequest->intervention_year1 != null) {
+                array_push($years, $submissionRequest->intervention_year1);
+            }
+
+            if ($submissionRequest->intervention_year2 != null) {
+                array_push($years, $submissionRequest->intervention_year2);
+            }
+
+            if ($submissionRequest->intervention_year3 != null) {
+                array_push($years, $submissionRequest->intervention_year3);
+            }
+
+            if ($submissionRequest->intervention_year4 != null) {
+                array_push($years, $submissionRequest->intervention_year4);
+            }
+
+            //Get the funding data and total_funds for the selected intervention year(s).
+            $tETFundServer = new TETFundServer();   /* server class constructor */
+            $submission_allocations = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
         }
 
-        if ($submissionRequest->intervention_year2 != null) {
-            array_push($years, $submissionRequest->intervention_year2);
-        }
-
-        if ($submissionRequest->intervention_year3 != null) {
-            array_push($years, $submissionRequest->intervention_year3);
-        }
-
-        if ($submissionRequest->intervention_year4 != null) {
-            array_push($years, $submissionRequest->intervention_year4);
-        }
-
-        //Get the funding data and total_funds for the selected intervention year(s).
-        $tETFundServer = new TETFundServer();   /* server class constructor */
-        $submission_allocations = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
-        
         $intervention_name = '';
         if (str_contains(strtolower($intervention_types_server_response->name), 'teaching practice')) {
             $intervention_name = 'tp';
@@ -395,7 +408,8 @@ class SubmissionRequestController extends BaseController
                         'checklist_items' => $checklist_items,
                         'fund_available' => optional($submission_allocations)->total_funds,
                         'submission_allocations' => optional($submission_allocations)->allocation_records,
-                        'beneficiary' => $beneficiary                        
+                        'beneficiary' => $beneficiary, 
+                        'submitted_request_data' => $submitted_request_data ?? []
                     ]);
         }
 
@@ -406,7 +420,8 @@ class SubmissionRequestController extends BaseController
             ->with('checklist_items', $checklist_items)
             ->with('fund_available', optional($submission_allocations)->total_funds)
             ->with('submission_allocations', optional($submission_allocations)->allocation_records)
-            ->with('beneficiary', $beneficiary);
+            ->with('beneficiary', $beneficiary)
+            ->with('submitted_request_data', $submitted_request_data ?? []);
     }
 
     /**
