@@ -55,15 +55,15 @@ class CANominationDataTable extends DataTable
             ->minifiedAjax()
             ->addAction(['width' => '120px', 'printable' => false])
             ->parameters([
-                'dom'       => 'Bfrtip',
+                'dom' => 'B<"float-end mb-5" f><t>ip',
                 'stateSave' => true,
                 'order'     => [[0, 'desc']],
                 'buttons'   => [
                     /*['extend' => 'create', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],*/
                     /*['extend' => 'export', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],*/
-                    ['extend' => 'print', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
-                    ['extend' => 'reset', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
-                    ['extend' => 'reload', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
+                    ['extend' => 'print', 'className' => 'btn btn-primary btn-outline btn-xs no-corner mt-3',],
+                    ['extend' => 'reset', 'className' => 'btn btn-primary btn-outline btn-xs no-corner mt-3',],
+                    ['extend' => 'reload', 'className' => 'btn btn-primary btn-outline btn-xs no-corner mt-3',],
                 ],
             ]);
     }
