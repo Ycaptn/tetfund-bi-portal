@@ -14,7 +14,7 @@ use App\Jobs\BeneficiaryUserCreatedJob;
 trait BeneficiaryUserTrait {
 
     // create a new uer on bims and to users table
-    public function create_new_bims_and_local_user($pay_load_data){
+    public function create_new_bims_and_local_user($pay_load_data) {
         $zUser = new User();
         
         if (env('APP_ENV') != 'local') {
@@ -66,6 +66,55 @@ trait BeneficiaryUserTrait {
             return $response_arr;
         }
         return [];
+    }
+
+
+    public function replicate_bi_user_to_bi_portal($user_record, $additional_payload) {
+        if (!empty($user_record) && $user_record != null) {
+            $zUser = new User();
+
+            $zUser->email = $user_record->email;
+            $zUser->password = $user_record->password;
+            $zUser->telephone = $user_record->telephone;
+            $zUser->title = $user_record->title;
+            $zUser->first_name = $user_record->first_name;
+            $zUser->middle_name = $user_record->middle_name;
+            $zUser->last_name = $user_record->last_name;
+            $zUser->user_code = $user_record->user_code;
+            $zUser->preferred_name = $user_record->preferred_name;
+            $zUser->physical_location = $user_record->physical_location;
+            $zUser->job_title = $user_record->job_title;
+            $zUser->is_disabled = $user_record->is_disabled;
+            $zUser->disable_reason = $user_record->disable_reason;
+            $zUser->disabled_at = $user_record->disabled_at;
+            $zUser->organization_id = auth()->user()->organization_id;
+            $zUser->presence_status = $user_record->presence_status;
+            $zUser->gender = $user_record->gender;
+            $zUser->created_at = $user_record->created_at;
+            $zUser->updated_at = $user_record->updated_at;
+            $zUser->syncRoles(['BI-staff']);
+            $zUser->save();
+
+            // binding user to beneficiary membership table
+            if (isset($zUser->id) && $zUser->id != null) {
+                $response_arr = [
+                    'organization_id' => $zUser->organization_id,
+                    'beneficiary_user_id' => $zUser->id,
+                    'beneficiary_user_email' => $zUser->email,
+                    'beneficiary_id' => $additional_payload['beneficiary_bi_id'],
+                    'beneficiary_tetfund_iterum_id' => $additional_payload['beneficiary_tetfund_iterum_id']
+                ];
+
+                // map beneficiary user to beneficiary on beneficiary_member_table
+                $mapped_beneficiary_user = BeneficiaryMember::create($response_arr);
+
+                // response to be returned
+                return $mapped_beneficiary_user;
+            }
+                                
+        }
+
+        return null;
     }
 
 }

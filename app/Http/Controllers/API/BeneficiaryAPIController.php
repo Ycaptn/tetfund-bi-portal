@@ -263,9 +263,23 @@ class BeneficiaryAPIController extends AppBaseController
         return $this->sendSuccess('Beneficiary User data deleted successfully!'); 
     }
 
+    /* sanitise string and remove invalid character formulating valid email prefix */
+    public function sanitize_email_prefix($prefix_string) {
+        $valid_prefix = trim($prefix_string);
+        $valid_prefix = str_replace(' ', '-', $valid_prefix);
+        $valid_prefix = str_replace('(', '', $valid_prefix);
+        $valid_prefix = str_replace(')', '', $valid_prefix);
+        $valid_prefix = str_replace("'", '', $valid_prefix);
+        $valid_prefix = str_replace('`', '', $valid_prefix);
+        $valid_prefix = str_replace('"', '', $valid_prefix);
+
+        return $valid_prefix;
+    }
+
     /* sychronization fuction */
-    public function synchronize_beneficiary_list(Organization $org, Request $request){
+    public function synchronize_beneficiary_list(Organization $org, Request $request) {
         /* class constructor */
+        $bi_users_emails_enroled = array();
         $tETFundServer = new TETFundServer();
         $get_beneficiary_list = $tETFundServer->getBeneficiaryList();
 
@@ -301,7 +315,8 @@ class BeneficiaryAPIController extends AppBaseController
                 $beneficiary_obj->save();
 
                 //desk-officer custom email
-                $desk_officer_email = strtolower($get_server_beneficiary->short_name)."@tetfund.gov.ng";
+                $email_prefix = $this->sanitize_email_prefix($get_server_beneficiary->short_name);
+                $desk_officer_email = strtolower($email_prefix)."@tetfund.gov.ng";
                 
                 //checking if beneficiary desk officer exist
                 $beneficiary_desk_officer_user = User::where('email', $desk_officer_email)->first();
@@ -326,11 +341,37 @@ class BeneficiaryAPIController extends AppBaseController
                     // creating beneficiary desk officer
                     $beneficiary_desk_officer = $this->create_new_bims_and_local_user($pay_load);
                 }
+
+                // replication and update records for beneficiary members
+                if (isset($get_server_beneficiary->memberships) && count($get_server_beneficiary->memberships) > 0) {
+                    foreach ($get_server_beneficiary->memberships as $beneficiary_member) {
+                        if (isset($beneficiary_member->user) && $beneficiary_member->role != 'bi_deskofficer') {
+
+                            $bi_user = $beneficiary_member->user;
+
+                            //checking if beneficiary user exist
+                            $bi_user_exist = User::where('email', $bi_user->email)->first();
+                            
+                            // create user if user does not exist on BI portal
+                            if (empty($bi_user_exist) || $bi_user_exist == null) {
+
+                                $additional_payload = [
+                                    'beneficiary_bi_id' => $beneficiary_obj->id,
+                                    'beneficiary_tetfund_iterum_id' => $get_server_beneficiary->id,
+                                ];
+
+                                // creating beneficiary desk officer
+                                $bi_user_response = $this->replicate_bi_user_to_bi_portal($bi_user, $additional_payload);
+                                array_push($bi_users_emails_enroled, $bi_user->email);
+                            }
+                        }
+                    }
+                }
                 
             }
         }
 
-        return $this->sendSuccess('Beneficiary List successfully synchronized');
+        return $this->sendResponse($bi_users_emails_enroled, 'Beneficiary List successfully synchronized with ('.count($bi_users_emails_enroled).") User(s) replicated");
 
     }
 }
