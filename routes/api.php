@@ -19,6 +19,7 @@ $orgRoutes = function() {
 
             Route::name('tf-bi-portal-api.')->prefix('tf-bi-portal-api')->group(function(){
                 Route::resource('beneficiaries', \App\Http\Controllers\API\BeneficiaryAPIController::class);
+                Route::resource('committee_meeting_minutes', \App\Http\Controllers\API\CommitteeMeetingsMinutesController::class);
                 
                 // sychronization processing
                 Route::get('synchronize_beneficiary_list', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'synchronize_beneficiary_list'])->name('synchronize_beneficiary_list');

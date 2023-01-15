@@ -145,7 +145,7 @@ All T S A S Nomination
 
                         @if ($current_user->hasRole('BI-TSAS-committee-head'))
                             {{-- appears for all tsas commitee head and decide final consideration state --}}
-                            <a  href="{{ route('tf-bi-portal.t_s_a_s_nominations.index') }}?view_type=committee_head_consideration"
+                            <a  href="{{ route('tf-bi-portal.t_s_a_s_nominations.index') }}?view_type=committee_head_consideration&nomination_type=tsas"
                                 class="btn btn-sm {{ (isset(request()->view_type) && request()->view_type == 'committee_head_consideration') ? 'btn-primary' : 'btn-secondary'}}"
                                 title="Preview TSAS Nomination(s) forwarded by Desk-Officer and take find decision on behalf of TSASNomination committee" ><i class="fas fa-bell"></i><b><sup class="fa-layers-counter text-danger" style="background-color:white; border-radius: 20%;">{{number_format($count_array_returned['committee_members_considered_nomination'] ?? 0)}}</sup></b>
                                 Considered Nomination

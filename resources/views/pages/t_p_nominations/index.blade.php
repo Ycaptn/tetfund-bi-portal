@@ -70,9 +70,10 @@ All T P Nomination
 
 @section('page_title_buttons')
     @if ($current_user->hasAnyRole(['BI-TP-committee-head']) && isset(request()->view_type) && request()->view_type == 'committee_head_consideration')
-        <a  class="btn btn-sm btn-primary modal_committee_minutes_meetings"
+        <a  class="btn btn-sm btn-primary btn_upload_committee_minutes_meetings"
+            id="" 
             data-val="tp"
-            title="Upload and avail to Desk-Officer a copy of TPNomination Committee minutes of Meetings" >
+            title="Upload and avail to Desk-Officer a copy of TPNomination Committee most-recent minutes of Meetings" >
             <span class="fa fa-upload"></span> TPNomination Committee Minutes of Meeting
         </a>
     @endif
@@ -143,7 +144,7 @@ All T P Nomination
 
                         @if ($current_user->hasRole('BI-TP-committee-head'))
                             {{-- appears for all tp commitee head and decide final consideration state --}}
-                            <a  href="{{ route('tf-bi-portal.t_p_nominations.index') }}?view_type=committee_head_consideration"
+                            <a  href="{{ route('tf-bi-portal.t_p_nominations.index') }}?view_type=committee_head_consideration&nomination_type=tp"
                                 class="btn btn-sm {{ (isset(request()->view_type) && request()->view_type == 'committee_head_consideration') ? 'btn-primary' : 'btn-secondary'}}"
                                 title="Preview TP Nomination(s) forwarded by Desk-Officer and take find decision on behalf of TPNomination committee" ><i class="fas fa-bell"></i><b><sup class="fa-layers-counter text-danger" style="background-color:white; border-radius: 20%;">{{number_format($count_array_returned['committee_members_considered_nomination'] ?? 0)}}</sup></b>
                                 Considered Nomination

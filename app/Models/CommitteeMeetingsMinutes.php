@@ -22,17 +22,21 @@ use Hasob\FoundationCore\Traits\Pageable;
 use Hasob\FoundationCore\Traits\Disable;
 use Hasob\FoundationCore\Traits\Ratable;
 use Hasob\FoundationCore\Traits\Taggable;
+use Hasob\FoundationCore\Traits\Attachable;
 use Hasob\FoundationCore\Traits\Ledgerable;
 use Hasob\FoundationCore\Traits\Artifactable;
 use Hasob\FoundationCore\Traits\OrganizationalConstraint;
-
+use Hasob\FoundationCore\Models\Attachable as EloquentAttachable;
 
 class CommitteeMeetingsMinutes extends Model
 {
     use GuidId;
+    use Attachable;
     use HasFactory;
     use SoftDeletes;
     use OrganizationalConstraint;
+
+
 
     public $table = 'tf_bi_committee_meetings_minutes';
     
@@ -57,12 +61,36 @@ class CommitteeMeetingsMinutes extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-
      /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function beneficiary()
     {
         return $this->belongsTo(Beneficiary::class, 'beneficiary_id', 'id');
+    }
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function attachables()
+    {
+        return $this->hasMany(EloquentAttachable::class, 'attachable_id', 'id');
+    }
+
+    // get specific attachement for a committee_meeting_minutes
+    public static function get_specific_attachment($committee_meeting_minutes_id, $item_label) {
+        $committee_meeting_minutes = self::find($committee_meeting_minutes_id);
+        if ($committee_meeting_minutes != null) {
+            $attachments = $committee_meeting_minutes->get_attachments();
+            if ($attachments != null) {
+                foreach($attachments as $attachment){
+                    if ($attachment->label == $item_label || str_contains($attachment->label, $item_label)) {
+                        return $attachment;
+                        break;
+                    }
+                }    
+            }
+        }
+        return null;
     }
 }

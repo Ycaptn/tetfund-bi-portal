@@ -96,17 +96,32 @@
 
     <div class="list-group col-md-3">
         <div class="col-sm-12">
-            <span class="text-success pull-right"> 
-                <strong>
-                    <span class="fa fa-check-square"></span>
-                    Request Submitted
-                </strong> 
-            </span>
+            @if($submissionRequest->status == 'submitted')
+                <span class="text-success pull-right"> 
+                    <strong>
+                        <span class="fa fa-check-square"></span>
+                        Request Submitted
+                    </strong> 
+                </span>
+            @else
+                <span class="text-danger pull-right"> 
+                    <strong>
+                        <span class="fa fa-check-square"></span>
+                        Request Not-Submitted
+                    </strong>
+                </span>
+            @endif
         </div>
         <div class="col-sm-12 text-danger text-justify">
-            <small>
-                Please note that your Approval-In-Principle (AIP) is in the final stage of approval and you will be contacted for collection.                
-            </small>
+            @if($submissionRequest->status == 'submitted')
+                <small>
+                    Please note that your Approval-In-Principle (AIP) is in the final stage of approval and you will be contacted for collection.                
+                </small>
+            @else
+                <small>
+                    Please note that your Approval-In-Principle (AIP) is yet to be submitted to TETFund.
+                </small>
+            @endif
         </div>
         {{-- @if(count($submitted_request_data->work_item->assignments ?? []) > 0)
             @foreach($submitted_request_data->work_item->assignments as $idx=>$assign)

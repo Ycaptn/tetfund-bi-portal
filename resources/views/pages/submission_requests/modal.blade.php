@@ -1,5 +1,3 @@
-
-
 <div class="modal fade" id="mdl-submissionRequest-modal" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -43,7 +41,6 @@
                     </div>
                 </form>
             </div>
-
         
             <div class="modal-footer" id="div-save-mdl-submissionRequest-modal">
                 <button type="button" class="btn btn-primary" id="btn-save-mdl-submissionRequest-modal" value="add">Save</button>
@@ -53,11 +50,219 @@
     </div>
 </div>
 
+
+{{-- modal to show uploaded Committee minutes of meetings --}}
+<div class="modal fade" id="modal_uploaded_committee_minutes_meetings" tabindex="-1" role="dialog" aria-labelledby="creator-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-100vh">
+        <div class="modal-content modal-content-95vh">
+            <div class="modal-header">
+                <h4 class="modal-title" id="creator-modal-label"> <small>Most recently uploaded <span class="nomination_type_name">committee</span> minutes of meeting</small></h4>
+                <button id="creator-modal-close-button" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-lg-12 row">
+
+                    <div class="offline-minutes-meeting-uploaded"><span class="offline">You are currently offline</span></div>
+                    <div id="div_uploaded_committee_minutes_meetings_errs" class="alert alert-danger" role="alert"></div>
+                    
+                    <form id="form_uploaded_committee_minutes_meetings_modal" class="form-horizontal" role="form" method="POST">
+                        {{ csrf_field() }}
+                        <input type="hidden" id="minute_uploaded_nomination_type" value="">
+                        <input type="hidden" id="minute_uploaded_primary_id" value="0">
+                        
+                        <div class="col-sm-12">
+                            <div class="col-sm-12 text-justify text-danger">
+                                <i>
+                                    <strong>Note:</strong> Only the most-recently uploaded minutes of meeting which has been uploaded by the <span class="nomination_type_name">nomination committee</span> and has <strong>not been used in any of your Submission(s)</strong> is display. It will be considered <strong>used</strong> once the submission request is completed and successfully <strong>forwarded to TETFund</strong>. 
+                                </i>                                
+                            </div>    
+                        </div>
+                        <hr>
+
+                        <div class="row col-sm-12">
+                            <div class="col-sm-5">
+                                <strong>
+                                    Recently uploaded minutes of meeting: &nbsp; &nbsp;
+                                </strong>
+                            </div>
+                            <div class="col-sm-7">
+                                <i>
+                                    <small class="text-danger" id="attachment_html_show">
+                                        No document available!
+                                    </small>
+                                </i>
+                            </div>
+                        </div>
+                        <hr>
+                        
+                        <br>
+                        <div class="form-group col-sm-10">
+                            <label class="form-label" for="bind_uploaded_minutes_to_checklist">
+                                <strong>
+                                    Select and attach the uploaded minutes of meeting to a checklist item.
+                                </strong>
+                            </label>
+                            
+                            <select class="form-select" name="bind_uploaded_minutes_to_checklist" id="bind_uploaded_minutes_to_checklist">
+                                <option value="">-- No checklist selected --</option>
+                                @if(isset($checklist_items) && count($checklist_items) > 0)
+                                    @foreach($checklist_items as $checklist_item)
+                                        <option value="{{$checklist_item->item_label}}">{{$checklist_item->item_label}}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                            <br>
+                        </div>                  
+
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer text-left col-sm-12" >
+                <div class="form-group">
+                    <button type="button" name="btn_process_uploaded_minutes_of_meeting" class="btn btn-sm btn-primary" id="btn_process_uploaded_minutes_of_meeting">
+                        <div id="spinner-committee-minutes-of-meeting" style="color: white; display:none;" class="spinner-committee-minutes-of-meeting">
+                            <div class="spinner-border" style="width: 1rem; height: 1rem;" role="status">
+                            </div>
+                            <span class="">Loading...</span><hr>
+                        </div>
+
+                        <i class="fa fa-chain" style="opacity:80%"></i>
+
+                        Use uploaded minutes of meeting as selected checklist item.
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @push('page_scripts')
 <script type="text/javascript">
 $(document).ready(function() {
 
     $('.offline-submission_requests').hide();
+    $('.offline-minutes-meeting-uploaded').hide();
+
+    //Show Modal for uploaded committee minutes of meetings
+    $(document).on('click', ".btn-committee-last-minute-of-meeting-modal", function(e) {
+        e.preventDefault();
+        $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+        $('#div_uploaded_committee_minutes_meetings_errs').hide();
+        $('#modal_uploaded_committee_minutes_meetings').modal('show');
+        $('#form_uploaded_committee_minutes_meetings_modal').trigger("reset");
+
+        $(".spinner-committee-minutes-of-meeting").show();
+        $("#btn_process_uploaded_minutes_of_meeting").attr('disabled', true);
+        
+        let nomination_type = $(this).attr('data-val');
+        $('#minute_uploaded_nomination_type').val(nomination_type);
+
+        $.get( "{{ route('tf-bi-portal-api.committee_meeting_minutes.show', '') }}/"+nomination_type).done(function( response ) {
+                    
+            let attachment = (response.data.attachables[0]) ? response.data.attachables[0].attachment : null;
+
+            if(attachment != null) {
+                let attachment_link = window.location.origin +'/tf-bi-portal/preview-attachement/'+attachment.id;
+                let attachment_html = "<u class='text-primary'><a href='"+ attachment_link +"' target='__blank'>"+ attachment.label +"</a></u><br>"+ attachment.description +"<br><b>MODIFIED: </b>" + new Date(response.data.updated_at).toDateString()+ '.' + "<br><b>BY: </b>" + response.data.user.full_name +'.';
+                
+                console.log(attachment_html);
+                $('#minute_uploaded_primary_id').val(attachment.id);
+                $('#attachment_html_show').html(attachment_html);
+                
+                $("#btn_process_uploaded_minutes_of_meeting").attr('disabled', false);
+            }
+
+            $(".spinner-committee-minutes-of-meeting").hide();
+        });
+
+    });
+
+    //process the uploaded committee minutes of meeting binding to checklist
+    $(document).on('click', "#btn_process_uploaded_minutes_of_meeting", function(e) {
+        e.preventDefault();
+        $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+        //check for internet status 
+        if (!window.navigator.onLine) {
+            $('.offline-minutes-meeting-upload').fadeIn(300);
+            return;
+        }else{
+            $('.offline-minutes-meeting-upload').fadeOut(300);
+        }
+
+        let minute_uploaded_nomination_type = $('#minute_uploaded_nomination_type').val()
+        let itemType = minute_uploaded_nomination_type.toUpperCase();
+
+        swal({
+            title: "You are about to tie the uploaded committee minutes of meeting to the selected " + itemType + "-Nomination checklist item !",
+            text: "This action can be modified subsequently. Modification is no longer possible once this Submission request is completed and forwarded to TETFund by institution Desk-Officer.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, use this file",
+            cancelButtonText: "No, don't use this file",
+            closeOnConfirm: true,
+            closeOnCancel: true
+        }, function(isConfirm) {
+            if (isConfirm) {
+                $(".spinner-committee-minutes-of-meeting").show();
+                $("#btn_process_uploaded_minutes_of_meeting").attr('disabled', true);
+
+                let endPointUrl = "{{ route('tf-bi-portal-api.committee_meeting_minutes.update', '') }}/" + '{{$submissionRequest->id ?? '0'}}';
+
+                let formData = new FormData();
+                formData.append('_token', $('input[name="_token"]').val());
+                formData.append('_method', 'PUT');
+                formData.append('nomination_type', minute_uploaded_nomination_type);
+                formData.append('checklist_item_name', $('#bind_uploaded_minutes_to_checklist').val());
+                formData.append('minute_uploaded_primary_id', $('#minute_uploaded_primary_id').val());
+                formData.append('submissioin_request_primary_id', '{{$submissionRequest->id ?? '0'}}');
+                
+                $.ajax({
+                    url:endPointUrl,
+                    type: "POST",
+                    data: formData,
+                    cache: false,
+                    processData:false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function(result){                                
+                        if(result.errors || (result.status && result.status == 'fail' && result.response)) {
+                            $('#div_uploaded_committee_minutes_meetings_errs').html('');
+                            $('#div_uploaded_committee_minutes_meetings_errs').show();
+                            
+                            let response_arr = (result.errors) ? result.errors : result.response;
+                            $.each(response_arr, function(key, value){
+                                $('#div_uploaded_committee_minutes_meetings_errs').append('<li class="">'+value+'</li>');
+                            });
+
+                            $(".spinner-committee-minutes-of-meeting").hide();
+                            $("#btn_process_uploaded_minutes_of_meeting").attr('disabled', false);
+                        }else{
+                            swal({
+                                title: "Successful",
+                                text: itemType + "-Nomination Committee minutes of meeting has been tied to selected checklist item and saved successfully",
+                                type: "success",
+                                confirmButtonClass: "btn-success",
+                                confirmButtonText: "OK",
+                                closeOnConfirm: false
+                            });
+                            location.reload(true);
+                        }
+                    }, error: function(data){
+                        console.log(data);
+                        swal("Error", "Oops an error occurred. Please try again.", "error");
+
+                        $(".spinner-committee-minutes-of-meeting").hide();
+                        $("#btn_process_uploaded_minutes_of_meeting").attr('disabled', false);
+
+                    }
+                });
+            }
+        });
+
+    });
 
     /*//Show Modal for New Entry
     $(document).on('click', ".btn-new-mdl-submissionRequest-modal", function(e) {
