@@ -45,7 +45,7 @@ TSAS Nomination Details {{-- {{$tSASNomination->title}} --}}
 
 
 @section('content')
-    <div class="card border-top border-0 border-4 border-primary">
+    <div class="card border-top border-0 border-4 border-success">
         <div class="card-body">
 
             @include('tf-bi-portal::pages.t_s_a_s_nominations.modal') 
@@ -56,7 +56,7 @@ TSAS Nomination Details {{-- {{$tSASNomination->title}} --}}
 @stop
 
 @section('side-panel')
-<div class="card radius-5 border-top border-0 border-4 border-primary">
+<div class="card radius-5 border-top border-0 border-4 border-success">
     <div class="card-body">
         <div><h5 class="card-title">More Information</h5></div>
         <p class="small">

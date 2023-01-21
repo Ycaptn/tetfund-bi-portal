@@ -45,7 +45,7 @@ TP Nomination Details {{-- {{$tPNomination->title}} --}}
 
 
 @section('content')
-    <div class="card border-top border-0 border-4 border-primary">
+    <div class="card border-top border-0 border-4 border-success">
         <div class="card-body">
 
             @include('tf-bi-portal::pages.t_p_nominations.modal') 
@@ -56,7 +56,7 @@ TP Nomination Details {{-- {{$tPNomination->title}} --}}
 @stop
 
 @section('side-panel')
-<div class="card radius-5 border-top border-0 border-4 border-primary">
+<div class="card radius-5 border-top border-0 border-4 border-success">
     <div class="card-body">
         <div><h5 class="card-title">More Information</h5></div>
         <p class="small">
