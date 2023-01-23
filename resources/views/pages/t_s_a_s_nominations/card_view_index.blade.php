@@ -58,7 +58,7 @@ All TSAS Nominations
         {{-- Summary Row --}}
     </div>
     
-    <div class="card border-top border-0 border-4 border-primary">
+    <div class="card border-top border-0 border-4 border-success">
         <div class="card-body">
             @include('tf-bi-portal::pages.cardview.index')
         </div>
@@ -68,7 +68,7 @@ All TSAS Nominations
 @stop
 
 @section('side-panel')
-<div class="card radius-5 border-top border-0 border-4 border-primary">
+<div class="card radius-5 border-top border-0 border-4 border-success">
     <div class="card-body">
         <div><h5 class="card-title">TSAS Nominations</h5></div>
         <p class="small">

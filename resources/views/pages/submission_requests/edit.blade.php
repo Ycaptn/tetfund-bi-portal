@@ -28,7 +28,7 @@ Edit Submission Request
 @stop
 
 @section('content')
-<div class="card border-top border-0 border-4 border-primary">
+<div class="card border-top border-0 border-4 border-success">
 
     <div class="card-body p-4">
 
@@ -55,7 +55,7 @@ Edit Submission Request
 @stop
 
 @section('side-panel')
-<div class="card radius-5 border-top border-0 border-4 border-primary">
+<div class="card radius-5 border-top border-0 border-4 border-success">
     <div class="card-body">
         <div><h5 class="card-title">More Information</h5></div>
         <p class="small">

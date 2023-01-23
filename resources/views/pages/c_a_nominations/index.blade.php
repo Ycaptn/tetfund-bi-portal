@@ -234,7 +234,7 @@ All C A Nomination
 @stop
 
 @section('side-panel')
-<div class="card radius-5 border-top border-0 border-4 border-primary">
+<div class="card radius-5 border-top border-0 border-4 border-success">
     <div class="card-body">
         <div><h5 class="card-title">More Information</h5></div>
         <p class="small">
