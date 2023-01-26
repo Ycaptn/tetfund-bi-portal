@@ -15,7 +15,7 @@ return [
 
     'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
         '%s%s',
-        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1,scola-backend-server.test,localhost:8000,localhost:8080,127.0.0.1:8080',  
+        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1,scola-backend-server.test,localhost:8000,localhost:8080,127.0.0.1:8080,beneficiary.hasob.app,staff.hasob.app',  
 
         env('APP_URL') ? ','.parse_url(env('APP_URL'), PHP_URL_HOST) : ''
     ))),
