@@ -134,6 +134,7 @@ class SubmissionRequestController extends BaseController
         $input['requesting_user_id'] = $current_user->id;
         $input['organization_id'] = $current_user->organization_id;
         $input['beneficiary_id'] = $beneficiary_member->beneficiary_id;
+        $input['is_aip_request'] = true;
 
         /** @var SubmissionRequest $submissionRequest */
         $submissionRequest = SubmissionRequest::create($input);
@@ -359,7 +360,7 @@ class SubmissionRequestController extends BaseController
         if($submissionRequest->status != 'not-submitted') {
             
             $tETFundServer = new TETFundServer();   // server class constructor
-            $submitted_request_data = $tETFundServer->getSubmittedRequestData($submissionRequest->tf_iterum_portal_key_id);
+            $submitted_request_data = $tETFundServer->getSubmissionRequestData($submissionRequest->tf_iterum_portal_key_id);
             
             $checklist_items = $submitted_request_data->checklist_items;
             $intervention_types_server_response = $submitted_request_data->intervention_beneficiary_type;
@@ -399,30 +400,31 @@ class SubmissionRequestController extends BaseController
             $submission_allocations = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
         }
 
-        $intervention_name = '';
-        if (str_contains(strtolower($intervention_types_server_response->name), 'teaching practice')) {
-            $intervention_name = 'tp';
-        } elseif (str_contains(strtolower($intervention_types_server_response->name), 'conference attendance')) {
-            $intervention_name = 'ca';
-        } elseif (str_contains(strtolower($intervention_types_server_response->name), 'tetfund scholarship')) {
-            $intervention_name = 'tsas';
-        }
-
         if(isset($request->sub_menu_items) && $request->sub_menu_items == 'nominations_binded') {
-             return $binded_nominations_dataTable
-                    ->with('user_beneficiary', $beneficiary)
-                    ->with('submission_request', $submissionRequest)
-                    ->with('intervention_name', $intervention_name)
-                    ->render('pages.submission_requests.show', [
-                        'intervention' => $intervention_types_server_response,
-                        'submissionRequest' => $submissionRequest,
-                        'years' => $years,
-                        'checklist_items' => $checklist_items,
-                        'fund_available' => optional($submission_allocations)->total_funds,
-                        'submission_allocations' => optional($submission_allocations)->allocation_records,
-                        'beneficiary' => $beneficiary, 
-                        'submitted_request_data' => $submitted_request_data ?? []
-                    ]);
+            if(!empty($intervention_types_server_response) && $intervention_types_server_response != null) {
+                if (str_contains(strtolower($intervention_types_server_response->name), 'teaching practice')) {
+                    $intervention_name = 'tp';
+                } elseif (str_contains(strtolower($intervention_types_server_response->name), 'conference attendance')) {
+                    $intervention_name = 'ca';
+                } elseif (str_contains(strtolower($intervention_types_server_response->name), 'tetfund scholarship')) {
+                    $intervention_name = 'tsas';
+                }
+            }
+
+            return $binded_nominations_dataTable
+                ->with('user_beneficiary', $beneficiary)
+                ->with('submission_request', $submissionRequest)
+                ->with('intervention_name', $intervention_name ?? null)
+                ->render('pages.submission_requests.show', [
+                    'intervention' => $intervention_types_server_response,
+                    'submissionRequest' => $submissionRequest,
+                    'years' => $years,
+                    'checklist_items' => $checklist_items,
+                    'fund_available' => optional($submission_allocations)->total_funds,
+                    'submission_allocations' => optional($submission_allocations)->allocation_records,
+                    'beneficiary' => $beneficiary, 
+                    'submitted_request_data' => $submitted_request_data ?? []
+                ]);
         }
 
         return view('pages.submission_requests.show')
