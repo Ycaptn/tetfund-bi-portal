@@ -117,7 +117,7 @@ class TFBiBeneficiaryRequestMigration extends Command
                         $submission_request->organization_id = $organization->id;
                         $submission_request->title = $iterum_beneficiary_request->title;
                         
-                        $submission_request->status = ($iterum_beneficiary_request->request_sent_date != null && $iterum_beneficiary_request->request_received_date != null) ? 'in-progress' : 'not-submitted';
+                        $submission_request->status = ($iterum_beneficiary_request->request_sent_date != null && $iterum_beneficiary_request->request_received_date != null) ? 'submitted' : 'not-submitted';
                         
                         $submission_request->type = 'intervention';
                         $submission_request->requesting_user_id = $desk_officer->id;

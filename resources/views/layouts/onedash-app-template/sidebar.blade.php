@@ -156,7 +156,7 @@
 				</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['BI-desk-officer', 'BI-head-of-institution', 'bi-astd-committee-head', 'BI-CA-committee-head', 'BI-TP-committee-head', 'BI-TSAS-committee-head', 'bi-astd-committee-member', 'BI-CA-committee-member', 'BI-TP-committee-member', 'BI-TSAS-committee-member']))
+			@if (Auth()->user()->hasAnyRole(['BI-desk-officer', 'BI-head-of-institution', 'BI-CA-committee-head', 'BI-TP-committee-head', 'BI-TSAS-committee-head', 'BI-CA-committee-member', 'BI-TP-committee-member', 'BI-TSAS-committee-member']))
 
 			<li>
 			    <a href="javascript:void(0);" data-toggle="collapse" data-target="#access_dr" class="collapsed" aria-expanded="false">
@@ -259,7 +259,7 @@
 			</li>
 			@endif
 
-			@if (Auth()->user()->hasAnyRole(['bi-mgt','admin']))
+			@if (Auth()->user()->hasAnyRole(['BI-mgt','admin']))
 				<li>
 					<a href="{{ route('tf-bi-portal.beneficiaries.index') }}" class="">
 						<div class="parent-icon"><i class='bx bx-intersect'></i>

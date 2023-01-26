@@ -51,7 +51,7 @@ Submission Request
 
 @section('page_title_suffix')
     {{$submitted_request_data->title ?? $submissionRequest->title}} | 
-    <b>({{ strtoupper($submitted_request_data->request_status ?? $submissionRequest->status) }})</b>
+    <b>({{ strtoupper(optional($submitted_request_data)->request_status == 'new' ? 'In-Progress' : $submissionRequest->status ) }})</b>
 @stop
 
 @section('page_title_subtext')
@@ -211,11 +211,15 @@ Submission Request
                                     Attachments
                                 </a>                        
                             </li>
-                            <li class="mt-3" style="margin-right: 3px;">                            
-                                <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=nominations_binded" class="tablinks btn btn-primary btn-md shadow-none">
-                                    Nominations
-                                </a>
-                            </li>
+
+                            @if(str_contains(strtolower(optional($intervention)->name), 'teaching practice') || str_contains(strtolower(optional($intervention)->name), 'conference attendance') || str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship'))
+                                <li class="mt-3" style="margin-right: 3px;">                            
+                                    <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=nominations_binded" class="tablinks btn btn-primary btn-md shadow-none">
+                                        Nominations
+                                    </a>
+                                </li>
+                            @endif
+
                             <li class="mt-3" style="margin-right: 3px;">                                
                                 <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=communications" class="tablinks btn btn-primary btn-md shadow-none">
                                     Communications

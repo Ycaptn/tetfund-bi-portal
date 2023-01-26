@@ -115,7 +115,36 @@
         <div class="col-sm-12 text-danger text-justify">
             @if($submissionRequest->status == 'submitted')
                 <small>
-                    Please note that your Approval-In-Principle (AIP) is in the final stage of approval and you will be contacted for collection.                
+                    @if(isset($submitted_request_data) && $submitted_request_data->is_aip_request == true)
+
+                        Please note that your Approval-In-Principle (AIP) is currently being processed{!! ucwords(' <b>@ TETFund ' . $submitted_request_data->work_item->active_assignment->assigned_user->department->long_name . ' Department.</b>' ?? '.') !!}
+                        </b> 
+                        Once final approval is completed, you will be contacted for collection.
+
+                    @elseif(isset($submitted_request_data) && $submitted_request_data->is_first_tranche_request == true)
+
+                        Please note that your 1<sup>st</sup> Tranche Request is currently being processed{!! ucwords(' <b>@ TETFund ' . $submitted_request_data->work_item->active_assignment->assigned_user->department->long_name . ' Department.</b>' ?? '.') !!}
+                        </b> 
+                        Once final approval is completed, you will be contacted for collection.
+
+                    @elseif(isset($submitted_request_data) && $submitted_request_data->is_second_tranche_request == true)
+
+                        Please note that your 2<sup>nd</sup> Tranche Request is currently being processed{!! ucwords(' <b>@ TETFund ' . $submitted_request_data->work_item->active_assignment->assigned_user->department->long_name . ' Department.</b>' ?? '.') !!}
+                        </b> 
+                        Once final approval is completed, you will be contacted for collection.
+
+                    @elseif(isset($submitted_request_data) && $submitted_request_data->is_third_tranche_request == true)
+
+                        Please note that your 3<sup>rd</sup> Tranche Request is currently being processed{!! ucwords(' <b>@ TETFund ' . $submitted_request_data->work_item->active_assignment->assigned_user->department->long_name . ' Department.</b>' ?? '.') !!}
+                        </b> 
+                        Once final approval is completed, you will be contacted for collection.
+
+                    @elseif(isset($submitted_request_data) && $submitted_request_data->is_final_tranche_request == true)
+                    
+                        Please note that your Final Tranche Request is currently being processed{!! ucwords(' <b>@ TETFund ' . $submitted_request_data->work_item->active_assignment->assigned_user->department->long_name . ' Department.</b>' ?? '.') !!}
+                        </b> 
+                        Once final approval is completed, you will be contacted for collection.
+                    @endif                
                 </small>
             @else
                 <small>

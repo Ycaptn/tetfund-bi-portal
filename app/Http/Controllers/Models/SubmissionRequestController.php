@@ -144,7 +144,7 @@ class SubmissionRequestController extends BaseController
     }
 
     /* implement processing success */
-    public function processSubmissionRequestAttachement(ProcessAttachmentsSubmissionRequest $request, $id) {
+    public function processSubmissionRequestAttachment(ProcessAttachmentsSubmissionRequest $request, $id) {
         $attachement_inputs = $request->all();
         $submissionRequest = SubmissionRequest::find($request->id);
 
@@ -283,15 +283,21 @@ class SubmissionRequestController extends BaseController
             $nomination_table = 'tsas_submission';
         }
 
-        $final_nominations_arr = NominationRequest::with($nomination_table)
-                ->with('attachables.attachment')
-                ->where('bi_submission_request_id', null)
-                ->where('beneficiary_id', $beneficiary_member->beneficiary_id)
-                ->where('type', $intervention_name)
-                ->where('head_of_institution_checked_status', 'approved')
-                ->get();
-        $pay_load['final_nominations_arr'] = $final_nominations_arr;
-        $pay_load['nomination_table'] = $nomination_table;
+        // execute for ASTD Interventions only
+        if (str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') || 
+            str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') || 
+            str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship') ) {
+
+            $final_nominations_arr = NominationRequest::with($nomination_table)
+                    ->with('attachables.attachment')
+                    ->where('bi_submission_request_id', null)
+                    ->where('beneficiary_id', $beneficiary_member->beneficiary_id)
+                    ->where('type', $intervention_name)
+                    ->where('head_of_institution_checked_status', 'approved')
+                    ->get();
+            $pay_load['final_nominations_arr'] = $final_nominations_arr;
+            $pay_load['nomination_table'] = $nomination_table;
+        }
 
         $tETFundServer = new TETFundServer();   /* server class constructor */
         $final_submission_to_tetfund = $tETFundServer->processSubmissionRequest($pay_load, $tf_beneficiary_id);
@@ -300,22 +306,28 @@ class SubmissionRequestController extends BaseController
             $response = $final_submission_to_tetfund->data;
 
             //update submission request record status
-            $submissionRequest->status = 'in-progress';
+            $submissionRequest->status = 'submitted';
             $submissionRequest->tf_iterum_portal_key_id = $response->id;
             $submissionRequest->tf_iterum_portal_request_status = $response->request_status;
             $submissionRequest->tf_iterum_portal_response_meta_data = json_encode($response);
             $submissionRequest->tf_iterum_portal_response_at = date('Y-m-d');
             $submissionRequest->save();
 
-            //update attached final_nominations_arr
-            NominationRequest::where('bi_submission_request_id', null)
-                ->where('beneficiary_id', $beneficiary_member->beneficiary_id)
-                ->where('type', $intervention_name)
-                ->where('head_of_institution_checked_status', 'approved')
-                ->update([
-                    'bi_submission_request_id' => $submissionRequest->id,
-                    'is_set_for_final_submission' => 1,
-                ]);
+            // execute for ASTD Interventions only
+            if (str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') || 
+                str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') || 
+                str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship') ) {
+
+                //update attached final_nominations_arr
+                NominationRequest::where('bi_submission_request_id', null)
+                    ->where('beneficiary_id', $beneficiary_member->beneficiary_id)
+                    ->where('type', $intervention_name)
+                    ->where('head_of_institution_checked_status', 'approved')
+                    ->update([
+                        'bi_submission_request_id' => $submissionRequest->id,
+                        'is_set_for_final_submission' => 1,
+                    ]);
+            }
 
             $success_message = "This Request Has Now Been Successfully Submitted To TETFund!!";
             return redirect()->back()->with('success', $success_message);
