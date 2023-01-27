@@ -136,61 +136,68 @@ class TETFundServer {
         return ($api_response != null && $api_response_data !=null) ? $api_response_data->data : [];
     }
 
-    public static function getInterventionStatusData()
-    {
-        //TODO: perform operation, return return the requested object and success msg if ok, error otherwise
-        return [];
+    public static function getInterventionStatusData($iterum_submission_id) {
+        $server_api_url = Config::get('keys.tetfund.server_api_url');
+        $token = self::get_auth_token();
+        $ch = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/intervention-status/{$iterum_submission_id}", null);
+        $api_response = curl_exec($ch);
+        $api_response_data = json_decode($api_response);
+        curl_close ($ch);
+        return ($api_response != null && $api_response_data !=null && is_array($api_response_data->data)) ? $api_response_data->data : [];
     }
 
-    public static function getBeneficiaryCommunicationData()
-    {
-        //TODO: perform operation, return return the requested object and success msg if ok, error otherwise
-        return [];
+    public static function getBeneficiaryCommunicationData($beneficiary_id) {
+        $server_api_url = Config::get('keys.tetfund.server_api_url');
+        $token = self::get_auth_token();
+        $ch = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/beneficiary-communication/{$beneficiary_id}", null);
+        $api_response = curl_exec($ch);
+        $api_response_data = json_decode($api_response);
+        curl_close ($ch);
+        return ($api_response != null && $api_response_data !=null && isset($api_response_data->data)) ? $api_response_data->data : [];
     }
 
     public static function getBeneficiaryList() {
         $server_api_url = Config::get('keys.tetfund.server_api_url');
-
         $token = self::get_auth_token();
         $ch = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/beneficiary-list", null);
-
         $api_response = curl_exec($ch);
         $api_response_data = json_decode($api_response);
         curl_close ($ch);
-
-        if ($api_response != null && $api_response_data !=null && is_array($api_response_data->data)){
-            return $api_response_data->data;
-        }
-
-        return [];
+        return ($api_response != null && $api_response_data !=null && is_array($api_response_data->data)) ? $api_response_data->data : [];
     }
 
-    public static function getBeneficiaryData($beneficiary_id)
-    {
-        //TODO: perform operation, return return the requested object and success msg if ok, error otherwise
-        return [];
+    public static function getBeneficiaryData($beneficiary_id) {
+        $server_api_url = Config::get('keys.tetfund.server_api_url');
+        $token = self::get_auth_token();
+        $ch = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/beneficiary/{$beneficiary_id}", null);
+        $api_response = curl_exec($ch);
+        $api_response_data = json_decode($api_response);
+        curl_close ($ch);
+        return ($api_response != null && $api_response_data !=null && isset($api_response_data->data)) ? $api_response_data->data : [];
     }
 
-    public static function getBeneficiaryUsersData($beneficiary_id)
-    {
-        //TODO: perform operation, return return the requested object and success msg if ok, error otherwise
-        return [];
+    public static function getBeneficiaryUsersData($beneficiary_id) {
+        $server_api_url = Config::get('keys.tetfund.server_api_url');
+        $token = self::get_auth_token();
+        $ch = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/beneficiary-user/{$beneficiary_id}", null);
+        $api_response = curl_exec($ch);
+        $api_response_data = json_decode($api_response);
+        curl_close ($ch);
+        return ($api_response != null && $api_response_data !=null && isset($api_response_data->data)) ? $api_response_data->data : [];
     }
 
     public static function processSubmissionRequest($pay_load, $tf_beneficiary_id) {
         $server_api_url = Config::get('keys.tetfund.server_api_url');
         $token = self::get_auth_token();
 
-         /* append user_id to payload */
+        // append user_id to payload
         $pay_load['user_id'] = self::$authenticated_user_id;
 
-        /* append organization_id to payload */
+        // append organization_id to payload
         $pay_load['organization_id'] = self::$authenticated_user_organization_id; 
-
         $ch = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/process-submission-request/{$tf_beneficiary_id}", $pay_load);
         $api_response = curl_exec($ch);
         $api_response_data = json_decode($api_response);
-
         curl_close ($ch);
         return $api_response_data;
     }
