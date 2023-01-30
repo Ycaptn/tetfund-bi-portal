@@ -108,7 +108,7 @@ class TFBiSubmittedBeneficiaryRequestMigration extends Command
                         $submission_request->organization_id = $organization->id;
                         $submission_request->title = $iterum_beneficiary_request->title;                        
                         $submission_request->status = 'submitted';                        
-                        $submission_request->type = 'intervention';
+                        $submission_request->type = $iterum_beneficiary_request->requested_tranche;
                         $submission_request->requesting_user_id = $desk_officer->id;
                         $submission_request->beneficiary_id = $bi_portal_beneficiary->id;
                         $submission_request->display_ordinal = $iterum_beneficiary_request->display_ordinal;

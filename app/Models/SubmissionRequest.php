@@ -77,7 +77,14 @@ class SubmissionRequest extends Model
         'beneficiary_id',
         'bi_submission_request_id',
         'tf_iterum_portal_request_status',
-        'tf_iterum_intervention_line_key_id'
+        'tf_iterum_intervention_line_key_id',
+        'parent_id',
+        'is_aip_request',
+        'is_first_tranche_request',
+        'is_second_tranche_request',
+        'is_third_tranche_request',
+        'is_first_tranche_request',
+        'is_monitoring_request',
     ];
 
     /**

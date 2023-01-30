@@ -4,7 +4,7 @@
              <tr>
                 <th scope="col">S/N </th>
                 <th scope="col">Attachment Description</th>
-                <th scope="col">Attachment </th>
+                <th scope="col">Document(s) </th>
              </tr>
         </thead>
         <tbody>

@@ -45,7 +45,7 @@ class SubmissionRequestController extends BaseController
         $cdv_submission_requests->setDataQuery(['organization_id'=>$org->id, 'beneficiary_id'=>optional($beneficiary_member)->beneficiary_id])
                         ->addDataGroup('All','deleted_at',null)
                         ->addDataGroup('Not Submitted','status','not-submitted')
-                        ->addDataGroup('In Progress','status','in-progress')
+                        ->addDataGroup('Submitted','status','submitted')
                         ->addDataGroup('Approved','status','aip')
                         ->addDataGroup('Recalled','status','recall')
                         ->enableSearch(true)
@@ -129,12 +129,21 @@ class SubmissionRequestController extends BaseController
         $current_user = auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
         
-        $input['type'] = 'intervention';
+        $input['type'] = $request->request_tranche ?? 'Request for AIP';
         $input['status'] = 'not-submitted';
         $input['requesting_user_id'] = $current_user->id;
         $input['organization_id'] = $current_user->organization_id;
         $input['beneficiary_id'] = $beneficiary_member->beneficiary_id;
-        $input['is_aip_request'] = true;
+
+        if (!$request->has('is_first_tranche_request') && !$request->has('is_second_tranche_request') && !$request->has('is_third_tranche_request') && !$request->has('is_final_tranche_request') && !$request->has('is_monitoring_request')) {
+            $input['is_aip_request'] = true;
+        }
+
+        $input['is_first_tranche_request'] = $request->is_first_tranche_request ?? false;
+        $input['is_second_tranche_request'] = $request->is_second_tranche_request ?? false;
+        $input['is_third_tranche_request'] = $request->is_third_tranche_request ?? false;
+        $input['is_final_tranche_request'] = $request->is_final_tranche_request ?? false;
+        $input['is_monitoring_request'] = $request->is_monitoring_request ?? false;
 
         /** @var SubmissionRequest $submissionRequest */
         $submissionRequest = SubmissionRequest::create($input);
@@ -263,8 +272,6 @@ class SubmissionRequestController extends BaseController
         $pay_load = $submissionRequest->toArray();
         $pay_load['tf_beneficiary_id'] = $tf_beneficiary_id;
         $pay_load['_method'] = 'POST';
-        $pay_load['is_aip_request'] = true;
-        $pay_load['requested_tranche'] = 'AIP';
         $pay_load['submission_user'] = $current_user;
 
         // add attachment records to payload
@@ -535,11 +542,7 @@ class SubmissionRequestController extends BaseController
             $current_user = auth()->user();
             $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
             
-            $input['type'] = 'intervention';
-            $input['status'] = 'not-submitted';
             $input['requesting_user_id'] = $current_user->id;
-            $input['organization_id'] = $current_user->organization_id;
-            $input['beneficiary_id'] = $beneficiary_member->beneficiary_id;
 
             $submissionRequest->fill($input);
             $submissionRequest->save();

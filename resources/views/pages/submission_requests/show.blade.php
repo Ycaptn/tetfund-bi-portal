@@ -203,30 +203,35 @@ Submission Request
                 @include('tf-bi-portal::pages.submission_requests.partials.submission_details')
 
                 {{-- sub menu buttons --}}
-                <div class="container col-sm-12"><hr>
-                    <div class="tab">
-                        <ul class="nav">
-                            <li class="mt-3" style="margin-right: 3px;">
-                                <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=attachments" class="tablinks btn btn-primary btn-md shadow-none">
-                                    Attachments
-                                </a>                        
-                            </li>
-
-                            @if(str_contains(strtolower(optional($intervention)->name), 'teaching practice') || str_contains(strtolower(optional($intervention)->name), 'conference attendance') || str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship'))
-                                <li class="mt-3" style="margin-right: 3px;">                            
-                                    <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=nominations_binded" class="tablinks btn btn-primary btn-md shadow-none">
-                                        Nominations
-                                    </a>
+                @if(strtolower($submissionRequest->status) == 'submitted' || str_contains(strtolower(optional($intervention)->name), 'teaching practice') || str_contains(strtolower(optional($intervention)->name), 'conference attendance') || str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship'))
+                    <div class="container col-sm-12"><hr>
+                        <div class="tab">
+                            <ul class="nav">
+                                <li class="mt-3" style="margin-right: 3px;">
+                                    <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=attachments" class="tablinks btn btn-primary btn-md shadow-none">
+                                        Attachments
+                                    </a>                        
                                 </li>
-                            @endif
 
-                            <li class="mt-3" style="margin-right: 3px;">                                
-                                <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=communications" class="tablinks btn btn-primary btn-md shadow-none">
-                                    Communications
-                                </a>
-                            </li>
-                        </ul>
-                    </div><hr>
+                                @if(str_contains(strtolower(optional($intervention)->name), 'teaching practice') || str_contains(strtolower(optional($intervention)->name), 'conference attendance') || str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship'))
+                                    <li class="mt-3" style="margin-right: 3px;">                            
+                                        <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=nominations_binded" class="tablinks btn btn-primary btn-md shadow-none">
+                                            Nominations
+                                        </a>
+                                    </li>
+                                @endif
+
+                                @if(strtolower($submissionRequest->status) == 'submitted')
+                                    <li class="mt-3" style="margin-right: 3px;">
+                                        <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=communications" class="tablinks btn btn-primary btn-md shadow-none">
+                                            Communications
+                                        </a>
+                                    </li>
+                                @endif
+                            </ul>
+                        </div>
+                    @endif
+                    <hr>
 
                     {{-- sub menu contents --}}
                     @if(isset(request()->sub_menu_items) && request()->sub_menu_items == 'nominations_binded')
@@ -237,6 +242,7 @@ Submission Request
                     @elseif(isset(request()->sub_menu_items) && request()->sub_menu_items == 'communications')
                         <div id="communications" class="col-sm-12">
                             <h4>COMMUNICATIONS</h4>
+                            @include('tf-bi-portal::pages.submission_requests.partials.submission_communications')
                         </div>    
                     @else
                         <div id="attachments" class="col-sm-12">

@@ -56,7 +56,9 @@
                     </a>
                     @if (!empty($data_item->amount_requested))
                         <p class="card-text mb-0 small">
-                            <b>Amount Requested: &nbsp; &#8358;</b>{{ number_format($data_item->amount_requested, 2, '.', ',') }}
+                            <b>{!! $data_item->type.' &nbsp; || &nbsp; ' ?? '' !!} </b>
+                            <b>Amount Requested: &nbsp; &#8358;</b>
+                            {{ number_format($data_item->amount_requested, 2, '.', ',') }}
                         </p>
                     @endif
                     
