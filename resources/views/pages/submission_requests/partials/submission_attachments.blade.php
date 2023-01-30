@@ -113,6 +113,7 @@
                     <td></td>
                     <th>
                         <input type='hidden' class="form-control" name="intervention_line" value="{{$intervention->id}}" />
+                        <input type='hidden' class="form-control" name="intervention_line_name" value="{{$intervention->name}}" />
                         <input type='hidden' class="form-control" name="submission_request_id" value="{{$submissionRequest->id}}" />
                         <input type='hidden' class="form-control" name="organization_id" value="{{ auth()->user()->organization_id }}" />
                         <input type='hidden' class="form-control" name="intervention_request_tranche" value="{{optional($submissionRequest)->tranche}}" />

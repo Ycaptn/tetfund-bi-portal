@@ -230,28 +230,27 @@ Submission Request
                                 @endif
                             </ul>
                         </div>
-                    @endif
-                    <hr>
+                    </div>
+                @endif
+                <hr>
 
-                    {{-- sub menu contents --}}
-                    @if(isset(request()->sub_menu_items) && request()->sub_menu_items == 'nominations_binded')
-                        <div id="astd_nominations" class="col-sm-12 table-responsive">
-                            <h4>NOMINATIONS LIST</h4>
-                            @include('tf-bi-portal::pages.submission_requests.partials.submission_nominations_table')
-                        </div>
-                    @elseif(isset(request()->sub_menu_items) && request()->sub_menu_items == 'communications')
-                        <div id="communications" class="col-sm-12">
-                            <h4>COMMUNICATIONS</h4>
-                            @include('tf-bi-portal::pages.submission_requests.partials.submission_communications')
-                        </div>    
-                    @else
-                        <div id="attachments" class="col-sm-12">
-                            <h4>ATTACHMENTS</h4>
-                            @include('tf-bi-portal::pages.submission_requests.partials.submission_attachments') 
-                        </div>
-                    @endif
-                                   
-                </div>
+                {{-- sub menu contents --}}
+                @if(isset(request()->sub_menu_items) && request()->sub_menu_items == 'nominations_binded')
+                    <div id="astd_nominations" class="col-sm-12 table-responsive">
+                        <h4>NOMINATIONS LIST</h4>
+                        @include('tf-bi-portal::pages.submission_requests.partials.submission_nominations_table')
+                    </div>
+                @elseif(isset(request()->sub_menu_items) && request()->sub_menu_items == 'communications')
+                    <div id="communications" class="col-sm-12">
+                        <h4>COMMUNICATIONS</h4>
+                        @include('tf-bi-portal::pages.submission_requests.partials.submission_communications')
+                    </div>    
+                @else
+                    <div id="attachments" class="col-sm-12">
+                        <h4>ATTACHMENTS</h4>
+                        @include('tf-bi-portal::pages.submission_requests.partials.submission_attachments') 
+                    </div>
+                @endif
             </div>
         </div>
     </div>

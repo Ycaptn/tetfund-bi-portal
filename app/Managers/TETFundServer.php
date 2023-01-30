@@ -87,13 +87,13 @@ class TETFundServer {
         }
     }
     
-    public static function getInterventionChecklistData($intervention_id) {
+    public static function getInterventionChecklistData($checklist_name) {
         $server_api_url = Config::get('keys.tetfund.server_api_url');
         $token = self::get_auth_token();
-        $existing_model_artifact = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/intervention-checklist/$intervention_id", null);
-        $api_response = curl_exec($existing_model_artifact);
+        $checklists = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/intervention-checklist/{$checklist_name}", null);
+        $api_response = curl_exec($checklists);
         $api_response_data = json_decode($api_response);
-        curl_close ($existing_model_artifact);
+        curl_close ($checklists);
         return ($api_response != null && $api_response_data !=null && is_array($api_response_data->data)) ?  $api_response_data->data : [];
     }
 
@@ -126,10 +126,10 @@ class TETFundServer {
         return ($api_response != null && $api_response_data !=null && isset($api_response_data->data)) ?  $api_response_data->data : [];
     }
 
-    public static function getSubmissionRequestData($submission_id) {
+    public static function getSubmissionRequestData($submission_id, $checklist_surfix_name) {
         $server_api_url = Config::get('keys.tetfund.server_api_url');
         $token = self::get_auth_token();
-        $submitted_request = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/submission-request/$submission_id", null);
+        $submitted_request = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/submission-request/{$submission_id}?checklist_surfix_name={$checklist_surfix_name}", null);
         $api_response = curl_exec($submitted_request);
         $api_response_data = json_decode($api_response);
         curl_close ($submitted_request);

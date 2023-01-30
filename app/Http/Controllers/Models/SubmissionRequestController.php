@@ -158,10 +158,12 @@ class SubmissionRequestController extends BaseController
         $attachement_inputs = $request->all();
         $submissionRequest = SubmissionRequest::find($request->id);
 
-        //get existing checklist for this intervention
-        $checklist_items_arr = array();
+        // intervention checklist group name
+        $checklist_group_name = self::generateCheckListGroupName($request->intervention_line_name, $submissionRequest);
+
+        // get checklist for specified intervention
         $tETFundServer = new TETFundServer();   /* server class constructor */
-        $checklist_items = $tETFundServer->getInterventionChecklistData($request->intervention_line,);
+        $checklist_items = $tETFundServer->getInterventionChecklistData($checklist_group_name);
         
         //mapping checklist id to item_label 
         foreach ($checklist_items as $checklist){
@@ -345,6 +347,26 @@ class SubmissionRequestController extends BaseController
 
     }
 
+    // generate checklist name
+    public function generateCheckListGroupName($intervention_line_name, $submissionRequest) {
+
+        if ($submissionRequest->is_aip_request == true) {
+            $checklist_group_name = $intervention_line_name.' - AIPCheckList';
+        } elseif ($submissionRequest->is_first_tranche_request == true) {
+            $checklist_group_name = $intervention_line_name.' - FirstTranchePaymentCheckList';
+        } elseif ($submissionRequest->is_second_tranche_request == true && strtolower($submissionRequest->requested_tranche) == '2nd tranche payment') {
+            $checklist_group_name = $intervention_line_name.' - SecondTranchePaymentCheckList';
+        } elseif ($submissionRequest->is_second_tranche_request == true && strtolower($submissionRequest->requested_tranche) == '2nd tranche payment - audit') {
+            $checklist_group_name = $intervention_line_name.' - SecondTranchePaymentCheckListAudit';
+        } elseif ($submissionRequest->requested_tranche == true && strtolower($submissionRequest->requested_tranche) == 'final tranche payment') {
+            $checklist_group_name = $intervention_line_name.' - FinalPaymentCheckList';
+        } elseif ($submissionRequest->requested_tranche == true && strtolower($submissionRequest->requested_tranche) == 'final tranche payment audit') {
+            $checklist_group_name = $intervention_line_name.' - FinalPaymentCheckListAudit';
+        }
+
+        return str_replace(' ', '_', $checklist_group_name ?? '0');
+    }
+
     /**
      * Display the specified SubmissionRequest.
      *
@@ -365,9 +387,12 @@ class SubmissionRequestController extends BaseController
 
         // tracking Iterum records if submission has been completed to tetfund
         if($submissionRequest->status != 'not-submitted') {
+            // checklist group surfix name
+            $checklist_group_name_surfix = self::generateCheckListGroupName('', $submissionRequest);
             
-            $tETFundServer = new TETFundServer();   // server class constructor
-            $submitted_request_data = $tETFundServer->getSubmissionRequestData($submissionRequest->tf_iterum_portal_key_id);
+            // server class constructor
+            $tETFundServer = new TETFundServer();   
+            $submitted_request_data = $tETFundServer->getSubmissionRequestData($submissionRequest->tf_iterum_portal_key_id, $checklist_group_name_surfix);
             
             $checklist_items = $submitted_request_data->checklist_items;
             $intervention_types_server_response = $submitted_request_data->intervention_beneficiary_type;
@@ -376,14 +401,17 @@ class SubmissionRequestController extends BaseController
 
         } else {
 
-            /* get checklist binded to specified intervention model artifact */
-            $tETFundServer = new TETFundServer();   /* server class constructor */
-            $checklist_items = $tETFundServer->getInterventionChecklistData($submissionRequest->tf_iterum_intervention_line_key_id);
-
-            /* get all interventions from server */
+            // get all interventions from server
             $pay_load = ['_method'=>'GET', 'id'=>$submissionRequest->tf_iterum_intervention_line_key_id];
             $tETFundServer = new TETFundServer();   /* server class constructor */
             $intervention_types_server_response = $tETFundServer->get_row_records_from_server("tetfund-ben-mgt-api/interventions/".$submissionRequest->tf_iterum_intervention_line_key_id, $pay_load);
+
+            // intervention checklist group name
+            $checklist_group_name = self::generateCheckListGroupName($intervention_types_server_response->name, $submissionRequest);
+
+            // get checklist for specified intervention
+            $tETFundServer = new TETFundServer();   /* server class constructor */
+            $checklist_items = $tETFundServer->getInterventionChecklistData($checklist_group_name);
             
             $years = array();
             if ($submissionRequest->intervention_year1 != null) {
