@@ -209,7 +209,7 @@
                     let attachment = (response.data.attachables[0]) ? response.data.attachables[0].attachment : null;
 
                     if(attachment != null) {
-                        let attachment_link = window.location.origin +'/tf-bi-portal/preview-attachement/'+attachment.id;
+                        let attachment_link = window.location.origin +'/attachment/'+attachment.id;
                         let attachment_html = "<u class='text-primary'><a href='"+ attachment_link +"' target='__blank'>"+ attachment.label +"</a></u><br>"+ attachment.description +"<br><b>MODIFIED: </b>" + new Date(response.data.updated_at).toDateString()+'.';
                         
                         console.log(attachment_html);
@@ -353,7 +353,7 @@
                     // attachments
                     let = attachments_html = '';
                     $.each(response.data.attachments, function(key, attachment){
-                        link = window.location.origin +'/tf-bi-portal/preview-attachement/'+attachment.id;
+                        link = window.location.origin +'/attachment/'+attachment.id;
                         attachments_html += "<div class='col-sm-4'><small><a href='"+ link +"' target='__blank'>"+ attachment.label +"</a><br><i>"+ attachment.description +"</i></small></div>";
                     });
 

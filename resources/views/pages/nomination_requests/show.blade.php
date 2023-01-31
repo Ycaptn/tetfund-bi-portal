@@ -93,7 +93,7 @@ Nomination Request Details {{-- {{$nominationRequest->title}} --}}
                             @foreach($nomination_request_attachments as $attachment)
                                 <div class="container panel">
                                     <small>
-                                        <a href="{{ route('tf-bi-portal.preview-attachement', $attachment->id) }}" target="__blank">
+                                        <a href="{{ route('fc.attachment.show', $attachment->id) }}" target="__blank">
                                             <strong>{{$attachment->label}}</strong><br>
                                         </a>
                                         <i>{{$attachment->description}}</i>

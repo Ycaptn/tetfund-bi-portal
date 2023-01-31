@@ -43,16 +43,6 @@ class DashboardController extends BaseController
                     ->with('current_user', $current_user);
     }
 
-    public function displayAttachmentDashboard(Organization $org, Request $request, $id){
-        $attachement = Attachment::find($id);
-        if (empty($attachement)) {
-            abort(404);
-        }
-
-        $path = $attachement->path;
-        return Storage::disk('s3')->response($path);
-    }
-
     public function displayFundAvailabilityDashboard(Organization $org, Request $request) {
 
         $current_user = Auth()->user();

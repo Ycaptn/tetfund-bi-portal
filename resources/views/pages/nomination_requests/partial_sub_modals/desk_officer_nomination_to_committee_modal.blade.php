@@ -118,7 +118,7 @@
                     // attachments
                     let = attachments_html = '';
                     $.each(response.data.attachments, function(key, attachment){
-                        link = window.location.origin +'/tf-bi-portal/preview-attachement/'+attachment.id;
+                        link = window.location.origin +'/attachment/'+attachment.id;
                         attachments_html += "<div class='col-sm-4'><small><a href='"+ link +"' target='__blank'>"+ attachment.label +"</a><br><i>"+ attachment.description +"</i></small></div>";
                     });
 

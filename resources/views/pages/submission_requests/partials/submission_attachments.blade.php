@@ -34,7 +34,7 @@
                                     @endphp
                                     @if($submission_attachement != null)
                                         <div class="col-sm-12">
-                                            <a href="{{ route('tf-bi-portal.preview-attachement', $submission_attachement->id) }}" target="__blank" title="Preview this Attachement">{{ ucwords($submission_attachement->label) }}</a> &nbsp; &nbsp;
+                                            <a href="{{ route('fc.attachment.show', $submission_attachement->id) }}" target="__blank" title="Preview this Attachement">{{ ucwords($submission_attachement->label) }}</a> &nbsp; &nbsp;
                                             @if($submissionRequest->status == 'not-submitted')
                                                 <a data-toggle="tooltip" 
                                                     title="Delete this Attachement"
@@ -80,7 +80,7 @@
                         <div class="input-group">
                             @if($submission_attachement_addition != null)
                                 <div class="col-sm-12">
-                                    <a href="{{ route('tf-bi-portal.preview-attachement', $submission_attachement_addition->id) }}"
+                                    <a href="{{ route('fc.attachment.show', $submission_attachement_addition->id) }}"
                                         target="__blank"
                                         title="Preview this Attachement">
                                         {{ ucwords($submission_attachement_addition->label) }}

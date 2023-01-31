@@ -163,7 +163,7 @@ $(document).ready(function() {
             let attachment = (response.data.attachables[0]) ? response.data.attachables[0].attachment : null;
 
             if(attachment != null) {
-                let attachment_link = window.location.origin +'/tf-bi-portal/preview-attachement/'+attachment.id;
+                let attachment_link = window.location.origin +'/attachment/'+attachment.id;
                 let attachment_html = "<u class='text-primary'><a href='"+ attachment_link +"' target='__blank'>"+ attachment.label +"</a></u><br>"+ attachment.description +"<br><b>MODIFIED: </b>" + new Date(response.data.updated_at).toDateString()+ '.' + "<br><b>BY: </b>" + response.data.user.full_name +'.';
                 
                 console.log(attachment_html);

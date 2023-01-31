@@ -36,7 +36,6 @@ $orgRoutes = function() {
                 Route::get('/librarian', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayLibrarianAdminDashboard'])->name('librarian');
                 Route::get('/dict', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayDirectorICTAdminDashboard'])->name('dict');
                 Route::get('/dworks', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayDirectorPIWorksAdminDashboard'])->name('dworks');
-                Route::get('/preview-attachement/{id}', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayAttachmentDashboard'])->name('preview-attachement');
 
                 Route::resource('nomination_requests', \App\Http\Controllers\Models\NominationRequestController::class);
                 Route::resource('t_s_a_s_nominations', \App\Http\Controllers\Models\TSASNominationController::class);
