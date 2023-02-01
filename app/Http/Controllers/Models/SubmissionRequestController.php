@@ -46,7 +46,7 @@ class SubmissionRequestController extends BaseController
                         ->addDataGroup('All','deleted_at',null)
                         ->addDataGroup('Not Submitted','status','not-submitted')
                         ->addDataGroup('Submitted','status','submitted')
-                        ->addDataGroup('Approved','status','aip')
+                        ->addDataGroup('Approved','status','approved')
                         ->addDataGroup('Recalled','status','recall')
                         ->enableSearch(true)
                         ->addDataOrder('created_at', 'DESC')
@@ -82,7 +82,7 @@ class SubmissionRequestController extends BaseController
           }
 
         return view('pages.submission_requests.create')
-            ->with("type", 'AIP')
+            ->with("type", 'Request for AIP')
             ->with("years", $years)
             ->with("intervention_types", $intervention_types_server_response);
     }
@@ -238,7 +238,7 @@ class SubmissionRequestController extends BaseController
         }
         
 
-        if (isset($fund_availability->total_funds) && $fund_availability->total_funds != $submissionRequest->amount_requested && (!str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') && !str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') && !str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) ) {
+        if ($submissionRequest->is_aip_request==true && isset($fund_availability->total_funds) && $fund_availability->total_funds != $submissionRequest->amount_requested && (!str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') && !str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') && !str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) ) {
            
             //error for requested fund mismatched to allocated fund non-astd interventions
             array_push($errors_array, "Fund requested must be equal to the Allocated amount.");
@@ -489,7 +489,7 @@ class SubmissionRequestController extends BaseController
             return redirect(route('tf-bi-submission.submissionRequests.index'));
         }
 
-        if ($submissionRequest->status == 'not-submitted') {
+        if ($submissionRequest->status == 'not-submitted' && $submissionRequest->is_aip_request==true) {
 
             $pay_load = ['_method'=>'GET'];
             $tETFundServer = new TETFundServer();   /* server class constructor */
@@ -537,7 +537,7 @@ class SubmissionRequestController extends BaseController
             return redirect(route('tf-bi-submission.submissionRequests.index'));
         }
 
-        if ($submissionRequest->status == 'not-submitted') {
+        if ($submissionRequest->status == 'not-submitted' && $submissionRequest->is_aip_request==true) {
             $input = $request->all();
             $input['intervention_year1'] = 0;
             $input['intervention_year2'] = 0;

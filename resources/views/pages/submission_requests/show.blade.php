@@ -51,7 +51,13 @@ Submission Request
 
 @section('page_title_suffix')
     {{$submitted_request_data->title ?? $submissionRequest->title}} | 
-    <b>({{ strtoupper(optional($submitted_request_data)->request_status == 'new' ? 'In-Progress' : $submissionRequest->status ) }})</b>
+    @if($submitted_request_data->has_generated_aip != true)
+        <b>({{ strtoupper(optional($submitted_request_data)->request_status == 'new' ? 'In-Progress' : $submissionRequest->status ) }})</b>
+    @else
+        <b class="text-success">
+            {{$submissionRequest->is_aip_request==true ? $submissionRequest->type : $submissionRequest->type.' Request' }} Granted
+        </b>
+    @endif
 @stop
 
 @section('page_title_subtext')
@@ -70,7 +76,7 @@ Submission Request
         <i class="fa fa-eye"></i> New
     </a>&nbsp; --}}
 
-    @if($submissionRequest->status == 'not-submitted')
+    @if($submissionRequest->status == 'not-submitted' && $submissionRequest->is_aip_request==true)
         <a data-toggle="tooltip" 
             title="Edit" 
             data-val='{{$submissionRequest->id}}' 
@@ -134,7 +140,7 @@ Submission Request
                                 <li>Please attach the <strong>required documents</strong> before submitting your request.</li>
                             @endif 
 
-                            @if (isset($fund_available) && $fund_available != $submissionRequest->amount_requested && (!str_contains(strtolower(optional($intervention)->name), 'teaching practice') && !str_contains(strtolower(optional($intervention)->name), 'conference attendance') && !str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship')) )
+                            @if ($submissionRequest->is_aip_request==true && isset($fund_available) && $fund_available != $submissionRequest->amount_requested && (!str_contains(strtolower(optional($intervention)->name), 'teaching practice') && !str_contains(strtolower(optional($intervention)->name), 'conference attendance') && !str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship')))
            
                                 {{-- error for requested fund mismatched to allocated fund for non-astd interventions --}}
                                 <li>Fund requested must be equal to the 
@@ -169,33 +175,6 @@ Submission Request
                         </form>
                     </div>
                 </div>
-            {{-- @else --}}
-                {{-- <div class="row container alert alert-success">
-                    <div class="col-md-9">
-                        <i class="icon fa fa-success"></i>
-                        <strong>SUBMISSION COMPLETED:</strong> 
-                        <ul>
-                            <li>This request has been <strong>successfully submitted!</strong></li>
-                            <li>The submission was completed on <strong>
-                                {{ \Carbon\Carbon::parse($submissionRequest->tf_iterum_portal_response_at)->format('l jS F Y') }}
-                            .</strong></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="col-sm-12">
-                            <span class="text-success pull-right"> 
-                                <strong>
-                                    <span class="fa fa-check-square"></span>
-                                    Request Submitted
-                                </strong> 
-                            </span>
-                        </div>
-                        <div class="col-sm-12 text-danger text-justify">
-                            Please note that your Approval-In-Principle (AIP) is in the final stage of approval and you will be contacted for collection.
-                        </div>
-                    </div>
-                    
-                </div> --}}
             @endif           
             <div class="row col-sm-12">
                 

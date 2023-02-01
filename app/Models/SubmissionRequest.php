@@ -166,4 +166,168 @@ class SubmissionRequest extends Model
         return $counter;
     }
 
+    // all first tranche interventions percentage
+    public function first_tranche_intervention_percentage ($intervention_name) {
+        $first_tranche_intervention = [
+            'ICT Support' => '85%',
+            'Library Development' => '85%',
+            'Zonal Intervention' => '85%',
+            'Physical Infrastructure and Program Upgrade' => '50%',
+        ];
+        return $first_tranche_intervention[$intervention_name] ?? null;
+    }
+
+    // all second tranche interventions percentage
+    public function second_tranche_intervention_percentage ($intervention_name) {
+        $second_tranche_intervention = [
+            'Physical Infrastructure and Program Upgrade' => '35%',
+        ];
+
+        return $second_tranche_intervention[$intervention_name] ?? null;
+    }
+
+    // all third tranche interventions percentage
+    public function third_tranche_intervention_percentage ($intervention_name) {
+        $third_tranche_intervention = [
+            // 'intervention name' => 'Percentage in numeric',
+        ];
+
+        return $third_tranche_intervention[$intervention_name] ?? null;
+    }
+
+    // all final tranche interventions percentage
+     public function final_tranche_intervention_percentage ($intervention_name) {
+        $final_tranche_intervention = [
+            'ICT Support' => '15%',
+            'Library Development' => '15%',
+            'Zonal Intervention' => '15%',
+            'Physical Infrastructure and Program Upgrade' => '15%',
+        ];
+
+        return $final_tranche_intervention[$intervention_name] ?? null;
+    }
+
+    // submission Request AIP Payment
+    public function getParentAIPSubmissionRequest() {
+        if ($this->is_aip_request) {
+            return $this;
+        }
+
+        if ($this->parent_id != null) {
+            return $this->find($this->parent_id);
+        }
+        return null;
+    }
+
+    // submission Request First Payment
+    public function getFirstTrancheSubmissionRequest() {
+        if ($this->is_first_tranche_request) {
+            return $this;
+        }
+
+        $aip_request = $this->getParentAIPSubmissionRequest();
+        if ($aip_request != null) {
+            return $this->where('parent_id', $aip_request->id)
+                ->where('is_first_tranche_request', true)
+                ->first();
+        }
+        return null;
+    }
+
+    // submission Request Second tranche Payment
+    public function getSecondTrancheSubmissionRequest() {
+        if ($this->is_second_tranche_request) {
+            return $this;
+        }
+
+        $aip_request = $this->getParentAIPSubmissionRequest();
+        if ($aip_request != null) {
+            return $this->where('parent_id', $aip_request->id)
+                ->where('is_second_tranche_request', true)
+                ->first();
+        }
+        return null;
+    }
+
+    // submission Request Third tranche Payment
+    public function getThirdTrancheSubmissionRequest() {
+        if ($this->is_third_tranche_request) {
+            return $this;
+        }
+
+        $aip_request = $this->getParentAIPSubmissionRequest();
+        if ($aip_request != null) {
+            return $this->where('parent_id', $aip_request->id)
+                ->where('is_third_tranche_request', true)
+                ->first();
+        }
+        return null;
+    }
+
+    // submission Request Final tranche Payment
+    public function getFinalTrancheSubmissionRequest() {
+        if ($this->is_final_tranche_request) {
+            return $this;
+        }
+
+        $aip_request = $this->getParentAIPSubmissionRequest();
+        if ($aip_request != null) {
+            return $this->where('parent_id', $aip_request->id)
+                ->where('is_final_tranche_request', true)
+                ->first();
+        }
+        return null;
+    }
+
+    // submission Request Monitoring
+    public function getMonitoringSubmissionRequest() {
+        if ($this->is_monitoring_request) {
+            return $this;
+        }
+
+        $aip_request = $this->getParentAIPSubmissionRequest();
+        if ($aip_request != null) {
+            return $this->where('parent_id', $aip_request->id)
+                ->where('is_monitoring_request', true)
+                ->first();
+        }
+        return null;
+    }
+
+    public function getAllRelatedSubmissionRequest() {
+        $get_all_related_requests = array();
+
+        $aip_request = $this->getParentAIPSubmissionRequest();
+        if (!empty($aip_request) && $aip_request->id != $this->id) {
+            array_push($get_all_related_requests, $aip_request);
+        }
+
+        $first_tranche_request = $this->getFirstTrancheSubmissionRequest();
+        if (!empty($first_tranche_request) && $first_tranche_request->id != $this->id) {
+            array_push($get_all_related_requests, $first_tranche_request);
+        }
+
+        $second_tranche_request = $this->getSecondTrancheSubmissionRequest();
+        if (!empty($second_tranche_request) && $second_tranche_request->id != $this->id) {
+            array_push($second_tranche_request, $second_tranche_request);
+        }
+
+        $third_tranche_request = $this->getThirdTrancheSubmissionRequest();
+        if (!empty($third_tranche_request) && $third_tranche_request->id != $this->id) {
+            array_push($get_all_related_requests, $third_tranche_request);
+        }
+
+        $final_tranche_request = $this->getFinalTrancheSubmissionRequest();
+        if (!empty($final_tranche_request) && $final_tranche_request->id != $this->id) {
+            array_push($get_all_related_requests, $final_tranche_request);
+        }
+
+        $monitoring_evaluation_request = $this->getMonitoringSubmissionRequest();
+        if (!empty($monitoring_evaluation_request) && $monitoring_evaluation_request->id != $this->id) {
+            array_push($get_all_related_requests, $monitoring_evaluation_request);
+        }
+
+        return $get_all_related_requests;
+    }
+
 }

@@ -23,164 +23,57 @@ class CreateSubmissionRequestAPIRequest extends AppBaseFormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
+        $years = ['0'];
+        for ($i=0; $i < 6; $i++) { 
+            array_push($years, date("Y")-$i);
+        }
+
+        $return_arr = [
+            //'organization_id' => 'required',
+            'tf_iterum_intervention_line_key_id' => 'required|string|max:300',
+            'title' => 'required|string|max:300',
+            'intervention_year1' => "nullable|numeric|in:". implode($years, ','),
+            'intervention_year2' => "nullable|numeric|in:". implode($years, ','),
+            'intervention_year3' => "nullable|numeric|in:". implode($years, ','),
+            'intervention_year4' => "nullable|numeric|in:". implode($years, ','),
+
+            //'status' => 'nullable|max:100',
+            //'display_ordinal' => 'nullable|min:0|max:365',
+            //'requesting_user_id' => 'required',
+            //'beneficiary_id' => 'required',
+            //'tf_iterum_portal_request_status' => 'required',
+            //'tf_iterum_portal_response_meta_data' => 'max:1000'
+        ];
+
+        if (request()->intervention_year1==null && request()->intervention_year2==null && request()->intervention_year3==null && request()->intervention_year4==null) {
+            $return_arr['intervention_years'] = 'required';
+        }
+        
+        $return_arr['amount_requested'] = 'required|numeric|min:0|max:100000000000';
+
+        return$return_arr;
+    }
+
+    public function attributes() {
         return [
-            'organization_id' => 'required',
-        'title' => 'required|max:300',
-        'status' => 'nullable|max:100',
-        'type' => 'max:100',
-        'requesting_user_id' => 'required',
-        'beneficiary_id' => 'required',
-        'display_ordinal' => 'nullable|min:0|max:365',
-        'tf_iterum_portal_request_status' => 'required',
-        'tf_iterum_portal_response_meta_data' => 'max:1000'
+            'intervention_type'=>'Intervention Type',
+            'tf_iterum_intervention_line_key_id'=>'Intervention Line',
+            'title'=>'Project Title',
+            'intervention_year1'=>'Intervention Year 1',
+            'intervention_year2'=>'Intervention Year 2',
+            'intervention_year3'=>'Intervention Year 3',
+            'intervention_year4'=>'Intervention Year 4',            
+            'amount_requested'=>'Requested Amount',
+            'intervention_years'=>'Intervention Year(s)',
         ];
     }
 
-    /**
-    * @OA\Property(
-    *     title="organization_id",
-    *     description="organization_id",
-    *     type="string"
-    * )
-    */
-    public $organization_id;
-
-    /**
-    * @OA\Property(
-    *     title="title",
-    *     description="title",
-    *     type="string"
-    * )
-    */
-    public $title;
-
-    /**
-    * @OA\Property(
-    *     title="status",
-    *     description="status",
-    *     type="string"
-    * )
-    */
-    public $status;
-
-    /**
-    * @OA\Property(
-    *     title="type",
-    *     description="type",
-    *     type="string"
-    * )
-    */
-    public $type;
-
-    /**
-    * @OA\Property(
-    *     title="requesting_user_id",
-    *     description="requesting_user_id",
-    *     type="string"
-    * )
-    */
-    public $requesting_user_id;
-
-    /**
-    * @OA\Property(
-    *     title="beneficiary_id",
-    *     description="beneficiary_id",
-    *     type="string"
-    * )
-    */
-    public $beneficiary_id;
-
-    /**
-    * @OA\Property(
-    *     title="display_ordinal",
-    *     description="display_ordinal",
-    *     type="integer"
-    * )
-    */
-    public $display_ordinal;
-
-    /**
-    * @OA\Property(
-    *     title="intervention_year1",
-    *     description="intervention_year1",
-    *     type="integer"
-    * )
-    */
-    public $intervention_year1;
-
-    /**
-    * @OA\Property(
-    *     title="intervention_year2",
-    *     description="intervention_year2",
-    *     type="integer"
-    * )
-    */
-    public $intervention_year2;
-
-    /**
-    * @OA\Property(
-    *     title="intervention_year3",
-    *     description="intervention_year3",
-    *     type="integer"
-    * )
-    */
-    public $intervention_year3;
-
-    /**
-    * @OA\Property(
-    *     title="intervention_year4",
-    *     description="intervention_year4",
-    *     type="integer"
-    * )
-    */
-    public $intervention_year4;
-
-    /**
-    * @OA\Property(
-    *     title="proposed_request_date",
-    *     description="proposed_request_date",
-    *     type="string"
-    * )
-    */
-    public $proposed_request_date;
-
-    /**
-    * @OA\Property(
-    *     title="tf_iterum_portal_key_id",
-    *     description="tf_iterum_portal_key_id",
-    *     type="string"
-    * )
-    */
-    public $tf_iterum_portal_key_id;
-
-    /**
-    * @OA\Property(
-    *     title="tf_iterum_portal_request_status",
-    *     description="tf_iterum_portal_request_status",
-    *     type="string"
-    * )
-    */
-    public $tf_iterum_portal_request_status;
-
-    /**
-    * @OA\Property(
-    *     title="tf_iterum_portal_response_meta_data",
-    *     description="tf_iterum_portal_response_meta_data",
-    *     type="string"
-    * )
-    */
-    public $tf_iterum_portal_response_meta_data;
-
-    /**
-    * @OA\Property(
-    *     title="tf_iterum_portal_response_at",
-    *     description="tf_iterum_portal_response_at",
-    *     type="string"
-    * )
-    */
-    public $tf_iterum_portal_response_at;
+    public function messages() {
+        return [
+            'intervention_years.required' => 'Selected atleast one (1) or more :attribute to proceed.'
+        ];
+    }
 
 
 }

@@ -19,13 +19,15 @@
                     {{-- <div><h4 class="card-title"><a href='{{$detail_page_url}}'>{{$data_item->id}}</a></h4></div> --}}
                     @if(isset($data_item) && $data_item->status == 'not-submitted')
                         <div class="ms-auto"> 
-                            <a data-toggle="tooltip" 
-                                title="Edit"
-                                data-val='{{$data_item->id}}'
-                                href="{{route('tf-bi-portal.submissionRequests.edit', $data_item->id)}}" 
-                                class="btn-edit-mdl-submissionRequest-modal me-1" href="#">
-                                <i class="bx bxs-edit"></i>
-                            </a>
+                            @if($data_item->is_aip_request==true)
+                                <a data-toggle="tooltip" 
+                                    title="Edit"
+                                    data-val='{{$data_item->id}}'
+                                    href="{{route('tf-bi-portal.submissionRequests.edit', $data_item->id)}}" 
+                                    class="btn-edit-mdl-submissionRequest-modal me-1" href="#">
+                                    <i class="bx bxs-edit"></i>
+                                </a>
+                            @endif
                             <a data-toggle="tooltip" 
                                 title="Delete" 
                                 data-val='{{$data_item->id}}' 

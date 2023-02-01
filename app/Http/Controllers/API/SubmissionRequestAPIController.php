@@ -65,13 +65,23 @@ class SubmissionRequestAPIController extends AppBaseController
      *
      * @return Response
      */
-    public function store(CreateSubmissionRequestAPIRequest $request, Organization $organization)
-    {
+    public function store(CreateSubmissionRequestAPIRequest $request, Organization $organization) {
+
         $input = $request->all();
+
+        $current_user = auth()->user();
+        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+        
+        $input['type'] = $request->request_tranche ?? 'Request for AIP';
+        $input['status'] = 'not-submitted';
+        $input['requesting_user_id'] = $current_user->id;
+        $input['organization_id'] = $current_user->organization_id;
+        $input['beneficiary_id'] = $beneficiary_member->beneficiary_id;
 
         /** @var SubmissionRequest $submissionRequest */
         $submissionRequest = SubmissionRequest::create($input);
-        
+
+        /*Dispatch event*/
         SubmissionRequestCreated::dispatch($submissionRequest);
         return $this->sendResponse($submissionRequest->toArray(), 'Submission Request saved successfully');
     }
