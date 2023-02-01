@@ -51,12 +51,12 @@ Submission Request
 
 @section('page_title_suffix')
     {{$submitted_request_data->title ?? $submissionRequest->title}} | 
-    @if($submitted_request_data->has_generated_aip != true)
-        <b>({{ strtoupper(optional($submitted_request_data)->request_status == 'new' ? 'In-Progress' : $submissionRequest->status ) }})</b>
-    @else
+    @if(!empty($submitted_request_data) && $submitted_request_data->has_generated_aip == true)
         <b class="text-success">
             {{$submissionRequest->is_aip_request==true ? $submissionRequest->type : $submissionRequest->type.' Request' }} Granted
         </b>
+    @else
+        <b>({{ strtoupper(optional($submitted_request_data)->request_status == 'new' ? 'In-Progress' : $submissionRequest->status ) }})</b>
     @endif
 @stop
 
