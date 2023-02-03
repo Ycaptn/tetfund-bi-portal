@@ -30,22 +30,22 @@
                             <td width="50%">
                                 <div class="input-group">
                                     @php
-                                        $submission_attachement = $submissionRequest->get_specific_attachment($submissionRequest->id, $item->item_label);
+                                        $submission_attachment = $submissionRequest->get_specific_attachment($submissionRequest->id, $item->item_label);
                                     @endphp
-                                    @if($submission_attachement != null)
+                                    @if($submission_attachment != null)
                                         <div class="col-sm-12">
-                                            <a href="{{ route('fc.attachment.show', $submission_attachement->id) }}" target="__blank" title="Preview this Attachement">{{ ucwords($submission_attachement->label) }}</a> &nbsp; &nbsp;
+                                            <a href="{{ route('fc.attachment.show', $submission_attachment->id) }}" target="__blank" title="Preview this Attachment">{{ ucwords($submission_attachment->label) }}</a> &nbsp; &nbsp;
                                             @if($submissionRequest->status == 'not-submitted')
                                                 <a data-toggle="tooltip" 
-                                                    title="Delete this Attachement"
-                                                    data-val='{{$submission_attachement->label}}'
+                                                    title="Delete this Attachment"
+                                                    data-val='{{$submission_attachment->label}}'
                                                     class="pull-right text-danger btn-delete-mdl-submissionRequest-attachement"
                                                     href="#">
                                                     <span class="fa fa-trash"></span>
                                                 </a>
                                             @endif
                                             <br>
-                                            <small><i>{{ ucwords($submission_attachement->description) }}</i></small>
+                                            <small><i>{{ ucwords($submission_attachment->description) }}</i></small>
                                         </div>
                                     @else
                                         <div class="{{ $errors->has($checklist) ? ' has-error' : '' }} col-sm-12" >
@@ -63,7 +63,7 @@
                     <th>{{ $x+=1 }}</th>
                     <td>
                         @php
-                            $submission_attachement_addition = $submissionRequest->get_specific_attachment($submissionRequest->id, 'Additional Attachment');
+                            $submission_attachment_addition = $submissionRequest->get_specific_attachment($submissionRequest->id, 'Additional Attachment');
                         @endphp
                         <div class="{{ $errors->has('additional_attachment_name') ? ' has-error' : '' }}" >
                                 <input 
@@ -71,32 +71,32 @@
                                     class="form-control" 
                                     name="additional_attachment_name"
                                     placeholder="Enter name for Additional Attachment" 
-                                    value="{{ ($submission_attachement_addition != null) ? $submission_attachement_addition->label : '' }}" 
-                                    {{ ($submission_attachement_addition != null) ? "disabled='disabled'" : '' }}
+                                    value="{{ ($submission_attachment_addition != null) ? $submission_attachment_addition->label : '' }}" 
+                                    {{ ($submission_attachment_addition != null) ? "disabled='disabled'" : '' }}
                                 />
                         </div>
                     </td>
                     <td width="50%">
                         <div class="input-group">
-                            @if($submission_attachement_addition != null)
+                            @if($submission_attachment_addition != null)
                                 <div class="col-sm-12">
-                                    <a href="{{ route('fc.attachment.show', $submission_attachement_addition->id) }}"
+                                    <a href="{{ route('fc.attachment.show', $submission_attachment_addition->id) }}"
                                         target="__blank"
-                                        title="Preview this Attachement">
-                                        {{ ucwords($submission_attachement_addition->label) }}
+                                        title="Preview this Attachment">
+                                        {{ ucwords($submission_attachment_addition->label) }}
                                     </a> &nbsp; &nbsp;
 
                                     @if($submissionRequest->status == 'not-submitted')
                                         <a data-toggle="tooltip" 
-                                            title="Delete this Attachement"
-                                            data-val='{{$submission_attachement_addition->label}}'
+                                            title="Delete this Attachment"
+                                            data-val='{{$submission_attachment_addition->label}}'
                                             class="pull-right text-danger btn-delete-mdl-submissionRequest-attachement"
                                             href="#">
                                             <span class="fa fa-trash"></span>
                                         </a>
                                     @endif
                                     <br>
-                                    <small><i>{{ ucwords($submission_attachement_addition->description) }}</i></small>
+                                    <small><i>{{ ucwords($submission_attachment_addition->description) }}</i></small>
                                 </div>
                             @else
                                 <div class="{{ $errors->has('additional_attachment') ? ' has-error' : '' }} col-sm-12" >

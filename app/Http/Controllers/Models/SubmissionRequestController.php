@@ -176,7 +176,7 @@ class SubmissionRequestController extends BaseController
             foreach ($checklist_input_fields_arr as $checklist_input_name) {
                 if (isset($attachement_inputs[$checklist_input_name]) && $request->hasFile($checklist_input_name)) {
                     $checklist_id = substr("$checklist_input_name",10);
-                    $label = $checklist_items_arr[$checklist_id]; 
+                    $label = \Illuminate\Support\Str::limit($checklist_items_arr[$checklist_id],499,"");
                     $discription = 'This Document Contains the ' . $label ;
                     $submissionRequest->attach(auth()->user(), $label, $discription, $attachement_inputs[$checklist_input_name]);
                 }
@@ -228,35 +228,41 @@ class SubmissionRequestController extends BaseController
             array_push($years, $submissionRequest->intervention_year4);
         }
 
-        //get total fund available 
-        $tETFundServer = new TETFundServer();   /* server class constructor */
-        $fund_availability = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
-        
-        //error when no fund allocation for selected year(s) is found
-        if (isset($fund_availability->success) && $fund_availability->success == false && $fund_availability->message != null) {
-            array_push($errors_array, $fund_availability->message);
-        }
-        
+        // initializing submission payload
+        $pay_load = $submissionRequest->toArray();
 
-        if ($submissionRequest->is_aip_request==true && isset($fund_availability->total_funds) && $fund_availability->total_funds != $submissionRequest->amount_requested && (!str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') && !str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') && !str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) ) {
-           
-            //error for requested fund mismatched to allocated fund non-astd interventions
-            array_push($errors_array, "Fund requested must be equal to the Allocated amount.");
-       
-        } else if (isset($fund_availability->total_funds) && $submissionRequest->amount_requested > $fund_availability->total_funds && (str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') || str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') || str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) ) {
+        if ($submissionRequest->is_aip_request == true) {
+            //get total fund available 
+            $tETFundServer = new TETFundServer();   /* server class constructor */
+            $fund_availability = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
             
-            //error for requested fund mismatched to allocated fund for all ASTD interventions
-            array_push($errors_array, "Fund requested cannot be greater than allocated amount.");
-        }
+            //error when no fund allocation for selected year(s) is found
+            if (isset($fund_availability->success) && $fund_availability->success == false && $fund_availability->message != null) {
+                array_push($errors_array, $fund_availability->message);
+            }            
 
-        //error when at least one selected allocation year is found
-        if (isset($fund_availability->allocation_records) && count($fund_availability->allocation_records) > 0) {
-            $all_valid_allocation_year = array_column($fund_availability->allocation_records, 'year');
-            foreach($years as $year) {
-                if (!in_array($year, $all_valid_allocation_year)) {
-                    array_push($errors_array, "No allocation datails is found for selected Intervention year ". $year);
+            if ($submissionRequest->is_aip_request==true && isset($fund_availability->total_funds) && $fund_availability->total_funds != $submissionRequest->amount_requested && (!str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') && !str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') && !str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) ) {
+               
+                //error for requested fund mismatched to allocated fund non-astd interventions
+                array_push($errors_array, "Fund requested must be equal to the Allocated amount.");
+           
+            } else if (isset($fund_availability->total_funds) && $submissionRequest->amount_requested > $fund_availability->total_funds && (str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') || str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') || str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) ) {
+                
+                //error for requested fund mismatched to allocated fund for all ASTD interventions
+                array_push($errors_array, "Fund requested cannot be greater than allocated amount.");
+            }
+
+            //error when at least one selected allocation year is found
+            if (isset($fund_availability->allocation_records) && count($fund_availability->allocation_records) > 0) {
+                $all_valid_allocation_year = array_column($fund_availability->allocation_records, 'year');
+                foreach($years as $year) {
+                    if (!in_array($year, $all_valid_allocation_year)) {
+                        array_push($errors_array, "No allocation datails is found for selected Intervention year ". $year);
+                    }
                 }
             }
+        } else {
+            $pay_load['tf_iterum_aip_request_id'] = $submissionRequest->getParentAIPSubmissionRequest()->tf_iterum_portal_key_id ?? null;
         }
 
         //error for incomplete attachments
@@ -271,7 +277,6 @@ class SubmissionRequestController extends BaseController
         
         //processing submission to tetfund server
         $tf_beneficiary_id = $beneficiary->tf_iterum_portal_key_id;
-        $pay_load = $submissionRequest->toArray();
         $pay_load['tf_beneficiary_id'] = $tf_beneficiary_id;
         $pay_load['_method'] = 'POST';
         $pay_load['submission_user'] = $current_user;
@@ -354,14 +359,16 @@ class SubmissionRequestController extends BaseController
             $checklist_group_name = $intervention_line_name.' - AIPCheckList';
         } elseif ($submissionRequest->is_first_tranche_request == true) {
             $checklist_group_name = $intervention_line_name.' - FirstTranchePaymentCheckList';
-        } elseif ($submissionRequest->is_second_tranche_request == true && strtolower($submissionRequest->requested_tranche) == '2nd tranche payment') {
+        } elseif ($submissionRequest->is_second_tranche_request == true && strtolower($submissionRequest->type) == '2nd tranche payment') {
             $checklist_group_name = $intervention_line_name.' - SecondTranchePaymentCheckList';
-        } elseif ($submissionRequest->is_second_tranche_request == true && strtolower($submissionRequest->requested_tranche) == '2nd tranche payment - audit') {
+        } elseif ($submissionRequest->is_second_tranche_request == true && strtolower($submissionRequest->type) == '2nd tranche payment - audit') {
             $checklist_group_name = $intervention_line_name.' - SecondTranchePaymentCheckListAudit';
-        } elseif ($submissionRequest->requested_tranche == true && strtolower($submissionRequest->requested_tranche) == 'final tranche payment') {
+        } elseif ($submissionRequest->is_final_tranche_request == true && strtolower($submissionRequest->type) == 'final tranche payment') {
             $checklist_group_name = $intervention_line_name.' - FinalPaymentCheckList';
-        } elseif ($submissionRequest->requested_tranche == true && strtolower($submissionRequest->requested_tranche) == 'final tranche payment audit') {
+        } elseif ($submissionRequest->is_final_tranche_request == true && strtolower($submissionRequest->type) == 'final tranche payment audit') {
             $checklist_group_name = $intervention_line_name.' - FinalPaymentCheckListAudit';
+        } elseif ($submissionRequest->is_monitoring_request == true) {
+            $checklist_group_name = $intervention_line_name.' - MonitoringEvaluationCheckList';
         }
 
         return str_replace(' ', '_', $checklist_group_name ?? '0');

@@ -41,7 +41,7 @@
 		$amount_requested = $first_tranche_amount_requested;
 		$parent_id = $submissionRequest_aip_request->id;
 		$request_tranche = "2nd Tranche Payment";
-		$is_first_tranche_request = true;
+		$is_second_tranche_request = true;
 		$should_button_request_next_display = true;	// show button for next tranche
 	}
 
@@ -63,7 +63,7 @@
 		$amount_requested = $first_tranche_amount_requested;
 		$parent_id = $submissionRequest_aip_request->id;
 		$request_tranche = "Final Tranche Payment";
-		$is_first_tranche_request = true;
+		$is_final_tranche_request = true;
 		$should_button_request_next_display = true;	// show button for next tranche
 	}
 
@@ -86,7 +86,7 @@
 		$amount_requested = $first_tranche_amount_requested;
 		$parent_id = $submissionRequest_aip_request->id;
 		$request_tranche = "Final Tranche Payment";
-		$is_first_tranche_request = true;
+		$is_final_tranche_request = true;
 		$should_button_request_next_display = true;	// show button for next tranche request
 	}
 @endphp
@@ -113,16 +113,76 @@
 	                            		You are currently offline
 	                            	</span>
 	                            </div>
-	                            <div class="col-sm-12">
-				                    <strong>Total Allocation Amount</strong>: &#8358;{{ number_format(($fund_available ?? 0), 2) }} <br />
-				                    <strong>AIP Amount Approved</strong>: &#8358;{{ number_format($submitted_aip_request_final_amount, 2) }} <br />
-				                    <strong>{{$tranche_amount_percentage}}% {{$request_tranche}} Request Amount</strong>: &#8358;{{ number_format($amount_requested, 2) }} <br />
+	                            <div class="row col-sm-12">
+
+	                           		<div class="col-sm-12">
+                                        <span class="fa fa-institution"></span>
+                                        {{$beneficiary->full_name}}
+                                    </div>
+                                   
+                                    <div class="col-sm-12">
+                                        <span class="fa fa-folder-open"></span>
+                                        {{ ucfirst($submitted_request_data->intervention_beneficiary_type->intervention->type ?? '') }}
+                                    </div>
+                                   
+                                    <div class="col-sm-12">
+                                       	<span class="fa fa-archive"></span>
+                                        {{ $submitted_request_data->intervention_beneficiary_type->intervention->name ?? '' }}
+                                    </div>
+                                   
+                                    <div class="col-sm-12">
+                                        <i class="fa fa-crosshairs fa-fw"></i>
+                                        @php
+                                        	$intervention_years = $submissionRequest->getInterventionYears();
+                                        @endphp
+                                        @if(count($intervention_years) == 1)
+                                        	{{ $intervention_years[0] ?? ''}}
+                                        @elseif(count($intervention_years) > 1)
+                                        	@php
+                                        		$intervention_years[(count($intervention_years)-1)] = 'and '.end($intervention_years);
+                                        	@endphp
+                                        	{{implode(' ', $intervention_years)}}
+                                        @endif
+                                    </div>
+                                   
+                                    <div class="col-lg-12">
+                                        <i class="fa fa-money"></i>
+                                    	<strong>Total AIP Amount Approved:</strong>
+                                    	&#8358;{{ number_format($submitted_aip_request_final_amount, 2)}}
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <i class="fa fa-money"></i>
+                                    	<strong>Total Available Amount:</strong>
+                                    	&#8358;{{number_format(($fund_available ?? 0), 2)}}
+                                    	{{-- <strong>Allocated Funds Available:</strong>  ₦{{ number_format($allocated_fund_available,2) }} --}}
+                                    </div>
+
+                                    <div class="form-group" style="margin-top:10px;">
+                                        <label class="col-sm-12 control-label">Project Title</label>
+                                        <div class="col-sm-12">
+                                            <div class="input-group">
+                                                <textarea readonly class="form-control" name="project_title" id="project_title" rows="2">{{ $submissionRequest->title }} - {{ $request_tranche }} Request</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" style="margin-top:10px;">
+                                		<label class="col-sm-12 control-label">
+                                       		{{$request_tranche}} Request Amount<small class="text-red"> - {{ $tranche_amount_percentage }}% of AIP Amount Approved</small>
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <div class="input-group">
+                                                <input readonly type='text' class="form-control" name="amount_requested" id="amount_requested" value=" &#8358; {{ number_format($amount_requested, 2) }}" />
+                                            </div>
+                                        </div>
+                                    </div>
+
 				                </div>
 	                        </div>
 	                    </div>
 	                </form>
 	            </div>
-
 	        
 	            <div class="modal-footer" id="div-save-mdl-request-related-tranche-modal">
 	                <button type="button" class="btn btn-primary btn-save-mdl-request-related-tranche" id="btn-save-mdl-request-related-tranche" value="add">
@@ -212,7 +272,22 @@
 				        if ('{{$amount_requested}}'.length){ formData.append('amount_requested', '{{$amount_requested}}'); }
 				        if ('{{$parent_id}}'.length){ formData.append('parent_id', '{{$parent_id}}'); }
 				        if ('{{$request_tranche}}'.length){ formData.append('request_tranche', '{{$request_tranche}}'); }
-				        if ('{{$is_first_tranche_request}}'.length){ formData.append('is_first_tranche_request', '{{$is_first_tranche_request}}'); }
+				        
+				        @if(isset($is_first_tranche_request))
+				        	if ('{{$is_first_tranche_request}}'.length){ formData.append('is_first_tranche_request', '{{$is_first_tranche_request}}'); }
+				        @endif
+
+				        @if(isset($is_second_tranche_request))
+				        	if ('{{$is_second_tranche_request}}'.length){ formData.append('is_second_tranche_request', '{{$is_second_tranche_request}}'); }
+				        @endif
+
+				        @if(isset($is_final_tranche_request))
+					        if ('{{$is_final_tranche_request}}'.length){ formData.append('is_final_tranche_request', '{{$is_final_tranche_request}}'); }
+					    @endif
+
+				        @if(isset($is_monitoring_request))
+				        	if ('{{$is_monitoring_request}}'.length){ formData.append('is_monitoring_request', '{{$is_monitoring_request}}'); }
+				        @endif
 
 				        $.ajax({
 				            url: "{{ route('tf-bi-portal-api.submission_requests.store') }}",

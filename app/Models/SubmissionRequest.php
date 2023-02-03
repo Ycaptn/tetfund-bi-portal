@@ -83,7 +83,7 @@ class SubmissionRequest extends Model
         'is_first_tranche_request',
         'is_second_tranche_request',
         'is_third_tranche_request',
-        'is_first_tranche_request',
+        'is_final_tranche_request',
         'is_monitoring_request',
     ];
 
@@ -110,27 +110,43 @@ class SubmissionRequest extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo(User::class, 'requesting_user_id', 'id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function beneficiary()
-    {
+    public function beneficiary() {
         return $this->belongsTo(Beneficiary::class, 'beneficiary_id', 'id');
+    }
+
+    public function getInterventionYears() {
+        $years = [];
+        if ($this->intervention_year1 != null) {
+            $years[] = $this->intervention_year1;
+        }
+        if ($this->intervention_year2 != null) {
+            $years[] = $this->intervention_year2;
+        }
+        if ($this->intervention_year3 != null) {
+            $years[] = $this->intervention_year3;
+        }
+        if ($this->intervention_year4 != null) {
+            $years[] = $this->intervention_year4;
+        }
+
+        return $years;
     }
 
     public static function get_specific_attachment($submission_request_id, $item_label) {
         $submission_request = self::find($submission_request_id);
         if ($submission_request != null) {
-            $attachements = $submission_request->get_attachments();
-            if ($attachements != null) {
-                foreach($attachements as $attachement){
-                    if ($attachement->label == $item_label || str_contains($attachement->label, $item_label)) {
-                        return $attachement;
+            $attachments = $submission_request->get_attachments();
+            if ($attachments != null) {
+                foreach($attachments as $attachment){
+                    if ($attachment->label == $item_label || str_contains($item_label, $attachment->label)) {
+                        return $attachment;
                         break;
                     }
                 }    
@@ -142,9 +158,9 @@ class SubmissionRequest extends Model
     public static function get_all_attachments($submission_request_id) {
         $submission_request = self::find($submission_request_id);
         if ($submission_request != null) {
-            $attachements = $submission_request->get_attachments();
-            if ($attachements != null) {
-                return $attachements;
+            $attachments = $submission_request->get_attachments();
+            if ($attachments != null) {
+                return $attachments;
             }
         }
         return null;
@@ -154,9 +170,9 @@ class SubmissionRequest extends Model
         $submission_request = SubmissionRequest::find($submission_request_id);
         $counter = 0;
         if ($submission_request != null) {
-            $attachements = $submission_request->get_attachments();
-            if ($attachements != null) {
-                foreach($attachements as $attach) {
+            $attachments = $submission_request->get_attachments();
+            if ($attachments != null) {
+                foreach($attachments as $attach) {
                     if (str_contains($attach->label, $key_to_exclude) == false) {
                         $counter += 1;
                     }
@@ -168,43 +184,56 @@ class SubmissionRequest extends Model
 
     // all first tranche interventions percentage
     public function first_tranche_intervention_percentage ($intervention_name) {
-        $first_tranche_intervention = [
+        $first_tranche_interventions = [
             'ICT Support' => '85%',
             'Library Development' => '85%',
             'Zonal Intervention' => '85%',
             'Physical Infrastructure and Program Upgrade' => '50%',
+            'Equipment Fabrication' => '85%',
         ];
-        return $first_tranche_intervention[$intervention_name] ?? null;
+        return $first_tranche_interventions[$intervention_name] ?? null;
     }
 
     // all second tranche interventions percentage
     public function second_tranche_intervention_percentage ($intervention_name) {
-        $second_tranche_intervention = [
+        $second_tranche_interventions = [
             'Physical Infrastructure and Program Upgrade' => '35%',
         ];
 
-        return $second_tranche_intervention[$intervention_name] ?? null;
+        return $second_tranche_interventions[$intervention_name] ?? null;
     }
 
     // all third tranche interventions percentage
     public function third_tranche_intervention_percentage ($intervention_name) {
-        $third_tranche_intervention = [
+        $third_tranche_interventions = [
             // 'intervention name' => 'Percentage in numeric',
         ];
 
-        return $third_tranche_intervention[$intervention_name] ?? null;
+        return $third_tranche_interventions[$intervention_name] ?? null;
     }
 
     // all final tranche interventions percentage
      public function final_tranche_intervention_percentage ($intervention_name) {
-        $final_tranche_intervention = [
+        $final_tranche_interventions = [
             'ICT Support' => '15%',
             'Library Development' => '15%',
             'Zonal Intervention' => '15%',
             'Physical Infrastructure and Program Upgrade' => '15%',
+            'Equipment Fabrication' => '15%',
         ];
 
-        return $final_tranche_intervention[$intervention_name] ?? null;
+        return $final_tranche_interventions[$intervention_name] ?? null;
+    }
+
+    // all monitoring request interventions
+     public function monitoring_evaluation_interventions ($intervention_name) {
+        $monitoring_evaluation_interventions = [
+            'Library Development',
+            'Physical Infrastructure and Program Upgrade',
+            // MonitoringEvaluationCheckList
+        ];
+
+        return in_array($intervention_name, $monitoring_evaluation_interventions);
     }
 
     // submission Request AIP Payment

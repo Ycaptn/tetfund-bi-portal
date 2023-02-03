@@ -189,12 +189,8 @@ class TETFundServer {
     public static function processSubmissionRequest($pay_load, $tf_beneficiary_id) {
         $server_api_url = Config::get('keys.tetfund.server_api_url');
         $token = self::get_auth_token();
-
-        // append user_id to payload
-        $pay_load['user_id'] = self::$authenticated_user_id;
-
-        // append organization_id to payload
-        $pay_load['organization_id'] = self::$authenticated_user_organization_id; 
+        $pay_load['user_id'] = self::$authenticated_user_id;    // append user_id to payload
+        $pay_load['organization_id'] = self::$authenticated_user_organization_id;   // append organization_id to payload
         $ch = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/process-submission-request/{$tf_beneficiary_id}", $pay_load);
         $api_response = curl_exec($ch);
         $api_response_data = json_decode($api_response);
