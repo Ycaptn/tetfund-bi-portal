@@ -46,7 +46,7 @@
 	}
 
 	// begin second to final tranche submission request
-	if($submissionRequest->is_first_tranche_request==true && $submissionRequest->final_tranche_intervention_percentage($intervention->name) != null && $submissionRequest->getFinalTrancheSubmissionRequest()==null) {
+	if($submissionRequest->is_second_tranche_request==true && $submissionRequest->final_tranche_intervention_percentage($intervention->name) != null && $submissionRequest->getFinalTrancheSubmissionRequest()==null) {
 
 		$submissionRequest_aip_request = $submissionRequest->getParentAIPSubmissionRequest();
 		$submitted_aip_request = $submitted_request_data->submitted_aip_request;
@@ -69,7 +69,7 @@
 
 		
 	// begin first to final tranche submission request
-	if($submissionRequest->is_first_tranche_request==true && $submissionRequest->final_tranche_intervention_percentage($intervention->name) != null && $submissionRequest->getFinalTrancheSubmissionRequest()==null) {
+	if($submissionRequest->is_first_tranche_request==true && $submissionRequest->final_tranche_intervention_percentage($intervention->name) != null && $submissionRequest->getFinalTrancheSubmissionRequest()==null && $submissionRequest->second_tranche_intervention_percentage($intervention->name) == null) {
 
 		$submissionRequest_aip_request = $submissionRequest->getParentAIPSubmissionRequest();
 		$submitted_aip_request = $submitted_request_data->submitted_aip_request;

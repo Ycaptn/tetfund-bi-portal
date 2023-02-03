@@ -188,8 +188,10 @@ class SubmissionRequest extends Model
             'ICT Support' => '85%',
             'Library Development' => '85%',
             'Zonal Intervention' => '85%',
-            'Physical Infrastructure and Program Upgrade' => '50%',
             'Equipment Fabrication' => '85%',
+            'Entrepreneurship Centre' => '85%',
+            'Academic Manuscript Development' => '85%',
+            'Physical Infrastructure and Program Upgrade' => '50%',
         ];
         return $first_tranche_interventions[$intervention_name] ?? null;
     }
@@ -218,8 +220,10 @@ class SubmissionRequest extends Model
             'ICT Support' => '15%',
             'Library Development' => '15%',
             'Zonal Intervention' => '15%',
-            'Physical Infrastructure and Program Upgrade' => '15%',
             'Equipment Fabrication' => '15%',
+            'Entrepreneurship Centre' => '15%',
+            'Academic Manuscript Development' => '15%',
+            'Physical Infrastructure and Program Upgrade' => '15%',
         ];
 
         return $final_tranche_interventions[$intervention_name] ?? null;
@@ -338,7 +342,7 @@ class SubmissionRequest extends Model
 
         $second_tranche_request = $this->getSecondTrancheSubmissionRequest();
         if (!empty($second_tranche_request) && $second_tranche_request->id != $this->id) {
-            array_push($second_tranche_request, $second_tranche_request);
+            array_push($get_all_related_requests, $second_tranche_request);
         }
 
         $third_tranche_request = $this->getThirdTrancheSubmissionRequest();
