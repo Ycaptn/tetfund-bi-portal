@@ -145,7 +145,7 @@ class SubmissionRequest extends Model
             $attachments = $submission_request->get_attachments();
             if ($attachments != null) {
                 foreach($attachments as $attachment){
-                    if ($attachment->label == $item_label || str_contains($item_label, $attachment->label)) {
+                    if ($attachment->label == $item_label || str_contains($attachment->label, $item_label) || str_contains($item_label, $attachment->label)) {
                         return $attachment;
                         break;
                     }
