@@ -15,30 +15,8 @@
                         </div>
                     @endif
                 </a>
-                <div class="d-flex align-items-center">
-                    {{-- <div><h4 class="card-title"><a href='{{$detail_page_url}}'>{{$data_item->id}}</a></h4></div> --}}
-                    @if(isset($data_item) && $data_item->status == 'not-submitted')
-                        <div class="ms-auto"> 
-                            @if($data_item->is_aip_request==true)
-                                <a data-toggle="tooltip" 
-                                    title="Edit"
-                                    data-val='{{$data_item->id}}'
-                                    href="{{route('tf-bi-portal.submissionRequests.edit', $data_item->id)}}" 
-                                    class="btn-edit-mdl-submissionRequest-modal me-1" href="#">
-                                    <i class="bx bxs-edit"></i>
-                                </a>
-                            @endif
-                            <a data-toggle="tooltip" 
-                                title="Delete" 
-                                data-val='{{$data_item->id}}' 
-                                class="btn-delete-mdl-submissionRequest-modal me-1" href="#">
-                                <i class="bx bxs-trash-alt" style="color: red;"></i>
-                            </a>
-                        </div>
-                    @endif
-                </div>
             </div>
-            <div class="col-xs-12 col-md-11">
+            <div class="col-xs-12 col-md-10">
                 <div class="card-body">
                     <a href='{{$detail_page_url}}'>
                         <h3 class="h6 card-title mb-0">
@@ -69,6 +47,28 @@
                     </p>
                 </div>
             </div>
+            <div class="col-xs-12 col-md-1 mt-2">
+                    {{-- <div><h4 class="card-title"><a href='{{$detail_page_url}}'>{{$data_item->id}}</a></h4></div> --}}
+                    @if(isset($data_item) && $data_item->status == 'not-submitted')
+                        <div class="ms-auto"> 
+                            @if($data_item->is_aip_request==true)
+                                <a data-toggle="tooltip" 
+                                    title="Edit"
+                                    data-val='{{$data_item->id}}'
+                                    href="{{route('tf-bi-portal.submissionRequests.edit', $data_item->id)}}" 
+                                    class="btn-edit-mdl-submissionRequest-modal me-1" href="#">
+                                    <i class="bx bxs-edit"></i>
+                                </a>
+                            @endif
+                            <a data-toggle="tooltip" 
+                                title="Delete" 
+                                data-val='{{$data_item->id}}' 
+                                class="btn-delete-mdl-submissionRequest-modal me-1" href="#">
+                                <i class="bx bxs-trash-alt" style="color: red;"></i>
+                            </a>
+                        </div>
+                    @endif
+                </div>
         </div>
     </div>
 </div>
