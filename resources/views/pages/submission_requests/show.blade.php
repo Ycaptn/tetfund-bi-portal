@@ -124,12 +124,12 @@ Submission Request
 
 
 @section('content')
-    <div class="card border-top border-0 border-4 border-success">
+    <div class="card border-top border-4 border-success">
         <div class="card-body">
 
             @include('tf-bi-portal::pages.submission_requests.modal')
             @if($submissionRequest->status == 'not-submitted')
-                <div class="row container alert alert-warning">
+                <div class="row alert alert-warning">
                     <div class="col-md-9">
                         <i class="icon fa fa-warning"></i>
                         <strong>PRE-SUBMISSION NOTICE:</strong> 
@@ -170,20 +170,20 @@ Submission Request
                             @csrf
                             <input type="hidden" name="submission_request_id" value="{{ $submissionRequest->id }}">
                             <input type="hidden" name="checklist_items_count" value="{{ count($checklist_items) }}">
-                            <input type="hidden" name="intervention_name" value="{{ $intervention->name }}">
+                            <input type="hidden" name="intervention_name" value="{{ $intervention->name}}">
                             <input type="submit" class="btn btn-sm btn-danger pull-right" value="Submit This Request"> 
                         </form>
                     </div>
                 </div>
             @endif           
-            <div class="row col-sm-12">
+            <div class="row">
                 
                 {{-- details and allocation preview modal --}}
                 @include('tf-bi-portal::pages.submission_requests.partials.submission_details')
 
                 {{-- sub menu buttons --}}
                 @if(strtolower($submissionRequest->status) == 'submitted' || str_contains(strtolower(optional($intervention)->name), 'teaching practice') || str_contains(strtolower(optional($intervention)->name), 'conference attendance') || str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship'))
-                    <div class="container col-sm-12"><hr>
+                    <div class="col-sm-12"><hr>
                         <div class="tab">
                             <ul class="nav">
                                 <li class="mt-3" style="margin-right: 3px;">
@@ -236,7 +236,7 @@ Submission Request
 @stop
 
 @section('side-panel')
-<div class="card radius-5 border-top border-0 border-4 border-success">
+<div class="card radius-5 border-top  border-4 border-success">
     <div class="card-body">
         <div><h5 class="card-title">More Information</h5></div>
         <p class="small">

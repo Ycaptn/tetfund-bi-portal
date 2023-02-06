@@ -78,7 +78,7 @@
 </div>
 
 
-<div class="col-sm-12 row">
+<div class="row">
     <div class="col-sm-12 {{ empty($get_all_related_requests) ? 'col-md-9' : 'col-md-6' }}">
         <div class="col-sm-12">
             @if(!empty($submitted_request_data))
@@ -86,7 +86,7 @@
             @endif
             <i class="fa fa-calendar-o fa-fw"></i> <strong>Created on </strong> {{ \Carbon\Carbon::parse($submissionRequest->created_at)->format('l jS F Y') }} - {!! \Carbon\Carbon::parse($submissionRequest->created_at)->diffForHumans() !!} <br/>
 
-            <i class="fa fa-bank fa-fw"></i> <b>{{ ucwords($intervention->type) }} Intervention &nbsp; - &nbsp; </b> &nbsp; {{ $intervention->name }} <br/>
+            <i class="fa fa-bank fa-fw"></i> <b>{{ ucwords($intervention->type) }} Intervention &nbsp; - &nbsp; </b> &nbsp; {{ $intervention->name}} <br/>
             <i class="fa fa-briefcase fa-fw"></i> <b>Requested Tranche:</b> &nbsp; {{ $submissionRequest->type }} <br/>
             <i class="fa fa-crosshairs fa-fw"></i> <b>Intervention Year(s) &nbsp; - &nbsp; </b> &nbsp; {{ $years_str }} <br/>
             <i class="fa fa-money fa-fw"></i> <b>Total Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($fund_available) ? $fund_available : 0), 2) }} <br/>
@@ -101,7 +101,7 @@
     </div>
 
     @if (isset($get_all_related_requests) && !empty($get_all_related_requests))
-        <div class="col-sm-12 col-md-3 float-right">
+        <div class="col-sm-12 col-md-3">
             <div class="col-lg-12 mb-2">
                 <div class="list-group ">
                     <div class="p-1 list-group-item list-group-item-default">
