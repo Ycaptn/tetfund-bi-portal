@@ -72,7 +72,11 @@ class SubmissionRequestAPIController extends AppBaseController
         $current_user = auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
         
-        $input['type'] = $request->request_tranche ?? 'Request for AIP';
+        if (!$request->has('is_monitoring_request') || ($request->has('is_monitoring_request') && $request->is_monitoring_request == false)) {
+            
+            $input['type'] = $request->request_tranche ?? 'Request for AIP';
+        }
+
         $input['status'] = 'not-submitted';
         $input['requesting_user_id'] = $current_user->id;
         $input['organization_id'] = $current_user->organization_id;
@@ -80,6 +84,13 @@ class SubmissionRequestAPIController extends AppBaseController
 
         /** @var SubmissionRequest $submissionRequest */
         $submissionRequest = SubmissionRequest::create($input);
+
+        // handling monitoring request optional attachment
+        if ($request->has('is_monitoring_request') && $request->is_monitoring_request == true && $request->hasFile('optional_attachment')) {                
+                $label = 'Monitoring Request Optional Attachment - '. $request->title; 
+                $discription = 'This Document Contains the ' . $label ;
+                $submissionRequest->attach(auth()->user(), $label, $discription, $request->optional_attachment);
+        }
 
         /*Dispatch event*/
         SubmissionRequestCreated::dispatch($submissionRequest);
@@ -178,7 +189,7 @@ class SubmissionRequestAPIController extends AppBaseController
             return $this->sendError('Submission Request not found');
         }
 
-        //handles submissions for attachemts
+        //handles submissions for attachments
         if (isset($request->submissionRequestId) && isset($request->attachment_label) && $submissionRequest != null) {
             $submissionRequest->delete_attachment($request->attachment_label);
             return $this->sendSuccess('Submission Request Attachment deleted successfully');

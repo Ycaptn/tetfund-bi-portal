@@ -1,6 +1,7 @@
 @php
     $get_all_related_requests = $submissionRequest->getAllRelatedSubmissionRequest();
     $years_str = $submissionRequest->intervention_year1;
+    $all_monitoring_requests = $submissionRequest->getMonitoringSubmissionRequests();
     // merged years, unique years & sorted years
     if (isset($years) && count($years) > 1) {
         if (count($years) > 1) {
@@ -93,6 +94,11 @@
             <i class="fa fa-money fa-fw"></i> <b>Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>
             <i class="fa fa-thumbs-up fa-fw"> </i><b>Current Stage &nbsp; - &nbsp; </b> &nbsp; {{ strtoupper($submitted_request_data->work_item->active_assignment->assigned_user->department->long_name ?? $submissionRequest->status) }}<br/><br/>
 
+            {{-- current intervention monitoring request --}}
+            @if($submissionRequest->status=='submitted' && $submissionRequest->is_aip_request==true && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==true)
+                @include('tf-bi-portal::pages.submission_requests.partials.monitoring_evaluation_submission_request')
+            @endif
+
             {{-- current intervention none AIP submission request  --}}
             @if($submissionRequest->status=='submitted' && !empty($submitted_request_data) && (($submissionRequest->is_aip_request==true && $submitted_request_data->has_generated_aip==true) || ( ($submissionRequest->is_first_tranche_request==true || $submissionRequest->is_second_tranche_request==true || $submissionRequest->is_final_tranche_request==true) && $submitted_request_data->has_generated_disbursement_memo==true)))
                 @include('tf-bi-portal::pages.submission_requests.partials.submission_request_none_aip_tranches')
@@ -156,4 +162,195 @@
             @endif
         </div>
     </div>
+
+    {{-- display list of related monitoring requests --}}
+    @if(isset($all_monitoring_requests) && count($all_monitoring_requests) > 0)
+        <div class="col-sm-12 mt-5">
+            <div class="panel panel-default box box-info">
+                <div class="panel-heading mediumText">
+                    <strong>
+                        <i class="fa fa-paper-plane"></i>
+                        RELATED MONITORING REQUEST
+                    </strong>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-striped text-center" >
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col" style="width:10%">#</th>
+                                <th scope="col" style="width:40%">Project Title</th>
+                                <th scope="col" style="width:15%">Proposed Date</th>
+                                <th scope="col" style="width:15%">Status</th>
+                                <th scope="col" style="width:10%">Attachment</th>
+                                <th scope="col" style="width:10%">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($all_monitoring_requests as $monitoring_request)
+                                <tr>
+                                    <td scope="col">
+                                        {{ $loop->iteration }}
+                                    </td>
+                                    <td scope="col">
+                                        <span>
+                                            {{ $monitoring_request->title }}
+                                        </span> <br> 
+                                        <small>
+                                            <i>{{ $monitoring_request->type }}</i>
+                                        </small>
+                                    </td>
+                                    <td scope="col">                                          
+                                        {{ date("M d, Y", strtotime($monitoring_request->proposed_request_date)) }}
+                                    </td>
+                                    <td scope="col" class="{{ $monitoring_request->status=='not-submitted'? 'text-danger' : 'text-success'}}">
+                                        {{ ucwords(str_replace('-', ' ', $monitoring_request->status))}}
+                                    </td>
+                                    <td scope="col">
+                                        @php
+                                            $mr_attachment = $monitoring_request->get_all_attachments($monitoring_request->id)[0] ?? null
+                                        @endphp
+                                        @if($mr_attachment != null)
+                                            <a href="{{ route('fc.attachment.show', $mr_attachment->id)}}" class="text-decoration-underline" target="__blank">
+                                                Preview
+                                            </a>
+                                        @else
+                                            ---
+                                        @endif
+                                    </td>
+                                    <td scope="col">
+                                        @if ($monitoring_request->status=='not-submitted')
+                                            <div class="col-sm-12">
+                                                <div class="row">
+                                                    <a href="#" class="col-sm-12 btn btn-sm btn-success btn-submit-m-r" data-val='{{$monitoring_request->id}}' title="Submit Monitoring Request">
+                                                        <small>Submit</small>
+                                                    </a>                                            
+                                                    <a href="#" class="col-sm-12 col-md-6 btn btn-sm btn-default text-info btn-edit-m-r" data-val='{{$monitoring_request->id}}' title="Edit Monitoring Request">
+                                                        <small>
+                                                            <span class="fa fa-edit"></span>                        
+                                                        </small>
+                                                    </a>
+                                                    <a href="#" class="col-sm-12 col-md-6 btn btn-sm btn-default text-danger btn-delete-m-r" data-val='{{$monitoring_request->id}}' title="Delete Monitoring Request">
+                                                        <small>
+                                                            <span class="fa fa-trash"></span>
+                                                        </small>
+                                                    </a>                                                
+                                                </div>                                                
+                                            </div>
+                                        @else
+                                            ---
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
+
+
+{{-- JS scripts --}}
+@push('page_scripts')
+<script type="text/javascript">
+    $(document).ready(function() {
+        
+        @if(isset($all_monitoring_requests) && count($all_monitoring_requests) > 0)
+
+            // Show Modal for Edit
+            $(document).on('click', ".btn-edit-m-r", function(e) {
+                e.preventDefault();
+                $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+                $('#div-request-monitoring-evaluation-modal-error').hide();
+                $('#frm-request-monitoring-evaluation-modal').trigger("reset");
+                $('#new_or_old_m_r').text("Edit");
+                $('#mdl-request-monitoring-evaluation-modal').modal('show');
+
+                $("#spinner-request-monitoring-evaluation").show();
+                $("#btn-save-mdl-request-monitoring-evaluation").attr('disabled', true);
+
+                let itemId = $(this).attr('data-val');
+
+                $.get( "{{ route('tf-bi-portal-api.submission_requests.show','') }}/"+itemId).done(function( response ) {     
+                    console.log(response);
+                    let proposed_monitoring_date= new Date(response.data.proposed_request_date).toISOString().slice(0, 10);
+
+                    $('#m_r_primary_id').val(response.data.id);
+                    $('#project_title').val(response.data.title);
+                    $('#type_of_monitoring_request').val(response.data.type);
+                    $('#proposed_monitoring_date').val(proposed_monitoring_date);
+
+                    $('#editing_old_m_r_notice').show();
+                    $("#spinner-request-monitoring-evaluation").hide();
+                    $("#btn-save-mdl-request-monitoring-evaluation").attr('disabled', false);
+                });
+            });
+
+            // Delete action for monitoring request
+            $(document).on('click', ".btn-delete-m-r", function(e) {
+                e.preventDefault();
+                $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+                let itemId = $(this).attr('data-val');
+                swal({
+                    title: "Are you sure you want to delete this Monitoring Request?",
+                    text: "You will not be able to recover this request once deleted.",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete",
+                    cancelButtonText: "No, don't delete",
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        swal({
+                            title: '<div id="spinner-request-monitoring" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br>Processing...',
+                            text: 'Please wait, deleting this monitoring request <br><br> Do not refresh this page! ',
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            html: true
+                        });
+
+                        let endPointUrl = "{{ route('tf-bi-portal-api.submission_requests.destroy','') }}/"+itemId;
+
+                        let formData = new FormData();
+                        formData.append('_token', $('input[name="_token"]').val());
+                        formData.append('_method', 'DELETE');
+                        
+                        $.ajax({
+                            url:endPointUrl,
+                            type: "POST",
+                            data: formData,
+                            cache: false,
+                            processData:false,
+                            contentType: false,
+                            dataType: 'json',
+                            success: function(result){
+                                if(result.errors){
+                                    console.log(result.errors)
+                                    swal("Error", "Oops an error occurred. Please try again.", "error");
+                                }else{
+                                    swal({
+                                        title: "Deleted",
+                                        text: "Monitoring request deleted successfully",
+                                        type: "success",
+                                        confirmButtonClass: "btn-success",
+                                        confirmButtonText: "OK",
+                                        closeOnConfirm: false
+                                    });
+                                    location.reload(true);
+                                }
+                            },
+                        });
+                    }
+                });
+
+            });
+        @endif
+    });
+</script>
+@endpush

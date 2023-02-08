@@ -72,6 +72,7 @@ class SubmissionRequest extends Model
         'intervention_year2',
         'intervention_year3',
         'intervention_year4',
+        'proposed_request_date',
         'status',
         'requesting_user_id',
         'beneficiary_id',
@@ -313,16 +314,13 @@ class SubmissionRequest extends Model
     }
 
     // submission Request Monitoring
-    public function getMonitoringSubmissionRequest() {
-        if ($this->is_monitoring_request) {
-            return $this;
-        }
-
+    public function getMonitoringSubmissionRequests() {
         $aip_request = $this->getParentAIPSubmissionRequest();
         if ($aip_request != null) {
             return $this->where('parent_id', $aip_request->id)
                 ->where('is_monitoring_request', true)
-                ->first();
+                ->orderBy('created_at', 'DESC')
+                ->get();
         }
         return null;
     }
@@ -354,12 +352,7 @@ class SubmissionRequest extends Model
         if (!empty($final_tranche_request) && $final_tranche_request->id != $this->id) {
             array_push($get_all_related_requests, $final_tranche_request);
         }
-
-        $monitoring_evaluation_request = $this->getMonitoringSubmissionRequest();
-        if (!empty($monitoring_evaluation_request) && $monitoring_evaluation_request->id != $this->id) {
-            array_push($get_all_related_requests, $monitoring_evaluation_request);
-        }
-
+        
         return $get_all_related_requests;
     }
 

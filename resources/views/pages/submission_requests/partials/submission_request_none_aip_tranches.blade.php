@@ -201,8 +201,10 @@
 
 	<div class="col-sm-12">
 		<button class="btn btn-danger btn-sm btn-modal-request-for-related-tranche pull-right">
-			<span class="fa fa-paper-plane"></span>
-			Request {{$request_tranche}}
+			<small>
+				<span class="fa fa-paper-plane"></span>
+				Request {{$request_tranche}}
+			</small>
 		</button>
 	</div>
 

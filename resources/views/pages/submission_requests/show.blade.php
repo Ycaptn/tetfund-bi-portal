@@ -187,14 +187,14 @@ Submission Request
                         <div class="tab">
                             <ul class="nav">
                                 <li class="mt-3" style="margin-right: 3px;">
-                                    <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=attachments" class="tablinks btn btn-primary btn-md shadow-none">
+                                    <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=attachments" class="tablinks btn btn-success btn-md shadow-none">
                                         Attachments
                                     </a>                        
                                 </li>
 
                                 @if(str_contains(strtolower(optional($intervention)->name), 'teaching practice') || str_contains(strtolower(optional($intervention)->name), 'conference attendance') || str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship'))
                                     <li class="mt-3" style="margin-right: 3px;">                            
-                                        <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=nominations_binded" class="tablinks btn btn-primary btn-md shadow-none">
+                                        <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=nominations_binded" class="tablinks btn btn-success btn-md shadow-none">
                                             Nominations
                                         </a>
                                     </li>
@@ -202,7 +202,7 @@ Submission Request
 
                                 @if(strtolower($submissionRequest->status) == 'submitted')
                                     <li class="mt-3" style="margin-right: 3px;">
-                                        <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=communications" class="tablinks btn btn-primary btn-md shadow-none">
+                                        <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=communications" class="tablinks btn btn-success btn-md shadow-none">
                                             Communications
                                         </a>
                                     </li>

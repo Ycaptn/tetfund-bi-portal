@@ -46,6 +46,13 @@ class CreateSubmissionRequestAPIRequest extends AppBaseFormRequest
             //'tf_iterum_portal_response_meta_data' => 'max:1000'
         ];
 
+        // reqiure proposed request date field when submission is monitoring request
+        if (request()->has('is_monitoring_request') && request()->is_monitoring_request == true) {
+            $return_arr['type'] = 'required|string|max:300';
+            $return_arr['proposed_request_date'] = 'required|date|after:today';
+            $return_arr['optional_attachment'] = 'sometimes|file|mimes:pdf,doc,docx,jpg,png,jpeg|max:52400';
+        }
+
         if (request()->intervention_year1==null && request()->intervention_year2==null && request()->intervention_year3==null && request()->intervention_year4==null) {
             $return_arr['intervention_years'] = 'required';
         }
@@ -66,6 +73,9 @@ class CreateSubmissionRequestAPIRequest extends AppBaseFormRequest
             'intervention_year4'=>'Intervention Year 4',            
             'amount_requested'=>'Requested Amount',
             'intervention_years'=>'Intervention Year(s)',
+            'type'=>'Type of Monitoring Request',
+            'proposed_request_date'=>'Proposed Monitoring Date',
+            'optional_attachment'=>'Optional Attachment',
         ];
     }
 

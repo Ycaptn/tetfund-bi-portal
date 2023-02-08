@@ -125,7 +125,7 @@ class TFBiUnSubmittedMonitoringRequestMigration extends Command
                         $bi_monitoring_request->organization_id = $organization->id;
                         $bi_monitoring_request->title = $iterum_monitoring_request->title;                        
                         $bi_monitoring_request->status = 'not-submitted';                        
-                        $bi_monitoring_request->type = 'monitoring';
+                        $bi_monitoring_request->type = $iterum_monitoring_request->monitoring_type ;
                         $bi_monitoring_request->requesting_user_id = $desk_officer->id;
                         $bi_monitoring_request->beneficiary_id = $bi_portal_beneficiary->id;
 
