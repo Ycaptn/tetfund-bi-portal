@@ -95,7 +95,7 @@
             <i class="fa fa-thumbs-up fa-fw"> </i><b>Current Stage &nbsp; - &nbsp; </b> &nbsp; {{ strtoupper($submitted_request_data->work_item->active_assignment->assigned_user->department->long_name ?? $submissionRequest->status) }}<br/><br/>
 
             {{-- current intervention monitoring request --}}
-            @if($submissionRequest->status=='submitted' && $submissionRequest->is_aip_request==true && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==true)
+            @if($submissionRequest->status=='submitted' && !empty($submitted_request_data) && $submissionRequest->is_aip_request==true && $submitted_request_data->has_generated_aip==true)
                 @include('tf-bi-portal::pages.submission_requests.partials.monitoring_evaluation_submission_request')
             @endif
 

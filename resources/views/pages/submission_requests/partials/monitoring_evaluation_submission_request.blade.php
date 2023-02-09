@@ -1,5 +1,4 @@
 @php
-	
 	// begin monitoring request submission request
 	$submissionRequest_aip_request = $submissionRequest->getParentAIPSubmissionRequest();
 	$tf_iterum_intervention_line_key_id = $submissionRequest_aip_request->tf_iterum_intervention_line_key_id;
@@ -10,121 +9,118 @@
 	$intervention_year4 = $submissionRequest_aip_request->intervention_year4;
 	$parent_id = $submissionRequest_aip_request->id;
 	$amount_requested = $submissionRequest_aip_request->amount_requested;
-	$should_button_request_next_display = true;	// show button for next tranche
 
 @endphp
 
+<div class="modal fade" id="mdl-request-monitoring-evaluation-modal" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
 
-@if($should_button_request_next_display==true)
-	<div class="modal fade" id="mdl-request-monitoring-evaluation-modal" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
-	    <div class="modal-dialog modal-lg" role="document">
-	        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="lbl-request-monitoring-evaluation-modal-title" class="modal-title"><span id="prefix_info"></span> <span id='new_or_old_m_r'></span> Monitoring Request <span class="text-success">({{$submissionRequest->title}})</span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-	            <div class="modal-header">
-	                <h5 id="lbl-request-monitoring-evaluation-modal-title" class="modal-title"><span id="prefix_info"></span> <span id='new_or_old_m_r'></span> Monitoring Request <span class="text-success">({{$submissionRequest->title}})</span></h5>
-	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-	            </div>
+            <div class="modal-body">
+                <div id="div-request-monitoring-evaluation-modal-error" class="alert alert-danger" role="alert"></div>
+            
+                <form class="form-horizontal" id="frm-request-monitoring-evaluation-modal" role="form" method="POST" action="">
+                    <div class="row m-3">
+                        <div class="col-sm-12">
+                            @csrf
+                            <div class="offline-flag">
+                            	<span class="offline-request-for-monitoring-evaluation">
+                            		You are currently offline
+                            	</span>
+                            </div>
 
-	            <div class="modal-body">
-	                <div id="div-request-monitoring-evaluation-modal-error" class="alert alert-danger" role="alert"></div>
-	            
-	                <form class="form-horizontal" id="frm-request-monitoring-evaluation-modal" role="form" method="POST" action="">
-	                    <div class="row m-3">
-	                        <div class="col-sm-12">
-	                            @csrf
-	                            <div class="offline-flag">
-	                            	<span class="offline-request-for-monitoring-evaluation">
-	                            		You are currently offline
-	                            	</span>
-	                            </div>
+                            <input type="hidden" id="m_r_primary_id" value="0">
 
-	                            <input type="hidden" id="m_r_primary_id" value="0">
-
-	                            <div class="row col-sm-12">                             
-                                    <div class="form-group" style="margin-top:10px;">
-                                        <label class="col-sm-12 control-label" for="project_title">
-                                        	Project Title:
-                                        </label>
-                                        <div class="col-sm-12">
-                                            <div class="input-group">
-                                                <input class="form-control" id="project_title" value="" />
-                                            </div>
+                            <div class="row col-sm-12">                             
+                                <div class="form-group" style="margin-top:10px;">
+                                    <label class="col-sm-12 control-label" for="project_title">
+                                    	Project Title:
+                                    </label>
+                                    <div class="col-sm-12">
+                                        <div class="input-group">
+                                            <input class="form-control" id="project_title" value="" />
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="form-group" style="margin-top:10px;">
-                                        <label class="col-sm-12 control-label" for="type_of_monitoring_request">
-                                        	Type of Monitoring Request:
-                                        </label>
-                                        <div class="col-sm-12">
-                                            <div class="input-group">
-                                            	<select class="form-select" id="type_of_monitoring_request">
-                                            		<option value="">-- none selected --</option>
-                                            		<option value="Invitation for Bid Opening">Invitation for Bid Opening</option>
-                                            		<option value="Project Monitoring">Project Monitoring</option>
-                                            	</select>
-                                            </div>
+                                <div class="form-group" style="margin-top:10px;">
+                                    <label class="col-sm-12 control-label" for="type_of_monitoring_request">
+                                    	Type of Monitoring Request:
+                                    </label>
+                                    <div class="col-sm-12">
+                                        <div class="input-group">
+                                        	<select class="form-select" id="type_of_monitoring_request">
+                                        		<option value="">-- none selected --</option>
+                                        		<option value="Invitation for Bid Opening">Invitation for Bid Opening</option>
+                                        		<option value="Project Monitoring">Project Monitoring</option>
+                                        	</select>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="form-group" style="margin-top:10px;">
-                                		<label class="col-sm-12 control-label" for="proposed_monitoring_date">
-                                			Proposed Monitoring Date:
-                                		</label>
-                                        <div class="col-sm-12">
-                                            <div class="input-group">
-                                                <input type='date' class="form-control" id="proposed_monitoring_date" value="" />
-                                            </div>
+                                <div class="form-group" style="margin-top:10px;">
+                            		<label class="col-sm-12 control-label" for="proposed_monitoring_date">
+                            			Proposed Monitoring Date:
+                            		</label>
+                                    <div class="col-sm-12">
+                                        <div class="input-group">
+                                            <input type='date' class="form-control" id="proposed_monitoring_date" value="" />
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="form-group" style="margin-top:10px;">
-                                		<label class="col-sm-12 control-label" for="optional_attachment">
-                                			Attachment (Optional):<br>
-                                			<small>
-                                				<span id="editing_old_m_r_notice" class="text-danger">
-                                					<i><strong>NOTE:</strong> 
-                                					Selecting a new attachment will authomatically replace any existing attachment.</i>
-                                				</span>
-                                			</small>
-                                		</label>
-                                        <div class="col-sm-12">
-                                            <div class="input-group">
-                                                <input type='file' class="form-control" id="optional_attachment" />
-                                            </div>
-                                            <small><i class="text-danger">Max file Size 50M</i></small>
+                                <div class="form-group" style="margin-top:10px;">
+                            		<label class="col-sm-12 control-label" for="optional_attachment">
+                            			Attachment (Optional):<br>
+                            			<small>
+                            				<span id="editing_old_m_r_notice" class="text-danger">
+                            					<i><strong>NOTE:</strong> 
+                            					Selecting a new attachment will authomatically replace any existing attachment.</i>
+                            				</span>
+                            			</small>
+                            		</label>
+                                    <div class="col-sm-12">
+                                        <div class="input-group">
+                                            <input type='file' class="form-control" id="optional_attachment" />
                                         </div>
+                                        <small><i class="text-danger">Max file Size 50M</i></small>
                                     </div>
+                                </div>
 
-				                </div>
-	                        </div>
-	                    </div>
-	                </form>
-	            </div>
-	        
-	            <div class="modal-footer" id="div-save-mdl-request-monitoring-evaluation-modal">
-	                <button type="button" class="btn btn-primary btn-save-mdl-request-monitoring-evaluation" id="btn-save-mdl-request-monitoring-evaluation" value="add">
-	                <div id="spinner-request-monitoring-evaluation" style="color: white;">
-	                    <div class="spinner-border" style="width: 1rem; height: 1rem;" role="status">
-	                    </div>
-	                    <span class="">Loading...</span><hr>
-	                </div>
-	                <span class="fa fa-save"></span> Save Monitoring Request
-	                </button>
-	            </div>
+			                </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+            <div class="modal-footer" id="div-save-mdl-request-monitoring-evaluation-modal">
+                <button type="button" class="btn btn-primary btn-save-mdl-request-monitoring-evaluation" id="btn-save-mdl-request-monitoring-evaluation" value="add">
+                <div id="spinner-request-monitoring-evaluation" style="color: white;">
+                    <div class="spinner-border" style="width: 1rem; height: 1rem;" role="status">
+                    </div>
+                    <span class="">Loading...</span><hr>
+                </div>
+                <span class="fa fa-save"></span> Save Monitoring Request
+                </button>
+            </div>
 
-	        </div>
-	    </div>
-	</div>
+        </div>
+    </div>
+</div>
 
-	<div class="col-sm-12">
-		<button class="btn btn-info btn-sm btn-modal-request-for-monitoring-evaluation pull-right">
-			<small>
-				<span class="fa fa-camera"></span>
-				Request Monitoring
-			</small>
-		</button>
-	</div>
+<div class="col-sm-12">
+	<button class="btn btn-info btn-sm btn-modal-request-for-monitoring-evaluation pull-right">
+		<small>
+			<span class="fa fa-camera"></span>
+			Request Monitoring
+		</small>
+	</button>
+</div>
 
 
 {{-- JS scripts --}}
@@ -268,5 +264,3 @@
 </script>
 @endpush
 {{-- end of scripts --}}
-
-@endif
