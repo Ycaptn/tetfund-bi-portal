@@ -258,10 +258,85 @@
         
         @if(isset($all_monitoring_requests) && count($all_monitoring_requests) > 0)
 
+            // submit monitoring request to TETFund
+            $(document).on('click', ".btn-submit-m-r", function(e) {
+                e.preventDefault();
+                $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+                let itemId = $(this).attr('data-val');
+                swal({
+                    title: "You are about to process the final submission of this Monitoring Request to TETFund?",
+                    text: "You will not be able to undo this process once completed.",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, submit",
+                    cancelButtonText: "No, don't submit",
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        swal({
+                            title: '<div id="spinner-request-monitoring" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br>Processing...',
+                            text: 'Please wait, validating requirements and submitting this monitoring request. <br><br> Do not refresh this page! ',
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            html: true
+                        });
+
+                        let endPointUrl = "{{ route('tf-bi-portal-api.submission_requests.process_m_r_to_tetfund','') }}/"+itemId;
+
+                        let formData = new FormData();
+                        formData.append('_token', $('input[name="_token"]').val());
+                        formData.append('_method', 'POST');
+                        formData.append('id', itemId);
+                        
+                        $.ajax({
+                            url:endPointUrl,
+                            type: "POST",
+                            data: formData,
+                            cache: false,
+                            processData:false,
+                            contentType: false,
+                            dataType: 'json',
+                            success: function(result){
+                                if(result.errors){
+                                    console.log(result.errors)
+                                    swal("Error", "Oops an error occurred. Please try again.", "error");
+                                }else{
+                                    swal({
+                                        title: "Submission Completed",
+                                        text: "Monitoring request submitted successfully",
+                                        type: "success",
+                                        confirmButtonClass: "btn-success",
+                                        confirmButtonText: "OK",
+                                        closeOnConfirm: false
+                                    });
+                                    location.reload(true);
+                                }
+                            }, error: function(data) {
+                                console.log(data);
+                                swal("Error", "Oops an error occurred. Please try agaisssssn.", "error");
+                            }
+                        });
+                    }
+                });
+
+            });
+
             // Show Modal for Edit
             $(document).on('click', ".btn-edit-m-r", function(e) {
                 e.preventDefault();
                 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+                //check for internet status 
+                if (!window.navigator.onLine) {
+                    $('.offline-request-for-monitoring-evaluation').fadeIn(300);
+                    return;
+                }else{
+                    $('.offline-request-for-monitoring-evaluation').fadeOut(300);
+                }
 
                 $('#div-request-monitoring-evaluation-modal-error').hide();
                 $('#frm-request-monitoring-evaluation-modal').trigger("reset");

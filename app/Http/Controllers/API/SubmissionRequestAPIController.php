@@ -155,8 +155,8 @@ class SubmissionRequestAPIController extends AppBaseController
      *
      * @return Response
      */
-    public function update($id, UpdateSubmissionRequestAPIRequest $request, Organization $organization)
-    {
+    public function update($id, UpdateSubmissionRequestAPIRequest $request, Organization $organization) {
+
         /** @var SubmissionRequest $submissionRequest */
         $submissionRequest = SubmissionRequest::find($id);
 
@@ -167,6 +167,23 @@ class SubmissionRequestAPIController extends AppBaseController
         $submissionRequest->fill($request->all());
         $submissionRequest->save();
         
+        // handling monitoring request optional attachment
+        if ($request->has('is_monitoring_request') && $request->is_monitoring_request == true && $request->hasFile('optional_attachment')) {
+            $label = 'Monitoring Request Optional Attachment - '. $request->title;
+            $discription = 'This Document Contains the ' . $label;
+
+            // deleting old attachments if any
+            $attachments = $submissionRequest->get_all_attachments($submissionRequest->id);
+            if ($attachments != null) {
+                foreach ($attachments as $attached) {
+                    $submissionRequest->delete_attachment($attached->label);
+                }
+            }
+
+            $submissionRequest->attach(auth()->user(), $label, $discription, $request->optional_attachment);
+        }
+
+        /*Dispatch event*/
         SubmissionRequestUpdated::dispatch($submissionRequest);
         return $this->sendResponse($submissionRequest->toArray(), 'SubmissionRequest updated successfully');
     }
@@ -198,5 +215,48 @@ class SubmissionRequestAPIController extends AppBaseController
         $submissionRequest->delete();
         SubmissionRequestDeleted::dispatch($submissionRequest);
         return $this->sendSuccess('Submission Request deleted successfully');
+    }
+
+    public function process_m_r_to_tetfund($id, Organization $organization, Request $request) {
+        $current_user = auth()->user();
+        $submissionRequest = SubmissionRequest::find($id);
+
+        if (empty($submissionRequest)) {
+            return $this->sendError('Submission Request not found');
+        }
+
+        if($current_user->hasRole('BI-desk-officer') == false) {
+            return $this->sendError('Please, Kindly Contact the Institution TETFund Desk Officer, as only them has the Privilege to Submit This Request');
+        }
+
+        $beneficiary = $submissionRequest->beneficiary;
+        $submission_attachment_array = $submissionRequest->get_all_attachments($submissionRequest->id);
+
+        $pay_load = $submissionRequest->toArray();
+        $pay_load['_method'] = 'POST';
+        $pay_load['submission_attachment_array'] = $submission_attachment_array;
+        $pay_load['tf_iterum_aip_request_id'] = $submissionRequest->getParentAIPSubmissionRequest()->tf_iterum_portal_key_id ?? null;
+        $pay_load['tf_beneficiary_id'] = $beneficiary->tf_iterum_portal_key_id;
+        $pay_load['submission_user'] = $current_user;
+
+        $tETFundServer = new TETFundServer();   /* server class constructor */
+        $final_submission_to_tetfund = $tETFundServer->processMRSubmissionRequest($pay_load, $beneficiary->tf_iterum_portal_key_id);
+
+        if (isset($final_submission_to_tetfund->data) && $final_submission_to_tetfund->data != null) {
+            $response = $final_submission_to_tetfund->data;
+
+            //update submission request record status
+            $submissionRequest->status = 'submitted';
+            $submissionRequest->tf_iterum_portal_key_id = $response->id;
+            $submissionRequest->tf_iterum_portal_request_status = $response->status;
+            $submissionRequest->tf_iterum_portal_response_meta_data = json_encode($response);
+            $submissionRequest->tf_iterum_portal_response_at = date('Y-m-d');
+            $submissionRequest->save();
+
+            $success_message = "This Request Has Now Been Successfully Submitted To TETFund!!";
+            return $this->sendResponse($submissionRequest->toArray(), 'Submission of Monitoring Request successfully completed');
+        }
+
+        return $this->sendError('Oops!!!, An unknown error was encountered while processing final submission.');
     }
 }

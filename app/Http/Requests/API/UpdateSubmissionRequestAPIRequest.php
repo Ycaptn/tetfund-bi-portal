@@ -23,21 +23,28 @@ class UpdateSubmissionRequestAPIRequest extends AppBaseFormRequest
      *
      * @return array
      */
-    public function rules()
-    {
-        /*
-        
-        */
+    public function rules() {
+
+        $return_arr = [
+            'title' => 'required|string|max:300',
+        ];
+
+        // reqiure proposed request date field when submission is monitoring request
+        if (request()->has('is_monitoring_request') && request()->is_monitoring_request == true) {
+            $return_arr['type'] = 'required|string|max:300';
+            $return_arr['proposed_request_date'] = 'required|date|after:today';
+            $return_arr['optional_attachment'] = 'sometimes|file|mimes:pdf,doc,docx,jpg,png,jpeg|max:52400';
+        }
+
+        return $return_arr;
+    }
+
+    public function attributes() {
         return [
-            'organization_id' => 'required',
-        'title' => 'required|max:300',
-        'status' => 'nullable|max:100',
-        'type' => 'max:100',
-        'requesting_user_id' => 'required',
-        'beneficiary_id' => 'required',
-        'display_ordinal' => 'nullable|min:0|max:365',
-        'tf_iterum_portal_request_status' => 'required',
-        'tf_iterum_portal_response_meta_data' => 'max:1000'
+            'title'=>'Project Title',
+            'type'=>'Type of Monitoring Request',
+            'proposed_request_date'=>'Proposed Monitoring Date',
+            'optional_attachment'=>'Optional Attachment',
         ];
     }
 
