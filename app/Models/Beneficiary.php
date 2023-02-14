@@ -106,10 +106,12 @@ class Beneficiary extends Model
         'tf_iterum_portal_response_meta_data' => 'string'
     ];
 
-    public function hasRequest($tf_iterum_intervention_line_key_id, $intervention_year1=null, $intervention_year2=null, $intervention_year3=null, $intervention_year4=null) {
-
+    public function hasRequest($tf_iterum_intervention_line_key_id, $intervention_year1=null, $intervention_year2=null, $intervention_year3=null, $intervention_year4=null, $id_to_skip=null) {
         $requests = SubmissionRequest::where('beneficiary_id',$this->id)
                     ->where('is_aip_request', true)
+                    ->when($id_to_skip!=null, function($query) use ($id_to_skip) {
+                        return $query->where('id', '!=', $id_to_skip);
+                    })
                     ->where('tf_iterum_intervention_line_key_id',$tf_iterum_intervention_line_key_id)
                     ->get();
 

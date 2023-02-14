@@ -163,6 +163,17 @@ Submission Request
                                 </li>
                             @endif
                             
+                            {{-- message for utilized fund belonging to non-ASTD interventions --}}
+                            @if ($submissionRequest->is_aip_request==true && (!str_contains(strtolower(optional($intervention)->name), 'teaching practice') && !str_contains(strtolower(optional($intervention)->name), 'conference attendance') && !str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship')) && count($submission_allocations) > 0)
+                                @foreach($submission_allocations as $allocation)
+                                    @if($allocation->utilization_status != null && $allocation->utilization_status == 'utilized')
+                                        <li>
+                                            Allocated fund of <strong>&#8358;{{ number_format($allocation->allocated_amount, 2)}}</strong> for <strong>{{$allocation->year}} intervention year</strong> has been utilized.
+                                        </li>
+                                    @endif
+                                @endforeach
+                            @endif
+                            
                         </ul>
                     </div>
                     <div class="col-md-3">

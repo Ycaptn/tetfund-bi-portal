@@ -271,6 +271,15 @@ class SubmissionRequestController extends BaseController
                     }
                 }
             }
+
+            if ($submissionRequest->is_aip_request==true && (!str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') && !str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') && !str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) && count($fund_availability->allocation_records) > 0) {
+                foreach($fund_availability->allocation_records as $allocation) {
+                    if($allocation->utilization_status != null && $allocation->utilization_status == 'utilized') {
+                        array_push($errors_array, "Allocated fund of ₦".number_format($allocation->allocated_amount, 2) ." for ". $allocation->year . " intervention year has been utilized.");
+                    }
+                }
+            }
+            
         } else {
             $pay_load['tf_iterum_aip_request_id'] = $submissionRequest->getParentAIPSubmissionRequest()->tf_iterum_portal_key_id ?? null;
         }
@@ -558,6 +567,8 @@ class SubmissionRequestController extends BaseController
         }
 
         $current_user = auth()->user();
+        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+
         if ($submissionRequest->status == 'not-submitted' && $submissionRequest->is_aip_request==true) {
             $input = $request->all();
             $input['intervention_year1'] = 0;
@@ -589,6 +600,11 @@ class SubmissionRequestController extends BaseController
             }
             
             $input['requesting_user_id'] = $current_user->id;
+            // check if a similar request does exit
+            if (!str_contains($request->astd_interventions_ids, $request->tf_iterum_intervention_line_key_id) && $beneficiary_member->beneficiary->hasRequest($request->tf_iterum_intervention_line_key_id, $input['intervention_year1'], $input['intervention_year2'], $input['intervention_year3'], $input['intervention_year4'], $submissionRequest->id)) {
+                    $error_msg = "A previous submission request for one or more of the selected years has already been submitted.";
+                    return redirect()->back()->withErrors([$error_msg])->withInput();
+            }
 
             $submissionRequest->fill($input);
             $submissionRequest->save();
