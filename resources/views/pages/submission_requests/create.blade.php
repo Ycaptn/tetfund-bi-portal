@@ -159,7 +159,10 @@ New Submission
                         }
                     });
                 }
+
+                let astd_inteventions_keys = Object.keys(all_astd_interventions_id);
                 $('#intervention_line').html(intervention_line_html);
+                $('#astd_interventions_ids').val(astd_inteventions_keys.join(','));
             });
 
             // triggered on changing intervention line

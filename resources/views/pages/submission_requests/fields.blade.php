@@ -27,6 +27,8 @@
             </div>
         </div>
     </div>
+    
+    <input type="hidden" id="astd_interventions_ids" name="astd_interventions_ids" value="0">
 
     <div id='request_type_div' class="form-group mb-3">
         {{-- <label class="col-lg-12 control-label">Intervention Line</label> --}}

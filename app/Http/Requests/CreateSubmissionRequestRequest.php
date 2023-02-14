@@ -53,7 +53,7 @@ class CreateSubmissionRequestRequest extends AppBaseFormRequest
         
         $return_arr['amount_requested'] = 'required|numeric|min:0|max:100000000000';
 
-        return$return_arr;
+        return $return_arr;
     }
 
     public function attributes() {

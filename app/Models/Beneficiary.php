@@ -6,6 +6,7 @@ use Hash;
 use Response;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\SubmissionRequest;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -104,5 +105,43 @@ class Beneficiary extends Model
         'tf_iterum_portal_beneficiary_status' => 'string',
         'tf_iterum_portal_response_meta_data' => 'string'
     ];
+
+    public function hasRequest($tf_iterum_intervention_line_key_id, $intervention_year1=null, $intervention_year2=null, $intervention_year3=null, $intervention_year4=null) {
+
+        $requests = SubmissionRequest::where('beneficiary_id',$this->id)
+                    ->where('is_aip_request', true)
+                    ->where('tf_iterum_intervention_line_key_id',$tf_iterum_intervention_line_key_id)
+                    ->get();
+
+        if ($requests != null){
+            foreach($requests as $item){
+                $intervention_years = array(
+                  $item->intervention_year1, $item->intervention_year2,
+                  $item->intervention_year3, $item->intervention_year4
+                );
+
+                $request_years = [];
+                if ($intervention_year1!=0){ $request_years []= $intervention_year1; }
+                if ($intervention_year2!=0){ $request_years []= $intervention_year2; }
+                if ($intervention_year3!=0){ $request_years []= $intervention_year3; }
+                if ($intervention_year4!=0){ $request_years []= $intervention_year4; }
+                $intersect = array_intersect($request_years, $intervention_years);
+
+                Log::info("request items");
+                Log::info(print_r($request_years, true));
+
+                Log::info("intervention items");
+                Log::info(print_r($intervention_years, true));
+
+                Log::info("intersect");
+                Log::info(print_r($intersect, true));
+
+                if ( $intersect!=null && is_array($intersect) && count($intersect)>0 ){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 }

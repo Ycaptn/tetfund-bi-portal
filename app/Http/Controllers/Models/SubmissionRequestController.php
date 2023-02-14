@@ -133,6 +133,12 @@ class SubmissionRequestController extends BaseController
         $current_user = auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
         
+        // checki if a similar request does exit
+        if (!str_contains($request->astd_interventions_ids, $request->tf_iterum_intervention_line_key_id) && $beneficiary_member->beneficiary->hasRequest($request->tf_iterum_intervention_line_key_id, $input['intervention_year1'], $input['intervention_year2'], $input['intervention_year3'], $input['intervention_year4'])) {
+                $error_msg = "A previous submission request for one or more of the selected years has already been submitted.";
+                return redirect()->back()->withErrors([$error_msg])->withInput();
+        }
+        
         $input['type'] = $request->request_tranche ?? 'Request for AIP';
         $input['status'] = 'not-submitted';
         $input['requesting_user_id'] = $current_user->id;
@@ -551,6 +557,7 @@ class SubmissionRequestController extends BaseController
             return redirect(route('tf-bi-submission.submissionRequests.index'));
         }
 
+        $current_user = auth()->user();
         if ($submissionRequest->status == 'not-submitted' && $submissionRequest->is_aip_request==true) {
             $input = $request->all();
             $input['intervention_year1'] = 0;
