@@ -424,6 +424,7 @@ class SubmissionRequestController extends BaseController
             $intervention_types_server_response = $submitted_request_data->intervention_beneficiary_type;
             $submission_allocations = $submitted_request_data->submission_allocations;
             $years = $submitted_request_data->years;
+            $bi_request_released_communications = $submitted_request_data->releasedBICommunication;
 
         } else {
 
@@ -433,7 +434,7 @@ class SubmissionRequestController extends BaseController
             $intervention_types_server_response = $tETFundServer->get_row_records_from_server("tetfund-ben-mgt-api/interventions/".$submissionRequest->tf_iterum_intervention_line_key_id, $pay_load);
 
             // intervention checklist group name
-            $checklist_group_name = self::generateCheckListGroupName($intervention_types_server_response->name, $submissionRequest);
+            $checklist_group_name = self::generateCheckListGroupName($intervention_types_server_response->name ?? '', $submissionRequest);
 
             // get checklist for specified intervention
             $tETFundServer = new TETFundServer();   /* server class constructor */
@@ -482,7 +483,7 @@ class SubmissionRequestController extends BaseController
                     'years' => $years,
                     'checklist_items' => $checklist_items,
                     'fund_available' => optional($submission_allocations)->total_funds,
-                    'submission_allocations' => optional($submission_allocations)->allocation_records,
+                    'submission_allocations' => $submission_allocations->allocation_records ?? [],
                     'beneficiary' => $beneficiary, 
                     'submitted_request_data' => $submitted_request_data ?? []
                 ]);
@@ -494,7 +495,8 @@ class SubmissionRequestController extends BaseController
             ->with('years', $years)
             ->with('checklist_items', $checklist_items)
             ->with('fund_available', optional($submission_allocations)->total_funds)
-            ->with('submission_allocations', optional($submission_allocations)->allocation_records)
+            ->with('submission_allocations', $submission_allocations->allocation_records ?? [])
+            ->with('bi_request_released_communications', $bi_request_released_communications ?? [])
             ->with('beneficiary', $beneficiary)
             ->with('submitted_request_data', $submitted_request_data ?? []);
     }

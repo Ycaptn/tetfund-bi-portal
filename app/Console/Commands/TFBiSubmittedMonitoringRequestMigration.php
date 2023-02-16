@@ -84,14 +84,12 @@ class TFBiSubmittedMonitoringRequestMigration extends Command
                         // fetching desk officer user details
                         $desk_officer = User::where('email', $desk_officer_email)->first();
 
-                        // fetching AIP submission request from BI-portal having similar details
-                        $submission_request = SubmissionRequest::whereNull('parent_id')
-                            ->where([
-                                'is_aip_request' => true,
-                                'is_monitoring_request' => false,
-                                'beneficiary_id' => $bi_portal_beneficiary->id,
-                                'tf_iterum_portal_key_id' => $iterum_monitoring_request->beneficiary_request_id,
-                            ])->first();
+                        // fetching beneficiary submission request from BI-portal having similar details
+                        $submission_request = SubmissionRequest::where('is_monitoring_request', false)
+                            ->where('beneficiary_id', $bi_portal_beneficiary->id)
+                            ->where('tf_iterum_portal_key_id', $iterum_monitoring_request->beneficiary_request_id)
+                            ->first();
+
 
                         // skip if submission_request aip does not exist
                         if (empty($submission_request) || $submission_request == null) {
@@ -103,11 +101,7 @@ class TFBiSubmittedMonitoringRequestMigration extends Command
                                 'is_monitoring_request' => true,
                                 'parent_id' => $submission_request->id,
                                 'tf_iterum_portal_key_id' => $iterum_monitoring_request->id,
-                                'beneficiary_id' => $bi_portal_beneficiary->id,
-                                'intervention_year1' => $submission_request->intervention_year1 ?? '0',
-                                'intervention_year2' => $submission_request->intervention_year2 ?? '0',
-                                'intervention_year3' => $submission_request->intervention_year3 ?? '0',
-                                'intervention_year4' => $submission_request->intervention_year4 ?? '0',
+                                'beneficiary_id' => $bi_portal_beneficiary->id
                             ])->first();
 
                         // checking if monitoring request exist or not
@@ -140,7 +134,7 @@ class TFBiSubmittedMonitoringRequestMigration extends Command
                         $bi_monitoring_request->created_at = $iterum_monitoring_request->created_at;
                         $bi_monitoring_request->updated_at = $iterum_monitoring_request->updated_at;
                         $bi_monitoring_request->amount_requested = $submission_request->amount_requested;
-                        $bi_monitoring_request->tf_iterum_intervention_line_key_id = $submission_request->interven_benef_type_id;
+                        $bi_monitoring_request->tf_iterum_intervention_line_key_id = $submission_request->tf_iterum_intervention_line_key_id;
                         $bi_monitoring_request->parent_id = $submission_request->id;
                         $bi_monitoring_request->is_monitoring_request = true;
 

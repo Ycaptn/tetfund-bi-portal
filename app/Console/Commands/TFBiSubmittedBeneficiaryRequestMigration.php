@@ -50,10 +50,11 @@ class TFBiSubmittedBeneficiaryRequestMigration extends Command
         echo "Running Submitted Beneficiary Requests Migration from TETFund_Iterum_Portal to Submission Request on TETFund_Beneficiary_Portal \n";
 
         $iterum_beneficiary_requests = DB::connection($iterum_db_config_name)
-                                        ->table("tf_bip_beneficiary_requests")
-                                        ->orderBy('created_at','ASC')
-                                        ->whereNull('deleted_at')
-                                        ->get();
+                    ->table("tf_bip_beneficiary_requests")
+                    ->join('tf_bm_interven_benef_types', 'tf_bm_interven_benef_types.id', 'tf_bip_beneficiary_requests.interven_benef_type_id')
+                    ->orderBy('tf_bip_beneficiary_requests.created_at','ASC')
+                    ->whereNull('tf_bip_beneficiary_requests.deleted_at')
+                    ->get(['tf_bip_beneficiary_requests.*', 'tf_bm_interven_benef_types.intervention_id', 'tf_bm_interven_benef_types.name']);
 
         $beneficiary_requests_count = count($iterum_beneficiary_requests);
         $successful_replicated_beneficiary_request_count = 0;
@@ -86,14 +87,9 @@ class TFBiSubmittedBeneficiaryRequestMigration extends Command
                         $submission_request = SubmissionRequest::where([
                                 'tf_iterum_portal_key_id' => $iterum_beneficiary_request->id,
                                 'is_monitoring_request' => false,
-                                'beneficiary_id' => $bi_portal_beneficiary->id,
-                                'tf_iterum_intervention_line_key_id' => $iterum_beneficiary_request->interven_benef_type_id,
-                                'intervention_year1' => $iterum_beneficiary_request->intervention_year1 ?? '0',
-                                'intervention_year2' => $iterum_beneficiary_request->intervention_year2 ?? '0',
-                                'intervention_year3' => $iterum_beneficiary_request->intervention_year3 ?? '0',
-                                'intervention_year4' => $iterum_beneficiary_request->intervention_year4 ?? '0',
+                                'tf_iterum_intervention_line_key_id' => $iterum_beneficiary_request->intervention_id,
                             ])->first();
-
+ 
                         // checking if submission request exist or not
                         if (empty($submission_request) || $submission_request == null) {
                             $submission_request = new SubmissionRequest();
@@ -129,20 +125,14 @@ class TFBiSubmittedBeneficiaryRequestMigration extends Command
                         $submission_request->updated_at = $iterum_beneficiary_request->updated_at;
 
                         $submission_request->amount_requested = $iterum_beneficiary_request->request_amount;
-                        $submission_request->tf_iterum_intervention_line_key_id = $iterum_beneficiary_request->interven_benef_type_id;
+                        $submission_request->tf_iterum_intervention_line_key_id = $iterum_beneficiary_request->intervention_id;
 
                         // retrieving request when iterum beneficiary request parent id is not null
                         if ($iterum_beneficiary_request->parent_id != null) {
                             $parent_submission_request = SubmissionRequest::where([
-                                'tf_iterum_portal_key_id' => $iterum_beneficiary_request->id,
-                                'parent_id' => null,
-                                'is_monitoring_request' => false,
-                                'beneficiary_id' => $bi_portal_beneficiary->id,
-                                'tf_iterum_intervention_line_key_id' => $iterum_beneficiary_request->interven_benef_type_id,
-                                'intervention_year1' => $iterum_beneficiary_request->intervention_year1 ?? '0',
-                                'intervention_year2' => $iterum_beneficiary_request->intervention_year2 ?? '0',
-                                'intervention_year3' => $iterum_beneficiary_request->intervention_year3 ?? '0',
-                                'intervention_year4' => $iterum_beneficiary_request->intervention_year4 ?? '0',
+                                'tf_iterum_portal_key_id' => $iterum_beneficiary_request->parent_id,
+                                'is_aip_request' => true,
+                                'tf_iterum_intervention_line_key_id' => $iterum_beneficiary_request->intervention_id,
                             ])->first(); 
 
                             $submission_request->parent_id = $parent_submission_request->id ?? null;
