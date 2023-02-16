@@ -6,7 +6,7 @@
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 id="lbl-submission-communication-content-title" class="modal-title"><span id="prefix_info"></span> Title</h5>
+                <h5 id="lbl-submission-communication-content-title" class="modal-title"><span id="prefix_info"></span> Preview Communication Content</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
