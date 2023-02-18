@@ -186,9 +186,10 @@ Submission Request
                         </form>
                     </div>
                 </div>
-            @endif           
+            @endif
+
             <div class="row">
-                
+
                 {{-- details and allocation preview modal --}}
                 @include('tf-bi-portal::pages.submission_requests.partials.submission_details')
 

@@ -14,6 +14,7 @@ use App\Events\SubmissionRequestDeleted;
 
 use App\Http\Requests\API\CreateSubmissionRequestAPIRequest;
 use App\Http\Requests\API\UpdateSubmissionRequestAPIRequest;
+use App\Http\Requests\API\SubmissionClarificationResponseAPIRequest;
 
 use Hasob\FoundationCore\Traits\ApiResponder;
 use Hasob\FoundationCore\Models\Organization;
@@ -234,7 +235,7 @@ class SubmissionRequestAPIController extends AppBaseController
 
         $pay_load = $submissionRequest->toArray();
         $pay_load['_method'] = 'POST';
-        $pay_load['submission_attachment_array'] = $submission_attachment_array;
+        $pay_load['submission_attachment_array'] = $submission_attachment_array ?? [];
         $pay_load['tf_iterum_aip_request_id'] = $submissionRequest->getParentAIPSubmissionRequest()->tf_iterum_portal_key_id ?? null;
         $pay_load['tf_beneficiary_id'] = $beneficiary->tf_iterum_portal_key_id;
         $pay_load['submission_user'] = $current_user;
@@ -258,5 +259,42 @@ class SubmissionRequestAPIController extends AppBaseController
         }
 
         return $this->sendError('Oops!!!, An unknown error was encountered while processing final submission.');
+    }
+
+    public function clarification_response(SubmissionClarificationResponseAPIRequest $request) {
+        
+        $submissionRequest = SubmissionRequest::find($request->submission_request_id);
+        $pay_load = [
+            '_method' => 'POST',
+            'id' => $request->id,
+            'user_email' => auth()->user()->email,
+            'beneficiary_request_id' => $submissionRequest->tf_iterum_portal_key_id,
+            'text_clarificarion_response' => $request->text_clarificarion_response
+        ];
+
+        // handling monitoring request optional attachment
+        if ($request->hasFile('attachment_clarificarion_response')) {
+            $label = 'Clarification Response Optional Attachment';
+            $discription = 'This Document Contains the ' . $label;
+
+            // deleting old attachments if any
+            $attachments = $submissionRequest->get_specific_attachment($submissionRequest->id, $label);
+            if ($attachments != null) {
+                $submissionRequest->delete_attachment($attachments->label);
+            }
+
+            $clarification_attachable = $submissionRequest->attach(auth()->user(), $label, $discription, $request->attachment_clarificarion_response);
+        }
+
+        $pay_load['attachment_clarificarion_response'] = $clarification_attachable->attachment ?? null;
+
+        $tETFundServer = new TETFundServer();   /* server class constructor */
+        $clarity_response_to_tetfund = $tETFundServer->processClarificationResponse($pay_load, $request->id);
+
+        if ($clarity_response_to_tetfund == true) {
+            return $this->sendSuccess('Submission Request Clarification/Query Response Successfully Sent!');
+        }
+
+        return $this->sendError('An unknown error was encountered while processing clarificarion response');
     }
 }

@@ -163,6 +163,8 @@
         </div>
     </div>
 
+    @include('tf-bi-portal::pages.submission_requests.partials.submission_request_queries')
+
     {{-- display list of related monitoring requests --}}
     @if(isset($all_monitoring_requests) && count($all_monitoring_requests) > 0)
         <div class="col-sm-12 mt-5">

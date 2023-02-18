@@ -62,6 +62,12 @@
 	    				</td>
 	    			</tr>
 	    		@endforeach
+	    	@else
+	    		<tr>
+	    			<td class="text-center text-danger" colspan="5">
+	    				<i>No Communication Available</i>
+	    			</td>
+	    		</tr>
 	    	@endif
     	</tbody>
     </table>
