@@ -33,8 +33,13 @@
                                         $submission_attachment = $submissionRequest->get_specific_attachment($submissionRequest->id, $item->item_label);
                                     @endphp
                                     @if($submission_attachment != null)
+                                        @php
+                                            $preview_label = str_replace('auditclearancefinalpaymentchecklist-', '', $submission_attachment->label);
+                                            $preview_label = str_replace('auditclearancefinalpaymentchecklist-', '', $preview_label);
+                                            $preview_label = ucwords($preview_label);
+                                        @endphp
                                         <div class="col-sm-12">
-                                            <a href="{{ route('fc.attachment.show', $submission_attachment->id) }}" target="__blank" title="Preview this Attachment">{{ ucwords($submission_attachment->label) }}</a> &nbsp; &nbsp;
+                                            <a href="{{ route('fc.attachment.show', $submission_attachment->id) }}" target="__blank" title="Preview this Attachment">{{ $preview_label }}</a> &nbsp; &nbsp;
                                             @if($submissionRequest->status == 'not-submitted')
                                                 <a data-toggle="tooltip" 
                                                     title="Delete this Attachment"

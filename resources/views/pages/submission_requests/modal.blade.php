@@ -372,6 +372,13 @@ $(document).ready(function() {
                 closeOnCancel: true
             }, function(isConfirm) {
                 if (isConfirm) {
+                    swal({
+                        title: '<div id="spinner-request-related" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br>Deleting...',
+                        text: 'Please wait while SubmissionRequest is being deleted <br><br> Do not refresh this page! ',
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        html: true
+                    });
 
                     let endPointUrl = "{{ route('tf-bi-portal-api.submission_requests.destroy','') }}/"+itemId;
 
@@ -437,6 +444,13 @@ $(document).ready(function() {
                 closeOnCancel: true
             }, function(isConfirm) {
                 if (isConfirm) {
+                    swal({
+                        title: '<div id="spinner-request-related" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br>Deleting...',
+                        text: 'Please wait while SubmissionRequest Attachment is being deleted <br><br> Do not refresh this page! ',
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        html: true
+                    });
 
                     let endPointUrl = "{{ route('tf-bi-portal-api.submission_requests.destroy','') }}/"+submissionRequestId;
 

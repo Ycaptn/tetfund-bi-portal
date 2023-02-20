@@ -87,10 +87,10 @@ class TETFundServer {
         }
     }
     
-    public static function getInterventionChecklistData($checklist_name) {
+    public static function getInterventionChecklistData($checklist_name, $checklist_name_audit=null) {
         $server_api_url = Config::get('keys.tetfund.server_api_url');
         $token = self::get_auth_token();
-        $checklists = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/intervention-checklist/{$checklist_name}", null);
+        $checklists = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/intervention-checklist/{$checklist_name}?checklist_name_audit={$checklist_name_audit}", null);
         $api_response = curl_exec($checklists);
         $api_response_data = json_decode($api_response);
         curl_close ($checklists);

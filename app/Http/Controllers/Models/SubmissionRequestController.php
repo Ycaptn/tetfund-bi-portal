@@ -22,6 +22,7 @@ use Hasob\FoundationCore\View\Components\CardDataView;
 
 use Flash;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Managers\TETFundServer;
@@ -165,30 +166,45 @@ class SubmissionRequestController extends BaseController
 
     /* implement processing success */
     public function processSubmissionRequestAttachment(ProcessAttachmentsSubmissionRequest $request, $id) {
-        $attachement_inputs = $request->all();
+        $attachment_inputs = $request->all();
         $submissionRequest = SubmissionRequest::find($request->id);
 
         // intervention checklist group name
-        $checklist_group_name = self::generateCheckListGroupName($request->intervention_line_name, $submissionRequest);
+        $checklist_group_name = self::generateCheckListGroupName($request->intervention_line_name??'', $submissionRequest);
 
+        // get audit checklist for tranches applicable
+        if ($submissionRequest->is_second_tranche_request || $submissionRequest->is_final_tranche_request) {
+            $checklist_group_name_audit = self::generateCheckListGroupName($request->intervention_line_name??'', $submissionRequest, true);
+        }
+        
         // get checklist for specified intervention
         $tETFundServer = new TETFundServer();   /* server class constructor */
-        $checklist_items = $tETFundServer->getInterventionChecklistData($checklist_group_name);
+        $checklist_items = $tETFundServer->getInterventionChecklistData($checklist_group_name, $checklist_group_name_audit??null);
         
         //mapping checklist id to item_label 
         foreach ($checklist_items as $checklist){
             $checklist_items_arr[$checklist->id] = $checklist->item_label;
+            if (str_contains(strtolower($checklist->list_name), 'auditclearancesecondtranchepaymentchecklist')) { 
+                $checklist_items_arr[$checklist->id] = 'auditclearancesecondtranchepaymentchecklist-'.$checklist->item_label;
+            } elseif  (str_contains(strtolower($checklist->list_name), 'auditclearancefinalpaymentchecklist')) {
+                $checklist_items_arr[$checklist->id] = 'auditclearancefinalpaymentchecklist-'.$checklist->item_label;
+            }
         }
 
         //processing individual checklist file uploads
         if($request->checklist_input_fields != "") {
             $checklist_input_fields_arr = explode(',', $request->checklist_input_fields);
             foreach ($checklist_input_fields_arr as $checklist_input_name) {
-                if (isset($attachement_inputs[$checklist_input_name]) && $request->hasFile($checklist_input_name)) {
+                if (isset($attachment_inputs[$checklist_input_name]) && $request->hasFile($checklist_input_name)) {
                     $checklist_id = substr("$checklist_input_name",10);
-                    $label = \Illuminate\Support\Str::limit($checklist_items_arr[$checklist_id],499,"");
-                    $discription = 'This Document Contains the ' . $label ;
-                    $submissionRequest->attach(auth()->user(), $label, $discription, $attachement_inputs[$checklist_input_name]);
+                    $checklist_id = str_replace('checklist-', '', $checklist_input_name);
+
+                    $label = Str::limit($checklist_items_arr[$checklist_id] ,495, "");
+                    $concate_description_label = str_replace('auditclearancefinalpaymentchecklist-', '', $label);
+                    $concate_description_label = str_replace('auditclearancesecondtranchepaymentchecklist-', '', $concate_description_label);
+                    $discription = 'This Document Contains the ' . $concate_description_label;
+
+                    $submissionRequest->attach(auth()->user(), $label, $discription, $attachment_inputs[$checklist_input_name]);
                 }
             }
         }
@@ -197,7 +213,7 @@ class SubmissionRequestController extends BaseController
         if (isset($request->additional_attachment) && $request->hasFile('additional_attachment')) {
             $label = $request->additional_attachment_name . ' Additional Attachment'; 
             $discription = 'This Document Contains the ' . $label ;
-            $submissionRequest->attach(auth()->user(), $label, $discription, $attachement_inputs['additional_attachment']);
+            $submissionRequest->attach(auth()->user(), $label, $discription, $attachment_inputs['additional_attachment']);
         }   
 
         $success_message = 'Submission Request Attachments saved successfully!';
@@ -372,20 +388,20 @@ class SubmissionRequestController extends BaseController
     }
 
     // generate checklist name
-    public function generateCheckListGroupName($intervention_line_name, $submissionRequest) {
+    public function generateCheckListGroupName($intervention_line_name, $submissionRequest, $is_audit_checklist=false) {
 
-        if ($submissionRequest->is_aip_request == true) {
+        if ($submissionRequest->is_aip_request == true)  {
             $checklist_group_name = $intervention_line_name.' - AIPCheckList';
         } elseif ($submissionRequest->is_first_tranche_request == true) {
             $checklist_group_name = $intervention_line_name.' - FirstTranchePaymentCheckList';
-        } elseif ($submissionRequest->is_second_tranche_request == true && strtolower($submissionRequest->type) == '2nd tranche payment') {
+        } elseif ($submissionRequest->is_second_tranche_request == true && $is_audit_checklist==false) {
             $checklist_group_name = $intervention_line_name.' - SecondTranchePaymentCheckList';
-        } elseif ($submissionRequest->is_second_tranche_request == true && strtolower($submissionRequest->type) == '2nd tranche payment - audit') {
-            $checklist_group_name = $intervention_line_name.' - SecondTranchePaymentCheckListAudit';
-        } elseif ($submissionRequest->is_final_tranche_request == true && strtolower($submissionRequest->type) == 'final tranche payment') {
+        } elseif ($submissionRequest->is_second_tranche_request == true && $is_audit_checklist==true) {
+            $checklist_group_name = $intervention_line_name.' - AuditClearanceSecondTranchePaymentCheckList';
+        } elseif ($submissionRequest->is_final_tranche_request == true && $is_audit_checklist==false) {
             $checklist_group_name = $intervention_line_name.' - FinalPaymentCheckList';
-        } elseif ($submissionRequest->is_final_tranche_request == true && strtolower($submissionRequest->type) == 'final tranche payment audit') {
-            $checklist_group_name = $intervention_line_name.' - FinalPaymentCheckListAudit';
+        } elseif ($submissionRequest->is_final_tranche_request == true && $is_audit_checklist==true) {
+            $checklist_group_name = $intervention_line_name.' - AuditClearanceFinalPaymentCheckList';
         } elseif ($submissionRequest->is_monitoring_request == true) {
             $checklist_group_name = $intervention_line_name.' - MonitoringEvaluationCheckList';
         }
@@ -436,9 +452,14 @@ class SubmissionRequestController extends BaseController
             // intervention checklist group name
             $checklist_group_name = self::generateCheckListGroupName($intervention_types_server_response->name ?? '', $submissionRequest);
 
+            // get audit checklist for tranches applicable
+            if ($submissionRequest->is_second_tranche_request || $submissionRequest->is_final_tranche_request) {
+                $checklist_group_name_audit = self::generateCheckListGroupName($intervention_types_server_response->name??'', $submissionRequest, true);
+            }
+
             // get checklist for specified intervention
             $tETFundServer = new TETFundServer();   /* server class constructor */
-            $checklist_items = $tETFundServer->getInterventionChecklistData($checklist_group_name);
+            $checklist_items = $tETFundServer->getInterventionChecklistData($checklist_group_name, $checklist_group_name_audit??null);
             
             $years = array();
             if ($submissionRequest->intervention_year1 != null) {
