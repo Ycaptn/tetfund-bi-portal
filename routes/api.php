@@ -54,6 +54,7 @@ $orgRoutes = function() {
                 Route::get('submission_requests/get_all_related_nomination_request/{type}', [\App\Http\Controllers\API\SubmissionRequestAPIController::class, 'get_all_related_nomination_request'])->name('submission_requests.get_all_related_nomination_request');
                 Route::post('submission_requests/process_m_r_to_tetfund/{id}', [\App\Http\Controllers\API\SubmissionRequestAPIController::class, 'process_m_r_to_tetfund'])->name('submission_requests.process_m_r_to_tetfund');
                 Route::post('submission_requests/clarification_response', [\App\Http\Controllers\API\SubmissionRequestAPIController::class, 'clarification_response'])->name('submission_requests.clarification_response');
+                Route::post('submission_requests/reprioritize/{id}', [\App\Http\Controllers\API\SubmissionRequestAPIController::class, 'reprioritize'])->name('submission_requests.reprioritize');
             });
 
         });

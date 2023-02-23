@@ -218,6 +218,16 @@ class TETFundServer {
         return $api_response_data;
     }
 
+    public static function processSubmissionReprioritization($pay_load, $tf_beneficiary_request_id) {
+        $server_api_url = Config::get('keys.tetfund.server_api_url');
+        $token = self::get_auth_token();
+        $ch = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/process-submission-reprioritization/{$tf_beneficiary_request_id}", $pay_load);
+        $api_response = curl_exec($ch);
+        $api_response_data = json_decode($api_response);
+        curl_close ($ch);
+        return $api_response_data;
+    }
+
     public static function processSubmissionRecallRequest()
     {
         //TODO: perform operation, return return the requested object and success msg if ok, error otherwise

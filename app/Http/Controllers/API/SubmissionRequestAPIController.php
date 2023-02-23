@@ -14,6 +14,7 @@ use App\Events\SubmissionRequestDeleted;
 
 use App\Http\Requests\API\CreateSubmissionRequestAPIRequest;
 use App\Http\Requests\API\UpdateSubmissionRequestAPIRequest;
+use App\Http\Requests\API\ReprioritizeSubmissionRequestAPIRequest;
 use App\Http\Requests\API\SubmissionClarificationResponseAPIRequest;
 
 use Hasob\FoundationCore\Traits\ApiResponder;
@@ -296,5 +297,50 @@ class SubmissionRequestAPIController extends AppBaseController
         }
 
         return $this->sendError('An unknown error was encountered while processing clarificarion response');
+    }
+
+    public function reprioritize(ReprioritizeSubmissionRequestAPIRequest $request, $id) {
+        $submissionRequest = SubmissionRequest::find($id);
+
+        if (empty($submissionRequest) || !isset($submissionRequest->tf_iterum_portal_key_id)) {
+            return $this->sendError('Submission Request was not found');
+        }
+
+        $submissionRequest->amount_requested = $request->reprioritize_amount_requested;
+        $submissionRequest->intervention_year1 = $request->reprioritize_intervention_year1 ?? $submissionRequest->intervention_year1;
+        $submissionRequest->intervention_year2 = $request->reprioritize_intervention_year2  ?? $submissionRequest->intervention_year2;
+        $submissionRequest->intervention_year3 = $request->reprioritize_intervention_year3  ?? $submissionRequest->intervention_year3;
+        $submissionRequest->intervention_year4 = $request->reprioritize_intervention_year4  ?? $submissionRequest->intervention_year4;
+        $submissionRequest->save();
+
+        // handling monitoring request optional attachment
+        if ($request->hasFile('reprioritize_submission_attachment')) {
+            $label = 'Reprioritization Additional Attachment';
+            $discription = 'This Document Contains the ' . $label;
+
+            $reprioritize_attachment = $submissionRequest->attach(auth()->user(), $label, $discription, $request->reprioritize_submission_attachment);
+        }
+
+        $pay_load = [
+            '_method' => 'POST',
+            'user_email' => auth()->user()->email,
+            'beneficiary_request_id' => $submissionRequest->tf_iterum_portal_key_id,
+            'reprioritize_amount_requested' => $submissionRequest->amount_requested,
+            'reprioritize_intervention_year1' => $submissionRequest->intervention_year1,
+            'reprioritize_intervention_year2' => $submissionRequest->intervention_year2,
+            'reprioritize_intervention_year3' => $submissionRequest->intervention_year3,
+            'reprioritize_intervention_year4' => $submissionRequest->intervention_year4,
+            'reprioritize_comment' => $request->reprioritize_submission_comment ?? null,
+            'reprioritize_attachment' => $reprioritize_attachment->attachment ?? null,
+        ];
+
+        $tETFundServer = new TETFundServer();   /* server class constructor */
+        $tf_reprioritization_response = $tETFundServer->processSubmissionReprioritization($pay_load, $submissionRequest->tf_iterum_portal_key_id);
+
+        if ($tf_reprioritization_response == true) {
+            return $this->sendSuccess('Submission Request Reprioritization Processed and Successfully Saved!');
+        }
+
+        return $this->sendError('An unknown error was encountered while processing submission reprioritization.');
     }
 }

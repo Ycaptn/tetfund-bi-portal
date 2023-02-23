@@ -93,6 +93,11 @@
             <i class="fa fa-money fa-fw"></i> <b>Total Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($fund_available) ? $fund_available : 0), 2) }} <br/>
             <i class="fa fa-money fa-fw"></i> <b>Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>
             <i class="fa fa-thumbs-up fa-fw"> </i><b>Current Stage &nbsp; - &nbsp; </b> &nbsp; {{ strtoupper($submitted_request_data->work_item->active_assignment->assigned_user->department->long_name ?? $submissionRequest->status) }}<br/><br/>
+            
+            {{-- process repriotization for intervention request --}}
+            @if($submissionRequest->status=='submitted' && !empty($submitted_request_data) && $submissionRequest->is_aip_request==true && empty($get_all_related_requests))
+                @include('tf-bi-portal::pages.submission_requests.partials.submission_request_reprioritization')
+            @endif
 
             {{-- current intervention monitoring request --}}
             @if($submissionRequest->status=='submitted' && !empty($submitted_request_data) && $submissionRequest->is_aip_request==true && $submitted_request_data->has_generated_aip==true)
@@ -151,8 +156,11 @@
             @endif
 
             @if($submissionRequest->status == 'submitted' && isset($submitted_request_data))
+            @php
+                $dept_name = $submitted_request_data->work_item->active_assignment->assigned_user->department->long_name ?? $submitted_request_data->work_item->assignments[0]->assigned_user->department->long_name;
+            @endphp
                 <small class="text-danger">
-                    Please note that your <b>{{$submissionRequest->is_aip_request==true ? 'Approval-In-Principle (AIP)' : $submissionRequest->type.' Request' }}</b> is currently being processed{!! ucwords(' <b>@ TETFund ' . $submitted_request_data->work_item->active_assignment->assigned_user->department->long_name . ' Department.</b>' ?? '.') !!}
+                    Please note that your <b>{{$submissionRequest->is_aip_request==true ? 'Approval-In-Principle (AIP)' : $submissionRequest->type.' Request' }}</b> is currently being processed{!! ucwords(' <b>@ TETFund ' . $dept_name . ' Department.</b>' ?? '.') !!}
                         Once final approval is completed, you will be contacted for collection.               
                 </small>
             @else
@@ -163,6 +171,7 @@
         </div>
     </div>
 
+    {{-- beneficiary request query/clarification response partial view --}}
     @include('tf-bi-portal::pages.submission_requests.partials.submission_request_queries')
 
     {{-- display list of related monitoring requests --}}
