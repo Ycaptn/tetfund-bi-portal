@@ -10,7 +10,9 @@
             $years_str = substr($years_str, 0,strrpos($years_str,",")) . $years[count($years) - 1];
         }
     }
-@endphp      
+
+    $aip_draft_principal = isset($submitted_request_data->response_documents_generated->{'AIP-Draft-Principal-Copy'}) ? $submitted_request_data->response_documents_generated->{'AIP-Draft-Principal-Copy'} : null; 
+@endphp
 
 {{-- allocation preview modal --}}
 <div class="modal fade" id="mdl-submissionRequestAllocationAmount-modal" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
@@ -159,9 +161,32 @@
             @php
                 $dept_name = $submitted_request_data->work_item->active_assignment->assigned_user->department->long_name ?? $submitted_request_data->work_item->assignments[0]->assigned_user->department->long_name;
             @endphp
-                <small class="text-danger">
-                    Please note that your <b>{{$submissionRequest->is_aip_request==true ? 'Approval-In-Principle (AIP)' : $submissionRequest->type.' Request' }}</b> is currently being processed{!! ucwords(' <b>@ TETFund ' . $dept_name . ' Department.</b>' ?? '.') !!}
-                        Once final approval is completed, you will be contacted for collection.               
+                <small>
+                    @if(isset($submitted_request_data->response_documents_generated->{'AIP-Draft-Principal-Copy'}))
+                        <span class="text-success">
+                            Please note that your <b>{{$submissionRequest->is_aip_request==true ? 'Approval-In-Principle (AIP)' : $submissionRequest->type.' Request' }}</b> has been completely processed{!! ucwords(' <b>@ TETFund ' . $dept_name . ' Department.</b>' ?? '.') !!}
+                            You are hereby notified to avail for collection as the final approval has been completed. <br>
+                        </span>
+                        @if($aip_draft_principal != null)
+                            <form action="{{url('tf-bi-portal/submissionRequests/displayResponsAttachment')}}" target="__blank" method="POST">
+                                @csrf
+                                @method('POST')
+                                <input type="hidden" name="path" value="{{$aip_draft_principal->path}}">
+                                <input type="hidden" name="label" value="{{$aip_draft_principal->label}}">
+                                <input type="hidden" name="file_type" value="{{$aip_draft_principal->file_type}}">
+                                <input type="hidden" name="storage_driver" value="{{$aip_draft_principal->storage_driver}}">
+                                <button type="submit" class="btn btn-sm btn-success mt-2 pull-right">
+                                    <span class="fa fa-file"></span>
+                                    AIP-Draft Document
+                                </button>
+                            </form>
+                        @endif
+                    @else
+                        <span class="text-danger"> 
+                            Please note that your <b>{{$submissionRequest->is_aip_request==true ? 'Approval-In-Principle (AIP)' : $submissionRequest->type.' Request' }}</b> is currently being processed{!! ucwords(' <b>@ TETFund ' . $dept_name . ' Department.</b>' ?? '.') !!}
+                            Once final approval is completed, you will be contacted for collection.
+                        </span>
+                    @endif          
                 </small>
             @else
                 <small class="text-danger">

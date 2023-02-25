@@ -579,8 +579,7 @@ class SubmissionRequestController extends BaseController
      *
      * @return Response
      */
-    public function update(Organization $org, $id, UpdateSubmissionRequestRequest $request)
-    {
+    public function update(Organization $org, $id, UpdateSubmissionRequestRequest $request) {
         /** @var SubmissionRequest $submissionRequest */
         $submissionRequest = SubmissionRequest::find($id);
 
@@ -638,6 +637,21 @@ class SubmissionRequestController extends BaseController
         return redirect(route('tf-bi-submission.submissionRequests.index'));
     }
 
+    public function displayResponsAttachment(Organization $org, Request $request) {
+        if (isset($request->path) && isset($request->label) && isset($request->file_type) && isset($request->storage_driver)) {
+
+            if ($request->storage_driver == 'azure' || $request->storage_driver == 's3') {
+                return \Illuminate\Support\Facades\Storage::disk($request->storage_driver)->download(
+                    $request->path,
+                    $request->label,
+                    ['Content-Disposition' => 'inline; filename="' . $request->label . '"']
+                );
+            }
+
+            return response()->file(base_path($request->path));
+        }        
+    }
+
     /**
      * Remove the specified SubmissionRequest from storage.
      *
@@ -647,8 +661,7 @@ class SubmissionRequestController extends BaseController
      *
      * @return Response
      */
-    public function destroy(Organization $org, $id)
-    {
+    public function destroy(Organization $org, $id) {
         /** @var SubmissionRequest $submissionRequest */
         $submissionRequest = SubmissionRequest::find($id);
 
