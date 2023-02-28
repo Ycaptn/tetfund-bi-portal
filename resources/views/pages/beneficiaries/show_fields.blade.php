@@ -1,5 +1,5 @@
 <!-- Full Name Field -->
-<div id="div_beneficiary_full_name" class="col-sm-12 ">
+{{-- <div id="div_beneficiary_full_name" class="col-sm-12 ">
     <p>
         <strong> {!! Form::label('full_name', 'BENEFICIARY NAME:', ['class'=>'control-label']) !!} </strong> &nbsp;
         <span id="spn_beneficiary_full_name">
@@ -10,7 +10,7 @@
         @endif
         </span>
     </p>
-</div>
+</div> --}}
 
 <!-- Email Field -->
 <div id="div_beneficiary_email" class="col-sm-6">
@@ -27,7 +27,7 @@
 </div>
 
 <!-- Short Name Field -->
-<div id="div_beneficiary_short_name" class="col-sm-6">
+{{-- <div id="div_beneficiary_short_name" class="col-sm-6">
     <p>
         <strong> {!! Form::label('short_name', 'SHORT NAME:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
         <span id="spn_beneficiary_short_name">
@@ -38,7 +38,7 @@
         @endif
         </span>
     </p>
-</div>
+</div> --}}
 
 <!-- Official Email Field -->
 <div id="div_beneficiary_official_email" class="col-sm-6">
@@ -95,10 +95,22 @@
         </span>
     </p>
 </div>
-<hr>
+
+<div id="div_beneficiary_owner_agency_type" class="col-sm-6">
+    <p>
+        <strong> {!! Form::label('owner_agency_type', 'AGENCY TYPE:', ['class'=>'control-label']) !!} </strong> &nbsp; &nbsp;
+        <span id="spn_beneficiary_owner_agency_type">
+        @if (isset($beneficiary->owner_agency_type) && empty($beneficiary->owner_agency_type)==false)
+            {!! $beneficiary->owner_agency_type !!}
+        @else
+            N/A
+        @endif
+        </span>
+    </p>
+</div>
 
 <!-- Address Street Field -->
-<div id="div_beneficiary_address_street" class="col-sm-12 ">
+<div id="div_beneficiary_address_street" class="col-sm-6 ">
     <p>
         <strong> {!! Form::label('address_street', 'ADDRESS STREET:', ['class'=>'control-label']) !!} </strong>
         <span id="spn_beneficiary_address_street"> &nbsp; &nbsp;

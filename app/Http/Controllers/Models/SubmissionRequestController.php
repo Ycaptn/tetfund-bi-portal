@@ -20,7 +20,7 @@ use Hasob\FoundationCore\Controllers\BaseController;
 use Hasob\FoundationCore\Models\Organization;
 use Hasob\FoundationCore\View\Components\CardDataView;
 
-use Flash;
+use Log;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -42,6 +42,15 @@ class SubmissionRequestController extends BaseController
         $current_user = Auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
+        $tetFundServer = new TETFundServer();
+        $pay_load = ['_method'=>'GET', 'beneficiary_type'=>$beneficiary_member->beneficiary->type ?? null];
+        $intervention_types_server_response = $tetFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
+
+        $intervention_lines = [];
+        foreach($intervention_types_server_response as $idx=>$item){
+            $intervention_lines [$item->id]= $item->name;
+        }
+
         $cdv_submission_requests = new CardDataView(SubmissionRequest::class, "pages.submission_requests.card_view_item");
         $cdv_submission_requests->setDataQuery(['organization_id'=>$org->id, 'beneficiary_id'=>optional($beneficiary_member)->beneficiary_id, 'is_monitoring_request'=>false])
                         ->addDataGroup('All','deleted_at',null)
@@ -52,7 +61,18 @@ class SubmissionRequestController extends BaseController
                         ->enableSearch(true)
                         ->addDataOrder('created_at', 'DESC')
                         ->enablePagination(true)
-                        ->setPaginationLimit(20)
+                        ->enableFilter(true)
+                        ->addFilterGroupRangeSelect('Amount Requested', 'request_amount', 1,1000000000,"<")
+                        ->addFilterGroupDateRangeSelect('Date Submitted', 'created_at')
+                        ->addFilterGroupMultipleSelect(
+                            'Intervention Years', 
+                            'intervention_year1,intervention_year2,intervention_year3,intervention_year4', 
+                            array_combine(range(2016, date('Y')), range(2016, date('Y')))
+                        )->addFilterGroupSingleSelect(
+                            'Intervention Type', 
+                            'tf_iterum_intervention_line_key_id', 
+                            $intervention_lines
+                        )->setPaginationLimit(20)
                         ->setSearchPlaceholder('Search Submissions by Project Title');
 
         if (request()->expectsJson()){
@@ -63,7 +83,8 @@ class SubmissionRequestController extends BaseController
                     ->with('current_user', $current_user)
                     ->with('months_list', BaseController::monthsList())
                     ->with('states_list', BaseController::statesList())
-                    ->with('cdv_submission_requests', $cdv_submission_requests);
+                    ->with('cdv_submission_requests', $cdv_submission_requests)
+                    ->with('beneficiary_type_intervention_lines', $intervention_lines);
 
     }
 

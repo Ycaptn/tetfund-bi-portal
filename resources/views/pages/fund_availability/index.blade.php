@@ -1,21 +1,28 @@
 @extends('layouts.app')
 
 @section('title_postfix')
-Fund Availability
+Fund Availability Status
 @stop
 
 @section('page_title')
-Fund Availability
+Fund Availability Status
 @stop
 
 @section('page_title_suffix')
-{{ $selected_year }} Fund Availability Status
+{{ $selected_year }}
 @stop
 
 @section('app_css')
 @stop
 
 @section('page_title_buttons')
+@if (count($funding) > 0)
+    {{-- <a target="_blank" href="#" class="pull-right"> --}}
+        <button disabled='disabled' type="button" class="pull-right btn btn-primary btn-sm">
+            Allocation Letter
+        </button>
+    {{-- </a> --}}
+@endif
 @stop
 
 @section('page_title_subtext')
@@ -31,48 +38,39 @@ Fund Availability
                 </span> --}}
             </div>
             <div class="row col-sm-12">
-                <div class="col-sm-9">
-                    <ul class="nav">
+                <div class="col-sm-12">
+                    <ul class="nav nav-tabs nav-primary" role="tablist">
                         @php
                             $start_yr = date('Y');
                             $end_yr = date('Y')-5;
                         @endphp
 
                         @for($i=$start_yr;$i>=$end_yr;$i--)
-                            <li role="presentation" class="{{ ($selected_year==$i)?'active':'' }}" style="margin-right: 5px; margin-top: 2px;">
-                                <a class="btn btn-md btn-primary" href='{{ route("tf-bi-portal.fund-availability")."?year=".$i }}'>
-                                    {{$i}}
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link {{($selected_year==$i)?'active':''}}" href="{{ route("tf-bi-portal.fund-availability")."?year=".$i }}" >
+                                    <div class="d-flex align-items-center">
+                                        <div class="tab-icon">
+                                            <i class="bx bx-calendar font-18 me-1"></i>
+                                        </div>
+                                        <div class="tab-title">{{$i}}</div>
+                                    </div>
                                 </a>
                             </li>
                         @endfor
                     </ul>
-
                 </div>
-                
-                <div class="col-sm-3">
-                    @if (count($funding) > 0)
-                        {{-- <a target="_blank" href="#" class="pull-right"> --}}
-                            <button disabled='disabled' type="button" class="pull-right btn btn-primary btn-xs">
-                                Allocation Letter
-                            </button>
-                        {{-- </a> --}}
-                    @endif
-                </div>
-                
-                <div class="col-sm-12 well well-sm">
+                                
+                <div class="col-sm-12 well well-sm mt-3">
                     <div class="table-responsive">
                         <table class="table table-condensed">
-                            <hr>
-                                <h4>Allocation Year : {{$selected_year}}</h4>
-                            <hr>
                             <thead>
                                 <tr>
                                     <th>Type</th>
-                                    <th>Line</th>
+                                    <th>Intervention Line</th>
                                     <th>Funding Description</th>
-                                    <th>Allocation Code</th>
+                                    {{-- <th>Allocation Code</th> --}}
                                     <th>Allocated Amount</th>
-                                    <th>Disbursed Amount</th>
+                                    {{-- <th>Disbursed Amount</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -90,9 +88,9 @@ Fund Availability
                                             {{ $detail->funding_description }}
                                         </td>
 
-                                        <td name='cdp_li_code_{{$detail->id}}' id='cdp_li_code_{{$detail->id}}'>
+                                        {{-- <td name='cdp_li_code_{{$detail->id}}' id='cdp_li_code_{{$detail->id}}'>
                                             {{ $detail->allocation_code }}
-                                        </td>
+                                        </td> --}}
 
                                         <td> ₦
                                             <span name='cdp_li_amt_{{$detail->id}}' id='cdp_li_amt_{{$detail->id}}'>
@@ -100,11 +98,11 @@ Fund Availability
                                             </span>
                                         </td>
 
-                                        <td> ₦
+                                        {{-- <td> ₦
                                             <span name='cdp_li_dis_{{$detail->id}}' id='cdp_li_dis_{{$detail->id}}'>
                                                 {{number_format(optional($detail)->disbursed_amount,2) }}
                                             </span>
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                 @endforeach
                             </tbody>

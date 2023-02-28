@@ -131,7 +131,7 @@
 				<a href="{{ route('tf-bi-portal.fund-availability') }}" class="">
 					<div class="parent-icon"><i class='bx bx-wallet'></i>
 					</div>
-					<div class="menu-title">Fund Availability Status</div>
+					<div class="menu-title">Fund Availability</div>
 				</a>
 			</li>
 			@endif
@@ -164,7 +164,7 @@
 			        	<i class='bx bx-paper-plane'></i>
 					</div>
 			        <div class="menu-title col-sm-12">
-			        	ASTD Nominations Mgt
+			        	ASTD
 			        	&nbsp; <i class="fa fa-caret-down"></i>
 			        </div>
 			    </a>
@@ -194,6 +194,14 @@
 							</a>
 						</li>
 					@endif
+
+					@if (Auth()->user()->hasAnyRole(['BI-desk-officer']))
+						<li>
+							<a href="{{ route('tf-bi-portal.nomination_settings.index') }}" class="">
+								<div class="menu-title"> <span class="fa fa-tools"></span> ASTD Settings </div>
+							</a>
+						</li>
+					@endif
 					
 			    </ul>
 			</li>
@@ -217,16 +225,6 @@
 					<div class="menu-title">Desk Officer Mgt</div>
 				</a>
 			</li>
-			@endif
-
-			@if (Auth()->user()->hasAnyRole(['BI-desk-officer']))
-				<li>
-					<a href="{{ route('tf-bi-portal.nomination_settings.index') }}" class="">
-						<div class="parent-icon"><span class="fa fa-tools"></span>
-						</div>
-						<div class="menu-title">Settings</div>
-					</a>
-				</li>
 			@endif
 
 			@if (Auth()->user()->hasAnyRole(['BI-librarian']))

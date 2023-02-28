@@ -42,15 +42,15 @@
 @stop
 
 @section('title_postfix')
-Submission Request
+Submission
 @stop
 
 @section('page_title')
-Submission Request
+Submission
 @stop
 
 @section('page_title_suffix')
-    {{$submitted_request_data->title ?? $submissionRequest->title}} | 
+    {{$submitted_request_data->title ?? $submissionRequest->title}} - 
     @if(!empty($submitted_request_data) && ( ($submissionRequest->is_aip_request==true && $submitted_request_data->has_generated_aip==true) || ( ($submissionRequest->is_first_tranche_request==true || $submissionRequest->is_second_tranche_request==true || $submissionRequest->is_final_tranche_request==true) && $submitted_request_data->has_generated_disbursement_memo==true) ) )
         <b class="text-success">
             {{$submissionRequest->is_aip_request==true ? $submissionRequest->type : $submissionRequest->type.' Request' }} Granted
@@ -195,27 +195,43 @@ Submission Request
 
                 {{-- sub menu buttons --}}
                 @if(strtolower($submissionRequest->status) == 'submitted' || str_contains(strtolower(optional($intervention)->name), 'teaching practice') || str_contains(strtolower(optional($intervention)->name), 'conference attendance') || str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship'))
-                    <div class="col-sm-12"><hr>
+                    <div class="col-sm-12">
                         <div class="tab">
-                            <ul class="nav">
-                                <li class="mt-3" style="margin-right: 3px;">
-                                    <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=attachments" class="tablinks btn btn-success btn-md shadow-none">
-                                        Attachments
-                                    </a>                        
+                            <ul class="nav nav-tabs nav-primary" role="tablist">
+
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link {{(request()->sub_menu_items=="attachments")?'active':''}}" href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=attachments" >
+                                        <div class="d-flex align-items-center">
+                                            <div class="tab-icon">
+                                                <i class="bx bx-paperclip font-18 me-1"></i>
+                                            </div>
+                                            <div class="tab-title">Attachments</div>
+                                        </div>
+                                    </a>
                                 </li>
 
                                 @if(str_contains(strtolower(optional($intervention)->name), 'teaching practice') || str_contains(strtolower(optional($intervention)->name), 'conference attendance') || str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship'))
-                                    <li class="mt-3" style="margin-right: 3px;">                            
-                                        <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=nominations_binded" class="tablinks btn btn-success btn-md shadow-none">
-                                            Nominations
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link {{(request()->sub_menu_items=="nominations_binded")?'active':''}}" href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=nominations_binded" >
+                                            <div class="d-flex align-items-center">
+                                                <div class="tab-icon">
+                                                    <i class="bx bx-user-plus font-18 me-1"></i>
+                                                </div>
+                                                <div class="tab-title">Nominations</div>
+                                            </div>
                                         </a>
                                     </li>
                                 @endif
 
                                 @if(strtolower($submissionRequest->status) == 'submitted')
-                                    <li class="mt-3" style="margin-right: 3px;">
-                                        <a href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=communications" class="tablinks btn btn-success btn-md shadow-none">
-                                            Communications
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link {{(request()->sub_menu_items=="nominations_binded")?'active':''}}" href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=communications" >
+                                            <div class="d-flex align-items-center">
+                                                <div class="tab-icon">
+                                                    <i class="bx bx-layer-plus font-18 me-1"></i>
+                                                </div>
+                                                <div class="tab-title">Communications</div>
+                                            </div>
                                         </a>
                                     </li>
                                 @endif
@@ -228,17 +244,17 @@ Submission Request
                 {{-- sub menu contents --}}
                 @if(isset(request()->sub_menu_items) && request()->sub_menu_items == 'nominations_binded')
                     <div id="astd_nominations" class="col-sm-12 table-responsive">
-                        <h4>NOMINATIONS LIST</h4>
+                        {{-- <h4>NOMINATIONS LIST</h4> --}}
                         @include('tf-bi-portal::pages.submission_requests.partials.submission_nominations_table')
                     </div>
                 @elseif(isset(request()->sub_menu_items) && request()->sub_menu_items == 'communications')
                     <div id="communications" class="col-sm-12">
-                        <h4>COMMUNICATIONS</h4>
+                        {{-- <h4>COMMUNICATIONS</h4> --}}
                         @include('tf-bi-portal::pages.submission_requests.partials.submission_communications')
                     </div>    
                 @else
                     <div id="attachments" class="col-sm-12">
-                        <h4>ATTACHMENTS</h4>
+                        {{-- <h4>ATTACHMENTS</h4> --}}
                         @include('tf-bi-portal::pages.submission_requests.partials.submission_attachments') 
                     </div>
                 @endif
@@ -250,11 +266,9 @@ Submission Request
 @section('side-panel')
 <div class="card radius-5 border-top  border-4 border-success">
     <div class="card-body">
-        <div><h5 class="card-title">More Information</h5></div>
+        <div><h5 class="card-title">Beneficiary Submission</h5></div>
         <p class="small">
-            This is the help message.
-            This is the help message.
-            This is the help message.
+            Please reveiw details on your submission to TETFund. Each submission requesting for intervention is processed at the front line department handling the intervention. The status is updated from here, and you may make follow up submissions or reprioritize your submission following AIP approval.
         </p>
     </div>
 </div>

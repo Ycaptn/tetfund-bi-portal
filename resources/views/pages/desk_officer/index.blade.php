@@ -1,21 +1,24 @@
 @extends('layouts.app')
 
 @section('title_postfix')
-Desk Officer Administration
+Desk Officer - {!! $beneficiary->full_name !!} ({!! $beneficiary->short_name !!})
 @stop
 
 @section('page_title')
-Desk Officer Mgt
+Desk Officer
 @stop
 
 @section('page_title_suffix')
-Beneficiary Admin Panel
+{!! $beneficiary->full_name !!} ({!! $beneficiary->short_name !!})
 @stop
 
 @section('app_css')
 @stop
 
 @section('page_title_buttons')
+<a title="Edit Beneficiary Details" class="btn btn-primary btn-sm" href="#">
+    <span class="fa fa-edit"></span> <small>Edit Details</small>
+</a>
 @stop
 
 @section('page_title_subtext')
@@ -32,14 +35,14 @@ Beneficiary Admin Panel
 
             <div id="beneficiary_details" class="tabcontent">
                 <div class="col-sm-12 panel panel-default card-view">
-                    <h5 class="pt-2"> 
+                    <h6 class="pt-2"> 
                         <strong>
-                            Beneficiary Users 
+                            Beneficiary User Accounts
                         </strong>
                          <a title="Create New Beneficiary Member" class="btn btn-primary btn-sm pull-right btn-new-beneficiary-member" href="#">
                             <span class="fa fa-plus"></span> <small>Add User</small>
                         </a>
-                    </h5>
+                    </h6>
                     @include('tf-bi-portal::pages.beneficiaries.table')
                     @include('tf-bi-portal::pages.beneficiaries.partials.beneficiary_member_modal')
                 </div>
@@ -54,11 +57,9 @@ Beneficiary Admin Panel
 @section('side-panel')
 <div class="card radius-5 border-top border-0 border-4 border-success">
     <div class="card-body">
-        <div><h5 class="card-title">More Information</h5></div>
+        <div><h5 class="card-title">Desk Officer</h5></div>
         <p class="small">
-            This is the help message.
-            This is the help message.
-            This is the help message.
+            The Desk Officer is the primary represents the beneficiary in matters related to TETFund and is authorized to make submissions add other users on the TETFund submission portal as well as following up on status of all submissions to TETFund.
         </p>
     </div>
 </div>

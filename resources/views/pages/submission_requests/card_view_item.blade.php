@@ -7,13 +7,9 @@
         <div class="row g-0">
             <div class="col-xs-12 col-md-1 align-middle text-center p-2">
                 <a href='{{$detail_page_url}}'>
-                    @if ( $data_item->logo_image != null )
-                        <img width="42" height="42" class="ms-2 img-fluid text-center rounded-circle p-1 border" src="{{ route('fc.get-dept-picture', $data_item->id) }}" />
-                    @else
-                        <div class="ms-2 fm-icon-box radius-10 bg-primary text-white text-center">
-                            <i class="bx bx-hive"></i>
-                        </div>
-                    @endif
+                    <div class="ms-2 fm-icon-box radius-10 bg-primary text-white text-center">
+                        <i class="bx bx-layer"></i>
+                    </div>
                 </a>
             </div>
             <div class="col-xs-12 col-md-10">
@@ -21,24 +17,38 @@
                     <a href='{{$detail_page_url}}'>
                         <h3 class="h6 card-title mb-0">
                             {{ $data_item->title }}
-                            @if(empty($data_item->status)==false) || 
+                            @if(empty($data_item->status)==false)  
                                 @if($data_item->status == 'not-submitted')
                                     <span class="text-danger">
-                                        {!! strtoupper($data_item->status) !!}
+                                        ({!! strtoupper($data_item->status) !!})
                                     </span>
                                 @else
                                     <span class="">
-                                        {!! strtoupper($data_item->status) !!}
+                                        ({!! strtoupper($data_item->status) !!})
                                     </span>
                                 @endif
                             @endif
                         </h3>
                     </a>
+                    <p class="card-text mb-0 text-danger">
+                        @php
+                            $years_requested = [];
+                            for($yr=1;$yr<5;$yr++){
+                                $property = "intervention_year{$yr}";
+                                if (!empty($data_item->$property)){ $years_requested []= $data_item->$property; }
+                            }
+                            $intervention_line = "";
+                            if (!empty($data_item->tf_iterum_portal_response_meta_data)){
+                                $meta_data = json_decode($data_item->tf_iterum_portal_response_meta_data);
+                                $intervention_line = $meta_data->name;
+                            }
+                        @endphp
+                        {{ $intervention_line }} - {{ $data_item->type }} - {{ implode(", ", $years_requested) }}
+                    </p>
                     @if (!empty($data_item->amount_requested))
                         <p class="card-text mb-0 small">
-                            <b>{!! $data_item->type.' &nbsp; || &nbsp; ' ?? '' !!} </b>
-                            <b>Amount Requested: &nbsp; &#8358;</b>
-                            {{ number_format($data_item->amount_requested, 2, '.', ',') }}
+                            <b>Amount Requested:</b>
+                            &#8358;{{ number_format($data_item->amount_requested, 2, '.', ',') }}
                         </p>
                     @endif
                     
@@ -48,7 +58,6 @@
                 </div>
             </div>
             <div class="col-xs-12 col-md-1 mt-2">
-                    {{-- <div><h4 class="card-title"><a href='{{$detail_page_url}}'>{{$data_item->id}}</a></h4></div> --}}
                     @if(isset($data_item) && $data_item->status == 'not-submitted')
                         <div class="ms-auto"> 
                             @if($data_item->is_aip_request==true)
@@ -64,7 +73,7 @@
                                 title="Delete" 
                                 data-val='{{$data_item->id}}' 
                                 class="btn-delete-mdl-submissionRequest-modal me-1" href="#">
-                                <i class="bx bxs-trash-alt" style="color: red;"></i>
+                                <i class="bx bxs-trash-alt text-danger"></i>
                             </a>
                         </div>
                     @endif
