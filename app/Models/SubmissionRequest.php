@@ -140,6 +140,10 @@ class SubmissionRequest extends Model
         return $years;
     }
 
+    public function attachables() {
+        return $this->hasMany(EloquentAttachable::class, 'attachable_id', 'id');
+    }
+
     public static function get_specific_attachment($submission_request_id, $item_label) {
         $submission_request = self::find($submission_request_id);
         if ($submission_request != null) {

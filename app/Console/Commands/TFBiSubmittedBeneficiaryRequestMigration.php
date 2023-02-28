@@ -53,6 +53,7 @@ class TFBiSubmittedBeneficiaryRequestMigration extends Command
                     ->table("tf_bip_beneficiary_requests")
                     ->join('tf_bm_interven_benef_types', 'tf_bm_interven_benef_types.id', 'tf_bip_beneficiary_requests.interven_benef_type_id')
                     ->orderBy('tf_bip_beneficiary_requests.created_at','ASC')
+                    ->where('tf_bip_beneficiary_requests.requested_tranche', 'not like', '%- Audit%')
                     ->whereNull('tf_bip_beneficiary_requests.deleted_at')
                     ->get(['tf_bip_beneficiary_requests.*', 'tf_bm_interven_benef_types.intervention_id', 'tf_bm_interven_benef_types.name']);
 
@@ -76,173 +77,172 @@ class TFBiSubmittedBeneficiaryRequestMigration extends Command
                        ->first();
                 
                 if ($bi_portal_beneficiary != null) {
+                    // generating desk officer email from beneficiary short-name
+                    $desk_officer_email = strtolower($this->sanitize_email_prefix($bi_portal_beneficiary->short_name) . "@tetfund.gov.ng");
 
-                        // generating desk officer email from beneficiary short-name
-                        $desk_officer_email = strtolower($this->sanitize_email_prefix($bi_portal_beneficiary->short_name) . "@tetfund.gov.ng");
+                    // fetching desk officer user details
+                    $desk_officer = User::where('email', $desk_officer_email)->first();
 
-                        // fetching desk officer user details
-                        $desk_officer = User::where('email', $desk_officer_email)->first();
+                    // fetching submission request from BI-portal having similar details
+                    $submission_request = SubmissionRequest::where([
+                            'tf_iterum_portal_key_id' => $iterum_beneficiary_request->id,
+                            'is_monitoring_request' => false,
+                            'tf_iterum_intervention_line_key_id' => $iterum_beneficiary_request->intervention_id,
+                        ])->first();
 
-                        // fetching submission request from BI-portal having similar details
-                        $submission_request = SubmissionRequest::where([
-                                'tf_iterum_portal_key_id' => $iterum_beneficiary_request->id,
-                                'is_monitoring_request' => false,
-                                'tf_iterum_intervention_line_key_id' => $iterum_beneficiary_request->intervention_id,
-                            ])->first();
- 
-                        // checking if submission request exist or not
-                        if (empty($submission_request) || $submission_request == null) {
-                            $submission_request = new SubmissionRequest();
-                            echo ">>> No. ". strval(intval($idx)+1) ." Submitted Beneficiary Request Record Created - {$iterum_beneficiary_request->title} \n";
-                            $successful_replicated_beneficiary_request_count_created++;
-                        } else {
-                            echo ">>> No. ". strval(intval($idx)+1) ." Submitted Beneficiary Request Record Updated - {$iterum_beneficiary_request->title}\n";
-                            $successful_replicated_beneficiary_request_count_updated++;
-                        }
+                    // checking if submission request exist or not
+                    if (empty($submission_request) || $submission_request == null) {
+                        $submission_request = new SubmissionRequest();
+                        echo ">>> No. ". strval(intval($idx)+1) ." Submitted Beneficiary Request Record Created - {$iterum_beneficiary_request->title} \n";
+                        $successful_replicated_beneficiary_request_count_created++;
+                    } else {
+                        echo ">>> No. ". strval(intval($idx)+1) ." Submitted Beneficiary Request Record Updated - {$iterum_beneficiary_request->title}\n";
+                        $successful_replicated_beneficiary_request_count_updated++;
+                    }
 
-                        // creating/updating submission request data
-                        $submission_request->organization_id = $organization->id;
-                        $submission_request->title = $iterum_beneficiary_request->title;                        
-                        $submission_request->status = 'submitted';                        
-                        $submission_request->type = $iterum_beneficiary_request->requested_tranche;
-                        $submission_request->requesting_user_id = $desk_officer->id;
-                        $submission_request->beneficiary_id = $bi_portal_beneficiary->id;
-                        $submission_request->display_ordinal = $iterum_beneficiary_request->display_ordinal;
-                        
-                        $submission_request->intervention_year1 = $iterum_beneficiary_request->intervention_year1 ?? 0;
-                        $submission_request->intervention_year2 = $iterum_beneficiary_request->intervention_year2 ?? 0;
-                        $submission_request->intervention_year3 = $iterum_beneficiary_request->intervention_year3 ?? 0;
-                        $submission_request->intervention_year4 = $iterum_beneficiary_request->intervention_year4 ?? 0;
+                    // creating/updating submission request data
+                    $submission_request->organization_id = $organization->id;
+                    $submission_request->title = $iterum_beneficiary_request->title;                        
+                    $submission_request->status = 'submitted';                        
+                    $submission_request->type = $iterum_beneficiary_request->requested_tranche;
+                    $submission_request->requesting_user_id = $desk_officer->id;
+                    $submission_request->beneficiary_id = $bi_portal_beneficiary->id;
+                    $submission_request->display_ordinal = $iterum_beneficiary_request->display_ordinal;
+                    
+                    $submission_request->intervention_year1 = $iterum_beneficiary_request->intervention_year1 ?? 0;
+                    $submission_request->intervention_year2 = $iterum_beneficiary_request->intervention_year2 ?? 0;
+                    $submission_request->intervention_year3 = $iterum_beneficiary_request->intervention_year3 ?? 0;
+                    $submission_request->intervention_year4 = $iterum_beneficiary_request->intervention_year4 ?? 0;
 
-                        $submission_request->proposed_request_date = $iterum_beneficiary_request->request_sent_date;
+                    $submission_request->proposed_request_date = $iterum_beneficiary_request->request_sent_date;
 
-                        $submission_request->tf_iterum_portal_key_id = $iterum_beneficiary_request->id ?? null;
-                        $submission_request->tf_iterum_portal_request_status = $iterum_beneficiary_request->request_status ?? null;
-                        $submission_request->tf_iterum_portal_response_meta_data = $iterum_beneficiary_request ? json_encode($iterum_beneficiary_request) : null;
-                        $submission_request->tf_iterum_portal_response_at = $iterum_beneficiary_request->request_received_date ?? null;
+                    $submission_request->tf_iterum_portal_key_id = $iterum_beneficiary_request->id ?? null;
+                    $submission_request->tf_iterum_portal_request_status = $iterum_beneficiary_request->request_status ?? null;
+                    $submission_request->tf_iterum_portal_response_meta_data = $iterum_beneficiary_request ? json_encode($iterum_beneficiary_request) : null;
+                    $submission_request->tf_iterum_portal_response_at = $iterum_beneficiary_request->request_received_date ?? null;
 
-                        $submission_request->created_at = $iterum_beneficiary_request->created_at;
-                        $submission_request->updated_at = $iterum_beneficiary_request->updated_at;
+                    $submission_request->created_at = $iterum_beneficiary_request->created_at;
+                    $submission_request->updated_at = $iterum_beneficiary_request->updated_at;
 
-                        $submission_request->amount_requested = $iterum_beneficiary_request->request_amount;
-                        $submission_request->tf_iterum_intervention_line_key_id = $iterum_beneficiary_request->intervention_id;
+                    $submission_request->amount_requested = $iterum_beneficiary_request->request_amount;
+                    $submission_request->tf_iterum_intervention_line_key_id = $iterum_beneficiary_request->intervention_id;
 
-                        // retrieving request when iterum beneficiary request parent id is not null
-                        if ($iterum_beneficiary_request->parent_id != null) {
-                            $parent_submission_request = SubmissionRequest::where([
-                                'tf_iterum_portal_key_id' => $iterum_beneficiary_request->parent_id,
-                                'is_aip_request' => true,
-                                'tf_iterum_intervention_line_key_id' => $iterum_beneficiary_request->intervention_id,
-                            ])->first(); 
+                    // retrieving request when iterum beneficiary request parent id is not null
+                    if ($iterum_beneficiary_request->parent_id != null) {
+                        $parent_submission_request = SubmissionRequest::where([
+                            'tf_iterum_portal_key_id' => $iterum_beneficiary_request->parent_id,
+                            'is_aip_request' => true,
+                            'tf_iterum_intervention_line_key_id' => $iterum_beneficiary_request->intervention_id,
+                        ])->first(); 
 
-                            $submission_request->parent_id = $parent_submission_request->id ?? null;
-                        }
+                        $submission_request->parent_id = $parent_submission_request->id ?? null;
+                    }
 
-                        $submission_request->is_aip_request = $iterum_beneficiary_request->is_aip_request;
-                        $submission_request->is_first_tranche_request = $iterum_beneficiary_request->is_first_tranche_request;
-                        $submission_request->is_second_tranche_request = $iterum_beneficiary_request->is_second_tranche_request;
-                        $submission_request->is_third_tranche_request = $iterum_beneficiary_request->is_third_tranche_request;
-                        $submission_request->is_final_tranche_request = $iterum_beneficiary_request->is_final_tranche_request;
+                    $submission_request->is_aip_request = $iterum_beneficiary_request->is_aip_request;
+                    $submission_request->is_first_tranche_request = $iterum_beneficiary_request->is_first_tranche_request;
+                    $submission_request->is_second_tranche_request = $iterum_beneficiary_request->is_second_tranche_request;
+                    $submission_request->is_third_tranche_request = $iterum_beneficiary_request->is_third_tranche_request;
+                    $submission_request->is_final_tranche_request = $iterum_beneficiary_request->is_final_tranche_request;
 
-                        $submission_request->save();    // saving request
-                        $successful_replicated_beneficiary_request_count++; // incrementing request counter
+                    $submission_request->save();    // saving request
+                    $successful_replicated_beneficiary_request_count++; // incrementing request counter
 
-                        // obtaining attachable for request
-                        echo ">>>>> Fetching Iterum-Portal Submitted Beneficiary Request Attachment Records \n";
-                        $iterum_beneficiary_requests_attachable = DB::connection($iterum_db_config_name)
-                                        ->table("fc_attachables")
-                                        ->where('attachable_id', $iterum_beneficiary_request->id)
+                    // obtaining attachable for request
+                    echo ">>>>> Fetching Iterum-Portal Submitted Beneficiary Request Attachment Records \n";
+                    $iterum_beneficiary_requests_attachable = DB::connection($iterum_db_config_name)
+                                    ->table("fc_attachables")
+                                    ->where('attachable_id', $iterum_beneficiary_request->id)
+                                    ->whereNull('deleted_at')
+                                    ->get();                        
+
+                    // processing attachments beloging to beneficiary request
+                    if (isset($iterum_beneficiary_requests_attachable) && count($iterum_beneficiary_requests_attachable) > 0) {
+
+                        $successful_replicated_beneficiary_request_attachment_count = count($iterum_beneficiary_requests_attachable);
+                        $successful_replicated_beneficiary_request_attachment_count_created = 0;
+                        $successful_replicated_beneficiary_request_attachment_count_updated = 0;
+
+                        echo ">>>>> Found ". $successful_replicated_beneficiary_request_attachment_count ." Iterum-Portal Submitted Beneficiary Request Attachment Record(s) \n";
+
+                        foreach($iterum_beneficiary_requests_attachable as $idx => $attachable_rec) {
+                            
+                            // iterum portal attachment record
+                            $iterum_attachment_rec = DB::connection($iterum_db_config_name) 
+                                        ->table("fc_attachments")
+                                        ->where('id', $attachable_rec->attachment_id)
                                         ->whereNull('deleted_at')
-                                        ->get();                        
+                                        ->first();
 
-                        // processing attachments beloging to beneficiary request
-                        if (isset($iterum_beneficiary_requests_attachable) && count($iterum_beneficiary_requests_attachable) > 0) {
+                            // bi portal attachment record
+                            $bi_attachment_rec = $submission_request->get_specific_attachment($submission_request->id, $iterum_attachment_rec->label);
+                                     
 
-                            $successful_replicated_beneficiary_request_attachment_count = count($iterum_beneficiary_requests_attachable);
-                            $successful_replicated_beneficiary_request_attachment_count_created = 0;
-                            $successful_replicated_beneficiary_request_attachment_count_updated = 0;
+                            // checking if submission request exist or not
+                            if (empty($bi_attachment_rec) || $bi_attachment_rec == null) {
+                                echo ">>>>> No. ". strval(intval($idx)+1) ." Submitted Beneficiary Request Attachment Record Created - {$iterum_attachment_rec->label}\n";
+                                $successful_replicated_beneficiary_request_attachment_count_created++;
 
-                            echo ">>>>> Found ". $successful_replicated_beneficiary_request_attachment_count ." Iterum-Portal Submitted Beneficiary Request Attachment Record(s) \n";
+                                // saving new attachment record
+                                $attachOBJ = new Attachment();
+                                $attachOBJ->path = $iterum_attachment_rec->path;
+                                $attachOBJ->label = $iterum_attachment_rec->label;
+                                $attachOBJ->organization_id = $organization->id;
+                                $attachOBJ->uploader_user_id = $desk_officer->id;
+                                $attachOBJ->description = $iterum_attachment_rec->description;
+                                $attachOBJ->file_type = $iterum_attachment_rec->file_type;
+                                $attachOBJ->storage_driver = $iterum_attachment_rec->storage_driver;
+                                $attachOBJ->created_at = $iterum_attachment_rec->created_at;
+                                $attachOBJ->updated_at = $iterum_attachment_rec->updated_at;
+                                $attachOBJ->save();
 
-                            foreach($iterum_beneficiary_requests_attachable as $idx => $attachable_rec) {
-                                
-                                // iterum portal attachment record
-                                $iterum_attachment_rec = DB::connection($iterum_db_config_name) 
-                                            ->table("fc_attachments")
-                                            ->where('id', $attachable_rec->attachment_id)
-                                            ->whereNull('deleted_at')
-                                            ->first();
+                                // saving new attachable record
+                                $attachableOBJ = new EloquentAttachable();
+                                $attachableOBJ->user_id = $desk_officer->id;
+                                $attachableOBJ->attachment_id = $attachOBJ->id;
+                                $attachableOBJ->attachable_id = $submission_request->id;
+                                $attachableOBJ->attachable_type = get_class($submission_request);
+                                $attachableOBJ->created_at = $iterum_attachment_rec->created_at;
+                                $attachableOBJ->updated_at = $iterum_attachment_rec->updated_at;
+                                $attachableOBJ->save();
 
-                                // bi portal attachment record
-                                $bi_attachment_rec = $submission_request->get_specific_attachment($submission_request->id, $iterum_attachment_rec->label);
-                                         
+                            } else {
+                                echo ">>>>> No. ". strval(intval($idx)+1) ." Submitted Beneficiary Request Attachment Record Updated - {$iterum_attachment_rec->label}\n";
+                                $successful_replicated_beneficiary_request_attachment_count_updated++;
 
-                                // checking if submission request exist or not
-                                if (empty($bi_attachment_rec) || $bi_attachment_rec == null) {
-                                    echo ">>>>> No. ". strval(intval($idx)+1) ." Submitted Beneficiary Request Attachment Record Created - {$iterum_attachment_rec->label}\n";
-                                    $successful_replicated_beneficiary_request_attachment_count_created++;
+                                // updating attachment record;
+                                $bi_attachment_rec->path = $iterum_attachment_rec->path;
+                                $bi_attachment_rec->label = $iterum_attachment_rec->label;
+                                $bi_attachment_rec->organization_id = $organization->id;
+                                $bi_attachment_rec->uploader_user_id = $desk_officer->id;
+                                $bi_attachment_rec->description = $iterum_attachment_rec->description;
+                                $bi_attachment_rec->file_type = $iterum_attachment_rec->file_type;
+                                $bi_attachment_rec->storage_driver = $iterum_attachment_rec->storage_driver;
+                                $bi_attachment_rec->created_at = $iterum_attachment_rec->created_at;
+                                $bi_attachment_rec->updated_at = $iterum_attachment_rec->updated_at;
+                                $bi_attachment_rec->save();
 
-                                    // saving new attachment record
-                                    $attachOBJ = new Attachment();
-                                    $attachOBJ->path = $iterum_attachment_rec->path;
-                                    $attachOBJ->label = $iterum_attachment_rec->label;
-                                    $attachOBJ->organization_id = $organization->id;
-                                    $attachOBJ->uploader_user_id = $desk_officer->id;
-                                    $attachOBJ->description = $iterum_attachment_rec->description;
-                                    $attachOBJ->file_type = $iterum_attachment_rec->file_type;
-                                    $attachOBJ->storage_driver = $iterum_attachment_rec->storage_driver;
-                                    $attachOBJ->created_at = $iterum_attachment_rec->created_at;
-                                    $attachOBJ->updated_at = $iterum_attachment_rec->updated_at;
-                                    $attachOBJ->save();
-
-                                    // saving new attachable record
-                                    $attachableOBJ = new EloquentAttachable();
-                                    $attachableOBJ->user_id = $desk_officer->id;
-                                    $attachableOBJ->attachment_id = $attachOBJ->id;
-                                    $attachableOBJ->attachable_id = $submission_request->id;
-                                    $attachableOBJ->attachable_type = get_class($submission_request);
-                                    $attachableOBJ->created_at = $iterum_attachment_rec->created_at;
-                                    $attachableOBJ->updated_at = $iterum_attachment_rec->updated_at;
-                                    $attachableOBJ->save();
-
-                                } else {
-                                    echo ">>>>> No. ". strval(intval($idx)+1) ." Submitted Beneficiary Request Attachment Record Updated - {$iterum_attachment_rec->label}\n";
-                                    $successful_replicated_beneficiary_request_attachment_count_updated++;
-
-                                    // updating attachment record;
-                                    $bi_attachment_rec->path = $iterum_attachment_rec->path;
-                                    $bi_attachment_rec->label = $iterum_attachment_rec->label;
-                                    $bi_attachment_rec->organization_id = $organization->id;
-                                    $bi_attachment_rec->uploader_user_id = $desk_officer->id;
-                                    $bi_attachment_rec->description = $iterum_attachment_rec->description;
-                                    $bi_attachment_rec->file_type = $iterum_attachment_rec->file_type;
-                                    $bi_attachment_rec->storage_driver = $iterum_attachment_rec->storage_driver;
-                                    $bi_attachment_rec->created_at = $iterum_attachment_rec->created_at;
-                                    $bi_attachment_rec->updated_at = $iterum_attachment_rec->updated_at;
-                                    $bi_attachment_rec->save();
-
-                                    // saving new attachable record
-                                    $attachableOBJ = EloquentAttachable::where('attachment_id', $bi_attachment_rec->id)
-                                            ->where('attachable_id', $submission_request->id)
-                                            ->first();
-                                    $attachableOBJ->user_id = $desk_officer->id;
-                                    $attachableOBJ->attachment_id = $bi_attachment_rec->id;
-                                    $attachableOBJ->attachable_id = $submission_request->id;
-                                    $attachableOBJ->attachable_type = get_class($submission_request);
-                                    $attachableOBJ->created_at = $iterum_attachment_rec->created_at;
-                                    $attachableOBJ->updated_at = $iterum_attachment_rec->updated_at;
-                                    $attachableOBJ->save();
-                                }
-
+                                // saving new attachable record
+                                $attachableOBJ = EloquentAttachable::where('attachment_id', $bi_attachment_rec->id)
+                                        ->where('attachable_id', $submission_request->id)
+                                        ->first();
+                                $attachableOBJ->user_id = $desk_officer->id;
+                                $attachableOBJ->attachment_id = $bi_attachment_rec->id;
+                                $attachableOBJ->attachable_id = $submission_request->id;
+                                $attachableOBJ->attachable_type = get_class($submission_request);
+                                $attachableOBJ->created_at = $iterum_attachment_rec->created_at;
+                                $attachableOBJ->updated_at = $iterum_attachment_rec->updated_at;
+                                $attachableOBJ->save();
                             }
 
-                            echo ">>>> {$successful_replicated_beneficiary_request_attachment_count} Attachment record(s) belonging to this submitted beneficiary requests detected \n";
-                            echo ">>>> {$successful_replicated_beneficiary_request_attachment_count_created} Iterum-Portal submitted beneficiary request attachment record(s) created \n";
-                            echo ">>>> {$successful_replicated_beneficiary_request_attachment_count_updated} Iterum-Portal submitted beneficiary request attachment record(s) updated \n \n \n";
-
-                        } else {
-                            echo ">>>>> No Attachment Record Found For This Iterum-Portal Submitted Beneficiary Request \n \n \n";
                         }
+
+                        echo ">>>> {$successful_replicated_beneficiary_request_attachment_count} Attachment record(s) belonging to this submitted beneficiary requests detected \n";
+                        echo ">>>> {$successful_replicated_beneficiary_request_attachment_count_created} Iterum-Portal submitted beneficiary request attachment record(s) created \n";
+                        echo ">>>> {$successful_replicated_beneficiary_request_attachment_count_updated} Iterum-Portal submitted beneficiary request attachment record(s) updated \n \n \n";
+
+                    } else {
+                        echo ">>>>> No Attachment Record Found For This Iterum-Portal Submitted Beneficiary Request \n \n \n";
+                    }
         
 
 

@@ -25,10 +25,11 @@ Monitoring
     
     <div class="card radius-5 border-top border-0 border-3 border-success">
         <div class="card-body">
-
+            <h3>All Monitoring Request</h3><hr>
+            @include('tf-bi-portal::pages.monitoring.table')
+            @include('tf-bi-portal::pages.monitoring.modal')
         </div>
     </div>
-
 
 @stop
 

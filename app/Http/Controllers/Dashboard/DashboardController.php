@@ -16,6 +16,7 @@ use App\Models\BeneficiaryMember;
 use App\Http\Requests\CreateBeneficiaryRequest;
 use App\Http\Requests\UpdateBeneficiaryRequest;
 use App\DataTables\BeneficiaryMemberDatatable;
+use App\DataTables\MonitoringRequestDataTable;
 use Spatie\Permission\Models\Role;
 
 use Hasob\FoundationCore\Controllers\BaseController;
@@ -34,13 +35,17 @@ class DashboardController extends BaseController
                     ->with('current_user', $current_user);
     }
 
-    public function displayMonitoringDashboard(Organization $org, Request $request){
+    public function displayMonitoringDashboard(Organization $org, Request $request, MonitoringRequestDataTable $monitoring_request_dataTable) {
 
         $current_user = Auth()->user();
+        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
-        return view('pages.monitoring.index')
-                    ->with('organization', $org)
-                    ->with('current_user', $current_user);
+        return $monitoring_request_dataTable
+            ->with('beneficiary_id', $beneficiary_member->beneficiary_id)
+            ->render('tf-bi-portal::pages.monitoring.index', [
+                'current_user' => $current_user,
+                'organization' => $org,
+            ]);
     }
 
     public function displayFundAvailabilityDashboard(Organization $org, Request $request) {
