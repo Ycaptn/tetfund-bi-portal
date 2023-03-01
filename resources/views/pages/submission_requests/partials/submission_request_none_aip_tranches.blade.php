@@ -199,14 +199,14 @@
 	    </div>
 	</div>
 
-	<div class="col-sm-12">
-		<button class="btn btn-danger btn-sm btn-modal-request-for-related-tranche pull-right">
-			<small>
-				<span class="fa fa-paper-plane"></span>
-				Request {{$request_tranche}}
-			</small>
-		</button>
-	</div>
+<div class="col-sm-4 p-2">
+	<button class="col-sm-12 btn btn-danger btn-sm btn-modal-request-for-related-tranche">
+		<small>
+			<span class="fa fa-paper-plane"></span>
+			Request {{$request_tranche}}
+		</small>
+	</button>
+</div>
 
 	@push('page_scripts')
 	<script type="text/javascript">

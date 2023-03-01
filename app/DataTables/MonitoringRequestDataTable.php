@@ -109,15 +109,15 @@ class MonitoringRequestDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            Column::make('row_number')
+            Column::make('id')
                     ->title('#')
                     ->render('meta.row + meta.settings._iDisplayStart + 1;')
                     ->width(50)
                     ->orderable(false),
-            Column::make('title')->title('Project Title'),
+            Column::make('title')->title('Project Title')->addClass('text-center'),
             Column::make('proposed_request_date')->title('Proposed Date')->addClass('text-center'),
             Column::make('status')->title('Status')->addClass('text-center'),
-            Column::make('attachment')->title('Attachment')->addClass('text-center'),
+            Column::make('attachment')->title('Attachment')->name('attachables.attachment.label')->addClass('text-center'),
             Column::make('created_at')->title('Request Date')->addClass('text-center'),
         ];
     }

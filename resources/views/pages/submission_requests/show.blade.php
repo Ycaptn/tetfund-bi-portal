@@ -1,44 +1,6 @@
 @extends('layouts.app')
 
 @section('app_css')
-    <style type="text/css">
-        /* Style the tab */
-        .tab {
-          overflow: hidden;
-          border: 1px solid #ccc;
-          background-color: #f1f1f1;
-        }
-
-        /* Style the buttons inside the tab */
-        .tab button {
-          background-color: inherit;
-          float: left;
-          border: none;
-          outline: none;
-          cursor: pointer;
-          padding: 14px 16px;
-          transition: 0.3s;
-          font-size: 17px;
-        }
-
-        /* Change background color of buttons on hover */
-        .tab button:hover {
-          background-color: #ddd;
-        }
-
-        /* Create an active/current tablink class */
-        .tab button.active {
-          background-color: #ccc;
-        }
-
-        /* Style the tab content */
-        .tabcontent {
-          display: none;
-          padding: 6px 12px;
-          border: 1px solid #ccc;
-          border-top: none;
-        }
-    </style>
 @stop
 
 @section('title_postfix')
@@ -200,7 +162,7 @@ Submission
                             <ul class="nav nav-tabs nav-primary" role="tablist">
 
                                 <li class="nav-item" role="presentation">
-                                    <a class="nav-link {{(request()->sub_menu_items=="attachments")?'active':''}}" href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=attachments" >
+                                    <a class="nav-link {{(!isset(request()->sub_menu_items) || request()->sub_menu_items=="attachments")?'active':''}}" href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=attachments" >
                                         <div class="d-flex align-items-center">
                                             <div class="tab-icon">
                                                 <i class="bx bx-paperclip font-18 me-1"></i>
@@ -225,7 +187,7 @@ Submission
 
                                 @if(strtolower($submissionRequest->status) == 'submitted')
                                     <li class="nav-item" role="presentation">
-                                        <a class="nav-link {{(request()->sub_menu_items=="nominations_binded")?'active':''}}" href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=communications" >
+                                        <a class="nav-link {{(request()->sub_menu_items=="communications")?'active':''}}" href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=communications" >
                                             <div class="d-flex align-items-center">
                                                 <div class="tab-icon">
                                                     <i class="bx bx-layer-plus font-18 me-1"></i>
@@ -235,6 +197,7 @@ Submission
                                         </a>
                                     </li>
                                 @endif
+                                
                             </ul>
                         </div>
                     </div>

@@ -96,20 +96,24 @@
             <i class="fa fa-money fa-fw"></i> <b>Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>
             <i class="fa fa-thumbs-up fa-fw"> </i><b>Current Stage &nbsp; - &nbsp; </b> &nbsp; {{ strtoupper($submitted_request_data->work_item->active_assignment->assigned_user->department->long_name ?? $submissionRequest->status) }}<br/><br/>
             
-            {{-- process repriotization for intervention request --}}
-            @if($submissionRequest->status=='submitted' && !empty($submitted_request_data) && $submissionRequest->is_aip_request==true && empty($get_all_related_requests))
-                @include('tf-bi-portal::pages.submission_requests.partials.submission_request_reprioritization')
-            @endif
+            <div class="col-sm-12">
+                <div class="row">
+                    {{-- current intervention monitoring request --}}
+                    @if($submissionRequest->status=='submitted' && !empty($submitted_request_data) && $submissionRequest->is_aip_request==true && $submitted_request_data->has_generated_aip==true)
+                        @include('tf-bi-portal::pages.submission_requests.partials.monitoring_evaluation_submission_request')
+                    @endif
 
-            {{-- current intervention monitoring request --}}
-            @if($submissionRequest->status=='submitted' && !empty($submitted_request_data) && $submissionRequest->is_aip_request==true && $submitted_request_data->has_generated_aip==true)
-                @include('tf-bi-portal::pages.submission_requests.partials.monitoring_evaluation_submission_request')
-            @endif
+                    {{-- process repriotization for intervention request --}}
+                    @if($submissionRequest->status=='submitted' && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==true && $submissionRequest->is_aip_request==true && empty($get_all_related_requests))
+                        @include('tf-bi-portal::pages.submission_requests.partials.submission_request_reprioritization')
+                    @endif
 
-            {{-- current intervention none AIP submission request  --}}
-            @if($submissionRequest->status=='submitted' && !empty($submitted_request_data) && (($submissionRequest->is_aip_request==true && $submitted_request_data->has_generated_aip==true) || ( ($submissionRequest->is_first_tranche_request==true || $submissionRequest->is_second_tranche_request==true || $submissionRequest->is_final_tranche_request==true) && $submitted_request_data->has_generated_disbursement_memo==true)))
-                @include('tf-bi-portal::pages.submission_requests.partials.submission_request_none_aip_tranches')
-            @endif
+                    {{-- current intervention none AIP submission request  --}}
+                    @if($submissionRequest->status=='submitted' && !empty($submitted_request_data) && (($submissionRequest->is_aip_request==true && $submitted_request_data->has_generated_aip==true) || ( ($submissionRequest->is_first_tranche_request==true || $submissionRequest->is_second_tranche_request==true || $submissionRequest->is_final_tranche_request==true) && $submitted_request_data->has_generated_disbursement_memo==true)))
+                        @include('tf-bi-portal::pages.submission_requests.partials.submission_request_none_aip_tranches')
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 

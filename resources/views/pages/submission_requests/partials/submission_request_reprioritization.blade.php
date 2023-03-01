@@ -167,9 +167,8 @@
     </div>
 </div>
 
-
-<div class="col-sm-12">
-	<button class="btn btn-info btn-sm btn-modal-request-for-submission-reprioritization pull-right">
+<div class="col-sm-4 p-2">
+	<button class="col-sm-12 btn btn-info btn-sm btn-modal-request-for-submission-reprioritization">
 		<small>
 			<span class="fa fa-refresh"></span>
 			Reprioritize Submission

@@ -37,13 +37,9 @@
                                 $property = "intervention_year{$yr}";
                                 if (!empty($data_item->$property)){ $years_requested []= $data_item->$property; }
                             }
-                            $intervention_line = "";
-                            if (!empty($data_item->tf_iterum_portal_response_meta_data)){
-                                $meta_data = json_decode($data_item->tf_iterum_portal_response_meta_data);
-                                $intervention_line = $meta_data->name;
-                            }
                         @endphp
-                        {{ $intervention_line }} - {{ $data_item->type }} - {{ implode(", ", $years_requested) }}
+                        
+                        {{ $data_collection[$data_item->tf_iterum_intervention_line_key_id]??'' }} - {{ $data_item->type }} - {{ implode(", ", $years_requested) }}
                     </p>
                     @if (!empty($data_item->amount_requested))
                         <p class="card-text mb-0 small">

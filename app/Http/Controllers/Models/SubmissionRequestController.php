@@ -51,7 +51,7 @@ class SubmissionRequestController extends BaseController
             $intervention_lines [$item->id]= $item->name;
         }
 
-        $cdv_submission_requests = new CardDataView(SubmissionRequest::class, "pages.submission_requests.card_view_item");
+        $cdv_submission_requests = new CardDataView(SubmissionRequest::class, "pages.submission_requests.card_view_item", $intervention_lines);
         $cdv_submission_requests->setDataQuery(['organization_id'=>$org->id, 'beneficiary_id'=>optional($beneficiary_member)->beneficiary_id, 'is_monitoring_request'=>false])
                         ->addDataGroup('All','deleted_at',null)
                         ->addDataGroup('Not Submitted','status','not-submitted')
@@ -194,22 +194,23 @@ class SubmissionRequestController extends BaseController
         $checklist_group_name = self::generateCheckListGroupName($request->intervention_line_name??'', $submissionRequest);
 
         // get audit checklist for tranches applicable
+        $additional_checklists_pay_load = ['_method' => 'POST'];
         if ($submissionRequest->is_second_tranche_request || $submissionRequest->is_final_tranche_request) {
-            $additional_checklists['checklist_group_name_audit'] = self::generateCheckListGroupName($request->intervention_line_name??'', $submissionRequest, true);
+            $additional_checklists_pay_load['checklist_group_name_audit'] = self::generateCheckListGroupName($request->intervention_line_name??'', $submissionRequest, true);
         }
 
         // retriveing related checklist records for PI intevention at AIP stages  
         if ($submissionRequest->is_aip_request && str_contains(strtolower($request->intervention_line_name), "physical infrastructure")) {
             $intervention_name = $request->intervention_line_name;            
-            $additional_checklists['pi_electrical_checklist'] = $intervention_name.' - ElectricalCheckList';
-            $additional_checklists['pi_architectural_checklist'] = $intervention_name.' - ArchitectureCheckList';
-            $additional_checklists['pi_mechanical_checklist'] = $intervention_name.' - MechnicalCheckList';
-            $additional_checklists['pi_structural_checklist'] = $intervention_name.' - StructuralCheckList';
+            $additional_checklists_pay_load['pi_electrical_checklist'] = $intervention_name.' - ElectricalCheckList';
+            $additional_checklists_pay_load['pi_architectural_checklist'] = $intervention_name.' - ArchitectureCheckList';
+            $additional_checklists_pay_load['pi_mechanical_checklist'] = $intervention_name.' - MechnicalCheckList';
+            $additional_checklists_pay_load['pi_structural_checklist'] = $intervention_name.' - StructuralCheckList';
         }
         
         // get checklist for specified intervention
         $tETFundServer = new TETFundServer();   /* server class constructor */
-        $checklist_items = $tETFundServer->getInterventionChecklistData($checklist_group_name, $additional_checklists??null);
+        $checklist_items = $tETFundServer->getInterventionChecklistData($checklist_group_name, $additional_checklists_pay_load);
         
         //mapping checklist id to item_label 
         foreach ($checklist_items as $checklist){
@@ -483,22 +484,24 @@ class SubmissionRequestController extends BaseController
             $checklist_group_name = self::generateCheckListGroupName($intervention_types_server_response->name ?? '', $submissionRequest);
 
             // get audit checklist for tranches applicable
+            $additional_checklists_pay_load = ['_method' => 'POST'];
             if ($submissionRequest->is_second_tranche_request || $submissionRequest->is_final_tranche_request) {
-                $additional_checklists['checklist_group_name_audit'] = self::generateCheckListGroupName($intervention_types_server_response->name??'', $submissionRequest, true);
+                $additional_checklists_pay_load['checklist_group_name_audit'] = self::generateCheckListGroupName($intervention_types_server_response->name??'', $submissionRequest, true);
+
             }
 
             // retriveing related checklist records for PI intevention at AIP stages  
             if ($submissionRequest->is_aip_request && str_contains(strtolower($intervention_types_server_response->name), "physical infrastructure")) {
                 $intervention_name = $intervention_types_server_response->name;            
-                $additional_checklists['pi_electrical_checklist'] = $intervention_name.' - ElectricalCheckList';
-                $additional_checklists['pi_architectural_checklist'] = $intervention_name.' - ArchitectureCheckList';
-                $additional_checklists['pi_mechanical_checklist'] = $intervention_name.' - MechnicalCheckList';
-                $additional_checklists['pi_structural_checklist'] = $intervention_name.' - StructuralCheckList';
+                $additional_checklists_pay_load['pi_electrical_checklist'] = $intervention_name.' - ElectricalCheckList';
+                $additional_checklists_pay_load['pi_architectural_checklist'] = $intervention_name.' - ArchitectureCheckList';
+                $additional_checklists_pay_load['pi_mechanical_checklist'] = $intervention_name.' - MechnicalCheckList';
+                $additional_checklists_pay_load['pi_structural_checklist'] = $intervention_name.' - StructuralCheckList';
             }
 
             // get checklist for specified intervention
             $tETFundServer = new TETFundServer();   /* server class constructor */
-            $checklist_items = $tETFundServer->getInterventionChecklistData($checklist_group_name, $additional_checklists??null);
+            $checklist_items = $tETFundServer->getInterventionChecklistData($checklist_group_name, $additional_checklists_pay_load);
             
             $years = array();
             if ($submissionRequest->intervention_year1 != null) {
