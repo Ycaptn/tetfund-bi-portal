@@ -99,9 +99,26 @@ class BeneficiaryAPIController extends AppBaseController
      *
      * @return Response
      */
-    public function update($id, UpdateBeneficiaryAPIRequest $request, Organization $organization)
-    {
+    public function update(UpdateBeneficiaryAPIRequest $request, Organization $organization, $id) {
+        $beneficiary = Beneficiary::find($id);
+
+        if (empty($beneficiary)) {
+            return $this->sendError('Beneficiary was not found.');
+        }
+
+        $pay_load = $request->all();
+        $pay_load['_method'] = 'PUT';
+        $pay_load['full_name'] = $beneficiary->full_name;
+        $pay_load['id'] = $beneficiary->tf_iterum_portal_key_id;
+
+        // update beneficiary record in iterum server
+        $tETFundServer = new TETFundServer();
+        $set_beneficiary_detail = $tETFundServer->updateBeneficiaryData($pay_load);
+
+        // update beneficiary record in bi server
+        $beneficiary->update($request->all());
         
+        return $this->sendSuccess('Beneficiary Data Successfully Updated!');
     }
 
     /**
@@ -310,6 +327,8 @@ class BeneficiaryAPIController extends AppBaseController
                 $beneficiary_obj->geo_zone = $get_server_beneficiary->geo_zone;
                 $beneficiary_obj->owner_agency_type = $get_server_beneficiary->owner_agency_type;
                 $beneficiary_obj->tf_iterum_portal_key_id = $get_server_beneficiary->id;
+                $beneficiary_obj->tf_iterum_portal_response_meta_data = json_encode($get_server_beneficiary);
+                $beneficiary_obj->tf_iterum_portal_response_at = date('Y-m-d');
                
                 //create or update beneficiary institution
                 $beneficiary_obj->save();

@@ -92,6 +92,8 @@ class DashboardController extends BaseController
         return $beneficiaryMembersDatatable->with('beneficiary_id', $beneficiary_member->beneficiary->id)
                 ->render('tf-bi-portal::pages.desk_officer.index', [
                     'beneficiary'=>$beneficiary_member->beneficiary,
+                    'geo_zone_list'=>BaseController::geoZoneList(),
+                    'states_list'=>BaseController::statesList(),
                     'organization'=>$org,
                     'current_user'=>$current_user,
                     'roles'=>$allRoles

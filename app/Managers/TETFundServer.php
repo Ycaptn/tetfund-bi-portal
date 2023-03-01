@@ -167,6 +167,17 @@ class TETFundServer {
         return ($api_response != null && $api_response_data !=null && is_array($api_response_data->data)) ? $api_response_data->data : [];
     }
 
+    public static function updateBeneficiaryData($pay_load) {
+        $server_api_url = Config::get('keys.tetfund.server_api_url');
+        $token = self::get_auth_token();
+        $pay_load['organization_id'] = self::$authenticated_user_organization_id;
+        $ch = self::setup_curl($token, "{$server_api_url}/tetfund-ben-mgt-api/beneficiaries/{$pay_load['id']}", $pay_load);
+        $api_response = curl_exec($ch);
+        $api_response_data = json_decode($api_response);
+        curl_close ($ch);
+        return ($api_response != null && $api_response_data !=null && is_array($api_response_data->data)) ? $api_response_data->data : [];
+    }
+
     public static function getBeneficiaryData($beneficiary_id) {
         $server_api_url = Config::get('keys.tetfund.server_api_url');
         $token = self::get_auth_token();
