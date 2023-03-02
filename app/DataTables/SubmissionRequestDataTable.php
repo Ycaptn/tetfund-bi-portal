@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\SubmissionRequest;
+use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 use Yajra\DataTables\EloquentDataTable;
 
@@ -26,7 +27,35 @@ class SubmissionRequestDataTable extends DataTable
     {
         $dataTable = new EloquentDataTable($query);
 
-        return $dataTable->addColumn('action', 'xyz::pages.submission_requests.datatables_actions');
+        $dataTable->addColumn('title', function ($query) {
+            $intervention_years = $query->getInterventionYears();
+            $html_returned = strtoupper($query->title) . '<br><small style="color:green"><b>Type:</b> &nbsp;'. $query->type .' -- '. implode(', ', $intervention_years) .'</small><br>';
+
+            if ($query->is_monitoring_request==false) {
+                $html_returned .= '<small style="color:red"><b>Amount Requested:</b> &nbsp; &#8358;'.number_format($query->amount_requested, 2).'</small>';
+            } else {
+                $html_returned .= '<small style="color:red">Monitoring Request</small>';
+            }
+
+            return $html_returned;
+            
+        })->escapeColumns('active')->make(true);
+
+        $dataTable->addColumn('status', function ($query) {
+            if ($query->status == 'submitted') {
+                $html_text = "<span class='text-success'>". ucwords($query->status) ."</span>";   
+            } else {
+                $html_text = "<span class='text-danger'>". ucwords($query->status) ."</span>";   
+            }
+            return $html_text;
+        });
+
+        $dataTable->addColumn('created_at', function ($query) {
+            return date('jS M, Y', strtotime($query->created_at));
+        });
+
+        return $dataTable;
+        //return $dataTable->addColumn('action', '--');
     }
 
     /**
@@ -36,12 +65,12 @@ class SubmissionRequestDataTable extends DataTable
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function query(SubmissionRequest $model)
-    {
-        if ($this->organization != null){
-            return $model->newQuery()->where("organization_id", $this->organization->id);
-        }
-        
-        return $model->newQuery();
+    {        
+        return $model->newQuery()
+                ->where('beneficiary_id', $this->beneficiary_id)
+                ->when($this->organization != null, function($query) {
+                    $query->where('organization_id', $this->organization->id);
+                });
     }
 
     /**
@@ -54,17 +83,15 @@ class SubmissionRequestDataTable extends DataTable
         return $this->builder()
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->addAction(['width' => '120px', 'printable' => false])
+            //->addAction(['width' => '120px', 'printable' => false])
             ->parameters([
-                'dom'       => 'Bfrtip',
+                'dom' => 'B<"float-end mb-5" f><t>ip',
                 'stateSave' => true,
-                'order'     => [[0, 'desc']],
+                'order'     => [[3, 'desc']],
                 'buttons'   => [
-                    ['extend' => 'create', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
-                    ['extend' => 'export', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
-                    ['extend' => 'print', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
-                    ['extend' => 'reset', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
-                    ['extend' => 'reload', 'className' => 'btn btn-primary btn-outline btn-xs no-corner',],
+                    ['extend' => 'print', 'className' => 'btn btn-primary btn-outline btn-xs no-corner mt-3',],
+                    ['extend' => 'reset', 'className' => 'btn btn-primary btn-outline btn-xs no-corner mt-3',],
+                    ['extend' => 'reload', 'className' => 'btn btn-primary btn-outline btn-xs no-corner mt-3',],
                 ],
             ]);
     }
@@ -77,10 +104,14 @@ class SubmissionRequestDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'title',
-            'status',
-            'type',
-            'tf_iterum_portal_request_status'
+            Column::make('id')
+                    ->title('#')
+                    ->render('meta.row + meta.settings._iDisplayStart + 1;')
+                    ->width(50)
+                    ->orderable(false),
+            Column::make('title')->title('Project Title'),
+            Column::make('status')->title('Status')->addClass('text-center'),
+            Column::make('created_at')->title('Request Date')->addClass('text-center'),
         ];
     }
 

@@ -10,7 +10,9 @@ use App\Events\BeneficiaryDeleted;
 
 use App\Http\Requests\CreateBeneficiaryRequest;
 use App\Http\Requests\UpdateBeneficiaryRequest;
+use App\DataTables\SubmissionRequestDataTable;
 use App\DataTables\BeneficiaryMemberDatatable;
+use App\DataTables\NominationRequestDataTable;
 
 use Hasob\FoundationCore\Controllers\BaseController;
 use Hasob\FoundationCore\Models\Organization;
@@ -95,7 +97,7 @@ class BeneficiaryController extends BaseController
      *
      * @return Response
      */
-    public function show(Organization $org, BeneficiaryMemberDatatable $beneficiaryMembersDatatable, $id)
+    public function show(Organization $org, BeneficiaryMemberDatatable $beneficiaryMembersDatatable, SubmissionRequestDataTable $submissionRequestDataTable, NominationRequestDataTable $nominationRequestDataTable, $id)
     {
         /** @var Beneficiary $beneficiary */
         $beneficiary = Beneficiary::find($id);
@@ -109,7 +111,17 @@ class BeneficiaryController extends BaseController
                     ->where('name', '!=', 'admin')
                     ->where('name', 'like', 'bi-%')
                     ->pluck('name');
-        
+
+        if (request()->has('sub_menu_items') && request()->get('sub_menu_items') == 'submissions') {
+            return $submissionRequestDataTable->with('beneficiary_id', $beneficiary->id)->render('tf-bi-portal::pages.beneficiaries.show', ['beneficiary'=>$beneficiary, 'roles'=>$allRoles]);
+            
+        }
+
+        if (request()->has('sub_menu_items') && request()->get('sub_menu_items') == 'nominations') {
+            return $nominationRequestDataTable->with('beneficiary_id', $beneficiary->id)->render('tf-bi-portal::pages.beneficiaries.show', ['beneficiary'=>$beneficiary, 'roles'=>$allRoles]);
+            
+        }
+
         return $beneficiaryMembersDatatable->with('beneficiary_id', $beneficiary->id)->render('tf-bi-portal::pages.beneficiaries.show', ['beneficiary'=>$beneficiary, 'roles'=>$allRoles]);
     }
 
