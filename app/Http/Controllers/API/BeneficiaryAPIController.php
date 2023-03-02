@@ -108,8 +108,10 @@ class BeneficiaryAPIController extends AppBaseController
 
         $pay_load = $request->all();
         $pay_load['_method'] = 'PUT';
+        $pay_load['type'] = $beneficiary->type;
         $pay_load['full_name'] = $beneficiary->full_name;
         $pay_load['id'] = $beneficiary->tf_iterum_portal_key_id;
+        $pay_load['official_email'] = $beneficiary->official_email;
 
         // update beneficiary record in iterum server
         $tETFundServer = new TETFundServer();

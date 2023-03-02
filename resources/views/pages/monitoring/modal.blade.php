@@ -3,7 +3,9 @@
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 id="lbl-request-monitoring-evaluation-modal-title" class="modal-title"><span id="prefix_info"></span> <span id='new_or_old_m_r'></span> Monitoring Request <span class="text-success" id="request_title">({{$submissionRequest->title??''}})</span></h5>
+                <h5 id="lbl-request-monitoring-evaluation-modal-title" class="modal-title">
+                    <span id="prefix_info"></span><span id='new_or_old_m_r'></span> Monitoring Request 
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -28,8 +30,8 @@
                                         Project Title:
                                     </label>
                                     <div class="col-sm-12">
-                                        <div class="input-group">
-                                            <input class="form-control" id="project_title" value="" />
+                                        <div class="input-group"> 
+                                            <input class="form-control" disabled="disabled" id="project_title" value="{{$submissionRequest->title??''}}"/>
                                         </div>
                                     </div>
                                 </div>
@@ -210,7 +212,6 @@
 
             $.get( "{{ route('tf-bi-portal-api.submission_requests.show','') }}/"+itemId).done(function( response ) {
                 let proposed_monitoring_date= new Date(response.data.proposed_request_date).toISOString().slice(0, 10);
-                $('#request_title').text( '(' + response.data.getParentSubmissionRequest.title + ')');
                 $('#m_r_primary_id').val(response.data.id);
                 $('#project_title').val(response.data.title);
                 $('#type_of_monitoring_request').val(response.data.type);
@@ -339,12 +340,12 @@
                     formData.append('_token', $('input[name="_token"]').val());
                     formData.append('is_monitoring_request', 1);
 
-                    if ($('#project_title').length){ formData.append('title', $('#project_title').val()); }
                     if ($('#type_of_monitoring_request').length){ formData.append('type', $('#type_of_monitoring_request').val()); }
                     if ($('#proposed_monitoring_date').length){ formData.append('proposed_request_date', $('#proposed_monitoring_date').val()); }
                     
                     @if(isset($can_request_monitoring) && $can_request_monitoring==true)
                         if(primaryId=='0') {
+                            if ('{{$title}}'.length){ formData.append('title', '{{$title}}'); }
                             if ('{{$tf_iterum_intervention_line_key_id}}'.length){ formData.append('tf_iterum_intervention_line_key_id', '{{$tf_iterum_intervention_line_key_id}}'); }
                             if ('{{$intervention_year1}}'.length){ formData.append('intervention_year1', '{{$intervention_year1}}'); }
                             if ('{{$intervention_year2}}'.length){ formData.append('intervention_year2', '{{$intervention_year2}}'); }

@@ -58,7 +58,7 @@
                                 <div class="col-sm-12 text-justify text-danger">
                                 	<small>
                                 		<i>
-                                			<strong>Note:</strong> By reprioritizing this AIP submission request, this will enable you to make & resubmit minor Salterations for the input fields below.                               			
+                                			<strong>Note:</strong> By reprioritizing this AIP submission request, this will enable you to make & resubmit minor alterations for the input fields below.                               			
                                 		</i>
                                 	</small>
                                 </div><hr>

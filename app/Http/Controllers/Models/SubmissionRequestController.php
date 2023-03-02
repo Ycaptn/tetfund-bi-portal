@@ -440,13 +440,34 @@ class SubmissionRequestController extends BaseController
         return str_replace(' ', '_', $checklist_group_name ?? '0');
     }
 
-    /**
-     * Display the specified SubmissionRequest.
-     *
-     * @param  int $id
-     *
-     * @return Response
-     */
+    // show details for monitoring request
+    public function showMonitoring(Organization $ord, Request $request, $id) {
+        $monitoring_request = SubmissionRequest::where('id', $id)
+                        ->where('is_monitoring_request', true)
+                        ->first();
+        
+        if (empty($monitoring_request)) {
+            return redirect(route('tf-bi-portal.monitoring'))->with('error', 'The Monitoring Request Was Not Found!');
+        }
+
+        $current_user = auth()->user();
+        $beneficiary = $monitoring_request->beneficiary; // beneficiary
+        $submission_request = $monitoring_request->find($monitoring_request->parent_id); // submission request
+
+        // get all interventions from server
+        $pay_load = ['_method'=>'GET', 'id'=>$monitoring_request->tf_iterum_intervention_line_key_id];
+        $tETFundServer = new TETFundServer();   /* server class constructor */
+        $intervention_types_server_response = $tETFundServer->get_row_records_from_server("tetfund-ben-mgt-api/interventions/".$monitoring_request->tf_iterum_intervention_line_key_id, $pay_load);
+
+        return view('tf-bi-portal::pages.monitoring.show')
+                ->with('current_user', $current_user)
+                ->with('monitoring_request', $monitoring_request)
+                ->with('submission_request', $submission_request)
+                ->with('intervention', $intervention_types_server_response)
+                ->with('monitoring_request_submitted', $monitoring_request_submitted ?? []);
+    }
+    
+    // show details for submission request
     public function show(Organization $org, $id, Request $request, BindedNominationsDataTable $binded_nominations_dataTable) {
         /** @var SubmissionRequest $submissionRequest */
         $submissionRequest = SubmissionRequest::find($id);
@@ -677,21 +698,6 @@ class SubmissionRequestController extends BaseController
             return redirect(route('tf-bi-portal.submissionRequests.show', $submissionRequest->id))->with('success', 'Submission Request updated successfully.')->with('submissionRequest', $submissionRequest);
         }
         return redirect(route('tf-bi-submission.submissionRequests.index'));
-    }
-
-    public function displayResponsAttachment(Organization $org, Request $request) {
-        if (isset($request->path) && isset($request->label) && isset($request->file_type) && isset($request->storage_driver)) {
-
-            if ($request->storage_driver == 'azure' || $request->storage_driver == 's3') {
-                return \Illuminate\Support\Facades\Storage::disk($request->storage_driver)->download(
-                    $request->path,
-                    $request->label,
-                    ['Content-Disposition' => 'inline; filename="' . $request->label . '"']
-                );
-            }
-
-            return response()->file(base_path($request->path));
-        }        
     }
 
     /**

@@ -24,7 +24,12 @@ class NominationRequestDataTable extends DataTable
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function query(NominationRequest $model)
-    {
+    {   
+        if (Auth()->user()->hasRole(['admin'])) {
+            return $model->newQuery()->with('user')
+                ->where('beneficiary_id', $this->beneficiary_id);
+        }
+
         $query_filter = [   'type'=>$this->type,
                             'status'=>'approved',
                             'details_submitted'=>1,
@@ -106,20 +111,24 @@ class NominationRequestDataTable extends DataTable
      */
     public function html()
     {
-        return $this->builder()
+        $builder = $this->builder()
             ->columns($this->getColumns())
-            ->minifiedAjax()
-            ->addAction(['width' => '120px', 'printable' => false])
-            ->parameters([
-                'dom' => 'B<"float-end mb-5" f><t>ip',
-                'stateSave' => true,
-                'order'     => [[3, 'desc']],
-                'buttons'   => [
-                   ['extend' => 'print', 'className' => 'btn btn-primary btn-outline btn-xs no-corner mt-3',],
-                    ['extend' => 'reset', 'className' => 'btn btn-primary btn-outline btn-xs no-corner mt-3',],
-                    ['extend' => 'reload', 'className' => 'btn btn-primary btn-outline btn-xs no-corner mt-3',],
-                ],
-            ]);
+            ->minifiedAjax();
+
+        if (!Auth()->user()->hasRole(['admin'])) {
+            $builder = $builder->addAction(['width' => '120px', 'printable' => false]);
+        }
+
+        return $builder->parameters([
+            'dom' => 'B<"float-end mb-5" f><t>ip',
+            'stateSave' => true,
+            'order'     => [[3, 'desc']],
+            'buttons'   => [
+                ['extend' => 'print', 'className' => 'btn btn-primary btn-outline btn-xs no-corner mt-3',],
+                ['extend' => 'reset', 'className' => 'btn btn-primary btn-outline btn-xs no-corner mt-3',],
+                ['extend' => 'reload', 'className' => 'btn btn-primary btn-outline btn-xs no-corner mt-3',],
+            ],
+        ]);
     }
 
     /**
@@ -129,13 +138,19 @@ class NominationRequestDataTable extends DataTable
      */
     protected function getColumns()
     {
-        return [
-            //['title'=>'Requested on', 'data'=>'full_name', 'name'=>'user.first_name' ],
+        $columns = [
             ['title'=>'S/N','data'=>'sn', 'name'=>'user.email'],
             Column::make('full_name')->name('user.first_name'),
             Column::make('email')->name('user.email'),
-            ['title'=>'Requested on','data'=>'created_at', 'name'=>'created_at' ],
         ];
+
+        if (Auth()->user()->hasRole(['admin'])) {
+            array_push($columns, Column::make('type')->name('type'));
+        }
+
+        array_push($columns, ['title'=>'Requested on','data'=>'created_at', 'name'=>'created_at' ]);
+
+        return $columns;
     }
 
     /**
@@ -166,6 +181,20 @@ class NominationRequestDataTable extends DataTable
             return "N/A";
         });
 
+        $dataTable->addColumn('type', function ($query) {
+            $returned_str = "N/A";
+            if ($query->type != null){
+                if ($query->type = 'tp') {
+                    $returned_str = 'Teaching Practice';
+                } elseif ($query->type == 'ca') {
+                    $returned_str = 'Conference Attendance';
+                } elseif($query->type == 'tsas') {
+                    $returned_str = 'TETFund Scholartship for Academic Staff';
+                }
+            }
+            return $returned_str;
+        });
+
         $dataTable->addColumn('created_at', function ($query) {
             if ($query->created_at != null){
                 $created_at = \Carbon\Carbon::parse($query->created_at)->format('jS M, Y');
@@ -174,7 +203,11 @@ class NominationRequestDataTable extends DataTable
             return "N/A";
         });
 
-        return $dataTable->addColumn('action', 'tf-bi-portal::pages.nomination_requests.default_datatables_actions');
+        if (Auth()->user()->hasRole(['admin'])) {
+            return $dataTable;
+        } else {
+            return $dataTable->addColumn('action', 'tf-bi-portal::pages.nomination_requests.default_datatables_actions');
+        }
     }
 
     /**

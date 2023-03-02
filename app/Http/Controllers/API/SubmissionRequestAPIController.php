@@ -116,8 +116,6 @@ class SubmissionRequestAPIController extends AppBaseController
             return $this->sendError('Submission Request not found');
         }
 
-        $submissionRequest->getParentSubmissionRequest = $submissionRequest->getParentAIPSubmissionRequest();
-
         return $this->sendResponse($submissionRequest->toArray(), 'Submission Request retrieved successfully');
     }
 

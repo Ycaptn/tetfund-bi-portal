@@ -22,6 +22,12 @@
                         @php
                             $checklist = "checklist-".$item->id;
                             $checklist_input_fields .= ($checklist_input_fields == "") ? $checklist : ','.$checklist;
+
+                            $submission_attachment = $submissionRequest->get_specific_attachment($submissionRequest->id, $item->item_label);
+
+                            if($submission_attachment==null && $submissionRequest->status!='not-submitted') {
+                                continue;
+                            }
                         @endphp
 
                         <tr>
@@ -29,9 +35,6 @@
                             <td>{{ $item->item_label }}</td>
                             <td width="50%">
                                 <div class="input-group">
-                                    @php
-                                        $submission_attachment = $submissionRequest->get_specific_attachment($submissionRequest->id, $item->item_label);
-                                    @endphp
                                     @if($submission_attachment != null)
                                         @php
                                             $preview_label = str_replace('auditclearancefinalpaymentchecklist-', '', $submission_attachment->label);

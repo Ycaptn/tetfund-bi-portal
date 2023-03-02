@@ -6,12 +6,16 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 
+use App\Managers\TETFundServer;
+use App\Models\BeneficiaryMember;
+use App\Models\SubmissionRequest;
+
 use Hasob\FoundationCore\Models\User;
 use Hasob\FoundationCore\Models\Department;
 use Hasob\FoundationCore\Models\Organization;
 use Hasob\FoundationCore\Models\Attachment;
-use App\Models\BeneficiaryMember;
-
+use Hasob\FoundationCore\View\Components\CardDataView;
+use Hasob\FoundationCore\Controllers\BaseController;
 
 use App\Http\Requests\CreateBeneficiaryRequest;
 use App\Http\Requests\UpdateBeneficiaryRequest;
@@ -19,8 +23,6 @@ use App\DataTables\BeneficiaryMemberDatatable;
 use App\DataTables\MonitoringRequestDataTable;
 use Spatie\Permission\Models\Role;
 
-use Hasob\FoundationCore\Controllers\BaseController;
-use App\Managers\TETFundServer;
 
 class DashboardController extends BaseController
 {
@@ -35,17 +37,42 @@ class DashboardController extends BaseController
                     ->with('current_user', $current_user);
     }
 
-    public function displayMonitoringDashboard(Organization $org, Request $request, MonitoringRequestDataTable $monitoring_request_dataTable) {
-
+    public function displayMonitoringDashboard(Organization $org, Request $request)
+    {
         $current_user = Auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
-        return $monitoring_request_dataTable
-            ->with('beneficiary_id', $beneficiary_member->beneficiary_id)
-            ->render('tf-bi-portal::pages.monitoring.index', [
-                'current_user' => $current_user,
-                'organization' => $org,
-            ]);
+        $tetFundServer = new TETFundServer();
+        $pay_load = ['_method'=>'GET', 'beneficiary_type'=>$beneficiary_member->beneficiary->type ?? null];
+        $intervention_types_server_response = $tetFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
+
+        $intervention_lines = [];
+        foreach($intervention_types_server_response as $idx=>$item){
+            $intervention_lines [$item->id]= $item->name;
+        }
+
+        $cdv_submission_requests = new CardDataView(SubmissionRequest::class, "pages.monitoring.card_view_item", $intervention_lines);
+        $cdv_submission_requests->setDataQuery([
+                    'organization_id' => $org->id,
+                    'beneficiary_id' => $beneficiary_member->beneficiary_id, 
+                    'is_monitoring_request' => true 
+                ])
+                ->addDataGroup('All','deleted_at',null)
+                ->addDataGroup('Not Submitted','status','not-submitted')
+                ->addDataGroup('Submitted','status','submitted')
+                ->addDataGroup('Approved','status','approved')
+                ->enableSearch(true)
+                ->addDataOrder('created_at', 'DESC')
+                ->enablePagination(true);
+
+        if (request()->expectsJson()){
+            return $cdv_submission_requests->render();
+        }
+
+        return view('pages.monitoring.card_view_index')
+                    ->with('organization', $org)
+                    ->with('current_user', $current_user)
+                    ->with('cdv_submission_requests', $cdv_submission_requests);
     }
 
     public function displayFundAvailabilityDashboard(Organization $org, Request $request) {

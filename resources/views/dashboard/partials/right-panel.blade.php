@@ -27,10 +27,14 @@
         </div>
 
         <p>
-            <i class="bx bx-right-arrow-alt mx-1"></i>My Submissions <br/>
-            <i class="bx bx-right-arrow-alt mx-1"></i>Fund Availability <br/>
-            <i class="bx bx-right-arrow-alt mx-1"></i>ASTD Nominations <br/>
-            <i class="bx bx-right-arrow-alt mx-1"></i>Portal User Guide <br/>
+            <a href="{{ route('tf-bi-portal.submissionRequests.index') }}">
+                <i class="bx bx-right-arrow-alt mx-1"></i>My Submissions <br/>
+            </a>
+            <a href="{{ route('tf-bi-portal.fund-availability') }}">
+                <i class="bx bx-right-arrow-alt mx-1"></i>Fund Availability <br/>
+            </a>
+            {{-- <i class="bx bx-right-arrow-alt mx-1"></i>ASTD Nominations <br/>
+            <i class="bx bx-right-arrow-alt mx-1"></i>Portal User Guide <br/> --}}
 
             {{-- <i class="bx bx-right-arrow-alt mx-1"></i>Hosting Services <br/>
             <i class="bx bx-right-arrow-alt mx-1"></i>Technical Support <br/> --}}

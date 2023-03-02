@@ -98,12 +98,10 @@
                     formData.append('id', '{{ $beneficiary->id }}');
                     
                     @if (isset($organization) && $organization!=null)
-                        formData.append('organization_id', '{{$organization->id}}');
+                        formData.append('organization_id','{{$organization->id}}');
                     @endif
 
-                    if ($('#bi_type').length){ formData.append('type', $('#bi_type').val()); }
                     if ($('#bi_email').length){ formData.append('email', $('#bi_email').val()); }
-                    if ($('#bi_official_email').length){ formData.append('official_email', $('#bi_official_email').val()); }
                     if ($('#bi_short_name').length){ formData.append('short_name', $('#bi_short_name').val()); }
                     if ($('#bi_official_website').length){ formData.append('official_website', $('#bi_official_website').val()); }
                     if ($('#bi_official_phone').length){ formData.append('official_phone', $('#bi_official_phone').val()); }

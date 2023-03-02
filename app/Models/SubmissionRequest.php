@@ -319,9 +319,10 @@ class SubmissionRequest extends Model
 
     // submission Request Monitoring
     public function getMonitoringSubmissionRequests() {
-        $aip_request = $this->getParentAIPSubmissionRequest();
-        if ($aip_request != null) {
-            return $this->where('parent_id', $aip_request->id)
+        $parent_request = $this->find($this->parent_id);
+        if ($parent_request != null) {
+            return $this->where('parent_id', $parent_request->id)
+                ->where('id', '!=', $this->id)
                 ->where('is_monitoring_request', true)
                 ->orderBy('created_at', 'DESC')
                 ->get();
@@ -329,7 +330,7 @@ class SubmissionRequest extends Model
         return null;
     }
 
-    public function getAllRelatedSubmissionRequest() {
+    public function getAllRelatedSubmissionRequest($is_monitoring_inclusive=false) {
         $get_all_related_requests = array();
 
         $aip_request = $this->getParentAIPSubmissionRequest();
@@ -356,7 +357,15 @@ class SubmissionRequest extends Model
         if (!empty($final_tranche_request) && $final_tranche_request->id != $this->id) {
             array_push($get_all_related_requests, $final_tranche_request);
         }
-        
+
+        if ($is_monitoring_inclusive == true) {
+            $monitoring_requests = $this->getMonitoringSubmissionRequests();
+            if (!empty($monitoring_requests)) {
+                $get_all_related_requests = array_merge($get_all_related_requests, $monitoring_requests->toArray());
+            }
+            
+        }
+
         return $get_all_related_requests;
     }
 

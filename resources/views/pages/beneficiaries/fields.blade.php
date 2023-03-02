@@ -7,7 +7,7 @@
 <!-- Institution Type Field -->
 <div id="div-bi_type" class="col-md-4 form-group mt-3">
     <label for="bi_type" class="col-sm-12 col-form-label"><strong>Institution Type</strong></label>
-    <select class="form-select" id="bi_type" name="type">
+    <select class="form-select" id="bi_type" name="type" disabled='disabled'>
         <option value="">-- None Selected --</option>
         <option value="university" {{ $beneficiary->type=='university'? 'selected':'' }}>University</option>
         <option value="polytechnic" {{ $beneficiary->type=='polytechnic'? 'selected':'' }}>Polytechnic</option>
@@ -24,7 +24,7 @@
 <!-- Official Email Field -->
 <div id="div-bi_official_email" class="col-md-4 form-group mt-3">
     <label for="bi_official_email" class="col-sm-12 col-form-label"><strong>Official Email</strong></label>
-    {!! Form::text('official_email', $beneficiary->official_email, ['id'=>'bi_official_email', 'class' => 'form-control','maxlength' => 200]) !!}
+    {!! Form::text('official_email', $beneficiary->official_email, ['id'=>'bi_official_email', 'class' => 'form-control','maxlength' => 200, 'disabled'=>'disabled']) !!}
 </div>
 
 <!-- Short Name Field -->
