@@ -95,8 +95,13 @@
             
             <div class="col-sm-12">
                 <div class="row">
+                    {{-- follow up submission request --}}
+                    @if($submissionRequest->status=='submitted' && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==false && $submitted_request_data->has_generated_disbursement_memo==false)
+                        @include('tf-bi-portal::pages.submission_requests.partials.follow_up_submission_request')
+                    @endif
+
                     {{-- current intervention monitoring request --}}
-                    @if($submissionRequest->status=='submitted' && !empty($submitted_request_data) && $submissionRequest->is_aip_request==true && $submitted_request_data->has_generated_aip==true)
+                    @if($submissionRequest->status=='submitted' && !empty($submitted_request_data) && ($submitted_request_data->has_generated_aip==true || $submitted_request_data->has_generated_disbursement_memo==true))
                         @include('tf-bi-portal::pages.submission_requests.partials.monitoring_evaluation_submission_request')
                     @endif
 

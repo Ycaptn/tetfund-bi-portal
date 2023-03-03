@@ -14,6 +14,7 @@ use App\Events\SubmissionRequestDeleted;
 
 use App\Http\Requests\API\CreateSubmissionRequestAPIRequest;
 use App\Http\Requests\API\UpdateSubmissionRequestAPIRequest;
+use App\Http\Requests\API\FollowUpSubmissionRequestAPIRequest;
 use App\Http\Requests\API\ReprioritizeSubmissionRequestAPIRequest;
 use App\Http\Requests\API\SubmissionClarificationResponseAPIRequest;
 
@@ -313,7 +314,7 @@ class SubmissionRequestAPIController extends AppBaseController
         $submissionRequest->intervention_year4 = $request->reprioritize_intervention_year4  ?? $submissionRequest->intervention_year4;
         $submissionRequest->save();
 
-        // handling monitoring request optional attachment
+        // handling reprioritization request optional attachment
         if ($request->hasFile('reprioritize_submission_attachment')) {
             $label = 'Reprioritization Additional Attachment';
             $discription = 'This Document Contains the ' . $label;
@@ -342,5 +343,39 @@ class SubmissionRequestAPIController extends AppBaseController
         }
 
         return $this->sendError('An unknown error was encountered while processing submission reprioritization.');
+    }
+
+     public function processFollowUpSubmission(FollowUpSubmissionRequestAPIRequest $request, $id) {
+        $submissionRequest = SubmissionRequest::find($id);
+        
+        if (empty($submissionRequest) && !isset($submissionRequest->tf_iterum_portal_key_id)){
+            return $this->sendError('The Submission Request is Invalid.');
+        }
+
+        // handling follow-up submission request attachment
+        if ($request->hasFile('follow_up_submission_attachment')) {
+            $label = 'Submitted Beneficiary Request Follow-up Attachment';
+            $discription = 'This Document Contains the ' . $label;
+
+            $follow_up_attachment = $submissionRequest->attach(auth()->user(), $label, $discription, $request->follow_up_submission_attachment);
+        }
+
+        $pay_load = [
+            '_method' => 'POST',
+            'user_email' => auth()->user()->email,
+            'beneficiary_request_id' => $submissionRequest->tf_iterum_portal_key_id,
+            'follow_up_comment' => $request->follow_up_submission_comment ?? null,
+            'follow_up_attachment' => $follow_up_attachment->attachment ?? null,
+        ];
+
+        $tetFundServer = new TETFundServer();   /* server class constructor */
+        $tf_processed_followUp_response  = $tetFundServer->processFollowUpSubmission($pay_load, $submissionRequest->tf_iterum_portal_key_id);
+
+        if ($tf_processed_followUp_response == true) {
+            return $this->sendSuccess('Submission Request Follow-up Processed and Successfully Saved!');
+        }
+
+        return $this->sendError('An unknown error was encountered while processing submission follow-up.');
+
     }
 }
