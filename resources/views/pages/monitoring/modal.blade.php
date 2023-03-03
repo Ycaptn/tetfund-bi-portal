@@ -277,7 +277,11 @@
                                     confirmButtonText: "OK",
                                     closeOnConfirm: false
                                 });
-                                location.reload(true);
+                                @if(isset($delete_from_monitoring_details_to_card_list))
+                                    location.href = "{{ route('tf-bi-portal.monitoring') }}";
+                                @else
+                                    location.reload(true);
+                                @endif
                             }
                         },
                     });
@@ -386,7 +390,11 @@
                                     type: "success"
                                 });
                                 
-                                window.location.reload(true);
+                                @if(isset($redired_to_details_page_on_edit_from_card_list))
+                                    location.href = "{{ route('tf-bi-portal.showMonitoring', '') }}/"+primaryId;
+                                @else
+                                    window.location.reload(true);
+                                @endif
                             }
 
                             $("#spinner-request-monitoring-evaluation").hide();

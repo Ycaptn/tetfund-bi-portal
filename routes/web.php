@@ -46,7 +46,7 @@ $orgRoutes = function() {
                 Route::post('/processSubmissionRequestToTFPortal', [\App\Http\Controllers\Models\SubmissionRequestController::class, 'processSubmissionRequestToTFPortal'])->name('submissionRequests.processSubmissionRequestToTFPortal');
                 Route::post('/processSubmissionRequestAttachment', [\App\Http\Controllers\Models\SubmissionRequestController::class, 'processSubmissionRequestAttachment'])->name('processSubmissionRequestAttachment');
                 Route::resource('submissionRequests', \App\Http\Controllers\Models\SubmissionRequestController::class);
-                Route::get('/submissionRequests/showMonitoring/{id}', [\App\Http\Controllers\Models\SubmissionRequestController::class, 'showMonitoring'])->name('submissionRequests.showMonitoring');
+                Route::get('/showMonitoring/{id}', [\App\Http\Controllers\Models\SubmissionRequestController::class, 'showMonitoring'])->name('showMonitoring');
                 Route::resource('nomination_settings', \App\Http\Controllers\Models\NominationSettingController::class);
             });
 

@@ -89,7 +89,7 @@ class SubmissionRequestAPIController extends AppBaseController
 
         // handling monitoring request optional attachment
         if ($request->has('is_monitoring_request') && $request->is_monitoring_request == true && $request->hasFile('optional_attachment')) {                
-                $label = 'Monitoring Request Optional Attachment - '. $request->title; 
+                $label = 'Monitoring Request Optional Attachment - '. $request->type; 
                 $discription = 'This Document Contains the ' . $label ;
                 $submissionRequest->attach(auth()->user(), $label, $discription, $request->optional_attachment);
         }
@@ -171,7 +171,7 @@ class SubmissionRequestAPIController extends AppBaseController
         
         // handling monitoring request optional attachment
         if ($request->has('is_monitoring_request') && $request->is_monitoring_request == true && $request->hasFile('optional_attachment')) {
-            $label = 'Monitoring Request Optional Attachment - '. $request->title;
+            $label = 'Monitoring Request Optional Attachment - '. $request->type;
             $discription = 'This Document Contains the ' . $label;
 
             // deleting old attachments if any
@@ -241,8 +241,8 @@ class SubmissionRequestAPIController extends AppBaseController
         $pay_load['tf_beneficiary_id'] = $beneficiary->tf_iterum_portal_key_id;
         $pay_load['submission_user'] = $current_user;
 
-        $tETFundServer = new TETFundServer();   /* server class constructor */
-        $final_submission_to_tetfund = $tETFundServer->processMRSubmissionRequest($pay_load, $beneficiary->tf_iterum_portal_key_id);
+        $tetFundServer = new TETFundServer();   /* server class constructor */
+        $final_submission_to_tetfund = $tetFundServer->processMRSubmissionRequest($pay_load, $beneficiary->tf_iterum_portal_key_id);
 
         if (isset($final_submission_to_tetfund->data) && $final_submission_to_tetfund->data != null) {
             $response = $final_submission_to_tetfund->data;
@@ -289,8 +289,8 @@ class SubmissionRequestAPIController extends AppBaseController
 
         $pay_load['attachment_clarificarion_response'] = $clarification_attachable->attachment ?? null;
 
-        $tETFundServer = new TETFundServer();   /* server class constructor */
-        $clarity_response_to_tetfund = $tETFundServer->processClarificationResponse($pay_load, $request->id);
+        $tetFundServer = new TETFundServer();   /* server class constructor */
+        $clarity_response_to_tetfund = $tetFundServer->processClarificationResponse($pay_load, $request->id);
 
         if ($clarity_response_to_tetfund == true) {
             return $this->sendSuccess('Submission Request Clarification/Query Response Successfully Sent!');
@@ -334,8 +334,8 @@ class SubmissionRequestAPIController extends AppBaseController
             'reprioritize_attachment' => $reprioritize_attachment->attachment ?? null,
         ];
 
-        $tETFundServer = new TETFundServer();   /* server class constructor */
-        $tf_reprioritization_response = $tETFundServer->processSubmissionReprioritization($pay_load, $submissionRequest->tf_iterum_portal_key_id);
+        $tetFundServer = new TETFundServer();   /* server class constructor */
+        $tf_reprioritization_response = $tetFundServer->processSubmissionReprioritization($pay_load, $submissionRequest->tf_iterum_portal_key_id);
 
         if ($tf_reprioritization_response == true) {
             return $this->sendSuccess('Submission Request Reprioritization Processed and Successfully Saved!');

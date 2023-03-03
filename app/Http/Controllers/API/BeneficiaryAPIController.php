@@ -114,8 +114,8 @@ class BeneficiaryAPIController extends AppBaseController
         $pay_load['official_email'] = $beneficiary->official_email;
 
         // update beneficiary record in iterum server
-        $tETFundServer = new TETFundServer();
-        $set_beneficiary_detail = $tETFundServer->updateBeneficiaryData($pay_load);
+        $tetFundServer = new TETFundServer();
+        $set_beneficiary_detail = $tetFundServer->updateBeneficiaryData($pay_load);
 
         // update beneficiary record in bi server
         $beneficiary->update($request->all());
@@ -299,8 +299,8 @@ class BeneficiaryAPIController extends AppBaseController
     public function synchronize_beneficiary_list(Organization $org, Request $request) {
         /* class constructor */
         $bi_users_emails_enroled = array();
-        $tETFundServer = new TETFundServer();
-        $get_beneficiary_list = $tETFundServer->getBeneficiaryList();
+        $tetFundServer = new TETFundServer();
+        $get_beneficiary_list = $tetFundServer->getBeneficiaryList();
 
         if (count($get_beneficiary_list) > 0) {
             foreach ($get_beneficiary_list as $key => $get_server_beneficiary) {

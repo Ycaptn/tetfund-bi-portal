@@ -2,7 +2,7 @@
 <div class="col-12 col-md-12 col-sm-12">
     <div class="card">
         @php
-            $detail_page_url = route('tf-bi-portal.submissionRequests.showMonitoring', $data_item->id);
+            $detail_page_url = route('tf-bi-portal.showMonitoring', $data_item->id);
         @endphp
         <div class="row g-0">
             <div class="col-xs-12 col-md-1 align-middle text-center p-2">

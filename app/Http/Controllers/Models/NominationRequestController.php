@@ -56,8 +56,8 @@ class NominationRequestController extends BaseController
         }
 
         // class constructor to fetch multiple data of countries and Institutions
-        $tETFundServer = new TETFundServer();
-        $countries_institutions_and_conferences = $tETFundServer->get_all_countries_institutions_and_conferences("tetfund-astd-api/from_country_get_countries_institutions_and_conferences", null);
+        $tetFundServer = new TETFundServer();
+        $countries_institutions_and_conferences = $tetFundServer->get_all_countries_institutions_and_conferences("tetfund-astd-api/from_country_get_countries_institutions_and_conferences", null);
 
         $countries = $countries_institutions_and_conferences->countries;  // fetch countries
         $institutions = $countries_institutions_and_conferences->institutions;  // fetch institutions
@@ -126,8 +126,8 @@ class NominationRequestController extends BaseController
         $nomination_request_attachments = $nominationRequest->get_all_attachments($nominationRequest->id);
 
         // class constructor to fetch multiple data of countries and Institutions
-        $tETFundServer = new TETFundServer();
-        $countries_institutions_and_conferences = $tETFundServer->get_all_countries_institutions_and_conferences("tetfund-astd-api/from_country_get_countries_institutions_and_conferences", null);
+        $tetFundServer = new TETFundServer();
+        $countries_institutions_and_conferences = $tetFundServer->get_all_countries_institutions_and_conferences("tetfund-astd-api/from_country_get_countries_institutions_and_conferences", null);
 
         $countries = $countries_institutions_and_conferences->countries;  // fetch countries
         $institutions = $countries_institutions_and_conferences->institutions;  // fetch institutions

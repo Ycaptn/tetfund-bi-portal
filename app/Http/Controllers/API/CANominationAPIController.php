@@ -73,8 +73,8 @@ class CANominationAPIController extends AppBaseController
 
         /* server class constructor to retrieve amout settings */
         $pay_load = [ '_method' => 'GET', 'query_like_parameters' => 'ca_', ];
-        $tETFundServer = new TETFundServer(); 
-        $ca_amount_settings = $tETFundServer->get_all_data_list_from_server('tetfund-astd-api/dashboard/get_configured_amounts', $pay_load);
+        $tetFundServer = new TETFundServer(); 
+        $ca_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/dashboard/get_configured_amounts', $pay_load);
 
         $beneficiary = BeneficiaryMember::where('beneficiary_user_id', auth()->user()->id)->first()->beneficiary ?? null;
         $user_institution_type = optional($beneficiary)->type == 'university' ? 'uni' : 'poly_coe';
@@ -176,10 +176,10 @@ class CANominationAPIController extends AppBaseController
         }
 
         /*class constructor to fetch conference*/
-        $tETFundServer = new TETFundServer();
+        $tetFundServer = new TETFundServer();
         $url_path ="tetfund-astd-api/conferences/".$cANomination->tf_iterum_portal_conference_id;
         $payload = ['_method'=>'GET', 'id'=>$cANomination->tf_iterum_portal_conference_id];
-        $conference = $tETFundServer->get_row_records_from_server($url_path, $payload);
+        $conference = $tetFundServer->get_row_records_from_server($url_path, $payload);
 
         $cANomination->beneficiary = ($cANomination->beneficiary_conference_id != null) ? $cANomination->beneficiary : [];
         $cANomination->conference = ($conference != null) ? $conference : null;

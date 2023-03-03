@@ -137,6 +137,26 @@ class TETFundServer {
         return ($api_response != null && $api_response_data !=null) ? $api_response_data->data : [];
     }
 
+    public static function getMonitoringRequestData($monitoring_id) {
+        $server_api_url = Config::get('keys.tetfund.server_api_url');
+        $token = self::get_auth_token();
+        $monitoring_request = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/monitoring-request/{$monitoring_id}", null);
+        $api_response = curl_exec($monitoring_request);
+        $api_response_data = json_decode($api_response);
+        curl_close ($monitoring_request);
+        return ($api_response != null && $api_response_data !=null) ? $api_response_data->data : [];
+    }
+
+    public static function getSomeDataArrayFromServer($pay_load) {
+        $server_api_url = Config::get('keys.tetfund.server_api_url');
+        $token = self::get_auth_token();
+        $some_server_data_array = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/some-server-data-array-request", $pay_load);
+        $api_response = curl_exec($some_server_data_array);
+        $api_response_data = json_decode($api_response);
+        curl_close ($some_server_data_array);
+        return ($api_response != null && $api_response_data !=null) ? $api_response_data->data : [];
+    }
+
     public static function getInterventionStatusData($iterum_submission_id) {
         $server_api_url = Config::get('keys.tetfund.server_api_url');
         $token = self::get_auth_token();

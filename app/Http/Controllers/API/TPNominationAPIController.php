@@ -72,8 +72,8 @@ class TPNominationAPIController extends AppBaseController
 
          /* server class constructor to retrieve amout settings */
         $pay_load = [ '_method' => 'GET', 'query_like_parameters' => 'tp_', ];
-        $tETFundServer = new TETFundServer(); 
-        $tp_amount_settings = $tETFundServer->get_all_data_list_from_server('tetfund-astd-api/dashboard/get_configured_amounts', $pay_load);
+        $tetFundServer = new TETFundServer(); 
+        $tp_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/dashboard/get_configured_amounts', $pay_load);
 
         $dta_amount = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_dta_amount'} ?? 0);
         $dta_no_days = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_dta_nights_amount'} ?? 0);
@@ -147,10 +147,10 @@ class TPNominationAPIController extends AppBaseController
         }
 
         /*class constructor to fetch institution*/
-        $tETFundServer = new TETFundServer();
+        $tetFundServer = new TETFundServer();
         $url_path ="tetfund-astd-api/institutions/".$tPNomination->tf_iterum_portal_institution_id;
         $payload = ['_method'=>'GET', 'id'=>$tPNomination->tf_iterum_portal_institution_id];
-        $institution = $tETFundServer->get_row_records_from_server($url_path, $payload);
+        $institution = $tetFundServer->get_row_records_from_server($url_path, $payload);
 
         $tPNomination->beneficiary = ($tPNomination->beneficiary_institution_id != null) ? $tPNomination->beneficiary : [];
         $tPNomination->institution = ($institution != null) ? $institution : null;

@@ -162,10 +162,10 @@ class TSASNominationAPIController extends AppBaseController
         }
 
         /*class constructor to fetch institution*/
-        $tETFundServer = new TETFundServer();
+        $tetFundServer = new TETFundServer();
         $url_path ="tetfund-astd-api/institutions/".$tSASNomination->tf_iterum_portal_institution_id;
         $payload = ['_method'=>'GET', 'id'=>$tSASNomination->tf_iterum_portal_institution_id];
-        $institution = $tETFundServer->get_row_records_from_server($url_path, $payload);
+        $institution = $tetFundServer->get_row_records_from_server($url_path, $payload);
 
         $tSASNomination->beneficiary = ($tSASNomination->beneficiary_institution_id != null) ? $tSASNomination->beneficiary : [];
         $tSASNomination->institution = ($institution != null) ? $institution : null;

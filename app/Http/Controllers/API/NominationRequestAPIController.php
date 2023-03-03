@@ -139,8 +139,8 @@ class NominationRequestAPIController extends BaseController
 
             /* server class constructor to retrieve amout settings */
             $pay_load = [ '_method' => 'GET', 'query_like_parameters' => 'tp_', ];
-            $tETFundServer = new TETFundServer(); 
-            $tp_amount_settings = $tETFundServer->get_all_data_list_from_server('tetfund-astd-api/dashboard/get_configured_amounts', $pay_load);
+            $tetFundServer = new TETFundServer(); 
+            $tp_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/dashboard/get_configured_amounts', $pay_load);
 
             $dta_amount = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_dta_amount'} ?? 0);
             $dta_no_days = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_dta_nights_amount'} ?? 0);
@@ -165,8 +165,8 @@ class NominationRequestAPIController extends BaseController
 
             /* server class constructor to retrieve amout settings */
             $pay_load = [ '_method' => 'GET', 'query_like_parameters' => 'ca_', ];
-            $tETFundServer = new TETFundServer(); 
-            $ca_amount_settings = $tETFundServer->get_all_data_list_from_server('tetfund-astd-api/dashboard/get_configured_amounts', $pay_load);
+            $tetFundServer = new TETFundServer(); 
+            $ca_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/dashboard/get_configured_amounts', $pay_load);
 
             $beneficiary = BeneficiaryMember::where('beneficiary_user_id', auth()->user()->id)->first()->beneficiary ?? null;
             $user_institution_type = optional($beneficiary)->type == 'university' ? 'uni' : 'poly_coe';

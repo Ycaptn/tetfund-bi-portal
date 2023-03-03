@@ -29,15 +29,6 @@ Submission
 @stop
 
 @section('page_title_buttons')
-
-    {{-- <a data-toggle="tooltip" 
-        title="New" 
-        href="{{ route('tf-bi-portal.submissionRequests.create') }}" 
-        data-val='{{$submissionRequest->id}}' 
-        class="btn btn-sm btn-primary btn-new-mdl-submissionRequest-modal">
-        <i class="fa fa-eye"></i> New
-    </a>&nbsp; --}}
-
     @if($submissionRequest->status == 'not-submitted' && $submissionRequest->is_aip_request==true)
         <a data-toggle="tooltip" 
             title="Edit" 

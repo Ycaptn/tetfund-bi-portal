@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@php
+    $redired_to_details_page_on_edit_from_card_list = true;
+@endphp
+
 @section('app_css')
     {!! $cdv_submission_requests->render_css() !!}
 @stop

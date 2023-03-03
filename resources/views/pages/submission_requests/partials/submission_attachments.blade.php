@@ -8,8 +8,7 @@
              </tr>
         </thead>
         <tbody>
-            {{-- route('beneficiary-checklist-submit',$submissionRequest->id) --}}
-            <form class="form-horizontal" role="form" enctype="multipart/form-data" method="POST" action="{{ route('tf-bi-portal.processSubmissionRequestAttachment', ['id'=>$submissionRequest->id] ) }}" >
+            <form class="form-horizontal" role="form" enctype="multipart/form-data" method="POST" action="{{ route('tf-bi-portal.processSubmissionRequestAttachment', ['id'=>$submissionRequest->id] ) }}">
 
                 {{ csrf_field() }}
 
@@ -138,3 +137,87 @@
         </tbody>
     </table>
 </div>
+
+@push('page_scripts')
+<script type="text/javascript">
+    $(document).ready(function() {
+        
+        //Delete action attachement
+        $(document).on('click', ".btn-delete-mdl-submissionRequest-attachement", function(e) {
+            e.preventDefault();
+            $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+            //check for internet status 
+            if (!window.navigator.onLine) {
+                $('.offline-submission_requests').fadeIn(300);
+                return;
+            }else{
+                $('.offline-submission_requests').fadeOut(300);
+            }
+
+            let submissionRequestId = "{{ isset($submissionRequest->id) ? $submissionRequest->id : '' }}";
+            let attachment_label = $(this).attr('data-val');
+            swal({
+                title: "Are you sure you want to delete this SubmissionRequest Attachment?",
+                text: "You will not be able to recover this Attachment if deleted.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                closeOnConfirm: false,
+                closeOnCancel: true
+            }, function(isConfirm) {
+                if (isConfirm) {
+                    swal({
+                        title: '<div id="spinner-request-related" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br>Deleting...',
+                        text: 'Please wait while SubmissionRequest Attachment is being deleted <br><br> Do not refresh this page! ',
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        html: true
+                    });
+
+                    let endPointUrl = "{{ route('tf-bi-portal-api.submission_requests.destroy','') }}/"+submissionRequestId;
+
+                    let formData = new FormData();
+                    formData.append('_token', $('input[name="_token"]').val());
+                    formData.append('_method', 'DELETE');
+                    formData.append('submissionRequestId', submissionRequestId);
+                    formData.append('attachment_label', attachment_label);
+                    
+                    $.ajax({
+                        url:endPointUrl,
+                        type: "POST",
+                        data: formData,
+                        cache: false,
+                        processData:false,
+                        contentType: false,
+                        dataType: 'json',
+                        success: function(result){
+                            if(result.errors){
+                                console.log(result.errors)
+                                swal("Error", "Oops an error occurred. Please try again.", "error");
+                            }else{
+                                swal({
+                                    title: "Deleted",
+                                    text: "SubmissionRequest Attachment deleted successfully",
+                                    type: "success",
+                                    confirmButtonClass: "btn-success",
+                                    confirmButtonText: "OK",
+                                    closeOnConfirm: false
+                                });
+                                location.reload(true);
+                            }
+                        }, error: function(data){
+                            console.log(data);
+                            swal("Error", "Oops an error occurred. Please try again.", "error");
+
+                            $(".offline-submission_requests").hide();
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+@endpush

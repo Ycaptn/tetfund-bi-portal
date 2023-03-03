@@ -99,8 +99,8 @@ class SubmissionRequestController extends BaseController
 
         $pay_load = ['_method'=>'GET', 'beneficiary_type'=>$beneficiary_member->beneficiary->type ?? null];
 
-        $tETFundServer = new TETFundServer();   /* server class constructor */
-        $intervention_types_server_response = $tETFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
+        $tetFundServer = new TETFundServer();   /* server class constructor */
+        $intervention_types_server_response = $tetFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
 
           $years = [];
           for ($i=0; $i < 6; $i++) { 
@@ -209,8 +209,8 @@ class SubmissionRequestController extends BaseController
         }
         
         // get checklist for specified intervention
-        $tETFundServer = new TETFundServer();   /* server class constructor */
-        $checklist_items = $tETFundServer->getInterventionChecklistData($checklist_group_name, $additional_checklists_pay_load);
+        $tetFundServer = new TETFundServer();   /* server class constructor */
+        $checklist_items = $tetFundServer->getInterventionChecklistData($checklist_group_name, $additional_checklists_pay_load);
         
         //mapping checklist id to item_label 
         foreach ($checklist_items as $checklist){
@@ -290,8 +290,8 @@ class SubmissionRequestController extends BaseController
 
         if ($submissionRequest->is_aip_request == true) {
             //get total fund available 
-            $tETFundServer = new TETFundServer();   /* server class constructor */
-            $fund_availability = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
+            $tetFundServer = new TETFundServer();   /* server class constructor */
+            $fund_availability = $tetFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
             
             //error when no fund allocation for selected year(s) is found
             if (isset($fund_availability->success) && $fund_availability->success == false && $fund_availability->message != null) {
@@ -380,8 +380,8 @@ class SubmissionRequestController extends BaseController
             $pay_load['nomination_table'] = $nomination_table;
         }
 
-        $tETFundServer = new TETFundServer();   /* server class constructor */
-        $final_submission_to_tetfund = $tETFundServer->processSubmissionRequest($pay_load, $tf_beneficiary_id);
+        $tetFundServer = new TETFundServer();   /* server class constructor */
+        $final_submission_to_tetfund = $tetFundServer->processSubmissionRequest($pay_load, $tf_beneficiary_id);
 
         if (isset($final_submission_to_tetfund->data) && $final_submission_to_tetfund->data != null) {
             $response = $final_submission_to_tetfund->data;
@@ -450,14 +450,20 @@ class SubmissionRequestController extends BaseController
             return redirect(route('tf-bi-portal.monitoring'))->with('error', 'The Monitoring Request Was Not Found!');
         }
 
+        if($monitoring_request->status != 'not-submitted') {
+            // server class constructor
+            $tetFundServer = new TETFundServer();   
+            $monitoring_request_submitted = $tetFundServer->getMonitoringRequestData($monitoring_request->tf_iterum_portal_key_id);
+        }
+
         $current_user = auth()->user();
         $beneficiary = $monitoring_request->beneficiary; // beneficiary
         $submission_request = $monitoring_request->find($monitoring_request->parent_id); // submission request
 
         // get all interventions from server
         $pay_load = ['_method'=>'GET', 'id'=>$monitoring_request->tf_iterum_intervention_line_key_id];
-        $tETFundServer = new TETFundServer();   /* server class constructor */
-        $intervention_types_server_response = $tETFundServer->get_row_records_from_server("tetfund-ben-mgt-api/interventions/".$monitoring_request->tf_iterum_intervention_line_key_id, $pay_load);
+        $tetFundServer = new TETFundServer();   /* server class constructor */
+        $intervention_types_server_response = $tetFundServer->get_row_records_from_server("tetfund-ben-mgt-api/interventions/".$monitoring_request->tf_iterum_intervention_line_key_id, $pay_load);
 
         return view('tf-bi-portal::pages.monitoring.show')
                 ->with('current_user', $current_user)
@@ -468,7 +474,7 @@ class SubmissionRequestController extends BaseController
     }
     
     // show details for submission request
-    public function show(Organization $org, $id, Request $request, BindedNominationsDataTable $binded_nominations_dataTable) {
+    public function show(Organization $org, Request $request, $id) {
         /** @var SubmissionRequest $submissionRequest */
         $submissionRequest = SubmissionRequest::find($id);
 
@@ -485,8 +491,8 @@ class SubmissionRequestController extends BaseController
             $checklist_group_name_surfix = self::generateCheckListGroupName('', $submissionRequest);
             
             // server class constructor
-            $tETFundServer = new TETFundServer();   
-            $submitted_request_data = $tETFundServer->getSubmissionRequestData($submissionRequest->tf_iterum_portal_key_id, $checklist_group_name_surfix);
+            $tetFundServer = new TETFundServer();   
+            $submitted_request_data = $tetFundServer->getSubmissionRequestData($submissionRequest->tf_iterum_portal_key_id, $checklist_group_name_surfix);
             
             $checklist_items = $submitted_request_data->checklist_items;
             $intervention_types_server_response = $submitted_request_data->intervention_beneficiary_type;
@@ -498,8 +504,8 @@ class SubmissionRequestController extends BaseController
 
             // get all interventions from server
             $pay_load = ['_method'=>'GET', 'id'=>$submissionRequest->tf_iterum_intervention_line_key_id];
-            $tETFundServer = new TETFundServer();   /* server class constructor */
-            $intervention_types_server_response = $tETFundServer->get_row_records_from_server("tetfund-ben-mgt-api/interventions/".$submissionRequest->tf_iterum_intervention_line_key_id, $pay_load);
+            $tetFundServer = new TETFundServer();   /* server class constructor */
+            $intervention_types_server_response = $tetFundServer->get_row_records_from_server("tetfund-ben-mgt-api/interventions/".$submissionRequest->tf_iterum_intervention_line_key_id, $pay_load);
 
             // intervention checklist group name
             $checklist_group_name = self::generateCheckListGroupName($intervention_types_server_response->name ?? '', $submissionRequest);
@@ -519,10 +525,6 @@ class SubmissionRequestController extends BaseController
                 $additional_checklists_pay_load['pi_mechanical_checklist'] = $intervention_name.' - MechnicalCheckList';
                 $additional_checklists_pay_load['pi_structural_checklist'] = $intervention_name.' - StructuralCheckList';
             }
-
-            // get checklist for specified intervention
-            $tETFundServer = new TETFundServer();   /* server class constructor */
-            $checklist_items = $tETFundServer->getInterventionChecklistData($checklist_group_name, $additional_checklists_pay_load);
             
             $years = array();
             if ($submissionRequest->intervention_year1 != null) {
@@ -541,9 +543,29 @@ class SubmissionRequestController extends BaseController
                 array_push($years, $submissionRequest->intervention_year4);
             }
 
+            // get some array of data from server
+            $data_to_rerieve_payload = [
+                'getInterventionChecklistData' => [
+                        'request' => $additional_checklists_pay_load,
+                        'checklist_group_name' => $checklist_group_name
+                    ],
+
+                'getFundAvailabilityData' => [
+                        'beneficiary_id' => $beneficiary->tf_iterum_portal_key_id,
+                        'years' => $years,
+                        'tf_iterum_intervention_line_key_id' => $submissionRequest->tf_iterum_intervention_line_key_id,
+                        true
+                    ],
+            ];
+
+            $tetFundServer = new TETFundServer();   /* server class constructor */
+            $some_server_data_array = $tetFundServer->getSomeDataArrayFromServer($data_to_rerieve_payload);
+
+            // get checklist for specified intervention
+            $checklist_items = $some_server_data_array->getInterventionChecklistData??[];
+
             //Get the funding data and total_funds for the selected intervention year(s).
-            $tETFundServer = new TETFundServer();   /* server class constructor */
-            $submission_allocations = $tETFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
+            $submission_allocations = $some_server_data_array->getFundAvailabilityData??null;
         }
 
         if(isset($request->sub_menu_items) && $request->sub_menu_items == 'nominations_binded') {
@@ -557,6 +579,7 @@ class SubmissionRequestController extends BaseController
                 }
             }
 
+            $binded_nominations_dataTable = new BindedNominationsDataTable();
             return $binded_nominations_dataTable
                 ->with('user_beneficiary', $beneficiary)
                 ->with('submission_request', $submissionRequest)
@@ -607,8 +630,8 @@ class SubmissionRequestController extends BaseController
             
             $pay_load = ['_method'=>'GET', 'beneficiary_type'=>$beneficiary_member->beneficiary->type ?? null];
             
-            $tETFundServer = new TETFundServer();   /* server class constructor */
-            $intervention_types_server_response = $tETFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
+            $tetFundServer = new TETFundServer();   /* server class constructor */
+            $intervention_types_server_response = $tetFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
 
             $years = [];
             for ($i=0; $i < 6; $i++) { 

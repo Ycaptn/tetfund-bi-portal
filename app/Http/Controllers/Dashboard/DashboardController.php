@@ -88,8 +88,8 @@ class DashboardController extends BaseController
         }
 
         //Get the funding data for the selected year.
-        $tETFundServer = new TETFundServer();   /* server class constructor */
-        $funding = $tETFundServer->getFundAvailabilityData($tf_beneficiary_id, null, [$selected_year]);
+        $tetFundServer = new TETFundServer();   /* server class constructor */
+        $funding = $tetFundServer->getFundAvailabilityData($tf_beneficiary_id, null, [$selected_year]);
 
         return view('pages.fund_availability.index')
                 ->with('organization', $org)
