@@ -21,8 +21,11 @@
                         @php
                             $checklist = "checklist-".$item->id;
                             $checklist_input_fields .= ($checklist_input_fields == "") ? $checklist : ','.$checklist;
-
-                            $submission_attachment = $submissionRequest->get_specific_attachment($submissionRequest->id, $item->item_label);
+                            
+                            $submission_attachment = array_reduce($allSubmissionAttachments, function($response, $attached) use ($item) {
+                                $attached['label'] == $item->item_label ? $response = $attached : null;
+                                return $response;
+                             });
 
                             if($submission_attachment==null && $submissionRequest->status!='not-submitted') {
                                 continue;
@@ -69,10 +72,13 @@
                 <tr>
                     <th>{{ $x+=1 }}</th>
                     <td>
-                        @php
-                            $submission_attachment_addition = $submissionRequest->get_specific_attachment($submissionRequest->id, 'Additional Attachment');
+                        @php                            
+                            $submission_attachment_addition = array_reduce($allSubmissionAttachments, function($response, $attached){
+                                str_contains($attached['label'], 'Additional Attachment') ? $response = $attached : null;
+                                return $response;
+                            });
                         @endphp
-                        <div class="{{ $errors->has('additional_attachment_name') ? ' has-error' : '' }}" >
+                        <div class="{{ $errors->has('additional_attachment_name') ? 'has-error' : '' }}" >
                                 <input 
                                     type='text' 
                                     class="form-control" 

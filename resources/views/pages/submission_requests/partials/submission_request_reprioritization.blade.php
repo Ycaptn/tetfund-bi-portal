@@ -1,14 +1,13 @@
 @php
 	// begin monitoring request submission request
-	$submissionRequest_aip_request = $submissionRequest->getParentAIPSubmissionRequest();
-	$tf_iterum_intervention_line_key_id = $submissionRequest_aip_request->tf_iterum_intervention_line_key_id;
-	$title = $submissionRequest_aip_request->title;
-	$intervention_year1 = $submissionRequest_aip_request->intervention_year1;
-	$intervention_year2 = $submissionRequest_aip_request->intervention_year2;
-	$intervention_year3 = $submissionRequest_aip_request->intervention_year3;
-	$intervention_year4 = $submissionRequest_aip_request->intervention_year4;
-	$parent_id = $submissionRequest_aip_request->id;
-	$amount_requested = $submissionRequest_aip_request->amount_requested;
+	$tf_iterum_intervention_line_key_id = $parentAIPSubmissionRequest->tf_iterum_intervention_line_key_id;
+	$title = $parentAIPSubmissionRequest->title;
+	$intervention_year1 = $parentAIPSubmissionRequest->intervention_year1;
+	$intervention_year2 = $parentAIPSubmissionRequest->intervention_year2;
+	$intervention_year3 = $parentAIPSubmissionRequest->intervention_year3;
+	$intervention_year4 = $parentAIPSubmissionRequest->intervention_year4;
+	$parent_id = $parentAIPSubmissionRequest->id;
+	$amount_requested = $parentAIPSubmissionRequest->amount_requested;
 
     $years = [];
     for ($i=0; $i < 6; $i++) { 

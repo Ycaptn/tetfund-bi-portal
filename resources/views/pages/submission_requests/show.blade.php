@@ -88,8 +88,14 @@ Submission
                         <strong>PRE-SUBMISSION NOTICE:</strong> 
                         <ul>
                             <li>This request has <strong>NOT</strong> been submitted.</li>
+                            
+                            @php
+                                $attachments_aside_additional = array_filter($allSubmissionAttachments, function($excluded_attach) {
+                                    return !str_contains($excluded_attach['label'],'Additional Attachment');
+                                });
+                            @endphp
 
-                            @if ($submissionRequest->get_all_attachments_count_aside_additional($submissionRequest->id, 'Additional Attachment') < count($checklist_items)) 
+                            @if (count($attachments_aside_additional) < count($checklist_items)) 
                                 <li>Please attach the <strong>required documents</strong> before submitting your request.</li>
                             @endif 
 

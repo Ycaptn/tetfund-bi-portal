@@ -583,6 +583,11 @@ class SubmissionRequestController extends BaseController
             return $binded_nominations_dataTable
                 ->with('user_beneficiary', $beneficiary)
                 ->with('submission_request', $submissionRequest)
+                ->with('parentAIPSubmissionRequest', $submissionRequest->is_aip_request ? $submissionRequest : $submissionRequest->getParentAIPSubmissionRequest())
+                ->with('firstTrancheSubmissionRequest', $submissionRequest->is_first_tranche_request ? $submissionRequest : $submissionRequest->getFirstTrancheSubmissionRequest())
+                ->with('secondTrancheSubmissionRequest', $submissionRequest->is_second_tranche_request ? $submissionRequest : $submissionRequest->getSecondTrancheSubmissionRequest())
+                ->with('finalTrancheSubmissionRequest', $submissionRequest->is_final_tranche_request ? $submissionRequest : $submissionRequest->getFinalTrancheSubmissionRequest())
+                ->with('allSubmissionAttachments', $submissionRequest->get_all_attachments($submissionRequest->id))
                 ->with('intervention_name', $intervention_name ?? null)
                 ->render('pages.submission_requests.show', [
                     'intervention' => $intervention_types_server_response,
@@ -599,6 +604,11 @@ class SubmissionRequestController extends BaseController
         return view('pages.submission_requests.show')
             ->with('intervention', $intervention_types_server_response)
             ->with('submissionRequest', $submissionRequest)
+            ->with('parentAIPSubmissionRequest', $submissionRequest->is_aip_request ? $submissionRequest : $submissionRequest->getParentAIPSubmissionRequest())
+            ->with('firstTrancheSubmissionRequest', $submissionRequest->is_first_tranche_request ? $submissionRequest : $submissionRequest->getFirstTrancheSubmissionRequest())
+            ->with('secondTrancheSubmissionRequest', $submissionRequest->is_second_tranche_request ? $submissionRequest : $submissionRequest->getSecondTrancheSubmissionRequest())
+            ->with('finalTrancheSubmissionRequest', $submissionRequest->is_final_tranche_request ? $submissionRequest : $submissionRequest->getFinalTrancheSubmissionRequest())
+            ->with('allSubmissionAttachments', $submissionRequest->get_all_attachments($submissionRequest->id))
             ->with('years', $years)
             ->with('checklist_items', $checklist_items)
             ->with('fund_available', optional($submission_allocations)->total_funds)
