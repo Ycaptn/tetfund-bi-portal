@@ -57,7 +57,7 @@ class SubmissionRequestController extends BaseController
                         ->addDataGroup('Not Submitted','status','not-submitted')
                         ->addDataGroup('Submitted','status','submitted')
                         ->addDataGroup('Approved','status','approved')
-                        ->addDataGroup('Recalled','status','recall')
+                        ->addDataGroup('Recalled','status','recalled')
                         ->enableSearch(true)
                         ->addDataOrder('created_at', 'DESC')
                         ->enablePagination(true)
@@ -85,7 +85,6 @@ class SubmissionRequestController extends BaseController
                     ->with('states_list', BaseController::statesList())
                     ->with('cdv_submission_requests', $cdv_submission_requests)
                     ->with('beneficiary_type_intervention_lines', $intervention_lines);
-
     }
 
     /**
@@ -500,6 +499,10 @@ class SubmissionRequestController extends BaseController
             $years = $submitted_request_data->years;
             $bi_request_released_communications = $submitted_request_data->releasedBICommunication;
 
+            if($submitted_request_data->request_status=='recalled') {
+                $submissionRequest->status='not-submitted';
+            }
+
         } else {
 
             // get all interventions from server
@@ -514,7 +517,6 @@ class SubmissionRequestController extends BaseController
             $additional_checklists_pay_load = ['_method' => 'POST'];
             if ($submissionRequest->is_second_tranche_request || $submissionRequest->is_final_tranche_request) {
                 $additional_checklists_pay_load['checklist_group_name_audit'] = self::generateCheckListGroupName($intervention_types_server_response->name??'', $submissionRequest, true);
-
             }
 
             // retriveing related checklist records for PI intevention at AIP stages  
@@ -631,10 +633,10 @@ class SubmissionRequestController extends BaseController
 
         if (empty($submissionRequest)) {
             //Flash::error('Submission Request not found');
-            return redirect(route('tf-bi-submission.submissionRequests.index'));
+            return redirect(route('tf-bi-portal.submissionRequests.index'));
         }
 
-        if ($submissionRequest->status == 'not-submitted' && $submissionRequest->is_aip_request==true) {
+        if (($submissionRequest->status=='not-submitted' || $submissionRequest->status=='recalled') && $submissionRequest->is_aip_request==true) {
             $current_user = auth()->user();
             $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
             
@@ -664,7 +666,7 @@ class SubmissionRequestController extends BaseController
                 ->with("intervention_types", $intervention_types_server_response);
         }
         
-        return redirect(route('tf-bi-submission.submissionRequests.index'));
+        return redirect(route('tf-bi-portal.submissionRequests.index'));
     }
 
     /**
@@ -681,13 +683,19 @@ class SubmissionRequestController extends BaseController
 
         if (empty($submissionRequest)) {
             //Flash::error('Submission Request not found');
-            return redirect(route('tf-bi-submission.submissionRequests.index'));
+            return redirect(route('tf-bi-portal.submissionRequests.index'));
+        }
+
+        if ($submissionRequest->status=='recalled'){
+         // server class constructor
+            $tetFundServer = new TETFundServer();   
+            $submitted_request_data = $tetFundServer->getSubmissionRequestData($submissionRequest->tf_iterum_portal_key_id);
         }
 
         $current_user = auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
-        if ($submissionRequest->status == 'not-submitted' && $submissionRequest->is_aip_request==true) {
+        if (($submissionRequest->status=='not-submitted' || $submitted_request_data->request_status??''=='recalled') && $submissionRequest->is_aip_request==true) {
             $input = $request->all();
             $input['intervention_year1'] = 0;
             $input['intervention_year2'] = 0;
@@ -730,7 +738,7 @@ class SubmissionRequestController extends BaseController
             SubmissionRequestUpdated::dispatch($submissionRequest);
             return redirect(route('tf-bi-portal.submissionRequests.show', $submissionRequest->id))->with('success', 'Submission Request updated successfully.')->with('submissionRequest', $submissionRequest);
         }
-        return redirect(route('tf-bi-submission.submissionRequests.index'));
+        return redirect(route('tf-bi-portal.submissionRequests.index'));
     }
 
     /**
@@ -749,14 +757,14 @@ class SubmissionRequestController extends BaseController
         if (empty($submissionRequest)) {
             //Flash::error('Submission Request not found');
 
-            return redirect(route('tf-bi-submission.submissionRequests.index'));
+            return redirect(route('tf-bi-portal.submissionRequests.index'));
         }
 
         $submissionRequest->delete();
 
         //Flash::success('Submission Request deleted successfully.');
         SubmissionRequestDeleted::dispatch($submissionRequest);
-        return redirect(route('tf-bi-submission.submissionRequests.index'));
+        return redirect(route('tf-bi-portal.submissionRequests.index'));
     }
 
      

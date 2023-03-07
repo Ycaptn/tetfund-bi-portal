@@ -18,7 +18,13 @@ Submission
             {{$submissionRequest->is_aip_request==true ? $submissionRequest->type : $submissionRequest->type.' Request' }} Granted
         </b>
     @else
-        <b>({{ strtoupper(optional($submitted_request_data)->request_status == 'new' ? 'In-Progress' : $submissionRequest->status ) }})</b>
+        @if(optional($submitted_request_data)->request_status=='pending-recall')
+            <b>(PENDING-RECALL)</b>
+        @elseif(optional($submitted_request_data)->request_status=='recalled')
+            <b>(RECALL-APPROVED)</b>
+        @else
+            <b>({{ strtoupper(optional($submitted_request_data)->request_status == 'new' ? 'In-Progress' : $submissionRequest->status ) }})</b>
+        @endif
     @endif
 @stop
 

@@ -18,8 +18,12 @@
                         <h3 class="h6 card-title mb-0">
                             {{ $data_item->title }}
                             @if(empty($data_item->status)==false)  
-                                @if($data_item->status == 'not-submitted')
+                                @if($data_item->status=='not-submitted')
                                     <span class="text-danger">
+                                        ({!! strtoupper($data_item->status) !!})
+                                    </span>
+                                @elseif($data_item->status=='submitted')
+                                    <span class="text-success">
                                         ({!! strtoupper($data_item->status) !!})
                                     </span>
                                 @else

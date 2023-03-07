@@ -12,6 +12,7 @@ use App\Events\SubmissionRequestCreated;
 use App\Events\SubmissionRequestUpdated;
 use App\Events\SubmissionRequestDeleted;
 
+use App\Http\Requests\API\RecallSubmissionRequestAPIRequest;
 use App\Http\Requests\API\CreateSubmissionRequestAPIRequest;
 use App\Http\Requests\API\UpdateSubmissionRequestAPIRequest;
 use App\Http\Requests\API\FollowUpSubmissionRequestAPIRequest;
@@ -345,7 +346,7 @@ class SubmissionRequestAPIController extends AppBaseController
         return $this->sendError('An unknown error was encountered while processing submission reprioritization.');
     }
 
-     public function processFollowUpSubmission(FollowUpSubmissionRequestAPIRequest $request, $id) {
+    public function processFollowUpSubmission(FollowUpSubmissionRequestAPIRequest $request, $id) {
         $submissionRequest = SubmissionRequest::find($id);
         
         if (empty($submissionRequest) && !isset($submissionRequest->tf_iterum_portal_key_id)){
@@ -376,6 +377,41 @@ class SubmissionRequestAPIController extends AppBaseController
         }
 
         return $this->sendError('An unknown error was encountered while processing submission follow-up.');
+    }
 
+    public function processRecallSubmission(RecallSubmissionRequestAPIRequest $request, $id) {
+        $submissionRequest = SubmissionRequest::find($id);
+        
+        if (empty($submissionRequest) && !isset($submissionRequest->tf_iterum_portal_key_id)){
+            return $this->sendError('The Submission Request is Invalid.');
+        }
+
+        // handling recall submission request attachment
+        if ($request->hasFile('recall_submission_attachment')) {
+            $label = 'Letter Recalling Submitted Beneficiary Request';
+            $discription = 'This Document Contains the ' . $label;
+
+            $recall_attachment = $submissionRequest->attach(auth()->user(), $label, $discription, $request->recall_submission_attachment);
+        }
+
+        $pay_load = [
+            '_method' => 'POST',
+            'user_email' => auth()->user()->email,
+            'beneficiary_request_id' => $submissionRequest->tf_iterum_portal_key_id,
+            'recall_comment' => $request->recall_submission_comment ?? null,
+            'recall_attachment' => $recall_attachment->attachment ?? null,
+        ];
+
+        $tetFundServer = new TETFundServer();   /* server class constructor */
+        $tf_processed_followUp_response  = $tetFundServer->processSubmissionRecallRequest($pay_load, $submissionRequest->tf_iterum_portal_key_id);
+
+        if ($tf_processed_followUp_response == true) {
+            $submissionRequest->status = 'recalled';
+            $submissionRequest->save();
+
+            return $this->sendSuccess('Recalling Submission Request Processed and Successfully Saved!');
+        }
+
+        return $this->sendError('An unknown error was encountered while recalling this submission.');
     }
 }

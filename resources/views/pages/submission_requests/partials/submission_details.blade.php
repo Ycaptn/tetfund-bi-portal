@@ -96,22 +96,27 @@
             <div class="col-sm-12">
                 <div class="row">
                     {{-- follow up submission request --}}
-                    @if($submissionRequest->status=='submitted' && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==false && $submitted_request_data->has_generated_disbursement_memo==false)
+                    @if(($submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==false && $submitted_request_data->has_generated_disbursement_memo==false)
                         @include('tf-bi-portal::pages.submission_requests.partials.follow_up_submission_request')
                     @endif
 
+                    {{-- Recall Submission request--}}
+                    @if(($submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && $submissionRequest->is_aip_request && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==false && ($submitted_request_data->request_status!='pending-recall'|| $submitted_request_data->request_status!='recalled'))
+                        @include('tf-bi-portal::pages.submission_requests.partials.recall_submission_request')
+                    @endif
+
                     {{-- current intervention monitoring request --}}
-                    @if($submissionRequest->status=='submitted' && !empty($submitted_request_data) && ($submitted_request_data->has_generated_aip==true || $submitted_request_data->has_generated_disbursement_memo==true))
+                    @if(($submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && ($submitted_request_data->has_generated_aip==true || $submitted_request_data->has_generated_disbursement_memo==true))
                         @include('tf-bi-portal::pages.submission_requests.partials.monitoring_evaluation_submission_request')
                     @endif
 
                     {{-- process repriotization for intervention request --}}
-                    @if($submissionRequest->status=='submitted' && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==true && $submissionRequest->is_aip_request==true && empty($get_all_related_requests))
+                    @if(($submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==true && $submissionRequest->is_aip_request==true && empty($get_all_related_requests))
                         @include('tf-bi-portal::pages.submission_requests.partials.submission_request_reprioritization')
                     @endif
 
                     {{-- current intervention none AIP submission request  --}}
-                    @if($submissionRequest->status=='submitted' && !empty($submitted_request_data) && (($submissionRequest->is_aip_request==true && $submitted_request_data->has_generated_aip==true) || ( ($submissionRequest->is_first_tranche_request==true || $submissionRequest->is_second_tranche_request==true || $submissionRequest->is_final_tranche_request==true) && $submitted_request_data->has_generated_disbursement_memo==true)))
+                    @if(($submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && (($submissionRequest->is_aip_request==true && $submitted_request_data->has_generated_aip==true) || ( ($submissionRequest->is_first_tranche_request==true || $submissionRequest->is_second_tranche_request==true || $submissionRequest->is_final_tranche_request==true) && $submitted_request_data->has_generated_disbursement_memo==true)))
                         @include('tf-bi-portal::pages.submission_requests.partials.submission_request_none_aip_tranches')
                     @endif
                 </div>
@@ -147,12 +152,19 @@
 
     <div class="col-sm-12 col-md-3">
         <div class="text-justify">     
-            @if($submissionRequest->status == 'submitted')
+            @if($submissionRequest->status=='submitted')
                 <span class="text-success pull-right"> 
                     <strong>
                         <span class="fa fa-check-square"></span>
                         Request Submitted
                     </strong> 
+                </span><br>
+            @elseif($submissionRequest->status=='recalled')
+                <span class="text-primary pull-right"> 
+                    <strong>
+                        <span class="fa fa-redo"></span>
+                        Request Recalled
+                    </strong>
                 </span><br>
             @else
                 <span class="text-danger pull-right"> 
@@ -163,12 +175,12 @@
                 </span><br>
             @endif
 
-            @if($submissionRequest->status == 'submitted' && isset($submitted_request_data))
-            @php
-                $dept_name = $submitted_request_data->work_item->active_assignment->assigned_user->department->long_name ?? $submitted_request_data->work_item->assignments[0]->assigned_user->department->long_name;
-            @endphp
+            @if(($submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && isset($submitted_request_data))
+                @php
+                    $dept_name = $submitted_request_data->work_item->active_assignment->assigned_user->department->long_name ?? $submitted_request_data->work_item->assignments[0]->assigned_user->department->long_name;
+                @endphp
                 <small>
-                    @if($submitted_request_data->has_generated_aip)
+                    @if($submitted_request_data->has_generated_aip && $submitted_request_data->request_status!='recalled')
                         <span class="text-success">
                             Please note that your <b>{{$submissionRequest->is_aip_request==true ? 'Approval-In-Principle (AIP)' : $submissionRequest->type.' Request' }}</b> has been completely processed{!! ucwords(' <b>@ TETFund ' . $dept_name . ' Department.</b>' ?? '.') !!}
                             You are hereby notified to avail for collection as the final approval has been completed.
@@ -176,7 +188,13 @@
                     @else
                         <span class="text-danger"> 
                             Please note that your <b>{{$submissionRequest->is_aip_request==true ? 'Approval-In-Principle (AIP)' : $submissionRequest->type.' Request' }}</b> is currently being processed{!! ucwords(' <b>@ TETFund ' . $dept_name . ' Department.</b>' ?? '.') !!}
-                            Once final approval is completed, you will be contacted for collection.
+                            Once final approval is completed, you will be contacted for collection. 
+
+                            @if($submitted_request_data->request_status=='pending-recall')
+                                 &nbsp; Mean while, this request was <b>recalled</b> and currently pending approval.
+                            @elseif($submitted_request_data->request_status=='recalled')
+                                &nbsp; Mean while, the <b>recalling request</b> for this submission has been <b>approval</b>.
+                            @endif
                         </span>
                     @endif          
                 </small>

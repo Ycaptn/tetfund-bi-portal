@@ -127,7 +127,7 @@ class TETFundServer {
         return ($api_response != null && $api_response_data !=null && isset($api_response_data->data)) ?  $api_response_data->data : [];
     }
 
-    public static function getSubmissionRequestData($submission_id, $checklist_surfix_name) {
+    public static function getSubmissionRequestData($submission_id, $checklist_surfix_name=null) {
         $server_api_url = Config::get('keys.tetfund.server_api_url');
         $token = self::get_auth_token();
         $submitted_request = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/submission-request/{$submission_id}?checklist_surfix_name={$checklist_surfix_name}", null);
@@ -270,10 +270,14 @@ class TETFundServer {
         return $api_response_data;
     }
 
-    public static function processSubmissionRecallRequest()
-    {
-        //TODO: perform operation, return return the requested object and success msg if ok, error otherwise
-        return [];
+    public static function processSubmissionRecallRequest($pay_load, $tf_beneficiary_request_id) {
+        $server_api_url = Config::get('keys.tetfund.server_api_url');
+        $token = self::get_auth_token();
+        $ch = self::setup_curl($token, "{$server_api_url}/tetfund-bi-submission-api/process-submission-recall/{$tf_beneficiary_request_id}", $pay_load);
+        $api_response = curl_exec($ch);
+        $api_response_data = json_decode($api_response);
+        curl_close ($ch);
+        return $api_response_data;
     }
 
     public static function get_all_data_list_from_server($endpoint_path, $pay_load) {
