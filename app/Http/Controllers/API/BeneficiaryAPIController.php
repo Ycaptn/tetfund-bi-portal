@@ -330,7 +330,7 @@ class BeneficiaryAPIController extends AppBaseController
                 $beneficiary_obj->owner_agency_type = $get_server_beneficiary->owner_agency_type;
                 $beneficiary_obj->tf_iterum_portal_key_id = $get_server_beneficiary->id;
                 $beneficiary_obj->tf_iterum_portal_response_meta_data = json_encode($get_server_beneficiary);
-                $beneficiary_obj->tf_iterum_portal_response_at = date('Y-m-d');
+                $beneficiary_obj->tf_iterum_portal_response_at = date('Y-m-d H:i:s');
                
                 //create or update beneficiary institution
                 $beneficiary_obj->save();

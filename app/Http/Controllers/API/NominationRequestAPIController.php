@@ -110,7 +110,7 @@ class NominationRequestAPIController extends BaseController
         $nominationRequest->user_id = $invited_user->id;
         $nominationRequest->beneficiary_id =$bi_beneficiary_id;
         $nominationRequest->type = $request->nomination_type;
-        $nominationRequest->request_date = date('Y-m-d');
+        $nominationRequest->request_date = date('Y-m-d H:i:s');
         $nominationRequest->status = 'approved';
         $nominationRequest->save();
 
@@ -213,7 +213,7 @@ class NominationRequestAPIController extends BaseController
         $nominationRequest->beneficiary_id =$bi_beneficiary_id;
         $nominationRequest->type = $request->nomination_type;
         $nominationRequest->details_submitted = 1;
-        $nominationRequest->request_date = date('Y-m-d');
+        $nominationRequest->request_date = date('Y-m-d H:i:s');
         $nominationRequest->status = 'approved';
         $nominationRequest->save();
 
@@ -244,7 +244,7 @@ class NominationRequestAPIController extends BaseController
         $nominationRequest->user_id = $current_user->id;
         $nominationRequest->beneficiary_id =$bi_beneficiary_id;
         $nominationRequest->type = $request_arr['nomination_type'];
-        $nominationRequest->request_date = date('Y-m-d');
+        $nominationRequest->request_date = date('Y-m-d H:i:s');
         $nominationRequest->status = 'pending';
         $nominationRequest->save();
 

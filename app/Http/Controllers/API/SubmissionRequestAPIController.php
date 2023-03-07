@@ -254,7 +254,7 @@ class SubmissionRequestAPIController extends AppBaseController
             $submissionRequest->tf_iterum_portal_key_id = $response->id;
             $submissionRequest->tf_iterum_portal_request_status = $response->status;
             $submissionRequest->tf_iterum_portal_response_meta_data = json_encode($response);
-            $submissionRequest->tf_iterum_portal_response_at = date('Y-m-d');
+            $submissionRequest->tf_iterum_portal_response_at = date('Y-m-d H:i:s');
             $submissionRequest->save();
 
             $success_message = "This Request Has Now Been Successfully Submitted To TETFund!!";
