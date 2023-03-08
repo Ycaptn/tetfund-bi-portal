@@ -74,6 +74,7 @@ Fund Availability Status
                                 </tr>
                             </thead>
                             <tbody>
+                                @if (count($funding) > 0)
                                 @foreach ($funding as $detail)
                                     <tr>
                                         <td name='cdp_li_type_{{$detail->id}}' id='cdp_li_type_{{$detail->id}}'>
@@ -105,6 +106,11 @@ Fund Availability Status
                                         </td> --}}
                                     </tr>
                                 @endforeach
+                                @else
+                                <tr>
+                                    <td colspan="4" class="text-center text-danger">Funding allocation not available online for the selected year.</td>
+                                </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>

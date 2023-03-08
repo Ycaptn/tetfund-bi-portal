@@ -47,7 +47,7 @@ Beneficiary Dashboard
     </div>
 
     @if($current_user->hasRole('BI-desk-officer'))
-        <div class="card radius-5 border-top">
+        <div class="card radius-5 border-top border-0 border-3 border-success">
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-1">
