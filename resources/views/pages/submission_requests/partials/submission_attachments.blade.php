@@ -22,7 +22,7 @@
                             $checklist = "checklist-".$item->id;
                             $checklist_input_fields .= ($checklist_input_fields == "") ? $checklist : ','.$checklist;
                             
-                            $submission_attachment = array_reduce($allSubmissionAttachments, function($response, $attached) use ($item) {
+                            $submission_attachment = array_reduce($allSubmissionAttachments??[], function($response, $attached) use ($item) {
                                 $attached['label'] == $item->item_label ? $response = $attached : null;
                                 return $response;
                              });
@@ -73,7 +73,7 @@
                     <th>{{ $x+=1 }}</th>
                     <td>
                         @php                            
-                            $submission_attachment_addition = array_reduce($allSubmissionAttachments, function($response, $attached){
+                            $submission_attachment_addition = array_reduce($allSubmissionAttachments??[], function($response, $attached){
                                 str_contains($attached['label'], 'Additional Attachment') ? $response = $attached : null;
                                 return $response;
                             });

@@ -41,7 +41,6 @@
                                 @php
                                     $sn_counter = 0;
                                 @endphp
-
                                 @if(isset($submission_allocations) && count($submission_allocations) > 0)
                                     @foreach($submission_allocations as $sub_allocation)
                                         <tr>
@@ -49,7 +48,7 @@
                                             <td> {{ $sub_allocation->year }} </td>
                                             <td>    
                                                 {{ ucwords($sub_allocation->type) }} - 
-                                                {{ $sub_allocation->allocation_type }} 
+                                                {{ $sub_allocation->name }} 
                                             </td>
                                             <td> {{ $sub_allocation->allocation_code }} </td>
                                             <td> &#8358; 

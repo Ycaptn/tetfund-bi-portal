@@ -162,6 +162,7 @@ class SubmissionRequestController extends BaseController
         
         $input['type'] = $request->request_tranche ?? 'Request for AIP';
         $input['status'] = 'not-submitted';
+        $input['title'] = $input['intervention_title']. ' - ' .$input['type']. ' (' .implode(', ', $years_unique) .')';
         $input['requesting_user_id'] = $current_user->id;
         $input['organization_id'] = $current_user->organization_id;
         $input['beneficiary_id'] = $beneficiary_member->beneficiary_id;
@@ -200,11 +201,7 @@ class SubmissionRequestController extends BaseController
 
         // retriveing related checklist records for PI intevention at AIP stages  
         if ($submissionRequest->is_aip_request && str_contains(strtolower($request->intervention_line_name), "physical infrastructure")) {
-            $intervention_name = $request->intervention_line_name;            
-            $additional_checklists_pay_load['pi_electrical_checklist'] = $intervention_name.' - ElectricalCheckList';
-            $additional_checklists_pay_load['pi_architectural_checklist'] = $intervention_name.' - ArchitectureCheckList';
-            $additional_checklists_pay_load['pi_mechanical_checklist'] = $intervention_name.' - MechnicalCheckList';
-            $additional_checklists_pay_load['pi_structural_checklist'] = $intervention_name.' - StructuralCheckList';
+            $intervention_name = $request->intervention_line_name;
         }
         
         // get checklist for specified intervention
@@ -521,11 +518,7 @@ class SubmissionRequestController extends BaseController
 
             // retriveing related checklist records for PI intevention at AIP stages  
             if ($submissionRequest->is_aip_request && str_contains(strtolower($intervention_types_server_response->name), "physical infrastructure")) {
-                $intervention_name = $intervention_types_server_response->name;            
-                $additional_checklists_pay_load['pi_electrical_checklist'] = $intervention_name.' - ElectricalCheckList';
-                $additional_checklists_pay_load['pi_architectural_checklist'] = $intervention_name.' - ArchitectureCheckList';
-                $additional_checklists_pay_load['pi_mechanical_checklist'] = $intervention_name.' - MechnicalCheckList';
-                $additional_checklists_pay_load['pi_structural_checklist'] = $intervention_name.' - StructuralCheckList';
+                $intervention_name = $intervention_types_server_response->name;
             }
             
             $years = array();
@@ -556,7 +549,7 @@ class SubmissionRequestController extends BaseController
                         'beneficiary_id' => $beneficiary->tf_iterum_portal_key_id,
                         'years' => $years,
                         'tf_iterum_intervention_line_key_id' => $submissionRequest->tf_iterum_intervention_line_key_id,
-                        true
+                        'allocation_details'=>true
                     ],
             ];
 
@@ -659,6 +652,10 @@ class SubmissionRequestController extends BaseController
                 }
             }
 
+            //setting title prefix
+            $title_spilt = explode('-', $submissionRequest->title);
+            $submissionRequest->title = !empty($submissionRequest->title) && count($title_spilt)==2 ? trim($title_spilt[0]) : '';
+
             return view('pages.submission_requests.edit')
                 ->with('submissionRequest', $submissionRequest)
                 ->with('selected_intervention_line', $selected_intervention_line ?? [])
@@ -718,9 +715,11 @@ class SubmissionRequestController extends BaseController
             if ($request->intervention_year4 != null) {
                 array_push($years, $request->intervention_year4);
             }
+            $years_unique = array_unique($years);
+            sort($years_unique);
             
             $counter = 1;
-            foreach($years as $year) {
+            foreach($years_unique as $year) {
                 $input['intervention_year'.$counter] = $year;
                 $counter += 1;
             }
@@ -731,6 +730,8 @@ class SubmissionRequestController extends BaseController
                     $error_msg = "A previous submission request for one or more of the selected years has already been submitted.";
                     return redirect()->back()->withErrors([$error_msg])->withInput();
             }
+
+            $input['title'] = $input['intervention_title']. ' - ' .$submissionRequest->type. ' (' .implode(', ', $years_unique) .')';
 
             $submissionRequest->fill($input);
             $submissionRequest->save();

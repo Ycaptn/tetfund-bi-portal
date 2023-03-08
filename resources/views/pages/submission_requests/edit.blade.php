@@ -78,33 +78,32 @@ Edit Submission Request
         }
 
         $(document).ready(function() {
+            let all_astd_interventions_id = [];
+            let all_none_astd_interventions_id = [];
             let all_intervention_records = '{!! json_encode($intervention_types) ?? [] !!}';
             let selected_intervention_line = JSON.parse('{!! json_encode($selected_intervention_line) !!}');
-            let all_astd_interventions_id = [];
-
-            // Converting string words to upper-case
-            function upperCaseFirstLetterInString(str){
-                var splitStr = str.toLowerCase().split(" ");
-                for(var i=0; i<splitStr.length; i++){
-                    splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].slice(1);
-                }
-                return splitStr.join(" ");
-            }
 
             // function to always hide intervention years
             function hide_3_intervention_years() {
-                $("#div_intervention_year2").hide();
-                $("#div_intervention_year3").hide();
-                $("#div_intervention_year4").hide();
+                $("#intervention_year2").val('');
+                $("#intervention_year2").attr('disabled', true);
+                $("#intervention_year3").val('');
+                $("#intervention_year3").attr('disabled', true);
+                $("#intervention_year4").val('');
+                $("#intervention_year4").attr('disabled', true);
                 $("#year_plural").hide();
             }
 
+            $('#amount_requested_digit').keyup(function(event){
+                $('#amount_requested_digit').digits();
+            });
+
             // function to always show intervention years
             function show_3_intervention_years() {
-                $("#div_intervention_year2").show();
-                $("#div_intervention_year3").show();
-                $("#div_intervention_year4").show();
-                $("#year_plural").show();
+                $("#intervention_year2").attr('disabled', false);
+                $("#intervention_year3").attr('disabled', false);
+                $("#intervention_year4").attr('disabled', false);
+                $("#year_plural").hide();
             }
 
 
@@ -115,21 +114,21 @@ Edit Submission Request
                 
                 $.each(JSON.parse(all_intervention_records), function(key, intervention) {
                     if (intervention.type == selected_intervention_line.type && intervention.id == selected_intervention_line.id) {
-                        intervention_line_html += "<option selected='selected' value='"+ intervention.id +"'>"+ upperCaseFirstLetterInString(intervention.name) +"</option>";
+                        intervention_line_html += "<option selected='selected' value='"+ intervention.id +"'>"+ intervention.name +"</option>";
                     } else if (intervention.type == selected_intervention_line.type) {
-                        intervention_line_html += "<option value='"+ intervention.id +"'>"+ upperCaseFirstLetterInString(intervention.name) +"</option>";
+                        intervention_line_html += "<option value='"+ intervention.id +"'>"+ intervention.name +"</option>";
                     }
 
                     // setting all astd interventions into the array
-                    let intervention_name = intervention.name.toLowerCase();
-                    if (intervention_name.includes('teaching practice') || intervention_name.includes('conference attendance') || intervention_name.includes('tetfund scholarship')) {
-                        all_astd_interventions_id[intervention.id] = intervention_name;
+                    if (intervention.name.includes('Teaching Practice') || intervention.name.includes('Conference Attendance') || intervention.name.includes('TETFund scholarship')) {
+                        all_astd_interventions_id[intervention.id] = intervention.name;
+                    } else {
+                        all_none_astd_interventions_id[intervention.id] = intervention.name;
                     }
                 });
 
                 //hiding intervention years
-                let intervention_name = selected_intervention_line.name.toLowerCase();
-                if (intervention_name.includes('teaching practice') || intervention_name.includes('conference attendance') || intervention_name.includes('tetfund scholarship')) {
+                if (selected_intervention_line.name.includes('Teaching Practice') || selected_intervention_line.name.includes('Conference Attendance') || selected_intervention_line.name.includes('TETFund scholarship')) {
                     hide_3_intervention_years();
                 } else {
                     show_3_intervention_years();
@@ -150,13 +149,12 @@ Edit Submission Request
                     $.each(JSON.parse(all_intervention_records), function(key, intervention) {
                         // appending intervention lines options
                         if (intervention.type == selected_intevention_type) {
-                            intervention_line_html += "<option value='"+ intervention.id +"'>"+ upperCaseFirstLetterInString(intervention.name) +"</option>";
+                            intervention_line_html += "<option value='"+ intervention.id +"'>"+ intervention.name +"</option>";
                         }
 
                         // setting all astd interventions into the array
-                        let intervention_name = intervention.name.toLowerCase();
-                        if (intervention_name.includes('teaching practice') || intervention_name.includes('conference attendance') || intervention_name.includes('tetfund scholarship')) {
-                            all_astd_interventions_id[intervention.id] = intervention_name;
+                        if (intervention.name.includes('Teaching Practice') || intervention.name.includes('Conference Attendance') || intervention.name.includes('TETFund scholarship')) {
+                            all_astd_interventions_id[intervention.id] = intervention.name;
                         }
 
                     });
@@ -172,11 +170,18 @@ Edit Submission Request
             $('#intervention_line').on('change', function() {
                 let view_selected_intervention_line = $(this).val();
                 
-                if (view_selected_intervention_line != '' && view_selected_intervention_line in all_astd_interventions_id) {
+                if (view_selected_intervention_line!='' && view_selected_intervention_line in all_astd_interventions_id) {
                     hide_3_intervention_years();
                 } else {
                     show_3_intervention_years();
                 }
+              
+                // settings to fomulate intervention_title
+                let confirmed_selected_line = all_none_astd_interventions_id[view_selected_intervention_line]!=null ?
+                        all_none_astd_interventions_id[view_selected_intervention_line] : 
+                        all_astd_interventions_id[view_selected_intervention_line];
+              
+                $('#intervention_title').val(confirmed_selected_line);
             });
 
         });

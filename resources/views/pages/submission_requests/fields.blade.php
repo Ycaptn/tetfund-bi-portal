@@ -9,10 +9,12 @@
                     <option value="">Select the type of Intervention</option>
                     @if (isset($intervention_types) && $intervention_types != null)
                         @php
-                            $unique_intervention = [];
+                            $unique_inter_type = [];
+                            $unique_inter_data = [];
                             foreach ($intervention_types as $intervention) {
-                                if (!in_array($intervention->type, $unique_intervention)) {
-                                    array_push($unique_intervention, $intervention->type);
+
+                                if (!in_array($intervention->type, $unique_inter_type)) {
+                                    array_push($unique_inter_type, $intervention->type);
                                     if (isset($selected_intervention_line) && !empty($selected_intervention_line) && $selected_intervention_line->type == $intervention->type) {
                                         echo "<option selected='selected' value='". $intervention->type ."' >" . ucwords($intervention->type) . "</option>";
                                     } else {
@@ -38,16 +40,6 @@
                     <option value="">Select an Intervention Line</option>   
                 </select>
                 <span class="input-group-text"><span class="fa fa-archive"></span></span>
-            </div>
-        </div>
-    </div>
-
-    <div class="form-group mb-3">
-        <label class="col-lg-12 control-label">Project Title</label>
-        <div class="col-lg-12">
-            <div class="input-group">
-                <input type='text' class="form-control" name="title" value="{{ (isset($submissionRequest) && old('title') == null) ? $submissionRequest->title : old('title')  }}" />
-                <span class="input-group-text"><span class="fa fa-file"></span></span>
             </div>
         </div>
     </div>
@@ -115,5 +107,7 @@
             </div>
         </div>
     </div>
+
+    <input type='hidden' id="intervention_title" name="intervention_title" value="{{ (isset($submissionRequest) && old('intervention_title') == null) ? $submissionRequest->title : old('intervention_title')  }}" />
 
 

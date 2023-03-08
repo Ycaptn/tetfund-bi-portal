@@ -96,7 +96,7 @@ Submission
                             <li>This request has <strong>NOT</strong> been submitted.</li>
                             
                             @php
-                                $attachments_aside_additional = array_filter($allSubmissionAttachments, function($excluded_attach) {
+                                $attachments_aside_additional = array_filter($allSubmissionAttachments??[], function($excluded_attach) {
                                     return !str_contains($excluded_attach['label'],'Additional Attachment');
                                 });
                             @endphp
