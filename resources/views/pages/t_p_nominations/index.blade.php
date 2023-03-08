@@ -235,10 +235,8 @@ All T P Nomination
 <div class="card radius-5 border-top border-0 border-4 border-success">
     <div class="card-body">
         <div><h5 class="card-title">More Information</h5></div>
-        <p class="small">
-            This is the help message.
-            This is the help message.
-            This is the help message.
+        <p class="small text-justify">
+            Welcome to the Teaching Practice Nominations page. This page provides a central location for managing all the nominations for teaching practice, as well as tracking their inflows and outflows.
         </p>
     </div>
 </div>

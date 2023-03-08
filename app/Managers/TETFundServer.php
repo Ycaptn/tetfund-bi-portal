@@ -75,7 +75,7 @@ class TETFundServer {
         $api_response_data = json_decode($api_response);
         curl_close($ch);
 
-        if ($api_response != null && $api_response_data !=null && $api_response_data->data!=null && $api_response_data->data->token!=null){
+        if ($api_response!=null && $api_response_data!=null && isset($api_response_data->data) && $api_response_data->data!=null && isset($api_response_data->data->token) && $api_response_data->data->token!=null) {
 
             /*set authenticated user_id*/
             self::$authenticated_user_id = (isset($api_response_data->data->profile->id)) ? $api_response_data->data->profile->id : null;
@@ -134,7 +134,7 @@ class TETFundServer {
         $api_response = curl_exec($submitted_request);
         $api_response_data = json_decode($api_response);
         curl_close ($submitted_request);
-        return ($api_response != null && $api_response_data !=null) ? $api_response_data->data : [];
+        return ($api_response != null && isset($api_response_data->data) && $api_response_data !=null) ? $api_response_data->data : [];
     }
 
     public static function getMonitoringRequestData($monitoring_id) {
@@ -144,7 +144,7 @@ class TETFundServer {
         $api_response = curl_exec($monitoring_request);
         $api_response_data = json_decode($api_response);
         curl_close ($monitoring_request);
-        return ($api_response != null && $api_response_data !=null) ? $api_response_data->data : [];
+        return ($api_response != null && isset($api_response_data->data) && $api_response_data !=null) ? $api_response_data->data : [];
     }
 
     public static function getSomeDataArrayFromServer($pay_load) {
@@ -154,7 +154,7 @@ class TETFundServer {
         $api_response = curl_exec($some_server_data_array);
         $api_response_data = json_decode($api_response);
         curl_close ($some_server_data_array);
-        return ($api_response != null && $api_response_data !=null) ? $api_response_data->data : [];
+        return ($api_response != null && isset($api_response_data->data) && $api_response_data !=null) ? $api_response_data->data : [];
     }
 
     public static function getInterventionStatusData($iterum_submission_id) {

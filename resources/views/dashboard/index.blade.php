@@ -46,6 +46,31 @@ Beneficiary Dashboard
         </div>
     </div>
 
+    @if($current_user->hasRole('BI-desk-officer'))
+        <div class="card radius-5 border-top">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-1">
+                        <center>
+                            <a href="{{ route('tf-bi-portal.submissionRequests.create') }}" class="btn btn-primary bg-olive">
+                                <i class="fa fa-edit"></i>New
+                            </a>
+                            <br/>
+                        </center>
+                    </div>
+
+                    <div class="col-md-10">
+                        <ul>
+                            <li>All submissions to the Fund must be submitted <b>ONLINE</b> and <b>PHYSICAL</b>.</li>
+                            <li>For <b>NEW SUBMISSIONS</b>, i.e., Request for Approval in Principle (AIP), click the New Submission Button</li>
+                            {{-- <li>For <b>ONGOING SUBMISSIONS</b>, i.e. First Tranche, Second Tranche, Final Tranche, Monitoring Request, etc, click the Ongoing Submission Button</li>
+                            <li>Once your submission is completed, a <b>TRACKING NUMBER</b> is provided for you, you are required to include this tracking number in the physical hard copy submission to the Fund</li> --}}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <div class="card radius-5 border-top border-0 border-3 border-success">
         <div class="card-body">

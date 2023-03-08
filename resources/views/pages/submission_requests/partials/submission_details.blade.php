@@ -183,7 +183,7 @@
                     @if($submitted_request_data->has_generated_aip && $submitted_request_data->request_status!='recalled')
                         <span class="text-success">
                             Please note that your <b>{{$submissionRequest->is_aip_request==true ? 'Approval-In-Principle (AIP)' : $submissionRequest->type.' Request' }}</b> has been completely processed{!! ucwords(' <b>@ TETFund ' . $dept_name . ' Department.</b>' ?? '.') !!}
-                            You are hereby notified to avail for collection as the final approval has been completed.
+                            You are will be notified and contacted for collection.
                         </span>
                     @else
                         <span class="text-danger"> 

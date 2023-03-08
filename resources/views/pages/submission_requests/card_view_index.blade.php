@@ -42,7 +42,7 @@ Submissions
 <div class="card radius-5 border-top border-4 border-success">
     <div class="card-body">
         <div><h5 class="card-title">TETFund Submissions</h5></div>
-        <p class="small">
+        <p class="small text-justify">
             Process and track your submissions to TETFund from this window. You may begin new submissions by clicking the new submission button.
         </p>
     </div>

@@ -57,7 +57,7 @@ Desk Officer
 <div class="card radius-5 border-top border-0 border-4 border-success">
     <div class="card-body">
         <div><h5 class="card-title">Desk Officer</h5></div>
-        <p class="small">
+        <p class="small text-justify">
             The Desk Officer is the primary represents the beneficiary in matters related to TETFund and is authorized to make submissions add other users on the TETFund submission portal as well as following up on status of all submissions to TETFund.
         </p>
     </div>

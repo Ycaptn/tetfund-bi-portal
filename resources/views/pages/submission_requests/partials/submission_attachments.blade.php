@@ -83,6 +83,7 @@
                                     type='text' 
                                     class="form-control" 
                                     name="additional_attachment_name"
+                                    {{ $submissionRequest->status!='not-submitted' && $submission_attachment_addition==null ? "disabled='disabled'" : '' }}
                                     placeholder="Enter name for Additional Attachment" 
                                     value="{{ ($submission_attachment_addition != null) ? $submission_attachment_addition->label : '' }}" 
                                     {{ ($submission_attachment_addition != null) ? "disabled='disabled'" : '' }}
@@ -113,7 +114,11 @@
                                 </div>
                             @else
                                 <div class="{{ $errors->has('additional_attachment') ? ' has-error' : '' }} col-sm-12" >
-                                    <input type='file' class="form-control" name="additional_attachment" id="additional_attachment" />
+                                    <input type='file' class="form-control" name="additional_attachment" id="additional_attachment"
+                                    {{ $submissionRequest->status!='not-submitted' && 
+                                    $submission_attachment_addition==null ? 
+                                    "disabled='disabled'" : '' }}
+                                     />
                                 </div>
                             @endif
                         </div>
@@ -123,21 +128,23 @@
 
 
                 <tr>
-                    <td></td>
-                    <th>
-                        <input type='hidden' class="form-control" name="intervention_line" value="{{$intervention->id}}" />
-                        <input type='hidden' class="form-control" name="intervention_line_name" value="{{$intervention->name}}" />
-                        <input type='hidden' class="form-control" name="submission_request_id" value="{{$submissionRequest->id}}" />
-                        <input type='hidden' class="form-control" name="organization_id" value="{{ auth()->user()->organization_id }}" />
-                        <input type='hidden' class="form-control" name="intervention_request_tranche" value="{{optional($submissionRequest)->tranche}}" />
-                        <input type='hidden' class="form-control" name="checklist_input_fields" value="{{$checklist_input_fields}}" />
-                        @if($submissionRequest->status == 'not-submitted')
+                    @if($submissionRequest->status == 'not-submitted')
+                        <td></td>
+                        <th>
+                            <input type='hidden' class="form-control" name="intervention_line" value="{{$intervention->id}}" />
+                            <input type='hidden' class="form-control" name="intervention_line_name" value="{{$intervention->name}}" />
+                            <input type='hidden' class="form-control" name="submission_request_id" value="{{$submissionRequest->id}}" />
+                            <input type='hidden' class="form-control" name="organization_id" value="{{ auth()->user()->organization_id }}" />
+                            <input type='hidden' class="form-control" name="intervention_request_tranche" value="{{optional($submissionRequest)->tranche}}" />
+                            <input type='hidden' class="form-control" name="checklist_input_fields" value="{{$checklist_input_fields}}" />
+                
                             <button type="submit" class="btn btn-sm btn-primary"> <span class="glyphicon glyphicon-ok"></span> &nbsp; Save Attachments </button>
+                
                             <a href="{{ route('tf-bi-portal.submissionRequests.show',$submissionRequest->id) }}">
                                 <button type="button" class="btn btn-sm btn-warning"> <span class="glyphicon glyphicon-remove"></span> Cancel </button>
                             </a>
-                        @endif
-                    </th>
+                        </th>
+                    @endif
                 </tr>
             </form>
         </tbody>

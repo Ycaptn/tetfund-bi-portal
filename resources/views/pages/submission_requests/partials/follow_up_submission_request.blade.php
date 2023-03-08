@@ -91,7 +91,7 @@
 	<button class="col-sm-12 btn btn-info btn-sm btn-modal-follow-up-submission-request">
 		<small>
 			<span class="fa fa-check-square"></span> &nbsp
-			Follow-up {{ $submissionRequest->type }}
+			FollowUP Submission
 		</small>
 	</button>
 </div>

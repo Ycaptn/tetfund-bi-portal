@@ -233,10 +233,8 @@ All T S A S Nomination
 <div class="card radius-5 border-top border-0 border-4 border-success">
     <div class="card-body">
         <div><h5 class="card-title">More Information</h5></div>
-        <p class="small">
-            This is the help message.
-            This is the help message.
-            This is the help message.
+        <p class="small text-justify">
+            Welcome to the TETFund Scholarship For Academic Staffs Nominations page. This page provides a central location for managing all the nominations related to TETFund scholarship for academic staffs, as well as tracking their inflows and outflows.
         </p>
     </div>
 </div>

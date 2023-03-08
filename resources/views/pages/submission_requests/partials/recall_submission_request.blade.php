@@ -91,7 +91,7 @@
 	<button class="col-sm-12 btn btn-info btn-sm btn-modal-recall-submission-request">
 		<small>
 			<span class="fa fa-undo"></span> &nbsp
-			Recall {{ $submissionRequest->type }}
+			Recall Submission
 		</small>
 	</button>
 </div>

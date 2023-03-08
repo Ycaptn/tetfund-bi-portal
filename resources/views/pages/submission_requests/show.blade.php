@@ -15,7 +15,7 @@ Submission
     {{$submitted_request_data->title ?? $submissionRequest->title}} - 
     @if(!empty($submitted_request_data) && ( ($submissionRequest->is_aip_request==true && $submitted_request_data->has_generated_aip==true) || ( ($submissionRequest->is_first_tranche_request==true || $submissionRequest->is_second_tranche_request==true || $submissionRequest->is_final_tranche_request==true) && $submitted_request_data->has_generated_disbursement_memo==true) ) )
         <b class="text-success">
-            {{$submissionRequest->is_aip_request==true ? $submissionRequest->type : $submissionRequest->type.' Request' }} Granted
+            {{$submissionRequest->is_aip_request==true ? $submissionRequest->type : $submissionRequest->type.' Request' }} Processed
         </b>
     @else
         @if(optional($submitted_request_data)->request_status=='pending-recall')
@@ -233,7 +233,7 @@ Submission
 <div class="card radius-5 border-top  border-4 border-success">
     <div class="card-body">
         <div><h5 class="card-title">Beneficiary Submission</h5></div>
-        <p class="small">
+        <p class="small text-justify">
             Please reveiw details on your submission to TETFund. Each submission requesting for intervention is processed at the front line department handling the intervention. The status is updated from here, and you may make follow up submissions or reprioritize your submission following AIP approval.
         </p>
     </div>
