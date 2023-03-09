@@ -52,7 +52,7 @@ Beneficiary
                 @include('tf-bi-portal::pages.beneficiaries.show_fields')
             </div>
             <div class="col-lg-12">
-                <div class="tab pb-2 mt-3" style="border-top: thin solid lightgray; border-bottom: thin solid lightgray;">
+                <div class="tab pb-2 mt-3" style="">
                     <ul class="nav nav-tabs nav-primary" role="tablist">
                         <li class="nav-item" role="presentation">
                             <a href="{{ route('tf-bi-portal.beneficiaries.show', $beneficiary->id) }}?sub_menu_items=beneficiary_members" class="nav-link {{(!isset(request()->sub_menu_items) || request()->sub_menu_items=="beneficiary_members")?'active':''}}">
@@ -94,26 +94,26 @@ Beneficiary
                 
                 <div class="col-sm-12 panel panel-default card-view">
                     @if(!isset(request()->sub_menu_items) || request()->sub_menu_items=="beneficiary_members")
-                        <h5 class="pt-3"> 
+                        {{-- <h5 class="pt-3"> 
                             <strong>
                                 Beneficiary User Accounts
                             </strong>
                              <a title="Create New Beneficiary Member" class="btn btn-primary btn-sm pull-right btn-new-beneficiary-member" href="#">
                                 <span class="fa fa-plus"></span> <small>Add User</small>
                             </a>
-                        </h5>
+                        </h5> --}}
                     @elseif(request()->sub_menu_items=="submissions")
-                        <h5 class="pt-3"> 
+                        {{-- <h5 class="pt-3"> 
                             <strong>
                                 Beneficiary Submissions
                             </strong>
-                        </h5>
+                        </h5> --}}
                     @elseif(request()->sub_menu_items=="nominations")
-                        <h5 class="pt-3"> 
+                        {{-- <h5 class="pt-3"> 
                             <strong>
                                 Beneficiary Nominations
                             </strong>
-                        </h5>
+                        </h5> --}}
                     @endif
 
                     @include('tf-bi-portal::pages.beneficiaries.table')
@@ -130,9 +130,7 @@ Beneficiary
     <div class="card-body">
         <div><h5 class="card-title">More Information</h5></div>
         <p class="small">
-            This is the help message.
-            This is the help message.
-            This is the help message.
+            Beneficiary details displays all the details of the Institution including details of its members, submissions, and nominations for ASTD.
         </p>
     </div>
 </div>
