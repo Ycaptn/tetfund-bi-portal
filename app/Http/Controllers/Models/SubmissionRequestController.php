@@ -491,13 +491,28 @@ class SubmissionRequestController extends BaseController
             $submitted_request_data = $tetFundServer->getSubmissionRequestData($submissionRequest->tf_iterum_portal_key_id, $checklist_group_name_surfix);
             
             $checklist_items = $submitted_request_data->checklist_items;
-            $intervention_types_server_response = $submitted_request_data->intervention_beneficiary_type;
-            $submission_allocations = $submitted_request_data->submission_allocations;
-            $years = $submitted_request_data->years;
+      
             $bi_request_released_communications = $submitted_request_data->releasedBICommunication;
 
             if($submitted_request_data->request_status=='recalled') {
+                // change submision request status  to not-submitted
                 $submissionRequest->status='not-submitted';
+
+                // set intervention years to currently changed
+                $years = $submissionRequest->getInterventionYears();
+
+                // get all interventions from server
+                $pay_load = ['_method'=>'GET', 'id'=>$submissionRequest->tf_iterum_intervention_line_key_id];
+                $tetFundServer = new TETFundServer();   /* server class constructor */
+                $intervention_types_server_response = $tetFundServer->get_row_records_from_server("tetfund-ben-mgt-api/interventions/".$submissionRequest->tf_iterum_intervention_line_key_id, $pay_load);
+
+                // get fund availability
+                $tetFundServer = new TETFundServer();   /* server class constructor */
+                $submission_allocations = $tetFundServer->getFundAvailabilityData($submitted_request_data->beneficiary_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
+            } else {
+                $years = $submitted_request_data->years;
+                $submission_allocations = $submitted_request_data->submission_allocations;
+                $intervention_types_server_response = $submitted_request_data->intervention_beneficiary_type;
             }
 
         } else {
@@ -521,22 +536,7 @@ class SubmissionRequestController extends BaseController
                 $intervention_name = $intervention_types_server_response->name;
             }
             
-            $years = array();
-            if ($submissionRequest->intervention_year1 != null) {
-                array_push($years, $submissionRequest->intervention_year1);
-            }
-
-            if ($submissionRequest->intervention_year2 != null) {
-                array_push($years, $submissionRequest->intervention_year2);
-            }
-
-            if ($submissionRequest->intervention_year3 != null) {
-                array_push($years, $submissionRequest->intervention_year3);
-            }
-
-            if ($submissionRequest->intervention_year4 != null) {
-                array_push($years, $submissionRequest->intervention_year4);
-            }
+            $years = $submissionRequest->getInterventionYears();
 
             // get some array of data from server
             $data_to_rerieve_payload = [

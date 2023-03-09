@@ -321,8 +321,13 @@ class SubmissionRequest extends Model
     public function getMonitoringSubmissionRequests() {
         $parent_request = $this->find($this->parent_id) ?? $this;
         if ($parent_request != null) {
-            return $this->where('parent_id', $parent_request->id)
-                ->where('id', '!=', $this->id)
+            return $this->where('id', '!=', $this->id)
+                ->when($this->is_monitoring_request==true, function($query) use ($parent_request) {
+                    return $query->where('parent_id', $parent_request->id);
+                })
+                ->when($this->is_monitoring_request==false, function($query) {
+                    return $query->where('parent_id', $this->id);
+                })
                 ->where('is_monitoring_request', true)
                 ->orderBy('created_at', 'DESC')
                 ->get();

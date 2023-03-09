@@ -12,7 +12,8 @@ Submission
 @stop
 
 @section('page_title_suffix')
-    {{$submitted_request_data->title ?? $submissionRequest->title}} - 
+    {{isset($submitted_request_data->title) && $submissionRequest->status=='submitted' ?
+        $submitted_request_data->title : $submissionRequest->title }} - 
     @if(!empty($submitted_request_data) && ( ($submissionRequest->is_aip_request==true && $submitted_request_data->has_generated_aip==true) || ( ($submissionRequest->is_first_tranche_request==true || $submissionRequest->is_second_tranche_request==true || $submissionRequest->is_final_tranche_request==true) && $submitted_request_data->has_generated_disbursement_memo==true) ) )
         <b class="text-success">
             {{$submissionRequest->is_aip_request==true ? $submissionRequest->type : $submissionRequest->type.' Request' }} Processed

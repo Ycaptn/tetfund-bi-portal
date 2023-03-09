@@ -31,7 +31,7 @@
                                     </label>
                                     <div class="col-sm-12">
                                         <div class="input-group"> 
-                                            <input class="form-control" disabled="disabled" id="project_title" value="{{$submissionRequest->title??''}}"/>
+                                            <input class="form-control" disabled="disabled" id="project_title" value="{{$title??''}}"/>
                                         </div>
                                     </div>
                                 </div>

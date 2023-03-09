@@ -10,14 +10,14 @@
 		$first_tranche_amount_requested = (floatval($tranche_amount_percentage) * $submitted_aip_request_final_amount) / 100;
 
 		$tf_iterum_intervention_line_key_id = $submissionRequest->tf_iterum_intervention_line_key_id;
-		$title = $submissionRequest->title;
+		$request_tranche = "1st Tranche Payment";
+		$title = str_replace('Request for AIP', $request_tranche, $parentAIPSubmissionRequest->title);
 		$intervention_year1 = $submissionRequest->intervention_year1;
 		$intervention_year2 = $submissionRequest->intervention_year2;
 		$intervention_year3 = $submissionRequest->intervention_year3;
 		$intervention_year4 = $submissionRequest->intervention_year4;
 		$amount_requested = $first_tranche_amount_requested;
 		$parent_id = $submissionRequest->id;
-		$request_tranche = "1st Tranche Payment";
 		$is_first_tranche_request = true;
 		$should_button_request_next_display = true;	// show button for next tranche
 	}
@@ -31,14 +31,14 @@
 		$first_tranche_amount_requested = (floatval($tranche_amount_percentage) * $submitted_aip_request_final_amount) / 100;
 
 		$tf_iterum_intervention_line_key_id = $parentAIPSubmissionRequest->tf_iterum_intervention_line_key_id;
-		$title = $parentAIPSubmissionRequest->title;
+		$request_tranche = "2nd Tranche Payment";
+		$title = str_replace('Request for AIP', $request_tranche, $parentAIPSubmissionRequest->title);
 		$intervention_year1 = $parentAIPSubmissionRequest->intervention_year1;
 		$intervention_year2 = $parentAIPSubmissionRequest->intervention_year2;
 		$intervention_year3 = $parentAIPSubmissionRequest->intervention_year3;
 		$intervention_year4 = $parentAIPSubmissionRequest->intervention_year4;
 		$amount_requested = $first_tranche_amount_requested;
 		$parent_id = $parentAIPSubmissionRequest->id;
-		$request_tranche = "2nd Tranche Payment";
 		$is_second_tranche_request = true;
 		$should_button_request_next_display = true;	// show button for next tranche
 	}
@@ -52,14 +52,14 @@
 		$first_tranche_amount_requested = (floatval($tranche_amount_percentage) * $submitted_aip_request_final_amount) / 100;
 
 		$tf_iterum_intervention_line_key_id = $parentAIPSubmissionRequest->tf_iterum_intervention_line_key_id;
-		$title = $parentAIPSubmissionRequest->title;
+		$request_tranche = "Final Tranche Payment";
+		$title = str_replace('Request for AIP', $request_tranche, $parentAIPSubmissionRequest->title);
 		$intervention_year1 = $parentAIPSubmissionRequest->intervention_year1;
 		$intervention_year2 = $parentAIPSubmissionRequest->intervention_year2;
 		$intervention_year3 = $parentAIPSubmissionRequest->intervention_year3;
 		$intervention_year4 = $parentAIPSubmissionRequest->intervention_year4;
 		$amount_requested = $first_tranche_amount_requested;
 		$parent_id = $parentAIPSubmissionRequest->id;
-		$request_tranche = "Final Tranche Payment";
 		$is_final_tranche_request = true;
 		$should_button_request_next_display = true;	// show button for next tranche
 	}
@@ -74,14 +74,14 @@
 		$first_tranche_amount_requested = (floatval($tranche_amount_percentage) * $submitted_aip_request_final_amount) / 100;
 
 		$tf_iterum_intervention_line_key_id = $parentAIPSubmissionRequest->tf_iterum_intervention_line_key_id;
-		$title = $parentAIPSubmissionRequest->title;
+		$request_tranche = "Final Tranche Payment";
+		$title = str_replace('Request for AIP', $request_tranche, $parentAIPSubmissionRequest->title);
 		$intervention_year1 = $parentAIPSubmissionRequest->intervention_year1;
 		$intervention_year2 = $parentAIPSubmissionRequest->intervention_year2;
 		$intervention_year3 = $parentAIPSubmissionRequest->intervention_year3;
 		$intervention_year4 = $parentAIPSubmissionRequest->intervention_year4;
 		$amount_requested = $first_tranche_amount_requested;
 		$parent_id = $parentAIPSubmissionRequest->id;
-		$request_tranche = "Final Tranche Payment";
 		$is_final_tranche_request = true;
 		$should_button_request_next_display = true;	// show button for next tranche request
 	}
@@ -158,7 +158,7 @@
                                         <label class="col-sm-12 control-label">Project Title</label>
                                         <div class="col-sm-12">
                                             <div class="input-group">
-                                                <textarea readonly class="form-control" name="project_title" id="project_title" rows="2">{{ $submissionRequest->title }} - {{ $request_tranche }} Request</textarea>
+                                                <textarea readonly class="form-control" name="project_title" id="project_title" rows="2">{{ $title }}</textarea>
                                             </div>
                                         </div>
                                     </div>
