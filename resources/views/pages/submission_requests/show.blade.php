@@ -63,7 +63,7 @@ Submission
                 data-val='ca' 
                 href="#" 
                 class="btn btn-sm btn-danger btn-committee-last-minute-of-meeting-modal">
-                <i class="fa fa-square"></i> CANomination Committee Last Minute of Meeting
+                <i class="fa fa-clock"></i> CANomination Committee Last Minute of Meeting
             </a>&nbsp;
         @endif
 
@@ -74,7 +74,7 @@ Submission
                 data-val='tsas' 
                 href="#" 
                 class="btn btn-sm btn-danger btn-committee-last-minute-of-meeting-modal">
-                <i class="fa fa-square"></i> TSASNomination Committee Last Minute of Meeting
+                <i class="fa fa-clock"></i> TSASNomination Committee Last Minute of Meeting
             </a>&nbsp;
         @endif
     @endif

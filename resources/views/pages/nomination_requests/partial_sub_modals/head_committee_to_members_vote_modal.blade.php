@@ -115,7 +115,8 @@
                         <div class="col-sm-12">
                             <div class="col-sm-12 text-justify text-danger">
                                 <i>
-                                    <strong>Note:</strong> By uploading committee minutes of meeting, the recently uploaded minutes of meeting which has not been submitted to TETFund by the Desk-Officer will be replaced with the new copy. However, if this is not the case, the newly uploaded minutes of meeting will be saved and made available to the Desk-Officer pending when it will be used by fowarding same to TETFund when new {{ strtoupper(request()->nomination_type ?? '?') }}-Nomination request is submitted. 
+                                    <strong>Note:</strong> By uploading committee minutes of meeting, the recently uploaded minutes of meeting which has not been submitted to TETFund by the Desk-Officer will be replaced with the new copy. 
+                                    <br>However, if this is not the case, the newly uploaded minutes of meeting will be saved and made available to the Desk-Officer pending when it will be used by fowarding same to TETFund when new {{ strtoupper(request()->nomination_type ?? '?') }}-Nomination request is submitted. 
                                 </i>                                
                             </div>    
                         </div>
@@ -205,8 +206,7 @@
                 $('#minute_upload_nomination_type').val(nomination_type);
 
                 $.get( "{{ route('tf-bi-portal-api.committee_meeting_minutes.show', '') }}/"+nomination_type).done(function( response ) {
-                    
-                    let attachment = (response.data.attachables[0]) ? response.data.attachables[0].attachment : null;
+                    let attachment = (response.data && response.data.attachables && response.data.attachables[0]) ? response.data.attachables[0].attachment : null;
 
                     if(attachment != null) {
                         let attachment_link = window.location.origin +'/attachment/'+attachment.id;
@@ -316,7 +316,7 @@
                 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
 
                 $('#div_head_committee_to_members_vote_modal_error').hide();
-                $('#modal_upload_committee_minutes_meetings').modal('show');
+                $('#head_committee_to_members_vote_modal').modal('show');
                 $('#form_head_committee_to_members_vote_modal').trigger("reset");
 
                 $("#spinner-committee-head-final").show();
@@ -340,7 +340,7 @@
                         let counter = 1;
                         $.each(response.data.nomination_committee_voters, function(key, value){
                             var serverDate = new Date(value.created_at).toDateString();
-                            let status = (value.approval_status == 1) ? 'Considered' : 'Not Considered';
+                            let status = (value.approval_status == 1) ? '<span class=\'text-success\'>Recommended</span>' : '<span class=\'text-danger\'>Not Recommended</span>';
                             table_body += "<tr> <td>"+ counter +"</td> <td>"+value.first_name+' '+value.last_name+"</td> <td>"+status+"</td> <td>"+value.approval_comment+"</td> <td>"+serverDate+"</td> </tr>";
                             counter += 1;
                         });

@@ -298,7 +298,7 @@ class TSASNominationAPIController extends AppBaseController
 
         $attachments = $nominationRequest->get_all_attachments($nominationRequest->id);
 
-        if (count($attachments) > 0) {
+        if (!empty($attachments) && count($attachments) > 0) {
             foreach ($attachments as $attachment) {
                 $nominationRequest->delete_attachment($attachment->label);
             }

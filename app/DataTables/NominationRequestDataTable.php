@@ -184,7 +184,7 @@ class NominationRequestDataTable extends DataTable
         $dataTable->addColumn('type', function ($query) {
             $returned_str = "N/A";
             if ($query->type != null){
-                if ($query->type = 'tp') {
+                if ($query->type == 'tp') {
                     $returned_str = 'Teaching Practice';
                 } elseif ($query->type == 'ca') {
                     $returned_str = 'Conference Attendance';

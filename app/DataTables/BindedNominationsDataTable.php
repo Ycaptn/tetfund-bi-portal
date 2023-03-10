@@ -101,7 +101,7 @@ class BindedNominationsDataTable extends DataTable
             ->minifiedAjax()
             //->addAction(['width' => '120px', 'printable' => false])
             ->parameters([
-                'dom'       => 'Bfrtip',
+                'dom' => 'B<"float-end mb-5" f><t>ip',
                 'stateSave' => true,
                 'order'     => [[2, 'desc']],
                 'buttons'   => [

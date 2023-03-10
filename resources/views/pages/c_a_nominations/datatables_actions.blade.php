@@ -14,10 +14,10 @@
     {{-- appears to all ca committee members when they need to make their individual decisions --}}
     @if($is_desk_officer_check==1 && $is_average_committee_members_check==0 && auth()->user()->hasAnyRole(['BI-CA-committee-head', 'BI-CA-committee-member']) && !isset(request()->view_type))
         <a data-toggle="tooltip" 
-            title="CANomination Committee Consideration Approval Zone" 
+            title="CANomination Committee Recommendation Approval Zone" 
             data-val='{{$id}}'
             class="btn-committee-vote-modal btn btn-info btn-sm text-white" href="#">
-            <i class="fa fa-check-square style="opacity:80%"></i> <span>Consideration</span>
+            <i class="fa fa-check-square" style="opacity:80%"></i> <span>Recommendation</span>
         </a> &nbsp; &nbsp;
     @endif
 
@@ -27,7 +27,7 @@
             title="CANomination committee head finalizing consideration" 
             data-val='{{$id}}'
             class="btn-committee-head-modal btn btn-info btn-sm text-white" href="#">
-            <i class="fa fa-paper-plane style="opacity:80%"></i> <span>Nomination Decision</span>
+            <i class="fa fa-paper-plane" style="opacity:80%"></i> <span>Nomination Decision</span>
         </a>
     @endif
 

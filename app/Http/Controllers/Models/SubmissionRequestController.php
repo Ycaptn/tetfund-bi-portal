@@ -574,7 +574,7 @@ class SubmissionRequestController extends BaseController
                 }
             }
 
-            $binded_nominations_dataTable = new BindedNominationsDataTable();
+            $binded_nominations_dataTable = new BindedNominationsDataTable($org);
             return $binded_nominations_dataTable
                 ->with('user_beneficiary', $beneficiary)
                 ->with('submission_request', $submissionRequest)

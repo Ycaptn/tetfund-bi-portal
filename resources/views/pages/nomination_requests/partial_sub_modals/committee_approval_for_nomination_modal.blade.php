@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-xl modal-dialog-100vh">
         <div class="modal-content modal-content-95vh">
             <div class="modal-header">
-                <h4 class="modal-title" id="creator-modal-label"> Committee Member Nomination Consideration <span id="title_toggle"></span></h4>
+                <h4 class="modal-title" id="creator-modal-label"> Committee Member Nomination Recommendation <span id="title_toggle"></span></h4>
                 <button id="creator-modal-close-button" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
