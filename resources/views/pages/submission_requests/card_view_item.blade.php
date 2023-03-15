@@ -11,6 +11,27 @@
                         <i class="bx bx-layer"></i>
                     </div>
                 </a>
+
+                @if(isset($data_item) && $data_item->status == 'not-submitted')
+                    <div class="ms-auto"> 
+                        @if($data_item->is_aip_request==true)
+                            <a data-toggle="tooltip" 
+                                title="Edit"
+                                data-val='{{$data_item->id}}'
+                                href="{{route('tf-bi-portal.submissionRequests.edit', $data_item->id)}}" 
+                                class="ms-2 btn btn-sm btn-primary p-0 btn-edit-mdl-submissionRequest-modal m-1" href="#" style="font-size:80%;">
+                                <i class="bx bxs-edit m-1"></i> 
+                            </a>
+                        @endif
+                        <a data-toggle="tooltip" 
+                            title="Delete" 
+                            data-val='{{$data_item->id}}' 
+                            class="btn btn-sm btn-danger p-0 btn-delete-mdl-submissionRequest-modal m-1" href="#" style="font-size:80%;">
+                            <i class="bx bxs-trash-alt m-1"></i>
+                        </a>
+                    </div>
+                @endif
+
             </div>
             <div class="col-xs-12 col-md-10">
                 <div class="card-body">
@@ -58,25 +79,7 @@
                 </div>
             </div>
             <div class="col-xs-12 col-md-1 mt-2">
-                @if(isset($data_item) && $data_item->status == 'not-submitted')
-                    <div class="ms-auto"> 
-                        @if($data_item->is_aip_request==true)
-                            <a data-toggle="tooltip" 
-                                title="Edit"
-                                data-val='{{$data_item->id}}'
-                                href="{{route('tf-bi-portal.submissionRequests.edit', $data_item->id)}}" 
-                                class="btn-edit-mdl-submissionRequest-modal me-1" href="#">
-                                <i class="bx bxs-edit"></i>
-                            </a>
-                        @endif
-                        <a data-toggle="tooltip" 
-                            title="Delete" 
-                            data-val='{{$data_item->id}}' 
-                            class="btn-delete-mdl-submissionRequest-modal me-1" href="#">
-                            <i class="bx bxs-trash-alt text-danger"></i>
-                        </a>
-                    </div>
-                @endif
+
             </div>
         </div>
     </div>
