@@ -163,7 +163,7 @@ class BeneficiaryAPIController extends AppBaseController
             "first_name" => ucwords($request->bi_staff_fname),
             "last_name" => ucwords($request->bi_staff_lname),
             "telephone" => $request->bi_telephone,
-            'password' => 'password',
+            'password' => $this->generateStrongPassword(),
             "gender" => strtolower($request->bi_staff_gender),
             'organization_id' => $request->organization_id ?? null,
             'beneficiary_bi_id' => $beneficiary->id,
@@ -347,7 +347,7 @@ class BeneficiaryAPIController extends AppBaseController
                     // desk officer payload
                     $pay_load = [
                         "email" => $desk_officer_email,
-                        'password' => 'password',
+                        'password' => $this->generateStrongPassword(),
                         "telephone" => $get_server_beneficiary->official_phone,
                         "first_name" => strtoupper($get_server_beneficiary->short_name),
                         "last_name" => 'Desk-Officer',

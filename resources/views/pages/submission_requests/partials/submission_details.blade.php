@@ -176,7 +176,7 @@
 
             @if(($submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && isset($submitted_request_data))
                 @php
-                    $dept_name = $submitted_request_data->work_item->active_assignment->assigned_user->department->long_name ?? $submitted_request_data->work_item->assignments[0]->assigned_user->department->long_name;
+                    $dept_name = $submitted_request_data->work_item->active_assignment->assigned_user->department->long_name ?? $submitted_request_data->work_item->assignments[0]->assigned_user->department->long_name ?? '';
                 @endphp
                 <small>
                     @if($submitted_request_data->has_generated_aip && $submitted_request_data->request_status!='recalled')

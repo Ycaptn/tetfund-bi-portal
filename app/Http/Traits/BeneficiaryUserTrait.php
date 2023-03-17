@@ -117,4 +117,26 @@ trait BeneficiaryUserTrait {
         return null;
     }
 
+    public function generateStrongPassword(){
+        $specials = '!@#$%+';
+        $numbers = '0123456789';
+        $lowercase = 'abcdefghijklmnopqrstuvwxyz';
+        $uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        $all = $specials . $numbers . $lowercase . $uppercase;
+
+        $password = '';
+        $password .= $specials[rand(0, strlen($specials)-1)];
+        $password .= $numbers[rand(0, strlen($numbers)-1)];
+        $password .= $lowercase[rand(0, strlen($lowercase)-1)];
+        $password .= $uppercase[rand(0, strlen($uppercase)-1)];
+
+        $length = rand(2,4);
+        for ($i=1; $i<=$length; ++$i) {
+            $password .= $all[rand(0, strlen($all)-1)];
+        }
+        $password = str_shuffle($password);
+        return $password;
+    }
+
 }

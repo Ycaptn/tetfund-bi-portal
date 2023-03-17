@@ -81,7 +81,7 @@
 			// Show Modal to preview communication contents
 		    $(document).on('click', ".btn-show-submission-communication-content", function(e) {
 				let itemId = $(this).attr('data-val');
-				let html_encoded_content = JSON.parse(json_array_of_contents)[itemId];
+				let html_encoded_content = JSON.parse(json_array_of_contents.replace(/[\r\n]+/gm, ''))[itemId];
 
 				let html_decoded_content = $('<textarea />').html(html_encoded_content).text();
 				

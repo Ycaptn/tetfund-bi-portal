@@ -28,17 +28,51 @@ class DashboardController extends BaseController
 {
     
 
-    public function index(Organization $org, Request $request){
+    public function index(Organization $org, Request $request) {
 
         $current_user = Auth()->user();
+        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+        $ongoing_submissions = SubmissionRequest::whereIn('status', ['not-submitted', 'submitted', 'pending-recall', 'recalled'])
+                        ->where([
+                            'is_monitoring_request' => false,
+                            'beneficiary_id' => optional($beneficiary_member)->beneficiary_id
+                        ])
+                        ->orderBy('created_at', 'DESC')
+                        ->get();
+
+
+        // get some array of data from server
+        $payload_data_to_rerieve = [
+            'getMonitoringRequestData' => [
+                    'beneficiary_id' => $beneficiary_member->beneficiary->tf_iterum_portal_key_id??null,
+                ],
+            'getBeneficiaryCommunicationData' => [
+                    'beneficiary_id' => $beneficiary_member->beneficiary->tf_iterum_portal_key_id??null,
+                ],
+        ];
+
+        // array of server data
+        $tetFundServer = new TETFundServer();   /* server class constructor */
+        $collection = $tetFundServer->getSomeDataArrayFromServer($payload_data_to_rerieve);
+
+        // get upcoming monitoring requests
+        $upcoming_monitorings = array_filter($collection->getMonitoringRequestData??[],function($v){
+                                    return $v->is_approved==true;
+                                });
+        
+        // get official communications
+        $official_communications = $collection->getBeneficiaryCommunicationData??[];
+
 
         return view('dashboard.index')
                     ->with('organization', $org)
-                    ->with('current_user', $current_user);
+                    ->with('current_user', $current_user)
+                    ->with('ongoing_submissions', $ongoing_submissions)
+                    ->with('upcoming_monitorings', $upcoming_monitorings)
+                    ->with('official_communications', $official_communications);
     }
 
-    public function displayMonitoringDashboard(Organization $org, Request $request)
-    {
+    public function displayMonitoringDashboard(Organization $org, Request $request) {
         $current_user = Auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
@@ -127,7 +161,7 @@ class DashboardController extends BaseController
                 ]);
     }
 
-    public function displayLibrarianAdminDashboard(Organization $org, Request $request){
+    public function displayLibrarianAdminDashboard(Organization $org, Request $request) {
 
         $current_user = Auth()->user();
 
@@ -136,7 +170,7 @@ class DashboardController extends BaseController
                     ->with('current_user', $current_user);
     }
 
-    public function displayDirectorICTAdminDashboard(Organization $org, Request $request){
+    public function displayDirectorICTAdminDashboard(Organization $org, Request $request) {
 
         $current_user = Auth()->user();
 
@@ -145,7 +179,7 @@ class DashboardController extends BaseController
                     ->with('current_user', $current_user);
     }
 
-    public function displayDirectorPIWorksAdminDashboard(Organization $org, Request $request){
+    public function displayDirectorPIWorksAdminDashboard(Organization $org, Request $request) {
 
         $current_user = Auth()->user();
 

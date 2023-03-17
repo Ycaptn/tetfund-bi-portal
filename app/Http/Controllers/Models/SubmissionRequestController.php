@@ -112,6 +112,10 @@ class SubmissionRequestController extends BaseController
             ->with("intervention_types", $intervention_types_server_response);
     }
 
+    public function ongoingSubmission(Organization $org, Request $request) {
+        dd('here');
+    }
+
     /**
      * Store a newly created SubmissionRequest in storage.
      *
@@ -438,11 +442,14 @@ class SubmissionRequestController extends BaseController
 
     // show details for monitoring request
     public function showMonitoring(Organization $ord, Request $request, $id) {
-        $monitoring_request = SubmissionRequest::where('id', $id)
+        $monitoring_request = SubmissionRequest::where(function($query) use ($id) {
+                            $query->where('id', $id)
+                                  ->orWhere('tf_iterum_portal_key_id', $id);
+                        })
                         ->where('is_monitoring_request', true)
                         ->first();
         
-        if (empty($monitoring_request)) {
+        if (empty($monitoring_request)) {               
             return redirect(route('tf-bi-portal.monitoring'))->with('error', 'The Monitoring Request Was Not Found!');
         }
 

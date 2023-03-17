@@ -153,7 +153,7 @@ Monitoring
 
                         @if($monitoring_request->status == 'submitted' && isset($monitoring_request_submitted))
                         @php
-                            $dept_name = $monitoring_request_submitted->work_item->active_assignment->assigned_user->department->long_name ?? $monitoring_request_submitted->work_item->assignments[0]->assigned_user->department->long_name;
+                            $dept_name = $monitoring_request_submitted->work_item->active_assignment->assigned_user->department->long_name ?? $monitoring_request_submitted->work_item->assignments[0]->assigned_user->department->long_name ?? '';
                         @endphp
                             <small>
                                 @if($monitoring_request_submitted->is_approved)
