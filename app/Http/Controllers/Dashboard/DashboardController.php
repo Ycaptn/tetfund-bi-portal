@@ -46,8 +46,13 @@ class DashboardController extends BaseController
             'getMonitoringRequestData' => [
                     'beneficiary_id' => $beneficiary_member->beneficiary->tf_iterum_portal_key_id??null,
                 ],
+                
             'getBeneficiaryCommunicationData' => [
                     'beneficiary_id' => $beneficiary_member->beneficiary->tf_iterum_portal_key_id??null,
+                ],
+
+            'getAllInterventionLines' => [
+                    'beneficiary_type' => strtolower($beneficiary_member->beneficiary->type??null),
                 ],
         ];
 
@@ -63,10 +68,13 @@ class DashboardController extends BaseController
         // get official communications
         $official_communications = $collection->getBeneficiaryCommunicationData??[];
 
+        // get beneficiary intervention lines
+        $intervention_types = $collection->getAllInterventionLines??[];
 
         return view('dashboard.index')
                     ->with('organization', $org)
                     ->with('current_user', $current_user)
+                    ->with('intervention_types', $intervention_types)
                     ->with('ongoing_submissions', $ongoing_submissions)
                     ->with('upcoming_monitorings', $upcoming_monitorings)
                     ->with('official_communications', $official_communications);

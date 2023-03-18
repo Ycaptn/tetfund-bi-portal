@@ -34,8 +34,9 @@ $orgRoutes = function() {
                 Route::delete('delete_beneficiary_member/{id}', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'delete_beneficiary_member'])->name('delete_beneficiary_member');
                 
                 //submission_requests
+                Route::get('/submission_requests/ongoing-submission/{ongoing_type}', [\App\Http\Controllers\API\SubmissionRequestAPIController::class, 'ongoingSubmission'])->name('submission_requests.ongoing-submission');
+                Route::post('/submission_requests/process-ongoing-submission', [\App\Http\Controllers\API\SubmissionRequestAPIController::class, 'processOngoingSubmission'])->name('submission_requests.process-ongoing-submission');
                 Route::post('submission_requests/request_actions/{id}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'request_actions'])->name('submission_requests.request_actions');
-
                 
                 Route::resource('nomination_requests', \App\Http\Controllers\API\NominationRequestAPIController::class);
                 Route::get('nomination_requests/show_selected_email/{email}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'show_selected_email'])->name('nomination_requests.show_selected_email');

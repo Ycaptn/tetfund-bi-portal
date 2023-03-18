@@ -22,11 +22,6 @@ New Submission
 @stop
 
 @section('page_title_buttons')
-{{--
-<a id="btn-new-mdl-submissionRequest-modal" class="btn btn-sm btn-primary btn-new-mdl-submissionRequest-modal">
-    <i class="bx bx-book-add me-1"></i>New Submission Request
-</a>
---}}
 @stop
 
 @section('content')
@@ -225,7 +220,7 @@ New Submission
                     $("#year_plural").show();
                 }
 
-                // settings to fomulate intervention_title
+                // settings to formulate intervention_title
                 let confirmed_selected_line = all_none_astd_interventions_id[selected_intervention_line]!=null ?
                         all_none_astd_interventions_id[selected_intervention_line] : 
                         all_astd_interventions_id[selected_intervention_line];

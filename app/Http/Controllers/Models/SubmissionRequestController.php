@@ -112,10 +112,6 @@ class SubmissionRequestController extends BaseController
             ->with("intervention_types", $intervention_types_server_response);
     }
 
-    public function ongoingSubmission(Organization $org, Request $request) {
-        dd('here');
-    }
-
     /**
      * Store a newly created SubmissionRequest in storage.
      *

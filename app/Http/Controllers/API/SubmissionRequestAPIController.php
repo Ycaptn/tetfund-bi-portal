@@ -414,4 +414,35 @@ class SubmissionRequestAPIController extends AppBaseController
 
         return $this->sendError('An unknown error was encountered while recalling this submission.');
     }
+
+    public function ongoingSubmission(Organization $org, Request $request, $ongoing_label) {
+        if (isset($ongoing_label) && ($ongoing_label=='1st_Tranche_Payment' || $ongoing_label=='2nd_Tranche_Payment' || $ongoing_label=='Final_Tranche_Payment' || $ongoing_label=='Monitoring_Request')) {
+
+            $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', auth()->user()->id)->first();
+            
+            $pay_load = ['_method'=>'GET', 'beneficiary_type'=>$beneficiary_member->beneficiary->type ?? null];
+            
+            $tetFundServer = new TETFundServer();   /* server class constructor */
+            $intervention_types = $tetFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
+
+            $view_html_response = view("pages.submission_requests.partials.ongoing_submission_input_fields")
+                ->with("ongoing_label", $ongoing_label)
+                ->with("intervention_types", $intervention_types)
+                ->render();
+
+            return $this->sendResponse("<hr> $view_html_response", 'Ongoing submission form data successfully retrieved');
+        } else {
+            $html_error_response = "
+                <div class='col-sm-12 text-center text-danger'>
+                    <b><i>
+                        Ongoing Submission Request not processable for ". str_replace('_', ' ', $ongoing_label) .".
+                    </i></b>
+                </div>";
+            return $this->sendResponse("<hr> $html_error_response", 'Error: Invalid Ongoing Submission Request Stage Selected');
+        }
+    }
+
+    public function processOngoingSubmission(Organization $org, Request $request) {
+        dd($request->all());
+    }
 }
