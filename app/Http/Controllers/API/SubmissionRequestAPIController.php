@@ -442,7 +442,90 @@ class SubmissionRequestAPIController extends AppBaseController
         }
     }
 
-    public function processOngoingSubmission(Organization $org, Request $request) {
-        dd($request->all());
+    public function processOngoingSubmission(Organization $org, CreateSubmissionRequestAPIRequest $request) {
+        // array of intervention years provided with request
+        $intevention_years = ['0'];
+        for ($i=1; $i<=4; ++$i) {
+            if(isset($request->{'intervention_year'.$i})) {
+                array_push($intevention_years, $request->{'intervention_year'.$i});
+            }
+        }
+
+        $intevention_years_unique = array_unique($intevention_years);
+        sort($intevention_years_unique);
+
+        $well_formatted_type = str_replace('_', ' ', $request->ongoing_submission_stage);
+        $ongoingSubmission = SubmissionRequest::where('type', $well_formatted_type)
+                                ->where('tf_iterum_intervention_line_key_id', $request->tf_iterum_intervention_line_key_id)
+                                ->whereIn('intervention_year1', $intevention_years_unique)
+                                ->whereIn('intervention_year1', $intevention_years_unique)
+                                ->whereIn('intervention_year2', $intevention_years_unique)
+                                ->whereIn('intervention_year3', $intevention_years_unique)
+                                ->whereIn('intervention_year4', $intevention_years_unique)
+                                ->first();
+
+        if (!empty($ongoingSubmission)) {
+            return response()->JSON([
+                'errors'=>["A Submission Request for the selected intervention line, intervention years and ongoing submission stage already exist."]
+            ]);
+        }
+
+        $y_counter = 1;
+        $current_user = auth()->user();
+        $disbursement_percentage = null;
+        array_shift($intevention_years_unique);
+        $ongoingSubmission = new SubmissionRequest();
+        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+         
+        $ongoingSubmission->organization_id = $org->id;
+        $ongoingSubmission->title = $request->title .' - '. $well_formatted_type .' - ('. implode(', ', $intevention_years_unique) . ')';
+        $ongoingSubmission->status = 'not-submitted';
+        $ongoingSubmission->type = $well_formatted_type;
+        $ongoingSubmission->requesting_user_id = $current_user->id;
+        $ongoingSubmission->beneficiary_id = $beneficiary_member->beneficiary_id??null;
+        
+        foreach($intevention_years_unique as $year) {
+            $ongoingSubmission->{'intervention_year'.$y_counter} = $year;
+            $y_counter += 1;
+        }
+
+        $ongoingSubmission->proposed_request_date = date('Y-m-d H:i:s');
+        $ongoingSubmission->tf_iterum_intervention_line_key_id = $request->tf_iterum_intervention_line_key_id;
+
+        if ($request->ongoing_submission_stage=='1st_Tranche_Payment') {
+            $ongoingSubmission->is_first_tranche_request = true;
+            $disbursement_percentage = $ongoingSubmission->first_tranche_intervention_percentage($request->title);
+        } elseif ($request->ongoing_submission_stage=='2nd_Tranche_Payment') {
+            $ongoingSubmission->is_second_tranche_request = true;
+            $disbursement_percentage = $ongoingSubmission->second_tranche_intervention_percentage($request->title);
+        } elseif ($request->ongoing_submission_stage=='Final_Tranche_Payment') {
+            $ongoingSubmission->is_final_tranche_request = true;
+            $disbursement_percentage = $ongoingSubmission->final_tranche_intervention_percentage($request->title);
+        } elseif ($request->ongoing_submission_stage=='Monitoring_Request') {
+            $ongoingSubmission->is_monitoring_request = true;
+        }
+
+        if ($disbursement_percentage == null) {
+            return response()->JSON([
+                'errors'=>["The ongoing submission request stage does not applies to the intervention line selected."]
+            ]);
+        }
+
+        $disbursement_percentage = str_replace('%', '', $disbursement_percentage);
+        $ongoingSubmission->amount_requested = ($request->amount_requested * floatval($disbursement_percentage)) / 100;
+        $ongoingSubmission->save();
+
+        // handling array of file attachments
+        if($request->hasfile('file_attachments')){
+            $attach_ct = 0;
+            foreach($request->file('file_attachments') as $file){
+                $label = 'Ongoing Submission Request Attachment No. '. ++$attach_ct;
+                $discription = 'This Document Contains the ' . $label;
+
+                $ongoing_attachable = $ongoingSubmission->attach($current_user, $label, $discription, $file);
+            }
+        }
+
+        return $this->sendResponse($ongoingSubmission, 'Ongoing submission request saved successfully.');
     }
 }

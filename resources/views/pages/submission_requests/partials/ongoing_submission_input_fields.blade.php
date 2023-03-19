@@ -98,11 +98,18 @@
     <div class="col-md-6 mb-2">
         <label class="col-md-12 control-label"><b>FILE ATTACHMENTS</b></label>
         <div class="input-group">
-	        <input multiple="multiple" type='file' class="form-control" name="files[]" id="file_attachments" />
+	        <input multiple="multiple" type='file' class="form-control" name="file_attachments[]" id="file_attachments" />
 	        <span class="input-group-text"><span class="fa fa-folder-open"></span></span>
 		    <em>
 		    	<small class="text-danger">
-		    		You may select multiple files for upload. Each file must be a PDF. Max file Size 100M each.
+		    		- You may select multiple files for upload. Each file must be a PDF. Max file Size 100M each.<br>
+                    @if($ongoing_label=='1st_Tranche_Payment')
+                        - The files to be attached should contain a copy of your <b>AIP Document</b>.
+                    @elseif($ongoing_label=='2nd_Tranche_Payment')
+                        - The files to be attached should contain a copy of your <b>AIP Document and First Tranche Disbursment Document</b>.
+                    @elseif($ongoing_label=='Final_Tranche_Payment' || $ongoing_label=='Monitoring_Request' || $ongoing_label=='Audit_Clearance')
+                        - The files to be attached should contain a copy of your <b>AIP Document, First Tranche Disbursment Document and Second Tranche Disbursement Document (where applicable)</b>.                    
+                    @endif
 		    	</small>
 		    </em>  
 	    </div>

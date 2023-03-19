@@ -12,7 +12,7 @@
                     <div class="offline-ongoing-submission"><span class="offline">You are currently offline</span></div>
                     <div id="div-ongoing-submission-modal-error" class="alert alert-danger" role="alert"></div>
                     
-                    <form id="frm-ongoing-submission-modal" class="form-horizontal" role="form" method="POST">
+                    <form id="frm-ongoing-submission-modal" class="form-horizontal" role="form" method="POST" enctype="multipart/form-data">
                         {!! csrf_field() !!}            
                         <div class="col-sm-12">
                             <div class="col-sm-12 text-justify text-danger">
@@ -263,20 +263,16 @@ $(document).ready(function() {
                 }
 
                 if ($('#intervention_title').val().trim().length > 0) {
-                    formData.append('intervention_title', $('#intervention_title').val());
+                    formData.append('title', $('#intervention_title').val());
                 }
 
                 if ($('#intervention_line').val().trim().length > 0) {
                     formData.append('tf_iterum_intervention_line_key_id', $('#intervention_line').val());
                 }
 
-                let attachments = $('#file_attachments').prop('files');
-
-                if (attachments.length > 0) {
-                    $.each(attachments, function(index, file) {
-                        formData.append('file_attachment[]', file);
-                    });
-                }
+                $.each($('input[type=file]')[0].files, function(i, file) {
+                    formData.append('file_attachments[]', file);
+                });
                 
                 $.ajax({
                     url: "{{ route('tf-bi-portal-api.submission_requests.process-ongoing-submission') }}",
