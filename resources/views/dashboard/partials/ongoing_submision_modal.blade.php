@@ -294,7 +294,14 @@ $(document).ready(function() {
                         } else {
                             $('#div-ongoing-submission-modal-error').hide();
                             console.log(result);
-                            let redirect_link = window.location.origin +'/tf-bi-portal/submissionRequests/'+ result.data.id;
+                            let redirect_link = window.location.origin +'/tf-bi-portal/submissionRequests';
+                            if(result.data.type == 'Monitoring Request') {
+                                console.log('I dey Monitoring');
+                                redirect_link = window.location.origin +'/tf-bi-portal/showMonitoring/'+ result.data.id;
+                            } else {
+                                console.log('I no dey nonitoring');
+                                redirect_link = window.location.origin +'/tf-bi-portal/submissionRequests/'+ result.data.id;
+                            }
                             swal({
                                 title: "Ongoing Submission Request Saved",
                                 text: "The Ongoing Submission Request Has Been Saved Successfully!",

@@ -435,7 +435,7 @@ class SubmissionRequestAPIController extends AppBaseController
             $html_error_response = "
                 <div class='col-sm-12 text-center text-danger'>
                     <b><i>
-                        Ongoing Submission Request not processable for ". str_replace('_', ' ', $ongoing_label) .".
+                        Ongoing Submission Request is not processable for ". str_replace('_', ' ', $ongoing_label) .".
                     </i></b>
                 </div>";
             return $this->sendResponse("<hr> $html_error_response", 'Error: Invalid Ongoing Submission Request Stage Selected');
@@ -478,7 +478,7 @@ class SubmissionRequestAPIController extends AppBaseController
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
          
         $ongoingSubmission->organization_id = $org->id;
-        $ongoingSubmission->title = $request->title .' - '. $well_formatted_type .' - ('. implode(', ', $intevention_years_unique) . ')';
+        $ongoingSubmission->title = 'Ongoing Submission For '. $request->title .' - '. $well_formatted_type .' - ('. implode(', ', $intevention_years_unique) . ')';
         $ongoingSubmission->status = 'not-submitted';
         $ongoingSubmission->type = $well_formatted_type;
         $ongoingSubmission->requesting_user_id = $current_user->id;
@@ -505,13 +505,13 @@ class SubmissionRequestAPIController extends AppBaseController
             $ongoingSubmission->is_monitoring_request = true;
         }
 
-        if ($disbursement_percentage == null) {
+        if ($disbursement_percentage==null && $request->ongoing_submission_stage!='Monitoring_Request') {
             return response()->JSON([
                 'errors'=>["The ongoing submission request stage does not applies to the intervention line selected."]
             ]);
         }
 
-        $disbursement_percentage = str_replace('%', '', $disbursement_percentage);
+        $disbursement_percentage = str_replace('%', '', $disbursement_percentage??'100%');
         $ongoingSubmission->amount_requested = ($request->amount_requested * floatval($disbursement_percentage)) / 100;
         $ongoingSubmission->save();
 
