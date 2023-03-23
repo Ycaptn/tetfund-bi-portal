@@ -226,7 +226,8 @@ class SubmissionRequestController extends BaseController
                     $checklist_id = substr("$checklist_input_name",10);
                     $checklist_id = str_replace('checklist-', '', $checklist_input_name);
 
-                    $label = Str::limit($checklist_items_arr[$checklist_id] ,495, "");
+                    $label = Str::slug($checklist_items_arr[$checklist_id]);
+                    $label = Str::limit($label ,495, "");
                     $concate_description_label = str_replace('auditclearancefinalpaymentchecklist-', '', $label);
                     $concate_description_label = str_replace('auditclearancesecondtranchepaymentchecklist-', '', $concate_description_label);
                     $discription = 'This Document Contains the ' . $concate_description_label;
@@ -238,7 +239,7 @@ class SubmissionRequestController extends BaseController
 
         //handling additional files submission
         if (isset($request->additional_attachment) && $request->hasFile('additional_attachment')) {
-            $label = $request->additional_attachment_name . ' Additional Attachment'; 
+            $label = Str::limit($request->additional_attachment_name.' Additional Attachment', 495, ""); 
             $discription = 'This Document Contains the ' . $label ;
             $submissionRequest->attach(auth()->user(), $label, $discription, $attachment_inputs['additional_attachment']);
         }   
@@ -492,7 +493,7 @@ class SubmissionRequestController extends BaseController
             // server class constructor
             $tetFundServer = new TETFundServer();   
             $submitted_request_data = $tetFundServer->getSubmissionRequestData($submissionRequest->tf_iterum_portal_key_id, $checklist_group_name_surfix);
-            
+
             $checklist_items = $submitted_request_data->checklist_items;
       
             $bi_request_released_communications = $submitted_request_data->releasedBICommunication;

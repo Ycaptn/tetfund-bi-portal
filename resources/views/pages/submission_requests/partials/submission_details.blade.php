@@ -271,7 +271,7 @@
                                                     </a>                                            
                                                     <a href="#" class="col-sm-12 col-md-6 btn btn-sm btn-default text-info btn-edit-m-r" data-val='{{$monitoring_request->id}}' title="Edit Monitoring Request">
                                                         <small>
-                                                            <span class="fa fa-edit"></span>                        
+                                                            <span class="fa fa-edit"></span>
                                                         </small>
                                                     </a>
                                                     <a href="#" class="col-sm-12 col-md-6 btn btn-sm btn-default text-danger btn-delete-m-r" data-val='{{$monitoring_request->id}}' title="Delete Monitoring Request">

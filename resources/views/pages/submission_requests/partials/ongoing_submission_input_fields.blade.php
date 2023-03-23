@@ -88,7 +88,7 @@
     </div>
 
     <div class="col-md-6 mb-5">
-        <label class="col-md-12 control-label"><b>AIP REQUESTED AMOUNT (&#8358)</b></label>
+        <label class="col-md-12 control-label"><b>AIP APPROVED AMOUNT (&#8358)</b></label>
         <div class="input-group">
             <input type='text' class="form-control" id="amount_requested" value="" />
             <span class="input-group-text"><span class="fa fa-money"></span></span>
@@ -107,7 +107,7 @@
                         - The files to be attached should contain a copy of your <b>AIP Document</b>.
                     @elseif($ongoing_label=='2nd_Tranche_Payment')
                         - The files to be attached should contain a copy of your <b>AIP Document and First Tranche Disbursment Document</b>.
-                    @elseif($ongoing_label=='Final_Tranche_Payment' || $ongoing_label=='Monitoring_Request' || $ongoing_label=='Audit_Clearance')
+                    @elseif($ongoing_label=='Final_Tranche_Payment' || $ongoing_label=='Monitoring_Request')
                         - The files to be attached should contain a copy of your <b>AIP Document, First Tranche Disbursment Document and Second Tranche Disbursement Document (where applicable)</b>.                    
                     @endif
 		    	</small>

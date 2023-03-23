@@ -2,7 +2,7 @@
 	// begin monitoring request submission request
 	$tf_iterum_intervention_line_key_id = $submissionRequest->tf_iterum_intervention_line_key_id;
 	$request_tranche = "Monitoring Request";
-	$title = str_replace('Request for AIP', $request_tranche, $parentAIPSubmissionRequest->title);
+	$title = str_replace('Request for AIP', $request_tranche, $parentAIPSubmissionRequest->title ?? $submissionRequest->getServerSideAIPRequest()->title ?? '');
 	$intervention_year1 = $submissionRequest->intervention_year1;
 	$intervention_year2 = $submissionRequest->intervention_year2;
 	$intervention_year3 = $submissionRequest->intervention_year3;

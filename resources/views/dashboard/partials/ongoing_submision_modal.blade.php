@@ -51,10 +51,6 @@
                                     <option value="Monitoring_Request">
                                         Monitoring Request
                                     </option>
-
-                                    <option value="Audit_Clearance">
-                                        Audit Clearance
-                                    </option>
                                 </select>
                             </div>
 

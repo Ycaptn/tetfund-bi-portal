@@ -32,7 +32,7 @@ class DashboardController extends BaseController
 
         $current_user = Auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
-        $ongoing_submissions = SubmissionRequest::whereIn('status', ['not-submitted', 'submitted', 'pending-recall', 'recalled'])
+        $active_submissions = SubmissionRequest::whereIn('status', ['not-submitted', 'submitted', 'pending-recall', 'recalled'])
                         ->where([
                             'is_monitoring_request' => false,
                             'beneficiary_id' => optional($beneficiary_member)->beneficiary_id
@@ -75,7 +75,7 @@ class DashboardController extends BaseController
                     ->with('organization', $org)
                     ->with('current_user', $current_user)
                     ->with('intervention_types', $intervention_types)
-                    ->with('ongoing_submissions', $ongoing_submissions)
+                    ->with('active_submissions', $active_submissions)
                     ->with('upcoming_monitorings', $upcoming_monitorings)
                     ->with('official_communications', $official_communications);
     }

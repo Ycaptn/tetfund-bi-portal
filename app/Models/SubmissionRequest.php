@@ -257,6 +257,15 @@ class SubmissionRequest extends Model
         return null;
     }
 
+    // get server side AIP request
+    public function getServerSideAIPRequest() {
+        if($this->tf_iterum_portal_response_meta_data!=null && str_contains(strtolower($this->title), 'ongoing submission for')) {
+            
+            return json_decode($this->tf_iterum_portal_response_meta_data)->aip_parent_request ?? null;
+        }
+        return null;
+    }
+
     // submission Request First Payment
     public function getFirstTrancheSubmissionRequest() {
         if ($this->is_first_tranche_request) {
@@ -264,8 +273,9 @@ class SubmissionRequest extends Model
         }
 
         $aip_request = $this->getParentAIPSubmissionRequest();
-        if ($aip_request != null) {
-            return $this->where('parent_id', $aip_request->id)
+        if ($aip_request != null || $this->id) {
+            $aip_request_id = isset($aip_request->id) ? $aip_request->id : null;
+            return $this->where('parent_id', ($aip_request_id ?? $this->id))
                 ->where('is_first_tranche_request', true)
                 ->first();
         }
@@ -279,8 +289,9 @@ class SubmissionRequest extends Model
         }
 
         $aip_request = $this->getParentAIPSubmissionRequest();
-        if ($aip_request != null) {
-            return $this->where('parent_id', $aip_request->id)
+        if ($aip_request != null || $this->id) {
+            $aip_request_id = isset($aip_request->id) ? $aip_request->id : null;
+            return $this->where('parent_id', ($aip_request_id ?? $this->id))
                 ->where('is_second_tranche_request', true)
                 ->first();
         }
@@ -294,8 +305,9 @@ class SubmissionRequest extends Model
         }
 
         $aip_request = $this->getParentAIPSubmissionRequest();
-        if ($aip_request != null) {
-            return $this->where('parent_id', $aip_request->id)
+        if ($aip_request != null || $this->id) {
+            $aip_request_id = isset($aip_request->id) ? $aip_request->id : null;
+            return $this->where('parent_id', ($aip_request_id ?? $this->id))
                 ->where('is_third_tranche_request', true)
                 ->first();
         }
@@ -309,8 +321,9 @@ class SubmissionRequest extends Model
         }
 
         $aip_request = $this->getParentAIPSubmissionRequest();
-        if ($aip_request != null) {
-            return $this->where('parent_id', $aip_request->id)
+        if ($aip_request != null || $this->id) {
+            $aip_request_id = isset($aip_request->id) ? $aip_request->id : null;
+            return $this->where('parent_id', ($aip_request_id ?? $this->id))
                 ->where('is_final_tranche_request', true)
                 ->first();
         }

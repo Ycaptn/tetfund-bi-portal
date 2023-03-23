@@ -23,7 +23,10 @@
                             $checklist_input_fields .= ($checklist_input_fields == "") ? $checklist : ','.$checklist;
                             
                             $submission_attachment = array_reduce($allSubmissionAttachments??[], function($response, $attached) use ($item) {
-                                $attached['label'] == $item->item_label ? $response = $attached : null;
+
+                                $limited_slugged_label = Str::slug($item->item_label);
+                                $limited_slugged_label = Str::limit($limited_slugged_label, 495, "");
+                                $attached['label'] == $limited_slugged_label || $attached['label'] ==  Str::limit($item->item_label ,495, "") ? $response = $attached : null;
                                 return $response;
                              });
 

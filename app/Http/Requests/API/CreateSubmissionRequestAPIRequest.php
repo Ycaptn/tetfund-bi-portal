@@ -56,7 +56,7 @@ class CreateSubmissionRequestAPIRequest extends AppBaseFormRequest
         // required validations if request contains ongoinging submission_request_stage and file_attachments
         if (request()->has('ongoing_submission_stage') && !empty(request()->ongoing_submission_stage)) {
             $valid_ongoing_submission_stages = [
-                '1st_Tranche_Payment', '2nd_Tranche_Payment', 'Final_Tranche_Payment', 'Monitoring_Request', 'Audit_Clearance'
+                '1st_Tranche_Payment', '2nd_Tranche_Payment', 'Final_Tranche_Payment', 'Monitoring_Request'
             ];
 
             $returned_arr['ongoing_submission_stage'] = "required|string|max:50|in:". implode($valid_ongoing_submission_stages,',');
