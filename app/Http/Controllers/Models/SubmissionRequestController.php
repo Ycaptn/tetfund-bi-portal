@@ -289,7 +289,8 @@ class SubmissionRequestController extends BaseController
             //get total fund available 
             $tetFundServer = new TETFundServer();   /* server class constructor */
             $fund_availability = $tetFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
-            
+
+
             //error when no fund allocation for selected year(s) is found
             if (isset($fund_availability->success) && $fund_availability->success == false && $fund_availability->message != null) {
                 array_push($errors_array, $fund_availability->message);
@@ -316,7 +317,7 @@ class SubmissionRequestController extends BaseController
                 }
             }
 
-            if ($submissionRequest->is_aip_request==true && (!str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') && !str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') && !str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) && count($fund_availability->allocation_records) > 0) {
+            if ($submissionRequest->is_aip_request==true && (!str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') && !str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') && !str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) && isset($fund_availability->allocation_records) && count($fund_availability->allocation_records) > 0) {
                 foreach($fund_availability->allocation_records as $allocation) {
                     if($allocation->utilization_status != null && $allocation->utilization_status == 'utilized') {
                         array_push($errors_array, "Allocated fund of ₦".number_format($allocation->allocated_amount, 2) ." for ". $allocation->year . " intervention year has been utilized.");
