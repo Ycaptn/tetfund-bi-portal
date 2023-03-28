@@ -26,9 +26,9 @@ $orgRoutes = function() {
 
             //Dashboard Routes
             Route::get('/dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'index'])->name('dashboard');
+            Route::post('/display-response-attachment', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayResponseAttachment'])->name('display-response-attachment');
             
             Route::name('tf-bi-portal.')->prefix('tf-bi-portal')->group(function(){
-
 
                 Route::get('/monitoring', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayMonitoringDashboard'])->name('monitoring');
                 Route::get('/fund-availability', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayFundAvailabilityDashboard'])->name('fund-availability');

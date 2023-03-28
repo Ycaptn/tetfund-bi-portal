@@ -196,5 +196,21 @@ class DashboardController extends BaseController
                     ->with('current_user', $current_user);
     }
 
+    // display document from API Endpoint Response
+    public function displayResponseAttachment(Organization $org, Request $request) {
+        if (isset($request->path) && isset($request->label) && isset($request->file_type) && isset($request->storage_driver)) {
+
+            if ($request->storage_driver == 'azure' || $request->storage_driver == 's3') {
+                return \Illuminate\Support\Facades\Storage::disk($request->storage_driver)->download(
+                    $request->path,
+                    $request->label,
+                    ['Content-Disposition' => 'inline; filename="' . $request->label . '"']
+                );
+            }
+
+            return response()->file(base_path($request->path));
+        }        
+    }   
+
 
 }
