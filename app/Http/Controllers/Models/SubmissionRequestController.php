@@ -42,9 +42,33 @@ class SubmissionRequestController extends BaseController
         $current_user = Auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
-        $tetFundServer = new TETFundServer();
-        $pay_load = ['_method'=>'GET', 'beneficiary_type'=>$beneficiary_member->beneficiary->type ?? null];
-        $intervention_types_server_response = $tetFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
+        // get some array of data from server
+        $data_to_rerieve_payload = [
+            'getAllInterventionLines' => [
+                    'beneficiary_type' => $beneficiary_member->beneficiary->type ?? null
+                ],
+
+            'getBeneficiaryApprovedSubmissions' => [
+                    'beneficiary_id' => $beneficiary_member->beneficiary->tf_iterum_portal_key_id ?? null,
+                ],
+        ];
+
+        $tetFundServer = new TETFundServer();   /* server class constructor */
+        $some_server_data_array = $tetFundServer->getSomeDataArrayFromServer($data_to_rerieve_payload);
+
+        // beneficiary intervention lines
+        $intervention_types_server_response = $some_server_data_array->getAllInterventionLines;
+        
+        // beneficiary approved(has_aip || has_disbursement_memo) submission request
+        $beneficiary_approved_submissions = $some_server_data_array->getBeneficiaryApprovedSubmissions;
+
+        // updating submission request status to approved where (has_aip || has_disbursement_memo)
+        if (count($beneficiary_approved_submissions) > 0) {
+            $array_of_ids = array_column($beneficiary_approved_submissions, 'id');
+            SubmissionRequest::whereNotNull('tf_iterum_portal_key_id')
+                            ->whereIn('tf_iterum_portal_key_id', $array_of_ids)
+                            ->update(['status' => 'approved']); 
+        }
 
         $intervention_lines = [];
         foreach($intervention_types_server_response as $idx=>$item){
@@ -515,6 +539,15 @@ class SubmissionRequestController extends BaseController
                 $tetFundServer = new TETFundServer();   /* server class constructor */
                 $submission_allocations = $tetFundServer->getFundAvailabilityData($submitted_request_data->beneficiary_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
             } else {
+                // changing submission status to Approved
+                if (($submitted_request_data->has_generated_aip || $submitted_request_data->has_generated_disbursement_memo) && $submissionRequest->status != 'approved') {
+                    $submissionRequest->status = 'approved';
+                    $submissionRequest->save();
+                } elseif($submitted_request_data->has_generated_aip==false && $submitted_request_data->has_generated_disbursement_memo==false && $submissionRequest->status == 'approved') {
+                    $submissionRequest->status = 'submitted';
+                    $submissionRequest->save();
+                }
+
                 $years = $submitted_request_data->years;
                 $submission_allocations = $submitted_request_data->submission_allocations;
                 $intervention_types_server_response = $submitted_request_data->intervention_beneficiary_type;
