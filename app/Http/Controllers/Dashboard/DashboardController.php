@@ -84,9 +84,34 @@ class DashboardController extends BaseController
         $current_user = Auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
-        $tetFundServer = new TETFundServer();
-        $pay_load = ['_method'=>'GET', 'beneficiary_type'=>$beneficiary_member->beneficiary->type ?? null];
-        $intervention_types_server_response = $tetFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
+        // get some array of data from server
+        $data_to_rerieve_payload = [
+            'getAllInterventionLines' => [
+                    'beneficiary_type' => $beneficiary_member->beneficiary->type ?? null
+                ],
+
+            'getBeneficiaryApprovedMonitorings' => [
+                    'beneficiary_id' => $beneficiary_member->beneficiary->tf_iterum_portal_key_id ?? null,
+                ],
+        ];
+
+        $tetFundServer = new TETFundServer();   /* server class constructor */
+        $some_server_data_array = $tetFundServer->getSomeDataArrayFromServer($data_to_rerieve_payload);
+
+        // beneficiary intervention lines
+        $intervention_types_server_response = $some_server_data_array->getAllInterventionLines;
+        
+        // beneficiary approved monitoring request
+        $beneficiary_approved_monitorings = $some_server_data_array->getBeneficiaryApprovedMonitorings;
+
+        // updating monitoring request status to approved where (is-approved is true)
+        if (count($beneficiary_approved_monitorings) > 0) {
+            $array_of_ids = array_column($beneficiary_approved_monitorings, 'id');
+            SubmissionRequest::whereNotNull('tf_iterum_portal_key_id')
+                            ->where('is_monitoring_request', true)
+                            ->whereIn('tf_iterum_portal_key_id', $array_of_ids)
+                            ->update(['status' => 'approved']); 
+        }
 
         $intervention_lines = [];
         foreach($intervention_types_server_response as $idx=>$item){

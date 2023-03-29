@@ -66,6 +66,7 @@ class SubmissionRequestController extends BaseController
         if (count($beneficiary_approved_submissions) > 0) {
             $array_of_ids = array_column($beneficiary_approved_submissions, 'id');
             SubmissionRequest::whereNotNull('tf_iterum_portal_key_id')
+                            ->where('is_monitoring_request', false)
                             ->whereIn('tf_iterum_portal_key_id', $array_of_ids)
                             ->update(['status' => 'approved']); 
         }
@@ -471,7 +472,7 @@ class SubmissionRequestController extends BaseController
                         ->where('is_monitoring_request', true)
                         ->first();
         
-        if (empty($monitoring_request)) {               
+        if (empty($monitoring_request)) {
             return redirect(route('tf-bi-portal.monitoring'))->with('error', 'The Monitoring Request Was Not Found!');
         }
 
@@ -479,6 +480,15 @@ class SubmissionRequestController extends BaseController
             // server class constructor
             $tetFundServer = new TETFundServer();   
             $monitoring_request_submitted = $tetFundServer->getMonitoringRequestData($monitoring_request->tf_iterum_portal_key_id);
+
+            // changing monitoring request status to Approved (is_approved is true)
+            if ($monitoring_request_submitted->is_approved && $monitoring_request->status != 'approved') {
+                $monitoring_request->status = 'approved';
+                $monitoring_request->save();
+            } elseif($monitoring_request_submitted->is_approved==false && $monitoring_request->status=='approved') {
+                $monitoring_request->status = 'submitted';
+                $monitoring_request->save();
+            }
         }
 
         $current_user = auth()->user();
