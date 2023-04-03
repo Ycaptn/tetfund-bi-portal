@@ -9,6 +9,17 @@
         $years_str = implode(", ", $years);
         $years_str = substr($years_str, 0,strrpos($years_str,",")) . $years[count($years) - 1];
     }
+
+    // disbursement or draft-document record
+    if(isset($submitted_request_data->response_documents_generated->{'AIP-Draft'})) {
+        $approved_tranche_document = $submitted_request_data->response_documents_generated->{'AIP-Draft'};
+    } elseif(isset($submitted_request_data->response_documents_generated->{'FirstTrancheDisbursement'})) {
+        $approved_tranche_document = $submitted_request_data->response_documents_generated->{'FirstTrancheDisbursement'};
+    } elseif(isset($submitted_request_data->response_documents_generated->{'Disbursement Memo'})) {
+        $approved_tranche_document = $submitted_request_data->response_documents_generated->{'Disbursement Memo'};
+    } else {
+        $approved_tranche_document = null;
+    }
 @endphp
 
 {{-- allocation preview modal --}}
@@ -95,27 +106,27 @@
             <div class="col-sm-12">
                 <div class="row">
                     {{-- follow up submission request --}}
-                    @if(($submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==false && $submitted_request_data->has_generated_disbursement_memo==false)
+                    @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==false && $submitted_request_data->has_generated_disbursement_memo==false)
                         @include('tf-bi-portal::pages.submission_requests.partials.follow_up_submission_request')
                     @endif
 
                     {{-- Recall Submission request--}}
-                    @if(($submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && $submissionRequest->is_aip_request && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==false && ($submitted_request_data->request_status!='pending-recall'|| $submitted_request_data->request_status!='recalled'))
+                    @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && $submissionRequest->is_aip_request && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==false && ($submitted_request_data->request_status!='pending-recall'|| $submitted_request_data->request_status!='recalled'))
                         @include('tf-bi-portal::pages.submission_requests.partials.recall_submission_request')
                     @endif
 
                     {{-- current intervention monitoring request --}}
-                    @if(($submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && ($submitted_request_data->has_generated_aip==true || $submitted_request_data->has_generated_disbursement_memo==true))
+                    @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && ($submitted_request_data->has_generated_aip==true || $submitted_request_data->has_generated_disbursement_memo==true))
                         @include('tf-bi-portal::pages.submission_requests.partials.monitoring_evaluation_submission_request')
                     @endif
 
                     {{-- process repriotization for intervention request --}}
-                    @if(($submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==true && $submissionRequest->is_aip_request==true && empty($get_all_related_requests))
+                    @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==true && $submissionRequest->is_aip_request==true && empty($get_all_related_requests))
                         @include('tf-bi-portal::pages.submission_requests.partials.submission_request_reprioritization')
                     @endif
 
                     {{-- current intervention none AIP submission request  --}}
-                    @if(($submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && (($submissionRequest->is_aip_request==true && $submitted_request_data->has_generated_aip==true) || ( ($submissionRequest->is_first_tranche_request==true || $submissionRequest->is_second_tranche_request==true || $submissionRequest->is_final_tranche_request==true) && $submitted_request_data->has_generated_disbursement_memo==true)))
+                    @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && (($submissionRequest->is_aip_request==true && $submitted_request_data->has_generated_aip==true) || ( ($submissionRequest->is_first_tranche_request==true || $submissionRequest->is_second_tranche_request==true || $submissionRequest->is_final_tranche_request==true) && $submitted_request_data->has_generated_disbursement_memo==true)))
                         @include('tf-bi-portal::pages.submission_requests.partials.submission_request_none_aip_tranches')
                     @endif
                 </div>
@@ -151,11 +162,11 @@
 
     <div class="col-sm-12 col-md-3">
         <div class="text-justify">     
-            @if($submissionRequest->status=='submitted')
+            @if($submissionRequest->status=='submitted' || $submissionRequest->status=='approved')
                 <span class="text-success pull-right"> 
                     <strong>
                         <span class="fa fa-check-square"></span>
-                        Request Submitted
+                        Request {{ ucfirst($submissionRequest->status) }}
                     </strong> 
                 </span><br>
             @elseif($submissionRequest->status=='recalled')
@@ -174,15 +185,31 @@
                 </span><br>
             @endif
 
-            @if(($submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && isset($submitted_request_data))
+            @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && isset($submitted_request_data))
                 @php
                     $dept_name = $submitted_request_data->work_item->active_assignment->assigned_user->department->long_name ?? $submitted_request_data->work_item->assignments[0]->assigned_user->department->long_name ?? '';
                 @endphp
+                
                 <small>
-                    @if($submitted_request_data->has_generated_aip && $submitted_request_data->request_status!='recalled')
+                    @if(($submitted_request_data->has_generated_aip || $submitted_request_data->has_generated_disbursement_memo) && $submitted_request_data->request_status!='recalled')
                         <span class="text-success">
                             Please note that your <b>{{$submissionRequest->is_aip_request==true ? 'Approval-In-Principle (AIP)' : $submissionRequest->type.' Request' }}</b> has been completely processed{!! ucwords(' <b>@ TETFund ' . $dept_name . ' Department.</b>' ?? '.') !!}
-                            You are will be notified and contacted for collection.
+
+                            @if($approved_tranche_document != null && $submissionRequest->is_aip_request==false)
+                                <form action="{{route('display-response-attachment')}}" target="__blank" method="POST">
+                                    @csrf
+                                    @method('POST')
+                                    <input type="hidden" name="path" value="{{$approved_tranche_document->path}}">
+                                    <input type="hidden" name="label" value="{{$approved_tranche_document->label}}">
+                                    <input type="hidden" name="file_type" value="{{$approved_tranche_document->file_type}}">
+                                    <input type="hidden" name="storage_driver" value="{{$approved_tranche_document->storage_driver}}">
+                                    <button type="submit" class="btn btn-sm btn-success mt-2 pull-right" title="{{ $submissionRequest->type}} Disbursement Document">
+                                        <span class="fa fa-envelope"></span> Disbursement Document.
+                                    </button>
+                                </form>
+                            @else
+                                You are will be notified and contacted for collection.
+                            @endif
                         </span>
                     @else
                         <span class="text-danger"> 
@@ -271,7 +298,7 @@
                                                     </a>                                            
                                                     <a href="#" class="col-sm-12 col-md-6 btn btn-sm btn-default text-info btn-edit-m-r" data-val='{{$monitoring_request->id}}' title="Edit Monitoring Request">
                                                         <small>
-                                                            <span class="fa fa-edit"></span>                        
+                                                            <span class="fa fa-edit"></span>
                                                         </small>
                                                     </a>
                                                     <a href="#" class="col-sm-12 col-md-6 btn btn-sm btn-default text-danger btn-delete-m-r" data-val='{{$monitoring_request->id}}' title="Delete Monitoring Request">

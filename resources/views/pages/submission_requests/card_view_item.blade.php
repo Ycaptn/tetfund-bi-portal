@@ -43,7 +43,7 @@
                                     <span class="text-danger">
                                         ({!! strtoupper($data_item->status) !!})
                                     </span>
-                                @elseif($data_item->status=='submitted')
+                                @elseif($data_item->status=='submitted' || $data_item->status=='approved')
                                     <span class="text-success">
                                         ({!! strtoupper($data_item->status) !!})
                                     </span>

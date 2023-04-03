@@ -135,11 +135,11 @@ Monitoring
 
                 <div class="col-sm-12 col-md-3">
                     <div class="text-justify">     
-                        @if($monitoring_request->status == 'submitted')
+                        @if($monitoring_request->status=='approved' || $monitoring_request->status=='submitted')
                             <span class="text-success pull-right"> 
                                 <strong>
                                     <span class="fa fa-check-square"></span>
-                                    Request Submitted
+                                    Request {{ ucfirst($monitoring_request->status) }}
                                 </strong> 
                             </span><br>
                         @else
@@ -151,15 +151,15 @@ Monitoring
                             </span><br>
                         @endif
 
-                        @if($monitoring_request->status == 'submitted' && isset($monitoring_request_submitted))
-                        @php
-                            $dept_name = $monitoring_request_submitted->work_item->active_assignment->assigned_user->department->long_name ?? $monitoring_request_submitted->work_item->assignments[0]->assigned_user->department->long_name ?? '';
-                        @endphp
+                        @if(($monitoring_request->status=='approved' || $monitoring_request->status=='submitted') && isset($monitoring_request_submitted))
+                            @php
+                                $dept_name = $monitoring_request_submitted->work_item->active_assignment->assigned_user->department->long_name ?? $monitoring_request_submitted->work_item->assignments[0]->assigned_user->department->long_name ?? '';
+                            @endphp
                             <small>
                                 @if($monitoring_request_submitted->is_approved)
                                     <span class="text-success">
                                         Please note that your <b>{{ $monitoring_request->type.' Request' }}</b> has been completely processed{!! ucwords(' <b>@ TETFund ' . $dept_name . ' Department.</b>' ?? '.') !!}
-                                        You are hereby notified this <b>{{ $monitoring_request->type }} Request</b> has been processed and <b>Approved</b>.
+                                        You are hereby notified that this <b>{{ $monitoring_request->type }} Request</b> has been <b>Approved</b>.
                                     </span>
                                 @else
                                     <span class="text-danger"> 

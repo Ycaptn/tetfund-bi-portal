@@ -42,9 +42,34 @@ class SubmissionRequestController extends BaseController
         $current_user = Auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
-        $tetFundServer = new TETFundServer();
-        $pay_load = ['_method'=>'GET', 'beneficiary_type'=>$beneficiary_member->beneficiary->type ?? null];
-        $intervention_types_server_response = $tetFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
+        // get some array of data from server
+        $data_to_rerieve_payload = [
+            'getAllInterventionLines' => [
+                    'beneficiary_type' => $beneficiary_member->beneficiary->type ?? null
+                ],
+
+            'getBeneficiaryApprovedSubmissions' => [
+                    'beneficiary_id' => $beneficiary_member->beneficiary->tf_iterum_portal_key_id ?? null,
+                ],
+        ];
+
+        $tetFundServer = new TETFundServer();   /* server class constructor */
+        $some_server_data_array = $tetFundServer->getSomeDataArrayFromServer($data_to_rerieve_payload);
+
+        // beneficiary intervention lines
+        $intervention_types_server_response = $some_server_data_array->getAllInterventionLines;
+        
+        // beneficiary approved(has_aip || has_disbursement_memo) submission request
+        $beneficiary_approved_submissions = $some_server_data_array->getBeneficiaryApprovedSubmissions;
+
+        // updating submission request status to approved where (has_aip || has_disbursement_memo)
+        if (count($beneficiary_approved_submissions) > 0) {
+            $array_of_ids = array_column($beneficiary_approved_submissions, 'id');
+            SubmissionRequest::whereNotNull('tf_iterum_portal_key_id')
+                            ->where('is_monitoring_request', false)
+                            ->whereIn('tf_iterum_portal_key_id', $array_of_ids)
+                            ->update(['status' => 'approved']); 
+        }
 
         $intervention_lines = [];
         foreach($intervention_types_server_response as $idx=>$item){
@@ -226,7 +251,8 @@ class SubmissionRequestController extends BaseController
                     $checklist_id = substr("$checklist_input_name",10);
                     $checklist_id = str_replace('checklist-', '', $checklist_input_name);
 
-                    $label = Str::limit($checklist_items_arr[$checklist_id] ,495, "");
+                    $label = Str::slug($checklist_items_arr[$checklist_id]);
+                    $label = Str::limit($label ,495, "");
                     $concate_description_label = str_replace('auditclearancefinalpaymentchecklist-', '', $label);
                     $concate_description_label = str_replace('auditclearancesecondtranchepaymentchecklist-', '', $concate_description_label);
                     $discription = 'This Document Contains the ' . $concate_description_label;
@@ -238,7 +264,7 @@ class SubmissionRequestController extends BaseController
 
         //handling additional files submission
         if (isset($request->additional_attachment) && $request->hasFile('additional_attachment')) {
-            $label = $request->additional_attachment_name . ' Additional Attachment'; 
+            $label = Str::limit($request->additional_attachment_name.' Additional Attachment', 495, ""); 
             $discription = 'This Document Contains the ' . $label ;
             $submissionRequest->attach(auth()->user(), $label, $discription, $attachment_inputs['additional_attachment']);
         }   
@@ -288,7 +314,8 @@ class SubmissionRequestController extends BaseController
             //get total fund available 
             $tetFundServer = new TETFundServer();   /* server class constructor */
             $fund_availability = $tetFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
-            
+
+
             //error when no fund allocation for selected year(s) is found
             if (isset($fund_availability->success) && $fund_availability->success == false && $fund_availability->message != null) {
                 array_push($errors_array, $fund_availability->message);
@@ -315,7 +342,7 @@ class SubmissionRequestController extends BaseController
                 }
             }
 
-            if ($submissionRequest->is_aip_request==true && (!str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') && !str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') && !str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) && count($fund_availability->allocation_records) > 0) {
+            if ($submissionRequest->is_aip_request==true && (!str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') && !str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') && !str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) && isset($fund_availability->allocation_records) && count($fund_availability->allocation_records) > 0) {
                 foreach($fund_availability->allocation_records as $allocation) {
                     if($allocation->utilization_status != null && $allocation->utilization_status == 'utilized') {
                         array_push($errors_array, "Allocated fund of ₦".number_format($allocation->allocated_amount, 2) ." for ". $allocation->year . " intervention year has been utilized.");
@@ -445,7 +472,7 @@ class SubmissionRequestController extends BaseController
                         ->where('is_monitoring_request', true)
                         ->first();
         
-        if (empty($monitoring_request)) {               
+        if (empty($monitoring_request)) {
             return redirect(route('tf-bi-portal.monitoring'))->with('error', 'The Monitoring Request Was Not Found!');
         }
 
@@ -453,6 +480,15 @@ class SubmissionRequestController extends BaseController
             // server class constructor
             $tetFundServer = new TETFundServer();   
             $monitoring_request_submitted = $tetFundServer->getMonitoringRequestData($monitoring_request->tf_iterum_portal_key_id);
+
+            // changing monitoring request status to Approved (is_approved is true)
+            if ($monitoring_request_submitted->is_approved && $monitoring_request->status != 'approved') {
+                $monitoring_request->status = 'approved';
+                $monitoring_request->save();
+            } elseif($monitoring_request_submitted->is_approved==false && $monitoring_request->status=='approved') {
+                $monitoring_request->status = 'submitted';
+                $monitoring_request->save();
+            }
         }
 
         $current_user = auth()->user();
@@ -492,7 +528,7 @@ class SubmissionRequestController extends BaseController
             // server class constructor
             $tetFundServer = new TETFundServer();   
             $submitted_request_data = $tetFundServer->getSubmissionRequestData($submissionRequest->tf_iterum_portal_key_id, $checklist_group_name_surfix);
-            
+
             $checklist_items = $submitted_request_data->checklist_items;
       
             $bi_request_released_communications = $submitted_request_data->releasedBICommunication;
@@ -513,6 +549,15 @@ class SubmissionRequestController extends BaseController
                 $tetFundServer = new TETFundServer();   /* server class constructor */
                 $submission_allocations = $tetFundServer->getFundAvailabilityData($submitted_request_data->beneficiary_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
             } else {
+                // changing submission status to Approved
+                if (($submitted_request_data->has_generated_aip || $submitted_request_data->has_generated_disbursement_memo) && $submissionRequest->status != 'approved') {
+                    $submissionRequest->status = 'approved';
+                    $submissionRequest->save();
+                } elseif($submitted_request_data->has_generated_aip==false && $submitted_request_data->has_generated_disbursement_memo==false && $submissionRequest->status == 'approved') {
+                    $submissionRequest->status = 'submitted';
+                    $submissionRequest->save();
+                }
+
                 $years = $submitted_request_data->years;
                 $submission_allocations = $submitted_request_data->submission_allocations;
                 $intervention_types_server_response = $submitted_request_data->intervention_beneficiary_type;

@@ -32,7 +32,7 @@ class DashboardController extends BaseController
 
         $current_user = Auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
-        $ongoing_submissions = SubmissionRequest::whereIn('status', ['not-submitted', 'submitted', 'pending-recall', 'recalled'])
+        $active_submissions = SubmissionRequest::whereIn('status', ['not-submitted', 'submitted', 'pending-recall', 'recalled'])
                         ->where([
                             'is_monitoring_request' => false,
                             'beneficiary_id' => optional($beneficiary_member)->beneficiary_id
@@ -75,7 +75,7 @@ class DashboardController extends BaseController
                     ->with('organization', $org)
                     ->with('current_user', $current_user)
                     ->with('intervention_types', $intervention_types)
-                    ->with('ongoing_submissions', $ongoing_submissions)
+                    ->with('active_submissions', $active_submissions)
                     ->with('upcoming_monitorings', $upcoming_monitorings)
                     ->with('official_communications', $official_communications);
     }
@@ -84,9 +84,34 @@ class DashboardController extends BaseController
         $current_user = Auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
-        $tetFundServer = new TETFundServer();
-        $pay_load = ['_method'=>'GET', 'beneficiary_type'=>$beneficiary_member->beneficiary->type ?? null];
-        $intervention_types_server_response = $tetFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
+        // get some array of data from server
+        $data_to_rerieve_payload = [
+            'getAllInterventionLines' => [
+                    'beneficiary_type' => $beneficiary_member->beneficiary->type ?? null
+                ],
+
+            'getBeneficiaryApprovedMonitorings' => [
+                    'beneficiary_id' => $beneficiary_member->beneficiary->tf_iterum_portal_key_id ?? null,
+                ],
+        ];
+
+        $tetFundServer = new TETFundServer();   /* server class constructor */
+        $some_server_data_array = $tetFundServer->getSomeDataArrayFromServer($data_to_rerieve_payload);
+
+        // beneficiary intervention lines
+        $intervention_types_server_response = $some_server_data_array->getAllInterventionLines;
+        
+        // beneficiary approved monitoring request
+        $beneficiary_approved_monitorings = $some_server_data_array->getBeneficiaryApprovedMonitorings;
+
+        // updating monitoring request status to approved where (is-approved is true)
+        if (count($beneficiary_approved_monitorings) > 0) {
+            $array_of_ids = array_column($beneficiary_approved_monitorings, 'id');
+            SubmissionRequest::whereNotNull('tf_iterum_portal_key_id')
+                            ->where('is_monitoring_request', true)
+                            ->whereIn('tf_iterum_portal_key_id', $array_of_ids)
+                            ->update(['status' => 'approved']); 
+        }
 
         $intervention_lines = [];
         foreach($intervention_types_server_response as $idx=>$item){
@@ -195,6 +220,22 @@ class DashboardController extends BaseController
                     ->with('organization', $org)
                     ->with('current_user', $current_user);
     }
+
+    // display document from API Endpoint Response
+    public function displayResponseAttachment(Organization $org, Request $request) {
+        if (isset($request->path) && isset($request->label) && isset($request->file_type) && isset($request->storage_driver)) {
+
+            if ($request->storage_driver == 'azure' || $request->storage_driver == 's3') {
+                return \Illuminate\Support\Facades\Storage::disk($request->storage_driver)->download(
+                    $request->path,
+                    $request->label,
+                    ['Content-Disposition' => 'inline; filename="' . $request->label . '"']
+                );
+            }
+
+            return response()->file(base_path($request->path));
+        }        
+    }   
 
 
 }

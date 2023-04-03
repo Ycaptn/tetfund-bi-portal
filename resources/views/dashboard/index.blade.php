@@ -135,7 +135,7 @@ Beneficiary Dashboard
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc_ess_div" aria-expanded="false" aria-controls="acc_ess_div">
                                 <b>
                                     <sup class="fa-layers-counter text-white bg-danger" style="background-color:white; border-radius: 20%;">
-                                        &nbsp;{{ count($ongoing_submissions) }}&nbsp;
+                                        &nbsp;{{ count($active_submissions) }}&nbsp;
                                     </sup>
                                 </b>
                                 Active Submissions
@@ -143,7 +143,7 @@ Beneficiary Dashboard
                         </h4>
                         <div id="acc_ess_div" class="accordion-collapse collapse" aria-labelledby="acc_ess_div" data-bs-parent="#acc_main" style="">
                             <div class="accordion-body">
-                                @include('tf-bi-portal::dashboard.partials.ongoing_submissions')
+                                @include('tf-bi-portal::dashboard.partials.active_submissions')
                             </div>
                         </div>
                     </div>

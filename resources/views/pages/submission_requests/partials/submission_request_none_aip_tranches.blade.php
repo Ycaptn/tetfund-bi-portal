@@ -26,19 +26,20 @@
 	if($submissionRequest->is_first_tranche_request==true && $submissionRequest->second_tranche_intervention_percentage($intervention->name) != null && $secondTrancheSubmissionRequest==null) {
 
 		$submitted_aip_request = $submitted_request_data->submitted_aip_request;
-		$submitted_aip_request_final_amount = $submitted_aip_request->request_final_amount ?? 0;
+		$submitted_aip_request_final_amount = $submitted_aip_request->request_final_amount ?? $submitted_aip_request->request_amount ?? 0;
 		$tranche_amount_percentage = str_replace('%', '', $submissionRequest->second_tranche_intervention_percentage($intervention->name));
 		$first_tranche_amount_requested = (floatval($tranche_amount_percentage) * $submitted_aip_request_final_amount) / 100;
 
-		$tf_iterum_intervention_line_key_id = $parentAIPSubmissionRequest->tf_iterum_intervention_line_key_id;
+		$tf_iterum_intervention_line_key_id = $parentAIPSubmissionRequest->tf_iterum_intervention_line_key_id ?? $submissionRequest->tf_iterum_intervention_line_key_id;
 		$request_tranche = "2nd Tranche Payment";
-		$title = str_replace('Request for AIP', $request_tranche, $parentAIPSubmissionRequest->title);
-		$intervention_year1 = $parentAIPSubmissionRequest->intervention_year1;
-		$intervention_year2 = $parentAIPSubmissionRequest->intervention_year2;
-		$intervention_year3 = $parentAIPSubmissionRequest->intervention_year3;
-		$intervention_year4 = $parentAIPSubmissionRequest->intervention_year4;
+		$title = str_replace('Request for AIP', $request_tranche, ($parentAIPSubmissionRequest->title ?? $submitted_aip_request->title ?? ''));
+
+		$intervention_year1 = $parentAIPSubmissionRequest->intervention_year1 ?? $submissionRequest->intervention_year1;
+		$intervention_year2 = $parentAIPSubmissionRequest->intervention_year2 ?? $submissionRequest->intervention_year2;
+		$intervention_year3 = $parentAIPSubmissionRequest->intervention_year3 ?? $submissionRequest->intervention_year3;
+		$intervention_year4 = $parentAIPSubmissionRequest->intervention_year4 ?? $submissionRequest->intervention_year4;
 		$amount_requested = $first_tranche_amount_requested;
-		$parent_id = $parentAIPSubmissionRequest->id;
+		$parent_id = $parentAIPSubmissionRequest->id ?? $submissionRequest->id;
 		$is_second_tranche_request = true;
 		$should_button_request_next_display = true;	// show button for next tranche
 	}
@@ -47,19 +48,20 @@
 	if($submissionRequest->is_second_tranche_request==true && $submissionRequest->final_tranche_intervention_percentage($intervention->name) != null && $finalTrancheSubmissionRequest==null) {
 
 		$submitted_aip_request = $submitted_request_data->submitted_aip_request;
-		$submitted_aip_request_final_amount = $submitted_aip_request->request_final_amount ?? 0;
+		$submitted_aip_request_final_amount = $submitted_aip_request->request_final_amount ?? $submitted_aip_request->request_amount ?? 0;
 		$tranche_amount_percentage = str_replace('%', '', $submissionRequest->final_tranche_intervention_percentage($intervention->name));
 		$first_tranche_amount_requested = (floatval($tranche_amount_percentage) * $submitted_aip_request_final_amount) / 100;
 
-		$tf_iterum_intervention_line_key_id = $parentAIPSubmissionRequest->tf_iterum_intervention_line_key_id;
+		$tf_iterum_intervention_line_key_id = $parentAIPSubmissionRequest->tf_iterum_intervention_line_key_id ?? $submissionRequest->tf_iterum_intervention_line_key_id;
 		$request_tranche = "Final Tranche Payment";
-		$title = str_replace('Request for AIP', $request_tranche, $parentAIPSubmissionRequest->title);
-		$intervention_year1 = $parentAIPSubmissionRequest->intervention_year1;
-		$intervention_year2 = $parentAIPSubmissionRequest->intervention_year2;
-		$intervention_year3 = $parentAIPSubmissionRequest->intervention_year3;
-		$intervention_year4 = $parentAIPSubmissionRequest->intervention_year4;
+		$title = str_replace('Request for AIP', $request_tranche, ($parentAIPSubmissionRequest->title ?? $submitted_aip_request->title ?? ''));
+
+		$intervention_year1 = $parentAIPSubmissionRequest->intervention_year1 ?? $submissionRequest->intervention_year1;
+		$intervention_year2 = $parentAIPSubmissionRequest->intervention_year2 ?? $submissionRequest->intervention_year2;
+		$intervention_year3 = $parentAIPSubmissionRequest->intervention_year3 ?? $submissionRequest->intervention_year3;
+		$intervention_year4 = $parentAIPSubmissionRequest->intervention_year4 ?? $submissionRequest->intervention_year4;
 		$amount_requested = $first_tranche_amount_requested;
-		$parent_id = $parentAIPSubmissionRequest->id;
+		$parent_id = $parentAIPSubmissionRequest->id ?? $submissionRequest->id;
 		$is_final_tranche_request = true;
 		$should_button_request_next_display = true;	// show button for next tranche
 	}
@@ -69,19 +71,20 @@
 	if($submissionRequest->is_first_tranche_request==true && $submissionRequest->final_tranche_intervention_percentage($intervention->name) != null && $finalTrancheSubmissionRequest==null && $submissionRequest->second_tranche_intervention_percentage($intervention->name) == null) {
 
 		$submitted_aip_request = $submitted_request_data->submitted_aip_request;
-		$submitted_aip_request_final_amount = $submitted_aip_request->request_final_amount ?? 0;
+		$submitted_aip_request_final_amount = $submitted_aip_request->request_final_amount ?? $submitted_aip_request->request_amount ?? 0;
 		$tranche_amount_percentage = str_replace('%', '', $submissionRequest->final_tranche_intervention_percentage($intervention->name));
 		$first_tranche_amount_requested = (floatval($tranche_amount_percentage) * $submitted_aip_request_final_amount) / 100;
 
-		$tf_iterum_intervention_line_key_id = $parentAIPSubmissionRequest->tf_iterum_intervention_line_key_id;
+		$tf_iterum_intervention_line_key_id = $parentAIPSubmissionRequest->tf_iterum_intervention_line_key_id ?? $submissionRequest->tf_iterum_intervention_line_key_id;
 		$request_tranche = "Final Tranche Payment";
-		$title = str_replace('Request for AIP', $request_tranche, $parentAIPSubmissionRequest->title);
-		$intervention_year1 = $parentAIPSubmissionRequest->intervention_year1;
-		$intervention_year2 = $parentAIPSubmissionRequest->intervention_year2;
-		$intervention_year3 = $parentAIPSubmissionRequest->intervention_year3;
-		$intervention_year4 = $parentAIPSubmissionRequest->intervention_year4;
+		$title = str_replace('Request for AIP', $request_tranche, ($parentAIPSubmissionRequest->title ?? $submitted_aip_request->title ?? ''));
+
+		$intervention_year1 = $parentAIPSubmissionRequest->intervention_year1 ?? $submissionRequest->intervention_year1;
+		$intervention_year2 = $parentAIPSubmissionRequest->intervention_year2 ?? $submissionRequest->intervention_year2;
+		$intervention_year3 = $parentAIPSubmissionRequest->intervention_year3 ?? $submissionRequest->intervention_year3;
+		$intervention_year4 = $parentAIPSubmissionRequest->intervention_year4 ?? $submissionRequest->intervention_year4;
 		$amount_requested = $first_tranche_amount_requested;
-		$parent_id = $parentAIPSubmissionRequest->id;
+		$parent_id = $parentAIPSubmissionRequest->id ?? $submissionRequest->id;
 		$is_final_tranche_request = true;
 		$should_button_request_next_display = true;	// show button for next tranche request
 	}

@@ -1,4 +1,4 @@
-`    <table class="col-sm-12 table table-bordered">
+    <table class="col-sm-12 table table-bordered">
         <thead>
             <tr style="width:100%;">
                 <th style="width:5%;" class="text-center">
@@ -16,8 +16,8 @@
             </tr>
         </thead>
         <tbody>
-            @if(isset($ongoing_submissions) && !empty($ongoing_submissions))
-                @foreach($ongoing_submissions as $submissions)
+            @if(isset($active_submissions) && !empty($active_submissions))
+                @foreach($active_submissions as $submissions)
                     <tr>
                         <td class="text-center">
                             {{ $loop->iteration }}
