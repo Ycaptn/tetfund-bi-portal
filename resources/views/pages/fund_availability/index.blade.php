@@ -82,7 +82,7 @@ Fund Availability Status
                                         </td>
 
                                         <td name='cdp_li_line_{{$detail->id}}' id='cdp_li_line_{{$detail->id}}'>
-                                            {{ ucwords($detail->intervention_beneficiary_type->name) }}
+                                            {{ ucwords(optional($detail->intervention_beneficiary_type)->name) }}
                                         </td>
 
                                         <td name='cdp_li_desc_{{$detail->id}}' id='cdp_li_desc_{{$detail->id}}'>
