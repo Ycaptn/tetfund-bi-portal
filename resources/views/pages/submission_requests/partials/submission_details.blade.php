@@ -106,9 +106,9 @@
             <div class="col-sm-12">
                 <div class="row">
                     {{-- follow up submission request --}}
-                    @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==false && $submitted_request_data->has_generated_disbursement_memo==false)
+                   {{--  @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==false && $submitted_request_data->has_generated_disbursement_memo==false)
                         @include('tf-bi-portal::pages.submission_requests.partials.follow_up_submission_request')
-                    @endif
+                    @endif --}}
 
                     {{-- Recall Submission request--}}
                     @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && $submissionRequest->is_aip_request && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==false && ($submitted_request_data->request_status!='pending-recall'|| $submitted_request_data->request_status!='recalled'))
