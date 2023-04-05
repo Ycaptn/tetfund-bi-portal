@@ -103,7 +103,7 @@ Beneficiary Dashboard
                     </h4>
                     <div id="acc_platforms_div" class="accordion-collapse collapse" aria-labelledby="acc_platforms" data-bs-parent="#acc_main" style="">
                         <div class="accordion-body">
-                            @include('tf-bi-portal::dashboard.partials.official_communicatioins')
+                            @include('tf-bi-portal::dashboard.partials.official_communications')
                         </div>
                     </div>
                 </div>

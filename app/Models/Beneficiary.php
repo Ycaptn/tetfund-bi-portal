@@ -55,7 +55,7 @@ class Beneficiary extends Model
     //use OrganizationalConstraint;
     
     use SoftDeletes;
-
+    use Attachable;
     use HasFactory;
 
     public $table = 'tf_bi_portal_beneficiaries';

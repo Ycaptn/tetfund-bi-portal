@@ -27,6 +27,8 @@ $orgRoutes = function() {
             //Dashboard Routes
             Route::get('/dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'index'])->name('dashboard');
             Route::post('/display-response-attachment', [\App\Http\Controllers\Dashboard\DashboardController::class, 'displayResponseAttachment'])->name('display-response-attachment');
+            Route::post('/process-communication-response', [\App\Http\Controllers\Dashboard\DashboardController::class, 'processCommunicationResponse'])->name('process-communication-response');
+
             
             Route::name('tf-bi-portal.')->prefix('tf-bi-portal')->group(function(){
 

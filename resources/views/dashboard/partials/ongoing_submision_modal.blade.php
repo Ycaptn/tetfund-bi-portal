@@ -292,10 +292,8 @@ $(document).ready(function() {
                             console.log(result);
                             let redirect_link = window.location.origin +'/tf-bi-portal/submissionRequests';
                             if(result.data.type == 'Monitoring Request') {
-                                console.log('I dey Monitoring');
                                 redirect_link = window.location.origin +'/tf-bi-portal/showMonitoring/'+ result.data.id;
                             } else {
-                                console.log('I no dey nonitoring');
                                 redirect_link = window.location.origin +'/tf-bi-portal/submissionRequests/'+ result.data.id;
                             }
                             swal({

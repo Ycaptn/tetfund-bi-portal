@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Managers\TETFundServer;
 use App\Models\BeneficiaryMember;
+use App\Models\Beneficiary;
 use App\Models\SubmissionRequest;
 
 use Hasob\FoundationCore\Models\User;
@@ -17,8 +18,7 @@ use Hasob\FoundationCore\Models\Attachment;
 use Hasob\FoundationCore\View\Components\CardDataView;
 use Hasob\FoundationCore\Controllers\BaseController;
 
-use App\Http\Requests\CreateBeneficiaryRequest;
-use App\Http\Requests\UpdateBeneficiaryRequest;
+use App\Http\Requests\API\RespondCommunicationAPIRequest;
 use App\DataTables\BeneficiaryMemberDatatable;
 use App\DataTables\MonitoringRequestDataTable;
 use Spatie\Permission\Models\Role;
@@ -50,6 +50,9 @@ class DashboardController extends BaseController
             'getBeneficiaryCommunicationData' => [
                     'beneficiary_id' => $beneficiary_member->beneficiary->tf_iterum_portal_key_id??null,
                 ],
+            'getBeneficiaryRequestCommunicationData' => [
+                    'beneficiary_id' => $beneficiary_member->beneficiary->tf_iterum_portal_key_id??null,
+                ],
 
             'getAllInterventionLines' => [
                     'beneficiary_type' => strtolower($beneficiary_member->beneficiary->type??null),
@@ -65,8 +68,14 @@ class DashboardController extends BaseController
                                     return $v->is_approved==true;
                                 });
         
-        // get official communications
-        $official_communications = $collection->getBeneficiaryCommunicationData??[];
+        // get official beneficiary communications
+        $official_ben_communications = $collection->getBeneficiaryCommunicationData??[];
+
+        // get official beneficairy_request communications
+        $official_ben_request_communications = $collection->getBeneficiaryRequestCommunicationData??[];
+
+        // merging all communications
+        $official_communications = array_merge($official_ben_communications, $official_ben_request_communications);
 
         // get beneficiary intervention lines
         $intervention_types = $collection->getAllInterventionLines??[];
@@ -77,6 +86,7 @@ class DashboardController extends BaseController
                     ->with('intervention_types', $intervention_types)
                     ->with('active_submissions', $active_submissions)
                     ->with('upcoming_monitorings', $upcoming_monitorings)
+                    ->with('beneficiary', $beneficiary_member->beneficiary)
                     ->with('official_communications', $official_communications);
     }
 
@@ -235,6 +245,75 @@ class DashboardController extends BaseController
 
             return response()->file(base_path($request->path));
         }        
+    } 
+
+    // process communication response
+    public function processCommunicationResponse(Organization $org, RespondCommunicationAPIRequest $request) {
+
+        $communication_table_type = null;
+        if ($request->communication_table_type == 'tf_bip_ben_req_communications') {
+            $communication_table_type = SubmissionRequest::where('id', $request->communication_parent_id)
+                                        ->orWhere('tf_iterum_portal_key_id', $request->communication_parent_id)
+                                        ->first();
+        } elseif ($request->communication_table_type == 'tf_bm_beneficiary_communications') {
+            $communication_table_type = Beneficiary::find($request->communication_parent_id);
+        } else {
+            return $this->sendError('The Communication Table Type Is Invalid.');
+        }
+
+        $current_user = auth()->user();
+
+        // handling array of file attachments
+        $attachments_container = [];
+        if($request->hasfile('communication_attachments')){
+            $attach_ct = 0;
+            foreach($request->file('communication_attachments') as $file){
+                $label = 'Communication Response Attachment No. '. ++$attach_ct;
+                $discription = 'This Document Contains the ' . $label;
+
+                $communication_attachable = $communication_table_type->attach($current_user, $label, $discription, $file);
+                
+                $original_data = [];
+                $original_data['id'] = $communication_attachable->attachment->id;
+                $original_data['uploader_user_id'] = $communication_attachable->attachment->uploader_user_id;
+                $original_data['path'] = $communication_attachable->attachment->path;
+                $original_data['path_type'] = $communication_attachable->attachment->path_type;
+                $original_data['label'] = $communication_attachable->attachment->label;
+                $original_data['description'] = $communication_attachable->attachment->description;
+                $original_data['file_type'] = $communication_attachable->attachment->file_type;
+                $original_data['file_number'] = $communication_attachable->attachment->file_number;
+                $original_data['storage_driver'] = $communication_attachable->attachment->storage_driver;
+                $original_data['allowed_viewer_user_ids'] = $communication_attachable->attachment->allowed_viewer_user_ids;
+                $original_data['allowed_viewer_user_roles'] = $communication_attachable->attachment->allowed_viewer_user_roles;
+                $original_data['allowed_viewer_user_departments'] = $communication_attachable->attachment->allowed_viewer_user_departments;
+                $original_data['organization_id'] = $communication_attachable->attachment->organization_id;
+                $original_data['deleted_at'] = $communication_attachable->attachment->deleted_at;
+                $original_data['created_at'] = $communication_attachable->attachment->created_at;
+                $original_data['updated_at'] = $communication_attachable->attachment->updated_at;
+
+                array_push($attachments_container, $original_data);
+            }
+        }
+
+        // sending to server
+        $pay_load = [
+            '_method' => 'POST',
+            'user_email' => $current_user->email,
+            'communication_parent_id' => $communication_table_type->tf_iterum_portal_key_id ?? null,
+            'communication_primary_id' => $request->communication_primary_id,
+            'communication_table_type' => $request->communication_table_type ?? null,
+            'communication_comment' => $request->communication_comment ?? null,
+            'communication_attachments' => $attachments_container,
+        ];
+
+        $tetFundServer = new TETFundServer();   /* server class constructor */
+        $tf_processed_communication_response  = $tetFundServer->processCommunicationResponse($pay_load);
+
+        if ($tf_processed_communication_response == true) {
+            return $this->sendSuccess('Communication Response Processed and Successfully Saved!');
+        }
+
+        return $this->sendError('An unknown error was encountered while processing communication response.');
     }   
 
 

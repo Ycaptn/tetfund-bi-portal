@@ -511,7 +511,10 @@ class SubmissionRequestController extends BaseController
     // show details for submission request
     public function show(Organization $org, Request $request, $id) {
         /** @var SubmissionRequest $submissionRequest */
-        $submissionRequest = SubmissionRequest::find($id);
+        
+        $submissionRequest = SubmissionRequest::where('id', $id)
+                                ->orWhere('tf_iterum_portal_key_id', $id)
+                                ->first();
 
         if (empty($submissionRequest)) {
             //Flash::error('Submission Request not found');
