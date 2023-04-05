@@ -583,7 +583,7 @@ class SubmissionRequestController extends BaseController
             }
 
             // retriveing related checklist records for PI intevention at AIP stages  
-            if ($submissionRequest->is_aip_request && str_contains(strtolower($intervention_types_server_response->name), "physical infrastructure")) {
+            if ($submissionRequest->is_aip_request && isset($intervention_types_server_response->name) && str_contains(strtolower($intervention_types_server_response->name), "physical infrastructure")) {
                 $intervention_name = $intervention_types_server_response->name;
             }
             
