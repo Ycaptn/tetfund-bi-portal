@@ -187,6 +187,25 @@ class SubmissionRequest extends Model
         return $counter;
     }
 
+    // all interventions that begins with FIRST TRANCHE and not AIP
+    public function is_start_up_first_tranche_intervention($intervention_name) {
+        $start_up_first_tranche_interventions = [
+            'Academic Manuscript Development',
+            'Equipment Fabrication',
+            'Advocacy',
+        ];
+
+        return in_array($intervention_name, $start_up_first_tranche_interventions);
+    }
+
+    // all interventions that should be denied submission processing
+    public function is_intervention_denied_submission($intervention_name) {
+        $interventions_denied_submission = [
+        ];
+        
+        return in_array($intervention_name, $interventions_denied_submission);
+    }
+
     // all first tranche interventions percentage
     public function first_tranche_intervention_percentage ($intervention_name) {
         $first_tranche_interventions = [

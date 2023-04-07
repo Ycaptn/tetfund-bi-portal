@@ -29,7 +29,7 @@ class UpdateSubmissionRequestAPIRequest extends AppBaseFormRequest
         if (request()->has('is_monitoring_request') && request()->is_monitoring_request == true) {
             $return_arr['type'] = 'required|string|max:300';
             $return_arr['proposed_request_date'] = 'required|date|after:today';
-            $return_arr['optional_attachment'] = 'sometimes|file|mimes:pdf,doc,docx,jpg,png,jpeg|max:52400';
+            $return_arr['optional_attachment'] = 'sometimes|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,png,jpeg,twg|max:52400';
         }
 
         return $return_arr ?? [];

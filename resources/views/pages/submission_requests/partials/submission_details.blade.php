@@ -97,7 +97,7 @@
             <i class="fa fa-calendar-o fa-fw"></i> <strong>Created on </strong> {{ \Carbon\Carbon::parse($submissionRequest->created_at)->format('l jS F Y') }} - {!! \Carbon\Carbon::parse($submissionRequest->created_at)->diffForHumans() !!} <br/>
 
             <i class="fa fa-bank fa-fw"></i> <b>{{ ucwords($intervention->type) }} Intervention &nbsp; - &nbsp; </b> &nbsp; {{ $intervention->name}} <br/>
-            <i class="fa fa-briefcase fa-fw"></i> <b>Requested Tranche:</b> &nbsp; {{ $submissionRequest->type }} <br/>
+            <i class="fa fa-briefcase fa-fw"></i> <b>Purpose of Request:</b> &nbsp; {{ $submissionRequest->type }} <br/>
             <i class="fa fa-crosshairs fa-fw"></i> <b>Intervention Year(s) &nbsp; - &nbsp; </b> &nbsp; {{ $years_str }} <br/>
             <i class="fa fa-money fa-fw"></i> <b>Total Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($fund_available) ? $fund_available : 0), 2) }} <br/>
             <i class="fa fa-money fa-fw"></i> <b>Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>
@@ -111,9 +111,9 @@
                     @endif --}}
 
                     {{-- Recall Submission request--}}
-                    @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && $submissionRequest->is_aip_request && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==false && ($submitted_request_data->request_status!='pending-recall'|| $submitted_request_data->request_status!='recalled'))
+                    {{-- @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && $submissionRequest->is_aip_request && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==false && ($submitted_request_data->request_status!='pending-recall'|| $submitted_request_data->request_status!='recalled'))
                         @include('tf-bi-portal::pages.submission_requests.partials.recall_submission_request')
-                    @endif
+                    @endif --}}
 
                     {{-- current intervention monitoring request --}}
                     @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && ($submitted_request_data->has_generated_aip==true || $submitted_request_data->has_generated_disbursement_memo==true))

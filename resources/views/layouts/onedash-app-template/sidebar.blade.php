@@ -141,7 +141,7 @@
 				<a href="{{ route('tf-bi-portal.submissionRequests.index') }}" class="">
 					<div class="parent-icon"><i class='bx bx-layer-plus'></i>
 					</div>
-					<div class="menu-title">Submissions</div>
+					<div class="menu-title">BI Intervention Submissions</div>
 				</a>
 			</li>
 			@endif
@@ -164,7 +164,7 @@
 			        	<i class='bx bx-paper-plane'></i>
 					</div>
 			        <div class="menu-title col-sm-12">
-			        	ASTD
+			        	ASTD Nomination & Setting
 			        	&nbsp; <i class="fa fa-caret-down"></i>
 			        </div>
 			    </a>
