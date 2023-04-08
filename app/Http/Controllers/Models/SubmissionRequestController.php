@@ -122,7 +122,7 @@ class SubmissionRequestController extends BaseController
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
         $submissionRequest = new SubmissionRequest();
 
-        $pay_load = [   
+        $pay_load = [
             '_method' => 'GET',
             'beneficiary_type' => $beneficiary_member->beneficiary->type ?? null,
             'interventions_to_skip' => $submissionRequest->interventions_denied_submission()
@@ -138,7 +138,6 @@ class SubmissionRequestController extends BaseController
 
         return view('pages.submission_requests.create')
             ->with("years", $years)
-            ->with("type", 'Request for AIP')
             ->with("intervention_types", $intervention_types_server_response);
     }
 
@@ -151,6 +150,7 @@ class SubmissionRequestController extends BaseController
      */
     public function store(Organization $org, CreateSubmissionRequestRequest $request) {
         $input = $request->all();
+
         $input['intervention_year1'] = 0;
         $input['intervention_year2'] = 0;
         $input['intervention_year3'] = 0;
@@ -189,7 +189,17 @@ class SubmissionRequestController extends BaseController
                 $error_msg = "A previous submission request for one or more of the selected years has already been submitted.";
                 return redirect()->back()->withErrors([$error_msg])->withInput();
         }
-        
+
+        // setting up sadditional request parameters for interventions that starts with first tranche
+        if (SubmissionRequest::is_start_up_first_tranche_intervention($request->intervention_title)) {
+            $new_properties =  [
+                'request_tranche' => '1st Tranche Payment',
+                'is_first_tranche_request' => true,
+            ];
+
+            $request->merge($new_properties);
+        }
+
         $input['type'] = $request->request_tranche ?? 'Request for AIP';
         $input['status'] = 'not-submitted';
         $input['title'] = $input['intervention_title']. ' - ' .$input['type']. ' (' .implode(', ', $years_unique) .')';
@@ -315,7 +325,8 @@ class SubmissionRequestController extends BaseController
         // initializing submission payload
         $pay_load = $submissionRequest->toArray();
 
-        if ($submissionRequest->is_aip_request == true) {
+        $guessed_intervention_name = explode('-', $submissionRequest->title);
+        if ($submissionRequest->is_aip_request==true || ($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention(trim($guessed_intervention_name[0])))) {
             //get total fund available 
             $tetFundServer = new TETFundServer();   /* server class constructor */
             $fund_availability = $tetFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
@@ -326,8 +337,8 @@ class SubmissionRequestController extends BaseController
                 array_push($errors_array, $fund_availability->message);
             }            
 
-            if ($submissionRequest->is_aip_request==true && isset($fund_availability->total_funds) && $fund_availability->total_funds != $submissionRequest->amount_requested && (!str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') && !str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') && !str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) ) {
-               
+            if (isset($fund_availability->total_funds) && $fund_availability->total_funds != $submissionRequest->amount_requested && ($submissionRequest->is_aip_request==true || $submissionRequest->is_first_tranche_request==true) && ( (!str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') && !str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') && !str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship') ) || ($submissionRequest->is_start_up_first_tranche_intervention(optional($request)->intervention_name)) )) {
+
                 //error for requested fund mismatched to allocated fund non-astd interventions
                 array_push($errors_array, "Fund requested must be equal to the Allocated amount.");
            
@@ -442,7 +453,7 @@ class SubmissionRequestController extends BaseController
             return redirect()->back()->with('success', $success_message);
         }
 
-        return redirect()->back()->withErrors(['Oops!!!, An unknown error was encountered while processing final submission.']);
+        return redirect()->back()->withErrors(['Oops!!!, An Server Error was encountered while processing final submission.']);
 
     }
 
@@ -685,7 +696,9 @@ class SubmissionRequestController extends BaseController
             return redirect(route('tf-bi-portal.submissionRequests.index'));
         }
 
-        if (($submissionRequest->status=='not-submitted' || $submissionRequest->status=='recalled') && $submissionRequest->is_aip_request==true) {
+        $supposed_intervention_name = explode('-', $submissionRequest->title);
+        if (($submissionRequest->status=='not-submitted' || $submissionRequest->status=='recalled') && ($submissionRequest->is_aip_request==true || ($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention(trim($supposed_intervention_name[0]))))) {
+
             $current_user = auth()->user();
             $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
             
@@ -752,7 +765,8 @@ class SubmissionRequestController extends BaseController
         $current_user = auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
-        if (($submissionRequest->status=='not-submitted' || $submitted_request_data->request_status??''=='recalled') && $submissionRequest->is_aip_request==true) {
+        if (($submissionRequest->status=='not-submitted' || $submitted_request_data->request_status??''=='recalled') && ($submissionRequest->is_aip_request==true || ($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention($request->intervention_title)))) {
+
             $input = $request->all();
             $input['intervention_year1'] = 0;
             $input['intervention_year2'] = 0;

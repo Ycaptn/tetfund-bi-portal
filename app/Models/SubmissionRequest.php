@@ -188,7 +188,7 @@ class SubmissionRequest extends Model
     }
 
     // all interventions that begins with FIRST TRANCHE and not AIP
-    public function is_start_up_first_tranche_intervention($intervention_name) {
+    public static function is_start_up_first_tranche_intervention($intervention_name) {
         $start_up_first_tranche_interventions = [
             'academic manuscript into books',
             'equipment fabrication',

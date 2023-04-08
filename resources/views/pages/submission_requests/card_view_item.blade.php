@@ -14,7 +14,8 @@
 
                 @if(isset($data_item) && $data_item->status == 'not-submitted')
                     <div class="ms-auto"> 
-                        @if($data_item->is_aip_request==true)
+                        @if($data_item->is_aip_request==true || ($data_item->is_first_tranche_request==true && $data_item->is_start_up_first_tranche_intervention($data_collection[$data_item->tf_iterum_intervention_line_key_id]??'')))
+
                             <a data-toggle="tooltip" 
                                 title="Edit"
                                 data-val='{{$data_item->id}}'

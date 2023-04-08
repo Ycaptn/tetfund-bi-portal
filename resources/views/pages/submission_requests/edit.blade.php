@@ -12,7 +12,7 @@ Edit Submission Request
 @stop
 
 @section('page_title_suffix')
-{{ $submissionRequest->title }}
+{{ $submissionRequest->getOriginal('title') }}
 @stop
 
 @section('page_title_subtext')

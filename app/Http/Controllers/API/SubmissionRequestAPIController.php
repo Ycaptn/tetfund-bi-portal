@@ -261,7 +261,7 @@ class SubmissionRequestAPIController extends AppBaseController
             return $this->sendResponse($submissionRequest->toArray(), 'Submission of Monitoring Request successfully completed');
         }
 
-        return $this->sendError('Oops!!!, An unknown error was encountered while processing final submission.');
+        return $this->sendError('Oops!!!, An Server Error was encountered while processing final submission.');
     }
 
     public function clarification_response(SubmissionClarificationResponseAPIRequest $request) {
