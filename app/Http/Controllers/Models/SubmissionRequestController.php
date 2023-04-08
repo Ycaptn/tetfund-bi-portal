@@ -120,8 +120,13 @@ class SubmissionRequestController extends BaseController
     public function create(Organization $org) {
         $current_user = auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+        $submissionRequest = new SubmissionRequest();
 
-        $pay_load = ['_method'=>'GET', 'beneficiary_type'=>$beneficiary_member->beneficiary->type ?? null];
+        $pay_load = [   
+            '_method' => 'GET',
+            'beneficiary_type' => $beneficiary_member->beneficiary->type ?? null,
+            'interventions_to_skip' => $submissionRequest->interventions_denied_submission()
+        ];
 
         $tetFundServer = new TETFundServer();   /* server class constructor */
         $intervention_types_server_response = $tetFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
@@ -132,8 +137,8 @@ class SubmissionRequestController extends BaseController
           }
 
         return view('pages.submission_requests.create')
-            ->with("type", 'Request for AIP')
             ->with("years", $years)
+            ->with("type", 'Request for AIP')
             ->with("intervention_types", $intervention_types_server_response);
     }
 
@@ -684,8 +689,12 @@ class SubmissionRequestController extends BaseController
             $current_user = auth()->user();
             $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
             
-            $pay_load = ['_method'=>'GET', 'beneficiary_type'=>$beneficiary_member->beneficiary->type ?? null];
-            
+            $pay_load = [   
+                '_method' => 'GET',
+                'beneficiary_type' => $beneficiary_member->beneficiary->type ?? null,
+                'interventions_to_skip' => $submissionRequest->interventions_denied_submission()
+            ];
+
             $tetFundServer = new TETFundServer();   /* server class constructor */
             $intervention_types_server_response = $tetFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
 

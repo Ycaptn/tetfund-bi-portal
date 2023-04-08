@@ -190,43 +190,39 @@ class SubmissionRequest extends Model
     // all interventions that begins with FIRST TRANCHE and not AIP
     public function is_start_up_first_tranche_intervention($intervention_name) {
         $start_up_first_tranche_interventions = [
-            'Academic Manuscript Development',
-            'Equipment Fabrication',
-            'Advocacy',
+            'academic manuscript into books',
+            'equipment fabrication',
+            'advocacy and publicity',
         ];
 
-        return in_array($intervention_name, $start_up_first_tranche_interventions);
+        return in_array(strtolower($intervention_name), $start_up_first_tranche_interventions);
     }
 
     // all interventions that should be denied submission processing
-    public function is_intervention_denied_submission($intervention_name) {
-        $interventions_denied_submission = [
-        ];
-        
-        return in_array($intervention_name, $interventions_denied_submission);
+    public function interventions_denied_submission() {
+        return [];
     }
 
     // all first tranche interventions percentage
     public function first_tranche_intervention_percentage ($intervention_name) {
         $first_tranche_interventions = [
-            'ICT Support' => '85%',
-            'Library Development' => '85%',
-            'Zonal Intervention' => '85%',
-            'Equipment Fabrication' => '85%',
-            'Entrepreneurship Centre' => '85%',
-            'Academic Manuscript Development' => '85%',
-            'Physical Infrastructure and Program Upgrade' => '50%',
+            'ict support' => '85%',
+            'library development' => '85%',
+            'zonal intervention' => '85%',
+            'entrepreneurship centre' => '85%',
+            'academic manuscript development' => '85%',
+            'physical infrastructure and program upgrade' => '50%',
         ];
-        return $first_tranche_interventions[$intervention_name] ?? null;
+        return $first_tranche_interventions[strtolower($intervention_name)] ?? null;
     }
 
     // all second tranche interventions percentage
     public function second_tranche_intervention_percentage ($intervention_name) {
         $second_tranche_interventions = [
-            'Physical Infrastructure and Program Upgrade' => '35%',
+            'physical infrastructure and program upgrade' => '35%',
         ];
 
-        return $second_tranche_interventions[$intervention_name] ?? null;
+        return $second_tranche_interventions[strtolower($intervention_name)] ?? null;
     }
 
     // all third tranche interventions percentage
@@ -235,33 +231,32 @@ class SubmissionRequest extends Model
             // 'intervention name' => 'Percentage in numeric',
         ];
 
-        return $third_tranche_interventions[$intervention_name] ?? null;
+        return $third_tranche_interventions[strtolower($intervention_name)] ?? null;
     }
 
     // all final tranche interventions percentage
      public function final_tranche_intervention_percentage ($intervention_name) {
         $final_tranche_interventions = [
-            'ICT Support' => '15%',
-            'Library Development' => '15%',
-            'Zonal Intervention' => '15%',
-            'Equipment Fabrication' => '15%',
-            'Entrepreneurship Centre' => '15%',
-            'Academic Manuscript Development' => '15%',
-            'Physical Infrastructure and Program Upgrade' => '15%',
+            'ict support' => '15%',
+            'library development' => '15%',
+            'zonal intervention' => '15%',
+            'entrepreneurship centre' => '15%',
+            'academic manuscript development' => '15%',
+            'physical infrastructure and program upgrade' => '15%',
         ];
 
-        return $final_tranche_interventions[$intervention_name] ?? null;
+        return $final_tranche_interventions[strtolower($intervention_name)] ?? null;
     }
 
     // all monitoring request interventions
      public function monitoring_evaluation_interventions ($intervention_name) {
         $monitoring_evaluation_interventions = [
-            'Library Development',
-            'Physical Infrastructure and Program Upgrade',
-            // MonitoringEvaluationCheckList
+            'ict support',
+            'library development',
+            'physical infrastructure and program upgrade',
         ];
 
-        return in_array($intervention_name, $monitoring_evaluation_interventions);
+        return in_array(strtolower($intervention_name), $monitoring_evaluation_interventions);
     }
 
     // submission Request AIP Payment

@@ -128,7 +128,7 @@ Edit Submission Request
                 });
 
                 //hiding intervention years
-                if (selected_intervention_line.name.includes('Teaching Practice') || selected_intervention_line.name.includes('Conference Attendance') || selected_intervention_line.name.includes('TETFund scholarship')) {
+                if (selected_intervention_line.name && (selected_intervention_line.name.includes('Teaching Practice') || selected_intervention_line.name.includes('Conference Attendance') || selected_intervention_line.name.includes('TETFund scholarship'))) {
                     hide_3_intervention_years();
                 } else {
                     show_3_intervention_years();

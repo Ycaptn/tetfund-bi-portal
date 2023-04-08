@@ -115,8 +115,8 @@
                         @include('tf-bi-portal::pages.submission_requests.partials.recall_submission_request')
                     @endif --}}
 
-                    {{-- current intervention monitoring request --}}
-                    @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && ($submitted_request_data->has_generated_aip==true || $submitted_request_data->has_generated_disbursement_memo==true))
+                    {{-- current intervention monitoring request button --}}
+                    @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && ($submitted_request_data->has_generated_aip==true || $submitted_request_data->has_generated_disbursement_memo==true) && $submissionRequest->monitoring_evaluation_interventions($intervention->name))
                         @include('tf-bi-portal::pages.submission_requests.partials.monitoring_evaluation_submission_request')
                     @endif
 
