@@ -386,6 +386,14 @@ class SubmissionRequestController extends BaseController
         $pay_load['_method'] = 'POST';
         $pay_load['submission_user'] = $current_user;
 
+        // resetting value for requested amount when is a fiorst tranch base intervention
+        if($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention(optional($request)->intervention_name)) {
+           
+            $first_tranche_percentage = $submissionRequest->first_tranche_intervention_percentage(optional($request)->intervention_name);
+            $percentage = $first_tranche_percentage!=null ? str_replace('%', '', $first_tranche_percentage) : 0;
+            $pay_load['amount_requested'] = ($percentage * $submissionRequest->amount_requested)/100 ?? 0;
+        }
+
         // add attachment records to payload
         $submission_attachment_array = $submissionRequest->get_all_attachments($input['submission_request_id']);
         $pay_load['submission_attachment_array'] = ($submission_attachment_array != null) ? $submission_attachment_array : [];
@@ -645,7 +653,10 @@ class SubmissionRequestController extends BaseController
             return $binded_nominations_dataTable
                 ->with('user_beneficiary', $beneficiary)
                 ->with('submission_request', $submissionRequest)
-                ->with('parentAIPSubmissionRequest', $submissionRequest->is_aip_request ? $submissionRequest : $submissionRequest->getParentAIPSubmissionRequest())
+                ->with('parentAIPSubmissionRequest', $submissionRequest->is_aip_request || 
+                    ($submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($intervention_types_server_response->name)) ? 
+                    $submissionRequest : 
+                    $submissionRequest->getParentAIPSubmissionRequest())
                 ->with('firstTrancheSubmissionRequest', $submissionRequest->is_first_tranche_request ? $submissionRequest : $submissionRequest->getFirstTrancheSubmissionRequest())
                 ->with('secondTrancheSubmissionRequest', $submissionRequest->is_second_tranche_request ? $submissionRequest : $submissionRequest->getSecondTrancheSubmissionRequest())
                 ->with('finalTrancheSubmissionRequest', $submissionRequest->is_final_tranche_request ? $submissionRequest : $submissionRequest->getFinalTrancheSubmissionRequest())
@@ -666,7 +677,10 @@ class SubmissionRequestController extends BaseController
         return view('pages.submission_requests.show')
             ->with('intervention', $intervention_types_server_response)
             ->with('submissionRequest', $submissionRequest)
-            ->with('parentAIPSubmissionRequest', $submissionRequest->is_aip_request ? $submissionRequest : $submissionRequest->getParentAIPSubmissionRequest())
+            ->with('parentAIPSubmissionRequest', $submissionRequest->is_aip_request || 
+                    ($submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($intervention_types_server_response->name)) ? 
+                    $submissionRequest : 
+                    $submissionRequest->getParentAIPSubmissionRequest())
             ->with('firstTrancheSubmissionRequest', $submissionRequest->is_first_tranche_request ? $submissionRequest : $submissionRequest->getFirstTrancheSubmissionRequest())
             ->with('secondTrancheSubmissionRequest', $submissionRequest->is_second_tranche_request ? $submissionRequest : $submissionRequest->getSecondTrancheSubmissionRequest())
             ->with('finalTrancheSubmissionRequest', $submissionRequest->is_final_tranche_request ? $submissionRequest : $submissionRequest->getFinalTrancheSubmissionRequest())

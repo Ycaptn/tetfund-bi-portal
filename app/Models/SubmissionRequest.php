@@ -190,9 +190,9 @@ class SubmissionRequest extends Model
     // all interventions that begins with FIRST TRANCHE and not AIP
     public static function is_start_up_first_tranche_intervention($intervention_name) {
         $start_up_first_tranche_interventions = [
-            'academic manuscript into books',
             'equipment fabrication',
             'advocacy and publicity',
+            'academic manuscript into books',
         ];
 
         return in_array(strtolower($intervention_name), $start_up_first_tranche_interventions);
@@ -207,9 +207,12 @@ class SubmissionRequest extends Model
     public function first_tranche_intervention_percentage ($intervention_name) {
         $first_tranche_interventions = [
             'ict support' => '85%',
-            'library development' => '85%',
             'zonal intervention' => '85%',
+            'library development' => '85%',
+            'equipment fabrication' => '50%',
+            'advocacy and publicity' => '85%',
             'entrepreneurship centre' => '85%',
+            'academic manuscript into books' => '85%',
             'academic manuscript development' => '85%',
             'physical infrastructure and program upgrade' => '50%',
         ];
@@ -219,6 +222,7 @@ class SubmissionRequest extends Model
     // all second tranche interventions percentage
     public function second_tranche_intervention_percentage ($intervention_name) {
         $second_tranche_interventions = [
+            'equipment fabrication' => '35%',
             'physical infrastructure and program upgrade' => '35%',
         ];
 
@@ -238,9 +242,12 @@ class SubmissionRequest extends Model
      public function final_tranche_intervention_percentage ($intervention_name) {
         $final_tranche_interventions = [
             'ict support' => '15%',
-            'library development' => '15%',
             'zonal intervention' => '15%',
+            'library development' => '15%',
+            'equipment fabrication' => '15%',
+            'advocacy and publicity' => '15%',
             'entrepreneurship centre' => '15%',
+            'academic manuscript into books' => '15%',
             'academic manuscript development' => '15%',
             'physical infrastructure and program upgrade' => '15%',
         ];
@@ -253,6 +260,9 @@ class SubmissionRequest extends Model
         $monitoring_evaluation_interventions = [
             'ict support',
             'library development',
+            'equipment fabrication',
+            'advocacy and publicity',
+            'academic manuscript into books',
             'physical infrastructure and program upgrade',
         ];
 
@@ -260,8 +270,12 @@ class SubmissionRequest extends Model
     }
 
     // submission Request AIP Payment
-    public function getParentAIPSubmissionRequest() {
+    public function getParentAIPSubmissionRequest($intervention_name=null) {
         if ($this->is_aip_request) {
+            return $this;
+        }
+
+        if ($this->is_first_tranche_request && $intervention_name!=null && $this->is_start_up_first_tranche_intervention($intervention_name)) {
             return $this;
         }
 

@@ -101,7 +101,22 @@
             <i class="fa fa-crosshairs fa-fw"></i> <b>Intervention Year(s) &nbsp; - &nbsp; </b> &nbsp; {{ $years_str }} <br/>
             <i class="fa fa-money fa-fw"></i> <b>Total Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($fund_available) ? $fund_available : 0), 2) }} <br/>
             <i class="fa fa-money fa-fw"></i> <b>Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>
-            <i class="fa fa-thumbs-up fa-fw"> </i><b>Current Stage &nbsp; - &nbsp; </b> &nbsp; {{ strtoupper($submitted_request_data->work_item->active_assignment->assigned_user->department->long_name ?? $submissionRequest->status) }}<br/><br/>
+            <i class="fa fa-thumbs-up fa-fw"> </i><b>Current Stage &nbsp; - &nbsp; </b> &nbsp; {{ strtoupper($submitted_request_data->work_item->active_assignment->assigned_user->department->long_name ?? $submissionRequest->status) }}<br/>
+
+            {{-- notification for first tranche based interventions --}}
+            @if($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention(optional($intervention)->name))
+                @php
+                    $first_tranche_percentage = $submissionRequest->first_tranche_intervention_percentage(optional($intervention)->name);
+                    $percentage = $first_tranche_percentage!=null ? str_replace('%', '', $first_tranche_percentage) : 0;
+                    $percentage_amount = ($percentage * $submissionRequest->amount_requested)/100 ?? 0;
+                @endphp
+
+                @if($first_tranche_percentage!=null && $percentage_amount >= 0)
+                    <i class="text-danger"><b>{{ $first_tranche_percentage }}</b> (₦{{ number_format($percentage_amount, '2') }}) of the <b>Requested Amount</b> is processed if validated successfully.</i> <br/> <br/>
+                @endif
+            @else
+                <br/>
+            @endif
             
             <div class="col-sm-12">
                 <div class="row">
