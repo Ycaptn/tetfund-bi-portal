@@ -391,7 +391,7 @@ class SubmissionRequestController extends BaseController
            
             $first_tranche_percentage = $submissionRequest->first_tranche_intervention_percentage(optional($request)->intervention_name);
             $percentage = $first_tranche_percentage!=null ? str_replace('%', '', $first_tranche_percentage) : 0;
-            $pay_load['amount_requested'] = ($percentage * $submissionRequest->amount_requested)/100 ?? 0;
+            // $pay_load['amount_requested'] = ($percentage * $submissionRequest->amount_requested)/100 ?? 0;
         }
 
         // add attachment records to payload
