@@ -57,10 +57,10 @@ class SubmissionRequestController extends BaseController
         $some_server_data_array = $tetFundServer->getSomeDataArrayFromServer($data_to_rerieve_payload);
 
         // beneficiary intervention lines
-        $intervention_types_server_response = $some_server_data_array->getAllInterventionLines;
+        $intervention_types_server_response = $some_server_data_array->getAllInterventionLines ?? [];
         
         // beneficiary approved(has_aip || has_disbursement_memo) submission request
-        $beneficiary_approved_submissions = $some_server_data_array->getBeneficiaryApprovedSubmissions;
+        $beneficiary_approved_submissions = $some_server_data_array->getBeneficiaryApprovedSubmissions ?? [];
 
         // updating submission request status to approved where (has_aip || has_disbursement_memo)
         if (count($beneficiary_approved_submissions) > 0) {
