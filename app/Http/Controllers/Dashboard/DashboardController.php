@@ -86,7 +86,7 @@ class DashboardController extends BaseController
                     ->with('intervention_types', $intervention_types)
                     ->with('active_submissions', $active_submissions)
                     ->with('upcoming_monitorings', $upcoming_monitorings)
-                    ->with('beneficiary', $beneficiary_member->beneficiary)
+                    ->with('beneficiary', optional($beneficiary_member)->beneficiary)
                     ->with('official_communications', $official_communications);
     }
 
