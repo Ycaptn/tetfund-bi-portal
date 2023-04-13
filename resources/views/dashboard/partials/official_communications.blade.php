@@ -55,7 +55,7 @@
 
                                 <div class="col-sm-12">
                                     <span class="fa fa-institution"></span>
-                                    {{$beneficiary->full_name}}
+                                    {{optional($beneficiary)->full_name}}
                                 </div><hr>
 
                                 <div class="col-sm-12 text-justify text-danger">
