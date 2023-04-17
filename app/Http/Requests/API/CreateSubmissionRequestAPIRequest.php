@@ -44,7 +44,7 @@ class CreateSubmissionRequestAPIRequest extends AppBaseFormRequest
         if (request()->has('is_monitoring_request') && request()->is_monitoring_request == true) {
             $returned_arr['type'] = 'required|string|max:300';
             $returned_arr['proposed_request_date'] = 'required|date|after:today';
-            $returned_arr['optional_attachment'] = 'sometimes|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,png,jpeg,twg|max:52400';
+            $returned_arr['optional_attachment'] = 'sometimes|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,png,jpeg,dwg|max:52400';
         }
 
         if (request()->intervention_year1==null && request()->intervention_year2==null && request()->intervention_year3==null && request()->intervention_year4==null) {
