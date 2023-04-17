@@ -337,7 +337,7 @@ class SubmissionRequestController extends BaseController
                 array_push($errors_array, $fund_availability->message);
             }            
 
-            if (isset($fund_availability->total_funds) && $fund_availability->total_funds != $submissionRequest->amount_requested && ($submissionRequest->is_aip_request==true || $submissionRequest->is_first_tranche_request==true) && ( (!str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') && !str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') && !str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship') ) || ($submissionRequest->is_start_up_first_tranche_intervention(optional($request)->intervention_name)) )) {
+            if (isset($fund_availability->total_funds) && $fund_availability->total_funds != $submissionRequest->amount_requested && ($submissionRequest->is_aip_request==true || $submissionRequest->is_first_tranche_request==true) && ( (!str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') && !str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') && !str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship') ) || ($submissionRequest->is_start_up_first_tranche_intervention(optional($request)->intervention_name)) ) && $submissionRequest->getParentAIPSubmissionRequest()==null) {
 
                 //error for requested fund mismatched to allocated fund non-astd interventions
                 array_push($errors_array, "Fund requested must be equal to the Allocated amount.");

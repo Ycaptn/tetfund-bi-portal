@@ -106,7 +106,7 @@ Submission
                                 <li>Please attach the <strong>required documents</strong> before submitting your request.</li>
                             @endif 
 
-                            @if (isset($fund_available) && $fund_available != $submissionRequest->amount_requested && ($submissionRequest->is_aip_request==true || $submissionRequest->is_first_tranche_request==true) && ( (!str_contains(strtolower(optional($intervention)->name), 'teaching practice') && !str_contains(strtolower(optional($intervention)->name), 'conference attendance') && !str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship') ) || ($submissionRequest->is_start_up_first_tranche_intervention(optional($intervention)->name)) ))
+                            @if (isset($fund_available) && $fund_available != $submissionRequest->amount_requested && ($submissionRequest->is_aip_request==true || $submissionRequest->is_first_tranche_request==true) && ( (!str_contains(strtolower(optional($intervention)->name), 'teaching practice') && !str_contains(strtolower(optional($intervention)->name), 'conference attendance') && !str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship') ) || ($submissionRequest->is_start_up_first_tranche_intervention(optional($intervention)->name)) )  && $submissionRequest->getParentAIPSubmissionRequest()==null)
            
                                 {{-- error for requested fund mismatched to allocated fund for non-astd interventions --}}
                                 <li>Fund requested must be equal to the 
