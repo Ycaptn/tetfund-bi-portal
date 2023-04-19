@@ -102,7 +102,7 @@
             <i class="fa fa-money fa-fw"></i> <b>Total Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($fund_available) ? $fund_available : 0), 2) }} <br/>
             <i class="fa fa-money fa-fw"></i> <b>Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>
             <i class="fa fa-thumbs-up fa-fw"> </i><b>Current Stage &nbsp; - &nbsp; </b> &nbsp; {{ strtoupper($submitted_request_data->work_item->active_assignment->assigned_user->department->long_name ?? $submissionRequest->status) }}<br/>
-            @if(!empty($submitted_request_data) && $submitted_request_data->request_status = 'reprioritized')
+            @if($submissionRequest->is_aip_request && !empty($submitted_request_data) && $submitted_request_data->request_status = 'reprioritized')
                 <i class="text-danger">
                     <b>NOTE:</b> &nbsp; This submission was Reprioritized. <br/>
                 </i>

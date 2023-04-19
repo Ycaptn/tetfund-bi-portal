@@ -26,7 +26,12 @@
 
                                 $limited_slugged_label = Str::slug($item->item_label);
                                 $limited_slugged_label = Str::limit($limited_slugged_label, 495, "");
-                                $attached['label'] == $limited_slugged_label || $attached['label'] ==  Str::limit($item->item_label ,495, "") ? $response = $attached : null;
+
+                                $attached_label = str_replace('auditclearancefinalpaymentchecklist-', '', $attached['label']);
+                                $attached_label = str_replace('auditclearancesecondtranchepaymentchecklist-', '', $attached_label);
+
+                                $attached_label == $limited_slugged_label || $attached_label ==  Str::limit($item->item_label ,495, "") ? $response = $attached : null;
+
                                 return $response;
                              });
 
@@ -43,7 +48,7 @@
                                     @if($submission_attachment != null)
                                         @php
                                             $preview_label = str_replace('auditclearancefinalpaymentchecklist-', '', $submission_attachment->label);
-                                            $preview_label = str_replace('auditclearancefinalpaymentchecklist-', '', $preview_label);
+                                            $preview_label = str_replace('auditclearancesecondtranchepaymentchecklist-', '', $preview_label);
                                             $preview_label = ucwords($preview_label);
                                         @endphp
                                         <div class="col-sm-12">

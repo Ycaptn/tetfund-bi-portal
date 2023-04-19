@@ -255,7 +255,7 @@
 		            $('.offline-request-for-related-tranche').fadeOut(300);
 		        }
 
-
+	        	$("#btn-save-mdl-request-related-tranche").attr('disabled', true);
 		        swal({
 	                title: "Please confirm the initiation of your request for {{$request_tranche}}",
 	                text: "You will be redirected to provide all neccessary attachments before final submission to TETFund.",
@@ -325,6 +325,9 @@
 				                    $.each(result.errors, function(key, value){
 				                        $('#div-request-related-tranche-modal-error').append('<li class="">'+value+'</li>');
 				                    });
+
+					                $("#spinner-request-related-tranche").hide();
+					                $("#btn-save-mdl-request-related-tranche").attr('disabled', false);
 				                } else {
 				                    $('#div-request-related-tranche-modal-error').hide();
 				                    console.log(result);
@@ -335,11 +338,7 @@
 				                        type: "success"
 				                    });
 				                    window.location.href = redirect_link;
-				                }
-
-				                $("#spinner-request-related-tranche").hide();
-				                $("#btn-save-mdl-request-related-tranche").attr('disabled', false);
-				                
+				                }				                
 				            }, error: function(data) {
 				                console.log(data);
 				                swal("Error", "Oops an error occurred. Please try again.", "error");
@@ -349,6 +348,8 @@
 
 				            }
 				        });
+				    } else {
+				    	$("#btn-save-mdl-request-related-tranche").attr('disabled', false);
 				    }
 
 	            });
