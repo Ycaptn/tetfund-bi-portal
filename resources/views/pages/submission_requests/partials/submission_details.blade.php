@@ -228,7 +228,7 @@
                                     </button>
                                 </form>
                             @else
-                                You are will be notified and contacted for collection.
+                                You will be contacted for collection.
                             @endif
                         </span>
                     @else
