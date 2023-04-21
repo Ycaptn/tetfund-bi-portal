@@ -78,7 +78,7 @@ class TFBiDeleteAllAttachmentsNotUploadedByBiStaff extends Command
                                             ->where('attachable_id', $iterum_bi_request->id)
                                             ->join('fc_attachments', 'fc_attachables.attachment_id', '=', 'fc_attachments.id')
                                             ->whereNull('fc_attachments.deleted_at')
-                                            ->pluck('fc_attachments.id');
+                                            ->pluck('fc_attachments.id')->toArray();
                         
                         if (!empty($iterum_request_attachments) && count($iterum_request_attachments)>0) {
                             // get attachments from old_tet_fund portal
@@ -89,11 +89,15 @@ class TFBiDeleteAllAttachmentsNotUploadedByBiStaff extends Command
                                             ->pluck('label');
                             
                             if (!empty($old_portal_attachments_by_bi_staff) && count($old_portal_attachments_by_bi_staff) > 0) {
-                                
+                                $old_portal_attachment_list = [];
+                                foreach ($old_portal_attachments_by_bi_staff as $key => $old_attach_name) {
+                                    # code...
+                                    $old_portal_attachment_list [] = \Illuminate\Support\Str::limit($old_attach_name,120,"");
+                                }
                                 // deleting attaments with different label not in the match arrays
                                 foreach ($request_attachments_on_bi_portal as $attachment_to_delete) {
-                                    if (!in_array($attachment_to_delete->label, $old_portal_attachments_by_bi_staff->toArray())) {
-
+                                    if (!in_array($attachment_to_delete->label, $old_portal_attachment_list)) {
+                                       
                                         $bi_request->delete_attachment($attachment_to_delete->label);
                                         echo ">>>>>>>> \n \t Deleting {$attachment_to_delete->label} attachment not uploaded by BI-staff for the BI-request {$bi_request->id} \n >>>>>>>> \n \n \n";
 
