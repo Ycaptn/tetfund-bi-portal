@@ -73,7 +73,14 @@ $(function() {
 			}, 600), !1
 		});
 
-		$(".wrapper").addClass("toggled");
+		if (window.matchMedia('(max-width: 767px)').matches) {
+	    // Mobile devices
+			$(".wrapper").removeClass("toggled");
+	  } else {
+	    // Desktop devices
+			$(".wrapper").addClass("toggled");
+	  }
+
 		$(".sidebar-wrapper").hover(function() {
 				$(".wrapper").addClass("sidebar-hovered")
 			}, function() {

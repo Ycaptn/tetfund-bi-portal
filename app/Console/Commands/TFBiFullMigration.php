@@ -43,6 +43,8 @@ class TFBiFullMigration extends Command
         \Artisan::call('tetfund:bi-un-submitted-beneficiary-requests-migration');
         \Artisan::call('tetfund:bi-submitted-monitoring-requests-migration');
         \Artisan::call('tetfund:bi-un-submitted-monitoring-requests-migration');
+        \Artisan::call('tetfund:bi-un-submitted-monitoring-requests-migration');
+        \Artisan::call('tetfund:bi-delete-all-attachments-not-uploaded-by-bi-staff');
 
 
         echo " \n";
