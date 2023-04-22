@@ -461,7 +461,7 @@ class SubmissionRequestController extends BaseController
             return redirect()->back()->with('success', $success_message);
         }
 
-        return redirect()->back()->withErrors(['Oops!!!, An Server Error was encountered while processing final submission.']);
+        return redirect()->back()->withErrors(['Oops!!!, A Server Error was encountered while processing final submission.']);
 
     }
 
