@@ -663,7 +663,7 @@ class SubmissionRequestController extends BaseController
                 ->with('allSubmissionAttachments', $submissionRequest->get_all_attachments($submissionRequest->id))
                 ->with('intervention_name', $intervention_name ?? null)
                 ->render('pages.submission_requests.show', [
-                    'intervention' => $intervention_types_server_response,
+                    'intervention' => $intervention_types_server_response->intervention ?? $intervention_types_server_response,
                     'submissionRequest' => $submissionRequest,
                     'years' => $years,
                     'checklist_items' => $checklist_items,
@@ -675,7 +675,7 @@ class SubmissionRequestController extends BaseController
         }
 
         return view('pages.submission_requests.show')
-            ->with('intervention', $intervention_types_server_response)
+            ->with('intervention', $intervention_types_server_response->intervention ?? $intervention_types_server_response)
             ->with('submissionRequest', $submissionRequest)
             ->with('parentAIPSubmissionRequest', $submissionRequest->is_aip_request || 
                     ($submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($intervention_types_server_response->intervention->name ?? $intervention_types_server_response->name ?? '')) ? 
