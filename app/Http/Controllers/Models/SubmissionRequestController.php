@@ -654,7 +654,7 @@ class SubmissionRequestController extends BaseController
                 ->with('user_beneficiary', $beneficiary)
                 ->with('submission_request', $submissionRequest)
                 ->with('parentAIPSubmissionRequest', $submissionRequest->is_aip_request || 
-                    ($submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($intervention_types_server_response->name)) ? 
+                    ($submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($intervention_types_server_response->intervention->name ?? $intervention_types_server_response->name ?? '')) ? 
                     $submissionRequest : 
                     $submissionRequest->getParentAIPSubmissionRequest())
                 ->with('firstTrancheSubmissionRequest', $submissionRequest->is_first_tranche_request ? $submissionRequest : $submissionRequest->getFirstTrancheSubmissionRequest())
@@ -678,7 +678,7 @@ class SubmissionRequestController extends BaseController
             ->with('intervention', $intervention_types_server_response)
             ->with('submissionRequest', $submissionRequest)
             ->with('parentAIPSubmissionRequest', $submissionRequest->is_aip_request || 
-                    ($submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($intervention_types_server_response->name)) ? 
+                    ($submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($intervention_types_server_response->intervention->name ?? $intervention_types_server_response->name ?? '')) ? 
                     $submissionRequest : 
                     $submissionRequest->getParentAIPSubmissionRequest())
             ->with('firstTrancheSubmissionRequest', $submissionRequest->is_first_tranche_request ? $submissionRequest : $submissionRequest->getFirstTrancheSubmissionRequest())

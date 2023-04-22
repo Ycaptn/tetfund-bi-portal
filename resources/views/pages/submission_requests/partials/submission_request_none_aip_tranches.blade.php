@@ -28,7 +28,7 @@
 		$submitted_aip_request = $submitted_request_data->submitted_aip_request;
 		$submitted_aip_request_final_amount = $submitted_aip_request->request_final_amount ?? $submitted_aip_request->request_amount ?? 0;
 
-		if($submitted_aip_request_final_amount==0 && $submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($intervention->name)) {
+		if($submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($intervention->intervention->name ?? $intervention->name ?? '')) {
 			$submitted_aip_request_final_amount = $parentAIPSubmissionRequest->amount_requested;
 		}
 		
@@ -56,7 +56,7 @@
 		$submitted_aip_request = $submitted_request_data->submitted_aip_request;
 		$submitted_aip_request_final_amount = $submitted_aip_request->request_final_amount ?? $submitted_aip_request->request_amount ?? 0;
 
-		if($submitted_aip_request_final_amount==0 && $submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($intervention->name)) {
+		if($submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($intervention->intervention->name ?? $intervention->name ?? '')) {
 			$submitted_aip_request_final_amount = $parentAIPSubmissionRequest->amount_requested;
 		}
 
@@ -85,7 +85,7 @@
 		$submitted_aip_request = $submitted_request_data->submitted_aip_request;
 		$submitted_aip_request_final_amount = $submitted_aip_request->request_final_amount ?? $submitted_aip_request->request_amount ?? 0;
 
-		if($submitted_aip_request_final_amount==0 && $submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($intervention->name)) {
+		if($submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($intervention->intervention->name ?? $intervention->name ?? '')) {
 			$submitted_aip_request_final_amount = $parentAIPSubmissionRequest->amount_requested;
 		}
 
