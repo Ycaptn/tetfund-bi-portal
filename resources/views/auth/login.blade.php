@@ -163,14 +163,14 @@
                             </div>
                             <div>
                                 <a 
-                                    class="md:inline-block block align-baseline font-bold text-sm text-blue hover:text-blue-darker ml-6"
+                                    class="md:inline-block block align-baseline font-bold text-sm text-green hover:text-blue-darker ml-6"
                                     href="{{ route('password.request') }}">
                                     Forgot Password?
                                 </a>
                             </div>
                         </div>
                         <div class=" pt-3 md:w-2/4">
-                            <button class="bg-blue hover:bg-blue-500 text-white font-bold py-2 px-5 rounded" type="submit">
+                            <button class="bg-green hover:bg-limegreen-500 text-white font-bold py-2 px-5 rounded" type="submit">
                                 Log in
                             </button>
                         </div>
@@ -180,7 +180,7 @@
 
 
                 <p class="pt-6 text-sm" style="color:green; font-size:80%">
-                    For <b>National Research Fund (NRF)</b> submissions, please use the <a href="https://nrf.tetfund.gov.ng" style="color:blue;" target="_blank">NRF Portal</a> to process your submissions. 
+                    For <b>National Research Fund (NRF)</b> submissions, please use the <a href="https://nrf.tetfund.gov.ng" style="color:green;" target="_blank"><b><u>NRF Portal</u></b></a> to process your submissions. 
                     <span style="color:red;display:inline;">
                     For technical support, kindly contact <b>TETFund ICT support department on 0803-777-6194 or 0814-014-8722 or 0805-198-4832</b> or by email at portal.support@tetfund.gov.ng
                     </span>

@@ -3,7 +3,7 @@
     <!--====== FOOTER PART START ======-->
 
     <footer id="footer" class=" footer-area absolute bottom-0 w-full">
-        <div class="bg-blue-900 ">
+        <div class="bg-green">
             <!-- <div class="container"> -->
                 <!-- <div class="row"> -->
                     <!-- <div class="w-full"> -->

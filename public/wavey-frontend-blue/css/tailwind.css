@@ -697,6 +697,22 @@ video {
   background-color: #4299e1;
   background-color: rgba(66, 153, 225, var(--bg-opacity));
 }
+
+.hover\:bg-limegreen:hover {
+  --bg-opacity: 1;
+  background-color:#32CD32;
+  background-color: rgba(50, 205, 50, var(--tw-bg-opacity));
+}
+.bg-green {
+  --tw-bg-opacity: 1;
+  background-color: rgba(25, 135, 84, var(--tw-bg-opacity));
+}
+.text-green {
+  --text-opacityy: 1;
+  color: #198754;
+  background-color: rgba(25, 135, 84, var(--text-opacity));
+}
+
 .hover\:bg-green-500:hover{
   --bg-opacity: 1;
   background-color: #4299e1;
