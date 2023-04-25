@@ -69,7 +69,9 @@ trait BeneficiaryUserTrait {
     }
 
 
-    public function replicate_bi_user_to_bi_portal($user_record, $additional_payload) {
+    public function replicate_bi_user_to_bi_portal($beneficiary_member, $additional_payload) {
+        $user_record = $beneficiary_member->user ?? null;
+        
         if (!empty($user_record) && $user_record != null) {
             $zUser = new User();
 
@@ -92,7 +94,25 @@ trait BeneficiaryUserTrait {
             $zUser->gender = $user_record->gender;
             $zUser->created_at = $user_record->created_at;
             $zUser->updated_at = $user_record->updated_at;
-            $zUser->syncRoles(['BI-staff']);
+
+            $roles_arr = [
+                'bi_admin' => 'BI-admin',
+                'bi_deskofficer' => 'BI-desk-officer',
+                'bi_hoi' => 'BI-head-of-institution',
+                'bi_ict' => 'BI-ict',
+                'bi_librarian' => 'BI-librarian',
+                'bi_works' => 'BI-works',
+                'bi_pp_director' => 'BI-physical-planning-dept',
+                'bi_staff' => 'BI-staff',
+                'bi_student' => 'BI-student',
+            ];
+
+            if ($beneficiary_member->role!=null && $roles_arr[$beneficiary_member->role]) {
+                $zUser->syncRoles([$roles_arr[$beneficiary_member->role]]);    
+            } else {
+                $zUser->syncRoles(['BI-staff']);
+            }
+
             $zUser->save();
 
             // binding user to beneficiary membership table

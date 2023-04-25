@@ -342,36 +342,38 @@ class BeneficiaryAPIController extends AppBaseController
                 //checking if beneficiary desk officer exist
                 $beneficiary_desk_officer_user = User::where('email', $desk_officer_email)->first();
                 
-                if (empty($beneficiary_desk_officer_user)) {
+                if (!empty($beneficiary_desk_officer_user)) {
 
                     // desk officer payload
-                    $pay_load = [
-                        "email" => $desk_officer_email,
-                        'password' => $this->generateStrongPassword(),
-                        "telephone" => $get_server_beneficiary->official_phone,
-                        "first_name" => strtoupper($get_server_beneficiary->short_name),
-                        "last_name" => 'Desk-Officer',
-                        'organization_id' => auth()->user()->organization_id,
-                        //'organization_id' => $get_server_beneficiary->organization_id,
-                        "gender" => 'male',
-                        'beneficiary_bi_id' => $beneficiary_obj->id,
-                        'beneficiary_tetfund_iterum_id' => $get_server_beneficiary->id,
-                        'beneficiary_synchronization' => true
-                    ];
+                    // $pay_load = [
+                    //     "email" => $desk_officer_email,
+                    //     'password' => $this->generateStrongPassword(),
+                    //     "telephone" => $get_server_beneficiary->official_phone,
+                    //     "first_name" => strtoupper($get_server_beneficiary->short_name),
+                    //     "last_name" => 'Desk-Officer',
+                    //     'organization_id' => auth()->user()->organization_id,
+                    //     //'organization_id' => $get_server_beneficiary->organization_id,
+                    //     "gender" => 'male',
+                    //     'beneficiary_bi_id' => $beneficiary_obj->id,
+                    //     'beneficiary_tetfund_iterum_id' => $get_server_beneficiary->id,
+                    //     'beneficiary_synchronization' => true
+                    // ];
                     
+                    $beneficiary_desk_officer_user->delete();
+
                     // creating beneficiary desk officer
-                    $beneficiary_desk_officer = $this->create_new_bims_and_local_user($pay_load);
+                    // $beneficiary_desk_officer = $this->create_new_bims_and_local_user($pay_load);
                 }
 
                 // replication and update records for beneficiary members
                 if (isset($get_server_beneficiary->memberships) && count($get_server_beneficiary->memberships) > 0) {
                     foreach ($get_server_beneficiary->memberships as $beneficiary_member) {
-                        if (isset($beneficiary_member->user) && $beneficiary_member->role != 'bi_deskofficer') {
+                        if (isset($beneficiary_member->user)) {
 
                             $bi_user = $beneficiary_member->user;
 
                             //checking if beneficiary user exist
-                            $bi_user_exist = User::where('email', $bi_user->email)->first();
+                            $bi_user_exist = User::where('email', $bi_user->email)->withTrashed()->first();
                             
                             // create user if user does not exist on BI portal
                             if (empty($bi_user_exist) || $bi_user_exist == null) {
@@ -382,7 +384,7 @@ class BeneficiaryAPIController extends AppBaseController
                                 ];
 
                                 // creating beneficiary desk officer
-                                $bi_user_response = $this->replicate_bi_user_to_bi_portal($bi_user, $additional_payload);
+                                $bi_user_response = $this->replicate_bi_user_to_bi_portal($beneficiary_member, $additional_payload);
                                 array_push($bi_users_emails_enroled, $bi_user->email);
                             }
                         }
