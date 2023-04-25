@@ -386,6 +386,10 @@ class BeneficiaryAPIController extends AppBaseController
                                 // creating beneficiary desk officer
                                 $bi_user_response = $this->replicate_bi_user_to_bi_portal($beneficiary_member, $additional_payload);
                                 array_push($bi_users_emails_enroled, $bi_user->email);
+
+                            } elseif (!empty($bi_user_exist) && $bi_user_exist->deleted_at != null) {
+                                $bi_user_exist->deleted_at = null;
+                                $bi_user_exist->save();
                             }
                         }
                     }
