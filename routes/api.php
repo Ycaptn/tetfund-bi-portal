@@ -13,11 +13,24 @@ $orgRoutes = function() {
 
         \FoundationCore::api_public_routes();
 
+        // API Auth Controller Login Endpoint
+        Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
+
         Route::middleware(['auth:sanctum'])->group(function () {
 
             \FoundationCore::api_routes();
 
             Route::name('tf-bi-portal-api.')->prefix('tf-bi-portal-api')->group(function(){
+                
+                //API Auth Controller Endpoints
+                Route::get('/user', [App\Http\Controllers\API\AuthController::class, 'profile']);
+                Route::get('/user/{id}', [App\Http\Controllers\API\AuthController::class, 'fetchUser']);
+                Route::get('/users', [App\Http\Controllers\API\AuthController::class, 'index']);
+                Route::post('/password/reset', [App\Http\Controllers\API\AuthController::class, 'resetPassword']);
+                Route::get('/reset', [App\Http\Controllers\API\AuthController::class, 'reset']);
+                Route::get('/syn-user', [App\Http\Controllers\API\AuthController::class, 'sycUserRecord']);
+                Route::post('/logout', [App\Http\Controllers\API\AuthController::class, 'logout']);
+
                 Route::resource('beneficiaries', \App\Http\Controllers\API\BeneficiaryAPIController::class);
                 Route::resource('committee_meeting_minutes', \App\Http\Controllers\API\CommitteeMeetingsMinutesController::class);
                 
