@@ -333,7 +333,7 @@ class BeneficiaryAPIController extends AppBaseController
                 $beneficiary_obj->tf_iterum_portal_response_at = date('Y-m-d H:i:s');
                
                 //create or update beneficiary institution
-                $beneficiary_obj->save();
+                // $beneficiary_obj->save();
 
                 //desk-officer custom email
                 $email_prefix = $this->sanitize_email_prefix($get_server_beneficiary->short_name);
@@ -359,7 +359,7 @@ class BeneficiaryAPIController extends AppBaseController
                     //     'beneficiary_synchronization' => true
                     // ];
                     
-                    $beneficiary_desk_officer_user->delete();
+                    // $beneficiary_desk_officer_user->delete();
 
                     // creating beneficiary desk officer
                     // $beneficiary_desk_officer = $this->create_new_bims_and_local_user($pay_load);
@@ -384,12 +384,12 @@ class BeneficiaryAPIController extends AppBaseController
                                 ];
 
                                 // creating beneficiary desk officer
-                                $bi_user_response = $this->replicate_bi_user_to_bi_portal($beneficiary_member, $additional_payload);
+                                // $bi_user_response = $this->replicate_bi_user_to_bi_portal($beneficiary_member, $additional_payload);
                                 array_push($bi_users_emails_enroled, $bi_user->email);
 
                             } elseif (!empty($bi_user_exist) && $bi_user_exist->deleted_at != null) {
                                 $bi_user_exist->deleted_at = null;
-                                $bi_user_exist->save();
+                                // $bi_user_exist->save();
                             }
                         }
                     }

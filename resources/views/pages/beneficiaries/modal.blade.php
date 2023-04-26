@@ -8,6 +8,9 @@ $(document).ready(function() {
 
     $('.offline-beneficiaries').hide();
     
+
+    $('#btn-sync-mdl-beneficiary-modal').attr('disabled', true);
+
     //Proceed to process synchronization
     $(document).on('click', ".btn-sync-mdl-beneficiary-modal", function(e) {
         e.preventDefault();
