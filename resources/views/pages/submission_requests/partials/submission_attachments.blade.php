@@ -29,8 +29,8 @@
 
                                 $attached_label = str_replace('auditclearancefinalpaymentchecklist-', '', $attached['label']);
                                 $attached_label = str_replace('auditclearancesecondtranchepaymentchecklist-', '', $attached_label);
-
-                                $attached_label == $limited_slugged_label || $attached_label ==  Str::limit($item->item_label ,495, "") ? $response = $attached : null;
+                                
+                                $attached_label == $limited_slugged_label || str_contains($attached_label, Str::limit($item->item_label ,495, "")) || str_contains($attached_label, Str::limit($item->item_label ,120, "")) ? $response = $attached : null;
 
                                 return $response;
                              });
