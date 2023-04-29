@@ -14,7 +14,7 @@
             </p>
             
             <ul class="flex flex-wrap justify-center mt-5">
-                <li><a class="mx-3 main-btn gradient-green-btn" href="http://www.tetfund.gov.ng" target="_blank">TETFund</a></li>
+                <li><a class="mx-3 main-btn gradient-green-btn" href="http://www.tetfund.gov.ng" target="_blank">TETFund Website</a></li>
                 <li><a class="mx-3 main-btn gradient-green-btn" href="{{ route('login') }}">Login</a></li>
             </ul>
 
