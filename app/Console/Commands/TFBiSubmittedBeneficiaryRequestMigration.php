@@ -81,7 +81,7 @@ class TFBiSubmittedBeneficiaryRequestMigration extends Command
                     $desk_officer_email = strtolower($this->sanitize_email_prefix($bi_portal_beneficiary->short_name) . "@tetfund.gov.ng");
 
                     // fetching desk officer user details
-                    $desk_officer = User::where('email', $desk_officer_email)->first();
+                    $desk_officer = User::where('email', $desk_officer_email)->withTrashed()->first();
 
                     // fetching submission request from BI-portal having similar details
                     $submission_request = SubmissionRequest::where([

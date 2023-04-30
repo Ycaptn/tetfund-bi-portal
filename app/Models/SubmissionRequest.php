@@ -192,6 +192,7 @@ class SubmissionRequest extends Model
         $start_up_first_tranche_interventions = [
             'equipment fabrication',
             'advocacy and publicity',
+            'academic research journal',
             'academic manuscript into books',
         ];
 
@@ -212,6 +213,7 @@ class SubmissionRequest extends Model
             'equipment fabrication' => '50%',
             'advocacy and publicity' => '85%',
             'entrepreneurship centre' => '85%',
+            'academic research journal' => '85%',
             'academic manuscript into books' => '85%',
             'academic manuscript development' => '85%',
             'physical infrastructure and program upgrade' => '50%',
@@ -247,6 +249,7 @@ class SubmissionRequest extends Model
             'equipment fabrication' => '15%',
             'advocacy and publicity' => '15%',
             'entrepreneurship centre' => '15%',
+            'academic research journal' => '15%',
             'academic manuscript into books' => '15%',
             'academic manuscript development' => '15%',
             'physical infrastructure and program upgrade' => '15%',
@@ -262,6 +265,7 @@ class SubmissionRequest extends Model
             'library development',
             'equipment fabrication',
             'advocacy and publicity',
+            'academic research journal',
             'academic manuscript into books',
             'physical infrastructure and program upgrade',
         ];
