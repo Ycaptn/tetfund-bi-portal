@@ -324,7 +324,7 @@ class SubmissionRequestController extends BaseController
 
         // initializing submission payload
         $pay_load = $submissionRequest->toArray();
-
+   
         $guessed_intervention_name = explode('-', $submissionRequest->title);
         if ($submissionRequest->is_aip_request==true || ($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention(trim($guessed_intervention_name[0])))) {
             //get total fund available 
@@ -338,16 +338,21 @@ class SubmissionRequestController extends BaseController
             }            
 
             if (isset($fund_availability->total_funds) && $fund_availability->total_funds != $submissionRequest->amount_requested && ($submissionRequest->is_aip_request==true || $submissionRequest->is_first_tranche_request==true) && ( (!str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') && !str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') && !str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship') ) || ($submissionRequest->is_start_up_first_tranche_intervention(optional($request)->intervention_name) && $submissionRequest->getParentAIPSubmissionRequest()==null) )) {
-
+            
                 //error for requested fund mismatched to allocated fund non-astd interventions
-                array_push($errors_array, "Fund requested must be equal to the Allocated amount.");
+                if(str_contains( strtolower(optional($request)->intervention_name), "academic manuscript into books") || str_contains( strtolower(optional($request)->intervention_name), "academic research journal") ){
+            
+                }else{
+                    array_push($errors_array, "Fund requested must be equal to the Allocated amount.");
+                }
+               
            
             } else if (isset($fund_availability->total_funds) && $submissionRequest->amount_requested > $fund_availability->total_funds && (str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') || str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') || str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) ) {
                 
                 //error for requested fund mismatched to allocated fund for all ASTD interventions
                 array_push($errors_array, "Fund requested cannot be greater than allocated amount.");
             }
-
+         
             //error when at least one selected allocation year is found
             if (isset($fund_availability->allocation_records) && count($fund_availability->allocation_records) > 0) {
                 $all_valid_allocation_year = array_column($fund_availability->allocation_records, 'year');
