@@ -73,10 +73,13 @@ Beneficiary Dashboard
                                 For <b>NEW SUBMISSIONS</b>, i.e., Request for Approval in Principle (AIP), click the New Submission Button
                             </li>
                             <li class="mt-4">
-                                For <b>ONGOING SUBMISSIONS</b>, i.e. First Tranche, Second Tranche, Final Tranche, Monitoring Request, Audit Clearance, etc, click the Ongoing Submission Button
+                                For <b>ONGOING SUBMISSIONS</b>, i.e. First Tranche, Second Tranche, Final Tranche, Monitoring Request, Audit Clearance etc, that the processing wasn't start online of this platform click the Ongoing Submission Button 
                             </li>
                             <li>
                                 Once your submission is completed, a <b>TRACKING NUMBER</b> is provided for you, you are required to include this tracking number in the physical hard copy submission to the Fund
+                            </li>
+                            <li>
+                                 <span class="text-danger">Note the Ongoing Submissions button is only meant for submission that was started manually i.e not through this submission portal. </span>
                             </li>
                         </ul>
                     </div>
@@ -139,6 +142,23 @@ Beneficiary Dashboard
                                     </sup>
                                 </b>
                                 Active Submissions
+                            </button>
+                        </h4>
+                        <div id="acc_ess_div" class="accordion-collapse collapse" aria-labelledby="acc_ess_div" data-bs-parent="#acc_main" style="">
+                            <div class="accordion-body">
+                                @include('tf-bi-portal::dashboard.partials.active_submissions')
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h4 class="accordion-header" id="acc_ess">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc_ess_div" aria-expanded="false" aria-controls="acc_ess_div">
+                                <b>
+                                    <sup class="fa-layers-counter text-white bg-danger" style="background-color:white; border-radius: 20%;">
+                                        &nbsp;{{ count($approved_submissions) }}&nbsp;
+                                    </sup>
+                                </b>
+                                Approved Submissions
                             </button>
                         </h4>
                         <div id="acc_ess_div" class="accordion-collapse collapse" aria-labelledby="acc_ess_div" data-bs-parent="#acc_main" style="">

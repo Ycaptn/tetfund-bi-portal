@@ -39,6 +39,12 @@ class DashboardController extends BaseController
                         ])
                         ->orderBy('created_at', 'DESC')
                         ->get();
+        $approved_submissions = SubmissionRequest::whereIn('status', ['approved'])
+                            ->where([
+                            'is_monitoring_request' => false,
+                            'beneficiary_id' => optional($beneficiary_member)->beneficiary_id
+                            ])->orderBy('created_at', 'DESC')
+                            ->get();
 
 
         // get some array of data from server
@@ -87,6 +93,7 @@ class DashboardController extends BaseController
                     ->with('active_submissions', $active_submissions)
                     ->with('upcoming_monitorings', $upcoming_monitorings)
                     ->with('beneficiary', optional($beneficiary_member)->beneficiary)
+                    ->with('approved_submissions',$approved_submissions)
                     ->with('official_communications', $official_communications);
     }
 

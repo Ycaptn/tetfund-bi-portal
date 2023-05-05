@@ -16,8 +16,8 @@
             </tr>
         </thead>
         <tbody>
-            @if(isset($approved_submissions) && !empty($approved_submissions))
-                @foreach($approved_submissions as $submissions)
+            @if(isset($active_submissions) && !empty($active_submissions))
+                @foreach($active_submissions as $submissions)
                     <tr>
                         <td class="text-center">
                             {{ $loop->iteration }}
@@ -46,7 +46,7 @@
             @else
                 <tr>
                     <td class="text-center text-danger" colspan="4">
-                        <i>No Approved Submissions at the Moment</i>
+                        <i>No Active Submissions at the Moment</i>
                     </td>
                 </tr>
             @endif  
