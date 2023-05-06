@@ -13,7 +13,8 @@
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
-        "hasob/hasob-foundation-core-bs-5": "dev-bs-5",
+        "hasob/hasob-foundation-core": "dev-master",
+        "tetfund/tetfund-bims-module": "dev-master",
         "knplabs/knp-snappy": "^1.2",
         "laravel/framework": "^8.40",
         "laravel/sanctum": "^2.11",
@@ -45,6 +46,10 @@
         {
             "type": "path",
             "url": "../hasob-foundation-core-bs-5"
+        },
+        {
+            "type": "path",
+            "url": "../tetfund-bims-module"
         }
     ],
     "autoload-dev": {
