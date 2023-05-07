@@ -17,12 +17,14 @@ $orgRoutes = function() {
 
 
         \FoundationCore::public_routes();
+        \BIMSOnboarding::public_routes();
         Auth::routes();
 
         Route::middleware(['auth'])->group(function () {
 
             //Package Routes
             \FoundationCore::routes();
+            \BIMSOnboarding::routes();
 
             //Dashboard Routes
             Route::get('/dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'index'])->name('dashboard');

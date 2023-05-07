@@ -11,6 +11,7 @@ $orgRoutes = function() {
     ], function () {
 
 
+        \BIMSOnboarding::api_public_routes();
         \FoundationCore::api_public_routes();
 
         // API Auth Controller Login Endpoint
@@ -19,6 +20,7 @@ $orgRoutes = function() {
         Route::middleware(['auth:sanctum'])->group(function () {
 
             \FoundationCore::api_routes();
+            \BIMSOnboarding::api_routes();
 
             Route::name('tf-bi-portal-api.')->prefix('tf-bi-portal-api')->group(function(){
                 
