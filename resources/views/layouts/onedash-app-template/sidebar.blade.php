@@ -267,6 +267,12 @@
 				</li>
 			@endif
 
+
+			@php
+				$menu_bims = \BIMSOnboarding::get_menu_map();
+			@endphp
+			@each('layouts.default-app-template.menu-group', $menu_bims, 'children')
+
 			@if (optional(Auth()->user())->hasAnyRole(['admin']))
 				@php
 					$menu_fc = \FoundationCore::get_menu_map();
