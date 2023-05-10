@@ -57,7 +57,7 @@
                                 <div class="col-sm-12 text-justify text-danger">
                                 	<small>
                                 		<i>
-                                			<strong>Note:</strong> By reprioritizing this AIP submission request, this will enable you to make & resubmit minor alterations for the input fields below.                               			
+                                			<strong>Note:</strong> By reprioritizing this AIP submission request, this will enable you to reprioritize your earlier approved AIP request submitted.                             			
                                 		</i>
                                 	</small>
                                 </div><hr>
@@ -66,12 +66,12 @@
 			                    	<div class="row form-group">
 				                        <label class="col-md-3 control-label"><strong>Requested Amount (₦)</strong></label>
 				                        <div class="col-md-9">			                              
-				                            <input type='text' class="form-control" id="reprioritize_amount_requested" value="{{old('reprioritize_amount_requested') ?? number_format($amount_requested, 2) }}" />
+				                            <input type='text' class="form-control" id="reprioritize_amount_requested" value="{{old('reprioritize_amount_requested') ?? number_format($amount_requested, 2) }}" disabled/>
 				                        </div>
 			                    	</div>
 			                    </div>
 			                    
-			                    <div class="col-sm-12 mb-3">
+			                   {{--  <div class="col-sm-12 mb-3">
 			                    	<div class="row form-group">
 
 				                        <label class="col-md-3 control-label"><strong>Intervention Years</strong></label>
@@ -124,7 +124,7 @@
 				                        </div>
 
 			                    	</div>
-			                    </div>
+			                    </div> --}}
 
 			                    <div class="col-sm-12 mb-3">
 			                    	<div class="row form-group">
@@ -244,18 +244,18 @@
 			        	formData.append('reprioritize_amount_requested', $('#reprioritize_amount_requested').val().replace(/,/g,""));
 			        }
 
-			        if ($('#reprioritize_intervention_year1').length){
-			        	formData.append('reprioritize_intervention_year1', $('#reprioritize_intervention_year1').val());
-			        }
-			        if ($('#reprioritize_intervention_year2').length){
-			        	formData.append('reprioritize_intervention_year2', $('#reprioritize_intervention_year2').val());
-			        }
-			        if ($('#reprioritize_intervention_year3').length){
-			        	formData.append('reprioritize_intervention_year3', $('#reprioritize_intervention_year3').val());
-			        }
-			        if ($('#reprioritize_intervention_year4').length){
-			        	formData.append('reprioritize_intervention_year4', $('#reprioritize_intervention_year4').val());
-			        }
+			       // if ($('#reprioritize_intervention_year1').length){
+			        	formData.append('reprioritize_intervention_year1', "{{optional($submitted_request_data)->intervention_year1}}");
+			        //}
+			        //if ($('#reprioritize_intervention_year2').length){
+			        	formData.append('reprioritize_intervention_year2', "{{optional($submitted_request_data)->intervention_year2}}");
+			        //}
+			        //if ($('#reprioritize_intervention_year3').length){
+			        	formData.append('reprioritize_intervention_year3', "{{optional($submitted_request_data)->intervention_year3}}");
+			       // }
+			       // if ($('#reprioritize_intervention_year4').length){
+			        	formData.append('reprioritize_intervention_year4',"{{optional($submitted_request_data)->intervention_year3}}");
+			       // }
 			        
 			        if ($('#reprioritize_submission_comment').length){
 			        	formData.append('reprioritize_submission_comment', $('#reprioritize_submission_comment').val());
