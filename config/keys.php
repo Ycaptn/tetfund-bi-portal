@@ -11,9 +11,9 @@ return [
     ],
 
     'tetfund' => [
-        'server_api_url' => "http://127.0.0.1:8080/api",
-        'server_api_user' => "bi-portal@tetfund.gov.ng",
-        'server_api_pwd' => "BI@Portal$2020",
+        'server_api_url' => env('TETFUND_URL', "http://127.0.0.1:8080/api"),
+        'server_api_user' => env('TETFUND_API_USER', "testuser@tetfund.gov.ng"),
+        'server_api_pwd' => env('TETFUND_API_PWD', "password"),
     ]
 
 ];
