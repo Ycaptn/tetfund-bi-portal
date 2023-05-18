@@ -227,6 +227,7 @@ $(document).ready(function() {
         formData.append('_token', $('input[name="_token"]').val());
         formData.append('_method', 'POST');
         formData.append('nomination_request_and_submission', '1');
+        let nomination_type = $('#nomination_type').val();
         if ($('#nomination_type').length){ formData.append('nomination_type',$('#nomination_type').val()); }
 
         //nomination request data appended
@@ -234,14 +235,19 @@ $(document).ready(function() {
             formData.append('organization_id', '{{$organization->id}}');
         @endif
 
-        // tp nomination request data appended
-        @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_append_tp_form_data')
-
-        // ca nomination request data appended
-        @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_append_ca_form_data')
-        
-        // tsas nomination request data appended
-        @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_append_tsas_form_data')
+        if(nomination_type != ''){
+            if( nomination_type == "tsas"){
+                // tsas nomination request data appended
+                @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_append_tsas_form_data')
+            }else if(nomination_type == "tp"){
+                // tp nomination request data appended
+                @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_append_tp_form_data')
+            }else if(nomination_type == "ca"){
+                 // ca nomination request data appended
+                @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_append_ca_form_data')
+            }
+        }
+       
 
         $.ajax({
             url: "{{ route('tf-bi-portal-api.nomination_requests.store_nomination_request_and_details') }}",
