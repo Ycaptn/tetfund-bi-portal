@@ -72,7 +72,6 @@
                     <img src="{{ asset('imgs/tetfundlogo1.png') }}" width="110vw" alt="TETFund Logo" />
                 </div>
                 
-                @if(env('BIMS_CLIENT_ID') && env('BIMS_IS_ENABLED') == true && env('BIMS_REDIRECT_URI') != null)
                     <div class="mb-8" style="width: 100%;">
                         <div class="flex flex-row justify-center mb-4">
                             <a href="https://bims.tetfund.gov.ng/oauth/authorize?response_type=code&client_id={{$clientId}}&redirect_uri={{$redirectUrl}}&state={{$state}}" role="button" style="border-radius:10px;">
@@ -87,7 +86,6 @@
                             </a>
                         </div>
                     </div>
-                @endif
 
                 <!-- form to be toggled -->
                 <div class=""> 
