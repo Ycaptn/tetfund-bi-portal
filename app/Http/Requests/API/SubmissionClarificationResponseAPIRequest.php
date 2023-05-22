@@ -27,7 +27,7 @@ class SubmissionClarificationResponseAPIRequest extends AppBaseFormRequest
         return [
             'submission_request_id' => 'required|exists:tf_bi_submission_requests,id',
             'text_clarificarion_response' => 'required|string|max:1000',
-            'attachment_clarificarion_response' => 'sometimes|file|mimes:pdf,doc,docx,jpg,png,jpeg|max:52400'
+            'attachment_clarificarion_response' => 'sometimes|file|mimes:pdf,doc,docx,jpg,png,jpeg,xls,xlsx|max:52400'
         ];
     }
 
