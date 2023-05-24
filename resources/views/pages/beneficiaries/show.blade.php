@@ -98,10 +98,11 @@ Beneficiary
                             <strong>
                                 Beneficiary User Accounts
                             </strong>
+                        </h5> --}}
                              <a title="Create New Beneficiary Member" class="btn btn-primary btn-sm pull-right btn-new-beneficiary-member" href="#">
                                 <span class="fa fa-plus"></span> <small>Add User</small>
                             </a>
-                        </h5> --}}
+                        
                     @elseif(request()->sub_menu_items=="submissions")
                         {{-- <h5 class="pt-3"> 
                             <strong>
