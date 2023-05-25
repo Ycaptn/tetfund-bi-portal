@@ -257,7 +257,8 @@
                     $('#bi_staff_lname_preview').text((response.data.last_name != null) ? response.data.last_name.toUpperCase() : 'N/A');
                     $('#bi_telephone_preview').text((response.data.telephone != null) ? response.data.telephone.toUpperCase() : 'N/A');
                     $('#bi_staff_gender_preview').text((response.data.gender != null) ? response.data.gender.toUpperCase() : 'N/A');
-
+                    $('#bi_staff_grade_level_preview').text((response.data.grade_level != null) ? "GL-"+response.data.grade_level: 'N/A');
+                    $('#bi_staff_member_type_preview').text((response.data.member_type != null) ? response.data.member_type.toUpperCase() : 'N/A');
                     // handling data for role(s)
                     $('#bi_staff_userRoles').text('N/A');
                     if(response.data.user_roles != '') {
@@ -437,13 +438,14 @@
                 $('#txt-beneficiary-member-primary-id').val(itemId);
 
                 $.get( "{{ route('tf-bi-portal-api.show_beneficiary_member','') }}/"+itemId).done(function( response ) {     
-                    console.log(response);
+                  //  console.log(response);
                     $('#bi_staff_email').val(response.data.email);
                     $('#bi_staff_fname').val(response.data.first_name);
                     $('#bi_staff_lname').val(response.data.last_name);
                     $('#bi_telephone').val(response.data.telephone);
                     $('#bi_staff_gender').val((response.data.gender != null) ? response.data.gender.toLowerCase() : '');
-
+                    $('#bi_grade_level').val((response.data.grade_level != null) ? response.data.grade_level : '');
+                    $('#bi_member_type').val((response.data.member_type != null) ? response.data.member_type : '');
                     // handling data for role(s)
                     if(response.data.user_roles != '') {
                         $.each(response.data.user_roles, function(key, value){
@@ -499,7 +501,8 @@
                 if ($('#bi_staff_lname').length){ formData.append('bi_staff_lname',$('#bi_staff_lname').val()); }
                 if ($('#bi_telephone').length){ formData.append('bi_telephone',$('#bi_telephone').val());   }               
                 if ($('#bi_staff_gender').length){ formData.append('bi_staff_gender',$('#bi_staff_gender').val()); }
-
+                if ($('#bi_member_type').length){ formData.append('bi_member_type',$('#bi_member_type').val()); }
+                if ($('#bi_grade_level').length){ formData.append('bi_grade_level',$('#bi_grade_level').val()); }
                 // handling data for role(s)
                 @if(isset($roles) && count($roles) > 0)
                     @foreach($roles as $role)

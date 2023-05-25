@@ -13,7 +13,7 @@
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
-        "hasob/hasob-foundation-core": "dev-master",
+        "hasob/hasob-foundation-core-bs-5": "dev-bs-5",
         "tetfund/tetfund-bims-module": "dev-master",
         "knplabs/knp-snappy": "^1.2",
         "laravel/framework": "^8.40",
@@ -77,7 +77,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true

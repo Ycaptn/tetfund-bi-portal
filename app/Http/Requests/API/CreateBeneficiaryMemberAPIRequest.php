@@ -38,6 +38,8 @@ class CreateBeneficiaryMemberAPIRequest extends AppBaseFormRequest
             'bi_telephone' => 'required|digits:11',
             'bi_staff_gender' => "required|string|max:50|in:". implode($gender_arr, ','),
             'beneficiary_id' => 'required|string|exists:tf_bi_portal_beneficiaries,id|max:300',
+            'bi_grade_level' => 'required|numeric',
+            'bi_member_type' => 'required',
         ];
 
         $allRoles = Role::where('guard_name', 'web')

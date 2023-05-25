@@ -43,6 +43,15 @@
             <hr><label class="col-sm-12 control-label" for="bi_staff_userRoles"><strong>USER ROLE(s)</strong></label><hr>
             <i><div class="form-group col-sm-12" id="bi_staff_userRoles"></div> </i>               
         </div> 
+        <div class="col-sm-6 mb-3">
+            <label class="col-sm-12 control-label" for="bi_staff_member_type_preview"><strong>TYPE</strong></label>
+            <i><div class="col-sm-12" id="bi_staff_member_type_preview"></div></i>
+        </div> 
+
+        <div class="row col-sm-12 mb-3 mt-3">
+            <hr><label class="col-sm-12 control-label" for="bi_staff_grade_level_preview"><strong>GRADE LEVEL</strong></label><hr>
+            <i><div class="form-group col-sm-12" id="bi_staff_grade_level_preview"></div> </i>               
+        </div> 
 
     </div>
 </div>

@@ -52,6 +52,8 @@ class BeneficiaryMember extends Model
         'beneficiary_id',
         'beneficiary_tetfund_iterum_id',
         'additional_param',
+        'member_type',
+        'grade_level',
     ];
 
     /**

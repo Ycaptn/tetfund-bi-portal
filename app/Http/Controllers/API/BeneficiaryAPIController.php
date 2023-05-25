@@ -167,6 +167,8 @@ class BeneficiaryAPIController extends AppBaseController
             "gender" => strtolower($request->bi_staff_gender),
             'organization_id' => $request->organization_id ?? null,
             'beneficiary_bi_id' => $beneficiary->id,
+            'memeber_type' => $request->bi_member_type,
+            'grade_level' => $request->bi_grade_level,
             'beneficiary_tetfund_iterum_id' => $beneficiary->tf_iterum_portal_key_id,
             'user_roles_arr' => $selectedRoles
         ];
@@ -188,9 +190,12 @@ class BeneficiaryAPIController extends AppBaseController
         if (empty($beneficiary_member)) {
             return $this->sendError('Beneficiary member is not found');
         }
-
+        $member = BeneficiaryMember::where('beneficiary_user_id',$beneficiary_member->id)->first();
         $user_roles_arr = $beneficiary_member->roles()->pluck('name')->toArray();
-
+        if(!empty($member)){
+            $beneficiary_member['member_type'] = $member->member_type;
+            $beneficiary_member['grade_level'] = $member->grade_level;
+        }
         $beneficiary_member['user_roles'] = (count($user_roles_arr) > 0) ? $user_roles_arr : '';
         return $this->sendResponse($beneficiary_member->toArray(), 'Beneficiary member retrieved successfully');
     }
@@ -229,6 +234,13 @@ class BeneficiaryAPIController extends AppBaseController
                     array_push($selectedRoles, $role);
                 }
             }
+        }
+
+        $member = BeneficiaryMember::where('beneficiary_user_id',$id)->first();
+        if(!empty($member)){
+            $member->grade_level = $request->bi_grade_level;
+            $member->member_type = $request->bi_member_type;
+            $member->save();
         }
 
         //update beneficiary user details

@@ -46,7 +46,37 @@
                 </select>
             </div>
         </div> 
+        <div class="col-sm-6 form-group mb-3">
+            <label class="col-sm-12 control-label" for="bi_grade_level">Grade LeveL</label>
+            <div class="col-sm-12 input-group">
+                <select class="form-select" name="bi_grade_level" id="bi_grade_level">
+                    <option value="">--- Select Grade Level ---</option>
+                    <option value="6">GL-6</option>
+                    <option value="7">GL-7</option>
+                    <option value="8">GL-8</option>
+                    <option value="9">GL-9</option>
+                    <option value="10">GL-10</option>
+                    <option value="11">GL-11</option>
+                    <option value="12">GL-12</option>
+                    <option value="13">GL-13</option>
+                    <option value="14">GL-14</option>
+                    <option value="15">GL-15</option>
+                    <option value="16">GL-16</option>
+                    <option value="17">GL-17</option>
+                </select>
+            </div>
+        </div>
 
+        <div class="col-sm-6 form-group mb-3">
+            <label class="col-sm-12 control-label" for="bi_member_type">Type</label>
+            <div class="col-sm-12 input-group">
+                <select class="form-select" name="bi_member_type" id="bi_member_type">
+                    <option value="">--- Select Type ---</option>
+                    <option value="academic">Academic</option>
+                    <option value="non-academic">Non-Academic</option>
+                </select>
+            </div>
+        </div> 
         <div class="row col-sm-12 mb-3 mt-3">
             <hr><strong>USER ROLE(s)</strong><hr>
             
