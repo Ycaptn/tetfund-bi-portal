@@ -54,8 +54,8 @@ trait BeneficiaryUserTrait {
                 'beneficiary_user_email'=>$zUser->email,
                 'beneficiary_id'=>$pay_load_data['beneficiary_bi_id'],
                 'beneficiary_tetfund_iterum_id'=>$pay_load_data['beneficiary_tetfund_iterum_id'],
-                'member_type' => $additional_payload['member_type'],
-                'grade_level' => $additional_payload['grade_level']
+                'member_type' => $pay_load_data['member_type'],
+                'grade_level' => $pay_load_data['grade_level']
             ];
 
             // map new_beneficiary_desk_officer to beneficiary on beneficiary_member_table
