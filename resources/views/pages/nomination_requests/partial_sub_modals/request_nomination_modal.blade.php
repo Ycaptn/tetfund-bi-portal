@@ -63,15 +63,6 @@ $(document).ready(function() {
     $('#conference_fee_amount_local_ca').keyup(function(event) {
         $('#conference_fee_amount_local_ca').digits();
     });
-    $('#local_runs_amount_ca').keyup(function(event) {
-        $('#local_runs_amount_ca').digits();
-    });
-    $('#passage_amount_ca').keyup(function(event) {
-        $('#passage_amount_ca').digits();
-    });
-    $('#paper_presentation_fee_ca').keyup(function(event) {
-        $('#paper_presentation_fee_ca').digits();
-    });
 
     // toggle TSAS international passport attachement input filed
     $('#intl_passport_number_tsas').on('keyup', function() {
@@ -83,17 +74,17 @@ $(document).ready(function() {
         }
     });
 
-    // toggle CA presention paper attachement input filed
-    $('#has_paper_presentation_ca').on('change', function() {
-        let has_paper_presentation_set_ca = $(this).val();
-        if (has_paper_presentation_set_ca != '' && has_paper_presentation_set_ca == '1') {
-            $('#div-paper_presentation_ca').show();
-            $('#div-paper_presentation_fee_ca').show();
-            $('#div-accepted_paper_title_ca').show();
-        } else if (has_paper_presentation_set_ca == '' || has_paper_presentation_set_ca == 0) {
+    // toggle CA presention paper attachement input filed on is_conference_workshop_ca
+    $('#is_conference_workshop_ca').on('change', function() {
+        let is_conference_workshop = $(this).val();
+        if (is_conference_workshop != '' && is_conference_workshop == '1') {
             $('#div-paper_presentation_ca').hide();
             $('#div-paper_presentation_fee_ca').hide();
             $('#div-accepted_paper_title_ca').hide();
+        } else if (is_conference_workshop == '' || is_conference_workshop == 0) {
+            $('#div-paper_presentation_ca').show();
+            $('#div-paper_presentation_fee_ca').show();
+            $('#div-accepted_paper_title_ca').show();
         }
     });
 
@@ -107,12 +98,12 @@ $(document).ready(function() {
         }
     });
 
-    //toggle different conferences based on the selected country for CA and International Passport
+    // toggle CA different input fields based on the selected country
     $(document).on('change', "#country_id_select_ca", function(e) {
         let selected_country = $('#country_id_select_ca').val();
         let conferences_filtered = "<option value=''>-- None selected --</option>";
         
-        // actions if Nigeria is selected
+        // actions on intl passport input filed if Nigeria is selected
         if (selected_country == country_nigeria_id || selected_country == '') {
             $('#div-intl_passport_number_ca').hide();
             $('#div-international_passport_bio_page_ca').hide();
@@ -120,13 +111,20 @@ $(document).ready(function() {
             $('#div-intl_passport_number_ca').show();
         }
 
+        // toggle conference state input selection field if Nigerial is selected
+        if (selected_country == country_nigeria_id && selected_country != '') {
+            $('#div-conference_state_select_ca').show();
+        } else {
+            $('#div-conference_state_select_ca').hide();
+        }
+
         // conferences based on country selected
-        $.each(JSON.parse(conferences), function(key, conference) {
-            if (conference.country_id == selected_country) {
-                conferences_filtered += "<option value='"+ conference.id +"'>"+ conference.name +"</option>";
-            }
-        });
-        $('#conference_id_select_ca').html(conferences_filtered);
+        // $.each(JSON.parse(conferences), function(key, conference) {
+        //     if (conference.country_id == selected_country) {
+        //         conferences_filtered += "<option value='"+ conference.id +"'>"+ conference.name +"</option>";
+        //     }
+        // });
+        // $('#conference_id_select_ca').html(conferences_filtered);
     });
 
     //toggle different institutions based on the selected country for TSAS and International Passport

@@ -72,6 +72,8 @@ class UpdateBeneficiaryMemberAPIRequest extends AppBaseFormRequest
             'bi_telephone' => 'Telephone',
             'bi_staff_gender' => 'Gender',
             'beneficiary_id' => 'Beneficiary',
+            'bi_grade_level' => 'Grade Level',
+            'bi_member_type' => 'Member Type',
         ];
     }
 

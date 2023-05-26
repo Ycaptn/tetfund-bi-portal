@@ -72,7 +72,7 @@ $(document).ready(function() {
         let selected_country = $('#country_id_select_ca').val();
         let conferences_filtered = "<option value=''>-- None selected --</option>";
         
-        // actions if Nigeria is selected
+        // actions on intl passport input filed if Nigeria is selected
         if (selected_country == country_nigeria_id || selected_country == '') {
             $('#div-intl_passport_number_ca').hide();
             $('#div-international_passport_bio_page_ca').hide();
@@ -80,13 +80,20 @@ $(document).ready(function() {
             $('#div-intl_passport_number_ca').show();
         }
 
+        // toggle conference state input selection field if Nigerial is selected
+        if (selected_country == country_nigeria_id && selected_country != '') {
+            $('#div-conference_state_select_ca').show();
+        } else {
+            $('#div-conference_state_select_ca').hide();
+        }
+
         // conferences based on country selected
-        $.each(JSON.parse(conferences), function(key, conference) {
-            if (conference.country_id == selected_country) {
-                conferences_filtered += "<option value='"+ conference.id +"'>"+ conference.name +"</option>";
-            }
-        });
-        $('#conference_id_select_ca').html(conferences_filtered);
+        // $.each(JSON.parse(conferences), function(key, conference) {
+        //     if (conference.country_id == selected_country) {
+        //         conferences_filtered += "<option value='"+ conference.id +"'>"+ conference.name +"</option>";
+        //     }
+        // });
+        // $('#conference_id_select_ca').html(conferences_filtered);
     });
 
     //Show Modal for New Entry
@@ -204,7 +211,6 @@ $(document).ready(function() {
     $(document).on('click', ".btn-edit-{{$nominationRequest->type ?? 'ca'}}", function(e) {
         e.preventDefault();
         $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
-
         $('#div-cANomination-modal-error').hide();
         $('#prefix_info').text("Edit");
         $('#frm-cANomination-modal').trigger("reset");
@@ -220,7 +226,8 @@ $(document).ready(function() {
         let itemId = $(this).attr('data-val');
 
         $('#mdl-cANomination-modal').modal('show');
-        $.get( "{{ route('tf-bi-portal-api.c_a_nominations.show','') }}/"+itemId).done(function( response ) {     
+        $.get( "{{ route('tf-bi-portal-api.c_a_nominations.show','') }}/"+itemId).done(function( response ) {   
+        console.log(response.data);  
     		$('#txt-cANomination-primary-id').val(response.data.id);
             $('#email_ca').val(response.data.email);
     		$('#telephone_ca').val(response.data.telephone);
@@ -236,30 +243,28 @@ $(document).ready(function() {
     		$('#bank_sort_code_ca').val(response.data.bank_sort_code);
             
             if (response.data.intl_passport_number != null && response.data.intl_passport_number.length > 0) {
+                $('#div-conference_state_select_ca').hide();
                 $('#div-intl_passport_number_ca').show();
                 $('#div-international_passport_bio_page_ca').show();
     		    $('#intl_passport_number_ca').val(response.data.intl_passport_number);
             }  else {
+                $('#div-conference_state_select_ca').show();
                 $('#div-intl_passport_number_ca').hide();
                 $('#div-international_passport_bio_page_ca').hide();
             }
 
     		$('#bank_verification_number_ca').val(response.data.bank_verification_number);
     		$('#national_id_number_ca').val(response.data.national_id_number);
+            $('#conference_title_ca').val(response.data.conference_title);
     		$('#organizer_name_ca').val(response.data.organizer_name);
     		$('#conference_theme_ca').val(response.data.conference_theme);
+            $('#conference_address_ca').val(response.data.conference_address);
+            $('#conference_passage_type_ca').val(response.data.conference_passage_type);
     		$('#accepted_paper_title_ca').val(response.data.accepted_paper_title);
             $('#paper_presentation_fee_ca').val(response.data.paper_presentation_fee);
     		$('#attendee_department_name_ca').val(response.data.attendee_department_name);
     		$('#attendee_grade_level_ca').val(response.data.attendee_grade_level);
-            /* amounts */
             $('#conference_fee_amount_local_ca').val(response.data.conference_fee_amount_local);
-            $('#local_runs_amount_ca').val(response.data.local_runs_amount);
-            $('#passage_amount_ca').val(response.data.passage_amount);
-            $('#paper_presentation_fee_ca').val(response.data.paper_presentation_fee);
-            /* amounts */
-
-            $('#has_paper_presentation_ca').val(response.data.has_paper_presentation ? '1' : '0');
             
             if (response.data.has_paper_presentation) {
                 $('#div-accepted_paper_title_ca').show();
@@ -271,8 +276,6 @@ $(document).ready(function() {
                 $('#div-paper_presentation_ca').hide();
             }
 
-            $('#is_academic_staff_ca').val(response.data.is_academic_staff ? '1' : '0');
-    		
             initially_selected_beneficiary_institution_id = response.data.beneficiary_institution_id;
             initially_selected_conference_id = response.data.conference_id;
             initially_selected_country_id = response.data.country_id;
@@ -283,18 +286,19 @@ $(document).ready(function() {
             var conference_end_date = new Date(response.data.conference_end_date).toISOString().slice(0, 10);
             $('#conference_end_date_ca').val(conference_end_date);
 
+            $('#state_id_select_ca option[value="' + response.data.conference_state + '"]').prop('selected', 'selected');
             $('#country_id_select_ca option[value="' + response.data.tf_iterum_portal_country_id + '"]').prop('selected', 'selected');
 
-            let conferences_filtered = "<option value=''>-- None selected --</option>";
-            $.each(JSON.parse(conferences), function(key, conference) {
-                if (conference.country_id == response.data.tf_iterum_portal_country_id && response.data.tf_iterum_portal_conference_id == conference.id) {
-                    conferences_filtered += "<option selected='selected' value='"+ conference.id +"'>"+ conference.name +"</option>";
-                } else if (conference.country_id == response.data.tf_iterum_portal_country_id) {
-                    conferences_filtered += "<option value='"+ conference.id +"'>"+ conference.name +"</option>";
-                }
-            });
+            // let conferences_filtered = "<option value=''>-- None selected --</option>";
+            // $.each(JSON.parse(conferences), function(key, conference) {
+            //     if (conference.country_id == response.data.tf_iterum_portal_country_id && response.data.tf_iterum_portal_conference_id == conference.id) {
+            //         conferences_filtered += "<option selected='selected' value='"+ conference.id +"'>"+ conference.name +"</option>";
+            //     } else if (conference.country_id == response.data.tf_iterum_portal_country_id) {
+            //         conferences_filtered += "<option value='"+ conference.id +"'>"+ conference.name +"</option>";
+            //     }
+            // });
 
-            $('#conference_id_select_ca').html(conferences_filtered);
+            // $('#conference_id_select_ca').html(conferences_filtered);
 
             $("#spinner-c_a_nominations").hide();
             $("#div-save-mdl-cANomination-modal").show();
@@ -428,9 +432,19 @@ $(document).ready(function() {
         if ($('#beneficiary_institution_id_select_ca').length && $('#beneficiary_institution_id_select_ca').val().trim().length > 0){   
             formData.append('beneficiary_institution_id',$('#beneficiary_institution_id_select_ca').val()); 
         }
-        if ($('#country_id_select_ca').length && $('#country_id_select_ca').val().trim().length > 0){   formData.append('tf_iterum_portal_country_id',$('#country_id_select_ca').val());   }
-        if ($('#conference_id_select_ca').length && $('#conference_id_select_ca').val().trim().length > 0){  
-                formData.append('tf_iterum_portal_conference_id',$('#conference_id_select_ca').val());  
+        
+        if ($('#is_conference_workshop_ca').length && $('#is_conference_workshop_ca').val().trim().length > 0){
+            formData.append('is_conference_workshop',$('#is_conference_workshop_ca').val());
+        }
+        if ($('#country_id_select_ca').length && $('#country_id_select_ca').val().trim().length > 0){
+            formData.append('tf_iterum_portal_country_id',$('#country_id_select_ca').val());
+        }
+        if ($('#conference_title_ca').length && $('#conference_title_ca').val().trim().length > 0){  
+            formData.append('conference_title',$('#conference_title_ca').val());  
+        }
+
+        if ($('#conference_state_select_ca').length && $('#conference_state_select_ca').val().trim().length > 0){
+            formData.append('conference_state',$('#conference_state_select_ca').val());
         }
         if ($('#gender_ca').length && $('#gender_ca').val().trim().length > 0){   formData.append('gender',$('#gender_ca').val());   }
         if ($('#name_title_ca').length && $('#name_title_ca').val().trim().length > 0){ formData.append('name_title',$('#name_title_ca').val());    }
@@ -449,19 +463,28 @@ $(document).ready(function() {
         if ($('#national_id_number_ca').length && $('#national_id_number_ca').val().trim().length > 0){ formData.append('national_id_number',$('#national_id_number_ca').val());    }
         if ($('#organizer_name_ca').length){    formData.append('organizer_name',$('#organizer_name_ca').val());    }
         if ($('#conference_theme_ca').length){  formData.append('conference_theme',$('#conference_theme_ca').val());    }
+        if ($('#conference_address_ca').length){  formData.append('conference_address_',$('#conference_address_ca').val());    }
+        if ($('#conference_passage_type_ca').length && $('#conference_passage_type_ca').val().trim().length > 0){   formData.append('conference_passage_type',$('#conference_passage_type_ca').val());  }
         if ($('#accepted_paper_title_ca').length){  formData.append('accepted_paper_title',$('#accepted_paper_title_ca').val());    }
         if ($('#attendee_department_name_ca').length){  formData.append('attendee_department_name',$('#attendee_department_name_ca').val());    }
         if ($('#attendee_grade_level_ca').length){  formData.append('attendee_grade_level',$('#attendee_grade_level_ca').val());    }
         if ($('#has_paper_presentation_ca').length){ formData.append('has_paper_presentation',$('#has_paper_presentation_ca').val());   }
         if ($('#is_academic_staff_ca').length){ formData.append('is_academic_staff',$('#is_academic_staff_ca').val());   }
+
+        {{-- determining paper presentation --}}
+        if ($('#is_academic_staff_ca').length){
+            if ($('#is_academic_staff_ca').val()=='1' || ($('#is_academic_staff_ca').val()=='0' && $('#is_conference_workshop').val()=='0') ) {
+                formData.append('has_paper_presentation', '1');
+            } else {
+                formData.append('has_paper_presentation', '0');
+            }
+        }
+        
         if ($('#conference_start_date_ca').length){ formData.append('conference_start_date',$('#conference_start_date_ca').val());   }
         if ($('#conference_end_date_ca').length){ formData.append('conference_end_date',$('#conference_end_date_ca').val());   }
 
         /* amounts */
         if ($('#conference_fee_amount_local_ca').length){ formData.append('conference_fee_amount_local',$('#conference_fee_amount_local_ca').val().replace(/,/g,""));   }
-        if ($('#local_runs_amount_ca').length){ formData.append('local_runs_amount',$('#local_runs_amount_ca').val().replace(/,/g,""));   }
-        if ($('#passage_amount_ca').length){ formData.append('passage_amount',$('#passage_amount_ca').val().replace(/,/g,""));   }
-        if ($('#paper_presentation_fee_ca').length){ formData.append('paper_presentation_fee',$('#paper_presentation_fee_ca').val().replace(/,/g,""));   }
         /* amounts */
 
         if($('#passport_photo_ca').get(0).files.length != 0){

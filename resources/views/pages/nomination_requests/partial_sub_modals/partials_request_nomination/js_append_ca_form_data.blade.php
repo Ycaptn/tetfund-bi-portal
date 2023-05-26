@@ -6,10 +6,16 @@ if ($('#beneficiary_institution_id_select_ca').length && $('#beneficiary_institu
 	formData.append('beneficiary_institution_id',$('#beneficiary_institution_id_select_ca').val());	
 }
 
+if ($('#is_conference_workshop_ca').length && $('#is_conference_workshop_ca').val().trim().length > 0){   formData.append('is_conference_workshop',$('#is_conference_workshop_ca').val());   }
+
 if ($('#country_id_select_ca').length && $('#country_id_select_ca').val().trim().length > 0){   formData.append('tf_iterum_portal_country_id',$('#country_id_select_ca').val());   }
 
-if ($('#conference_id_select_ca').length && $('#conference_id_select_ca').val().trim().length > 0){  
-		formData.append('tf_iterum_portal_conference_id',$('#conference_id_select_ca').val());  
+if ($('#conference_title_ca').length && $('#conference_title_ca').val().trim().length > 0){  
+	formData.append('conference_title',$('#conference_title_ca').val());  
+}
+
+if ($('#conference_state_select_ca').length && $('#conference_state_select_ca').val().trim().length > 0){  
+	formData.append('conference_state',$('#conference_state_select_ca').val());  
 }
 
 if ($('#gender_ca').length && $('#gender_ca').val().trim().length > 0){   formData.append('gender',$('#gender_ca').val());   }
@@ -40,19 +46,30 @@ if ($('#bank_verification_number_ca').length && $('#bank_verification_number_ca'
 
 if ($('#national_id_number_ca').length && $('#national_id_number_ca').val().trim().length > 0){	formData.append('national_id_number',$('#national_id_number_ca').val());	}
 
-if ($('#organizer_name_ca').length){	formData.append('organizer_name',$('#organizer_name_ca').val());	}
+if ($('#organizer_name_ca').length && $('#organizer_name_ca').val().trim().length > 0){	formData.append('organizer_name',$('#organizer_name_ca').val());	}
 
-if ($('#conference_theme_ca').length){	formData.append('conference_theme',$('#conference_theme_ca').val());	}
+if ($('#conference_theme_ca').length && $('#conference_theme_ca').val().trim().length > 0){	formData.append('conference_theme',$('#conference_theme_ca').val());	}
 
-if ($('#accepted_paper_title_ca').length){	formData.append('accepted_paper_title',$('#accepted_paper_title_ca').val());	}
+if ($('#conference_address_ca').length && $('#conference_address_ca').val().trim().length > 0){	formData.append('conference_address',$('#conference_address_ca').val());	}
 
-if ($('#attendee_department_name_ca').length){	formData.append('attendee_department_name',$('#attendee_department_name_ca').val());	}
+if ($('#conference_passage_type_ca').length && $('#conference_passage_type_ca').val().trim().length > 0){	formData.append('conference_passage_type',$('#conference_passage_type_ca').val());	}
+
+if ($('#accepted_paper_title_ca').length && $('#accepted_paper_title_ca').val().trim().length > 0){	formData.append('accepted_paper_title',$('#accepted_paper_title_ca').val());	}
+
+if ($('#attendee_department_name_ca').length && $('#attendee_department_name_ca').val().trim().length > 0){	formData.append('attendee_department_name',$('#attendee_department_name_ca').val());	}
 
 if ($('#attendee_grade_level_ca').length){	formData.append('attendee_grade_level',$('#attendee_grade_level_ca').val());	}
 
-if ($('#has_paper_presentation_ca').length){ formData.append('has_paper_presentation',$('#has_paper_presentation_ca').val());   }
-
 if ($('#is_academic_staff_ca').length){ formData.append('is_academic_staff',$('#is_academic_staff_ca').val());   }
+
+{{-- determining paper presentation --}}
+if ($('#is_academic_staff_ca').length){
+	if ($('#is_academic_staff_ca').val()=='1' || ($('#is_academic_staff_ca').val()=='0' && $('#is_conference_workshop_ca').val()=='0') ) {
+		formData.append('has_paper_presentation', '1');
+	} else {
+		formData.append('has_paper_presentation', '0');
+	}
+}
 
 if ($('#conference_start_date_ca').length){ formData.append('conference_start_date',$('#conference_start_date_ca').val());   }
 
@@ -62,19 +79,7 @@ if ($('#conference_end_date_ca').length){ formData.append('conference_end_date',
 if ($('#conference_fee_amount_local_ca').length){
 	formData.append('conference_fee_amount_local',$('#conference_fee_amount_local_ca').val().replace(/,/g,""));
 }
-
-if ($('#local_runs_amount_ca').length){
-	formData.append('local_runs_amount',$('#local_runs_amount_ca').val().replace(/,/g,""));
-}
-
-if ($('#passage_amount_ca').length){
-	formData.append('passage_amount',$('#passage_amount_ca').val().replace(/,/g,""));
-}
-
-if ($('#paper_presentation_fee_ca').length){
-	formData.append('paper_presentation_fee',$('#paper_presentation_fee_ca').val().replace(/,/g,""));
-}
-/* amounts */
+/* end amounts */
 
 if($('#passport_photo_ca').get(0).files.length != 0){
 	formData.append('passport_photo', $('#passport_photo_ca')[0].files[0]);

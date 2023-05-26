@@ -40,6 +40,9 @@ class NominationRequestController extends BaseController
            $setDataQuery['user_id'] = $current_user->id;
         }
 
+        // nigerian states
+        $nigerian_states = BaseController::statesList();
+
         $cdv_nomination_requests->setDataQuery($setDataQuery)
                         ->addDataGroup('All','deleted_at',null)
                         ->addDataGroup('CA','type','ca')
@@ -71,11 +74,13 @@ class NominationRequestController extends BaseController
         $bi_submission_requests = SubmissionRequest::where(['status'=>'not-submitted', 'type'=>'intervention'])->get(['id', 'title', 'intervention_year1', 'intervention_year2', 'intervention_year3', 'intervention_year4']);
 
         return view('pages.nomination_requests.card_view_index')
-                ->with('current_user', $current_user)
-                ->with('beneficiary', $beneficiary)
                 ->with('countries', $countries)
-                ->with('institutions', $institutions)
                 ->with('conferences', $conferences)
+                ->with('beneficiary', $beneficiary)
+                ->with('institutions', $institutions)
+                ->with('current_user', $current_user)
+                ->with('nigerian_states', $nigerian_states)
+                ->with('beneficiary_member', $beneficiary_member)
                 ->with('all_beneficiary_users', $all_beneficiary_users)
                 ->with('bi_submission_requests', $bi_submission_requests)
                 ->with('cdv_nomination_requests', $cdv_nomination_requests);

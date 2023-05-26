@@ -7,7 +7,9 @@
     $email = (isset($nominationRequest->user->email) ? $nominationRequest->user->email : ($current_user->hasRole('BI-staff') ? $current_user->email : '') );
     $telephone = (isset($nominationRequest->user->telephone) ? $nominationRequest->user->telephone : ($current_user->hasRole('BI-staff') ? $current_user->telephone : '') );
     $gender = (isset($nominationRequest->user->gender) ? $nominationRequest->user->gender : ($current_user->hasRole('BI-staff') ? $current_user->gender : '') );
-    $gender = (isset($nominationRequest->user->gender) ? $nominationRequest->user->gender : ($current_user->hasRole('BI-staff') ? $current_user->gender : '') );
+    $attendee_member_type = isset($beneficiary_member->member_type) && in_array($beneficiary_member->member_type, ['academic', 'non-academic']) ? $beneficiary_member->member_type : '';
+    $attendee_member_type_flag = isset($beneficiary_member->member_type) && in_array($beneficiary_member->member_type, ['academic', 'non-academic']) ? ($beneficiary_member->member_type=='academic' ? '1' : '0') : '';
+    $attendee_grade_level = isset($beneficiary_member->grade_level) ? $beneficiary_member->grade_level : '';
 
 @endphp
 
@@ -21,8 +23,7 @@
             {!! Form::hidden('beneficiary_institution_id_select', $beneficiary->id ?? '', ['id'=>'beneficiary_institution_id_select_ca', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
 
             <i class="beneficiary_institution_id_select">
-                {{$beneficiary->full_name ?? ''}}
-                {{(isset($beneficiary->short_name) && !empty($beneficiary->short_name)) ? '('.strtoupper($beneficiary->short_name).')' : ''}}
+                - {{$beneficiary->full_name ?? ''}} {{(isset($beneficiary->short_name) && !empty($beneficiary->short_name)) ? '('.strtoupper($beneficiary->short_name).')' : ''}}
             </i>
         </div>
     </div>
@@ -40,21 +41,42 @@
             {!! Form::hidden('last_name_ca', $last_name, ['id'=>'last_name_ca', 'class'=>'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
 
             <i class="full_name">
-                {{$first_name}}
-                {{$middle_name}}
-                {{$last_name}}
+               - {{$first_name}} {{$middle_name}} {{$last_name}}
             </i>
         </div>
     </div>
 
     <div class="col-sm-12 col-md-4 col-lg-3 mb-3">
-        <label class="col-sm-12"><b>Email:</b></label>
+        <label class="col-sm-12"><b>Email/Gender:</b></label>
         <div class="col-sm-12 ">
             <!-- Email Field -->
             {!! Form::hidden('email_ca', $email, ['id'=>'email_ca', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
 
+            <!-- Gender Field -->
+            {!! Form::hidden('gender_ca', $gender, ['id'=>'gender_ca', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
+            
             <i class="email">
-                {{$email}}
+                - {{$email}} 
+            </i><br>
+            <i class="gender">
+                - {{ ucfirst($gender) }}                
+            </i>
+        </div>
+    </div>
+    
+    <div class="col-sm-12 col-md-4 col-lg-2 mb-3">
+        <label class="col-sm-12"><b>Type/Grade Level:</b></label>
+        <div class="col-sm-12 ">
+            
+            <!-- Attendee Member Level Field -->
+            {!! Form::hidden('is_academic_staff_ca', $attendee_member_type_flag, ['id'=>'is_academic_staff_ca', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
+            
+            <!-- Attendee Grade Level Field -->
+            {!! Form::hidden('attendee_grade_level_ca', $attendee_grade_level, ['id'=>'attendee_grade_level_ca', 'class'=>'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
+            
+            <i class="attendee_grade_level">
+               - {{ucfirst($attendee_member_type)}} Staff <br>
+               - GL-{{$attendee_grade_level}}
             </i>
         </div>
     </div>
@@ -66,19 +88,7 @@
             {!! Form::hidden('telephone_ca', $telephone, ['id'=>'telephone_ca', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
             
             <i class="telephone">
-                {{$telephone}}
-            </i>
-        </div>
-    </div>
-
-    <div class="col-sm-12 col-md-4 col-lg-2 mb-3">
-        <label class="col-sm-12"><b>Gender:</b></label>
-        <div class="col-sm-12 ">
-            <!-- Gender Field -->
-            {!! Form::hidden('gender_ca', $gender, ['id'=>'gender_ca', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
-            
-            <i class="gender">
-                {{ ucfirst($gender) }}                
+               - {{$telephone}}
             </i>
         </div>
     </div>
@@ -86,8 +96,22 @@
 </div>
 <hr>
 
+<!-- Is conference a workshop for None Academic Staffs -->
+@if($attendee_member_type_flag=='0')
+    <div id="div-is_conference_workshop" class="form-group mb-3 col-md-6 col-lg-4">
+        <label for="is_conference_workshop_ca" class="col-sm-11 col-form-label">Is Conference more like a Workshop ?</label>
+        <div class="col-sm-12">
+            <select name="is_conference_workshop_ca" id="is_conference_workshop_ca" class="form-select">
+                <option value="">-- None selected --</option>
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+            </select>
+        </div>
+    </div>
+@endif
+
 <!-- Country Field -->
-<div id="div-country_id_ca" class="form-group mb-3 col-md-6">
+<div id="div-country_id_ca" class="form-group mb-3 col-md-4">
     <label for="country_id_ca" class="col-sm-11 col-form-label">Country:</label>
     <div class="col-sm-12">
         <select id="country_id_select_ca" class="form-select">
@@ -101,8 +125,22 @@
     </div>
 </div>
 
+<div id="div-conference_state_select_ca" class="form-group mb-3 col-md-4" style="display: none;">
+    <label for="conference_state_select_ca" class="col-sm-11 col-form-label">State:</label>
+    <div class="col-sm-12">
+        <select id="conference_state_select_ca" class="form-select">
+            <option value=''>-- None selected --</option>
+            @if(isset($nigerian_states))
+                @foreach($nigerian_states as $state)
+                    <option value='{{$state}}'> {{$state}} </option>
+                @endforeach
+            @endif
+        </select>
+    </div>
+</div>
+
 <!-- Conference Field -->
-<div id="div-conference_id_ca" class="form-group mb-3 col-md-6">
+{{-- <div id="div-conference_id_ca" class="form-group mb-3 col-md-6">
     <label for="conference_id_ca" class="col-sm-11 col-form-label">Conference:</label>
     <div class="col-sm-12">
         <select id="conference_id_select_ca" class="form-select">
@@ -110,8 +148,94 @@
         </select>
     </div>
 </div>
+ --}}
+
+ <div id="div-conference_id_ca" class="form-group mb-3 col-md-4">
+    <label for="conference_id_ca" class="col-sm-11 col-form-label">Conference Title:</label>
+    <div class="col-sm-12">
+        {!! Form::text('conference_title_ca', null, ['id'=>'conference_title_ca', 'class' => 'form-control','minlength' => 2,'maxlength' => 100, 'placeholder'=>'required field']) !!}
+    </div>
+</div>
 
 
+<!-- Organizer Name Field -->
+<div id="div-organizer_name_ca" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="organizer_name_ca" class="col-sm-11 col-form-label">Organizer Name:</label>
+    <div class="col-sm-12">
+        {!! Form::text('organizer_name_ca', null, ['id'=>'organizer_name_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+    </div>
+</div>
+
+<!-- Conference Theme Field -->
+<div id="div-conference_theme_ca" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="conference_theme_ca" class="col-sm-11 col-form-label">Conference Theme:</label>
+    <div class="col-sm-12">
+        {!! Form::text('conference_theme_ca', null, ['id'=>'conference_theme_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+    </div>
+</div>
+
+<!-- Conference Address Field -->
+<div id="div-conference_address_ca" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="conference_address_ca" class="col-sm-11 col-form-label">Conference Address:</label>
+    <div class="col-sm-12">
+        {!! Form::text('conference_address_ca', null, ['id'=>'conference_address_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+    </div>
+</div>
+
+<!-- Conference Passage Type -->
+<div id="div-conference_passage_type_ca" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="conference_passage_type_ca" class="col-sm-11 col-form-label">Conference Passage Type:</label>
+    <div class="col-sm-12">
+        <select class="form-select" name="conference_passage_type_ca" id="conference_passage_type_ca" >
+            <option value=''>-- None Selected--</option>
+            <option value='short'>Short</option>
+            <option value='medium'>Medium</option>
+            <option value='long'>Long</option>
+            <option value='state'>State</option>
+            <option value='africa'>Africa</option>
+        </select>
+    </div>
+</div>
+
+<!-- Attendee Department Name Field -->
+<div id="div-attendee_department_name_ca" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="attendee_department_name_ca" class="col-sm-11 col-form-label">Attendee Department Name:</label>
+    <div class="col-sm-12">
+        {!! Form::text('attendee_department_name_ca', null, ['id'=>'attendee_department_name_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+    </div>
+</div>
+
+<!-- Accepted Paper Title Field -->
+<div id="div-accepted_paper_title_ca" class="form-group mb-3 col-md-6 col-lg-4" style="display: none;">
+    <label for="accepted_paper_title_ca" class="col-sm-11 col-form-label">Accepted Presentation Paper Title:</label>
+    <div class="col-sm-12">
+        {!! Form::text('accepted_paper_title_ca', null, ['id'=>'accepted_paper_title_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+    </div>
+</div>
+
+<!-- Conference Start Date Field -->
+<div id="div-conference_start_date_ca" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="conference_start_date_ca" class="col-sm-11 col-form-label">Conference Start Date:</label>
+    <div class="col-sm-12">
+        {!! Form::date('conference_start_date_ca', null, ['id'=>'conference_start_date_ca', 'class' => 'form-control']) !!}
+    </div>
+</div>
+
+<!-- Conference End Date Field -->
+<div id="div-conference_end_date_ca" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="conference_end_date_ca" class="col-sm-11 col-form-label">Conference End Date:</label>
+    <div class="col-sm-12">
+        {!! Form::date('conference_end_date_ca', null, ['id'=>'conference_end_date_ca', 'class' => 'form-control']) !!}
+    </div>
+</div>
+
+<!-- conference_fee_amount_local Field -->
+<div id="div-conference_fee_amount_local_ca" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="conference_fee_amount_local_ca" class="col-sm-11 col-form-label">Conference Fee Amount (₦):</label>
+    <div class="col-sm-12">
+        {!! Form::text('conference_fee_amount_local_ca', null, ['id'=>'conference_fee_amount_local_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+    </div>
+</div>
 
 <!-- Bank Account Name Field -->
 <div id="div-bank_account_name_ca" class="form-group mb-3 col-md-6 col-lg-4">
@@ -169,128 +293,7 @@
     </div>
 </div>
 
-<!-- Organizer Name Field -->
-<div id="div-organizer_name_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="organizer_name_ca" class="col-sm-11 col-form-label">Organizer Name:</label>
-    <div class="col-sm-12">
-        {!! Form::text('organizer_name_ca', null, ['id'=>'organizer_name_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div>
 
-<!-- Conference Theme Field -->
-<div id="div-conference_theme_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="conference_theme_ca" class="col-sm-11 col-form-label">Conference Theme:</label>
-    <div class="col-sm-12">
-        {!! Form::text('conference_theme_ca', null, ['id'=>'conference_theme_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div>
-
-<!-- Attendee Department Name Field -->
-<div id="div-attendee_department_name_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="attendee_department_name_ca" class="col-sm-11 col-form-label">Attendee Department Name:</label>
-    <div class="col-sm-12">
-        {!! Form::text('attendee_department_name_ca', null, ['id'=>'attendee_department_name_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div>
-
-<!-- Attendee Grade Level Field -->
-<div id="div-attendee_grade_level_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="attendee_grade_level_ca" class="col-sm-11 col-form-label">Attendee Grade Level:</label>
-    <div class="col-sm-12">
-        <select class="form-select" name="attendee_grade_level_ca" id="attendee_grade_level_ca" >
-            <option value=''>-- None Selected--</option>
-            <option value='gl_16-17'>GL 16-17</option>
-            <option value='gl_14-15'>GL 14-15</option>
-            <option value='gl_12-13'>GL 12-13</option>
-            <option value='gl_7-10'>GL 7-10</option>
-            <option value='gl_5-6'>GL 5-6</option>
-            <option value='gl_1-4'>GL 1-4</option>
-        </select>
-    </div>
-</div>
-
-<!-- Has Paper Presentation Field -->
-<div id="div-has_paper_presentation_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="has_paper_presentation_ca" class="col-sm-11 col-form-label">Any Paper Presentation ?</label>
-    <div class="col-sm-12">
-        <select name="has_paper_presentation_ca" id="has_paper_presentation_ca" class="form-control">
-            <option value="">-- None selected --</option>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-        </select>
-    </div>
-</div>
-
-<!-- Accepted Paper Title Field -->
-<div id="div-accepted_paper_title_ca" class="form-group mb-3 col-md-6 col-lg-4" style="display: none;">
-    <label for="accepted_paper_title_ca" class="col-sm-11 col-form-label">Accepted Paper Title:</label>
-    <div class="col-sm-12">
-        {!! Form::text('accepted_paper_title_ca', null, ['id'=>'accepted_paper_title_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div>
-
-<!-- Is Academic Program Field -->
-<div id="div-is_academic_staff_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="is_academic_staff_ca" class="col-sm-11 col-form-label">Staff Type: </label>
-    <div class="col-sm-12">
-        <select name="is_academic_staff_ca" id="is_academic_staff_ca" class="form-control">
-            <option value="">-- None selected --</option>
-            <option value="1">Academic Staff</option>
-            <option value="0">None Academic Staff</option>
-        </select>
-    </div>
-</div>
-
-<!-- Conference Start Date Field -->
-<div id="div-conference_start_date_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="conference_start_date_ca" class="col-sm-11 col-form-label">Conference Start Date:</label>
-    <div class="col-sm-12">
-        {!! Form::date('conference_start_date_ca', null, ['id'=>'conference_start_date_ca', 'class' => 'form-control']) !!}
-    </div>
-</div>
-
-<!-- Conference End Date Field -->
-<div id="div-conference_end_date_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="conference_end_date_ca" class="col-sm-11 col-form-label">Conference End Date:</label>
-    <div class="col-sm-12">
-        {!! Form::date('conference_end_date_ca', null, ['id'=>'conference_end_date_ca', 'class' => 'form-control']) !!}
-    </div>
-</div>
-
-{{--  --}}
-<!-- conference_fee_amount_local Field -->
-<div id="div-conference_fee_amount_local_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="conference_fee_amount_local_ca" class="col-sm-11 col-form-label">Conference Fee Amount (₦):</label>
-    <div class="col-sm-12">
-        {!! Form::text('conference_fee_amount_local_ca', null, ['id'=>'conference_fee_amount_local_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div>
-
-<!-- local_runs_amount Field -->
-<div id="div-local_runs_amount_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="local_runs_amount_ca" class="col-sm-11 col-form-label">Local Runs Amount (₦):</label>
-    <div class="col-sm-12">
-        {!! Form::text('local_runs_amount_ca', null, ['id'=>'local_runs_amount_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div>
-
-<!-- Passage Amount Field -->
-<div id="div-passage_amount_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="passage_amount_ca" class="col-sm-11 col-form-label">Passage Amount (₦):</label>
-    <div class="col-sm-12">
-        {!! Form::text('passage_amount_ca', null, ['id'=>'passage_amount_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div>
-
-<!-- Paper Presentation Fee Amount Field -->
-<div id="div-paper_presentation_fee_ca" class="form-group mb-3 col-md-6 col-lg-4" style="display: none;">
-    <label for="paper_presentation_fee_ca" class="col-sm-11 col-form-label">Paper Presentation Fee (₦):</label>
-    <div class="col-sm-12">
-        {!! Form::text('paper_presentation_fee_ca', null, ['id'=>'paper_presentation_fee_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div>
-
-{{--  --}}
 
 <hr>
 <div class="col-sm-12" style="display: none;" id="attachments_info_ca">
@@ -320,7 +323,7 @@
 
 <!-- paper presentation -->
 <div id="div-paper_presentation_ca" class="form-group col-md-4" style="display: none;">
-    <label for="paper_presentation_ca" class="col-sm-11 col-form-label">Presentaion paper:</label>
+    <label for="paper_presentation_ca" class="col-sm-11 col-form-label">Presentation paper:</label>
     <div class="col-sm-12">
         <input type="file" id="paper_presentation_ca" name="paper_presentation_ca" class="form-control">
     </div>
