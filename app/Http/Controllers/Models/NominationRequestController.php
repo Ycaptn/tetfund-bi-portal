@@ -126,6 +126,10 @@ class NominationRequestController extends BaseController
 
         $bi_beneficiary =  $nominationRequest->beneficiary;
         $bi_beneficiaries =  Beneficiary::all();
+        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $nominationRequest->user_id)->first();
+
+        // nigerian states
+        $nigerian_states = BaseController::statesList();
 
         // all possible attachements for this nomination
         $nomination_request_attachments = $nominationRequest->get_all_attachments($nominationRequest->id);
@@ -139,13 +143,15 @@ class NominationRequestController extends BaseController
         $conferences = $countries_institutions_and_conferences->conferences;  // fetch conferences
            
         return view('pages.nomination_requests.show')
-            ->with('nominationRequest', $nominationRequest)
             ->with('countries', $countries)
-            ->with('institutions', $institutions)
             ->with('conferences', $conferences)
+            ->with('current_user', $current_user)
+            ->with('institutions', $institutions)
             ->with('beneficiary', $bi_beneficiary)
             ->with('beneficiaries', $bi_beneficiaries)
-            ->with('current_user', $current_user)
+            ->with('nigerian_states', $nigerian_states)
+            ->with('nominationRequest', $nominationRequest)
+            ->with('beneficiary_member', $beneficiary_member)
             ->with('nomination_request_attachments', $nomination_request_attachments);
     }
 

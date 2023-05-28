@@ -89,7 +89,12 @@ class CANomination extends Model {
         'paper_presentation_fee',
         'final_remarks',
         'total_requested_amount',
-        'total_approved_amount'
+        'total_approved_amount',
+        'conference_title',
+        'conference_state',
+        'conference_address',
+        'conference_passage_type',
+        'conference_passage_kilometer_range',
     ];
 
     /**

@@ -18,8 +18,8 @@ class AlterMoreColumnsOnTfBiCaNominationsTable extends Migration
             $table->string('conference_title')->nullable();
             $table->string('conference_state')->nullable();
             $table->text('conference_address')->nullable();
-            $table->text('conference_passage_type')->nullable();
-            $table->text('conference_passage_kilometer_range')->nullable();
+            $table->string('conference_passage_type')->nullable();
+            $table->string('conference_passage_kilometer_range')->nullable();
         });
     }
 

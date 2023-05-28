@@ -25,6 +25,9 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
      * @return array
      */
     public function rules() {
+        $start_date = $this->conference_start_date;
+        $plus_5_days = date('d-M-Y', strtotime($start_date . ' + 5 days'));
+
         $return_rules = [
             'organization_id' => 'required',
             'display_ordinal' => 'nullable|min:0|max:365',
@@ -50,8 +53,8 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             'has_paper_presentation' => "required|string|max:50|in:". implode(['0', '1'], ','),
             'accepted_paper_title' => 'required_if:has_paper_presentation,=,1|nullable|string|max:190',
             'is_academic_staff' => "required|string|max:50|in:". implode(['0', '1'], ','),
-            'conference_start_date' => 'required|date|after:today',
-            'conference_end_date' => 'required|date|after:conference_start_date',
+            'conference_start_date' => 'required|date|after:'.date('d-M-Y', strtotime('+6 months')),
+            'conference_end_date' => 'required|date|after_or_equal:conference_start_date|before:'.$plus_5_days,
             'name_title' => 'nullable|string|max:50',
             'name_suffix' => 'nullable|string|max:100',
             'bank_account_name' => 'required|min:2|max:190',

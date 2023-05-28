@@ -129,6 +129,12 @@ class NominationRequestAPIController extends BaseController
         
         $input = $request->all();
 
+        // nomination request creation
+        $current_user = auth()->user();
+        $bi_beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+        $bi_beneficiary = $bi_beneficiary_member->beneficiary;
+        $bi_beneficiary_id = $bi_beneficiary_member->beneficiary_id;
+
         if ($request->nomination_type == 'tp') {
             $request = app('App\Http\Requests\API\CreateTPNominationAPIRequest');
           
@@ -160,37 +166,63 @@ class NominationRequestAPIController extends BaseController
             $this->validate($request, $request->rules());   // validate for CA
         
             $nominationRequestOBJ = new CANomination();
-            //hitting TSAS API Controller
+            //hitting CA API Controller
             $nominationRequestAPIControllerOBJ = new CANominationAPIController();
 
             /* server class constructor to retrieve amout settings */
-            $pay_load = [ '_method' => 'GET', 'query_like_parameters' => 'ca_', ];
-            $tetFundServer = new TETFundServer(); 
-            $ca_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/dashboard/get_configured_amounts', $pay_load);
+            $pay_load = [ '_method' => 'GET'];
+            $tetFundServer = new TETFundServer();
+            $ca_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/ca_cost_settings/'.$input['attendee_grade_level'], $pay_load);
 
-            $beneficiary = BeneficiaryMember::where('beneficiary_user_id', auth()->user()->id)->first()->beneficiary ?? null;
-            $user_institution_type = optional($beneficiary)->type == 'university' ? 'uni' : 'poly_coe';
-            $user_staff_type = isset($request->is_academic_staff) && $request->is_academic_staff == 1 ? 'ts' : 'nts';
-            $field_to_fetch = "ca_{$user_institution_type}_{$user_staff_type}_{$request->attendee_grade_level}_daily_tour_allowance";
+            if (isset($ca_amount_settings->country_nigeria->id) && isset($input['tf_iterum_portal_country_id'])) {
 
-            $conference_fee_amount_local = floatval($ca_amount_settings->ca_conference_reg_fees_local ?? 0);
-            $dta_amount = floatval($ca_amount_settings->{$field_to_fetch} ?? 0);
-            $local_runs_amount = floatval($ca_amount_settings->ca_local_runs_fees ?? 0);
-            $paper_presentation_fee = isset($request->has_paper_presentation) && $request->has_paper_presentation == 1 ? floatval($ca_amount_settings->ca_paper_presentation_fees ?? 0) : 0;
-            $passage_amount = floatval($ca_amount_settings->ca_passage_amount ?? 0);
+                if ($ca_amount_settings->country_nigeria->id == $input['tf_iterum_portal_country_id']) {
+                    
+                    // setting amount column if conference is local
+                    $input['dta_amount'] = floatval($ca_amount_settings->dta_amount ?? 0);
+                    $input['local_runs_amount'] = ($input['dta_amount'] * floatval($ca_amount_settings->dta_local_runs_percentage??0)) / 100;
+                    $input['conference_fee_amount_local'] = floatval($input['conference_fee_amount_local'] ?? 0);
 
-            // setting amount colunm
-            $input['conference_fee_amount_local'] = $request->conference_fee_amount_local ?? 0;
-            //$input['conference_fee_amount_local'] = $conference_fee_amount_local;
-            $input['dta_amount'] = $dta_amount;
-            $input['local_runs_amount'] = $request->local_runs_amount ?? 0;
-            //$input['local_runs_amount'] = $local_runs_amount;
-            $input['passage_amount'] = $request->passage_amount ?? 0;
-            //$input['passage_amount'] = $passage_amount;
-            $input['paper_presentation_fee'] = $request->paper_presentation_fee ?? 0;
-            //$input['paper_presentation_fee'] = $paper_presentation_fee;
-            $input['total_requested_amount'] = $input['conference_fee_amount_local'] + $input['dta_amount'] + $input['local_runs_amount'] + $input['passage_amount'] + $input['paper_presentation_fee'];
-            //$input['total_requested_amount'] = $input['conference_fee_amount_local'] + $input['dta_amount'] + $input['local_runs_amount'] + $input['passage_amount'] + $input['paper_presentation_fee'];
+                    $passage_amount = 0.00;
+                    // checking that nominees institution in not in the same state as conference state
+                    if (isset($input['conference_state']) && !str_contains(strtolower($bi_beneficiary->address_state), strtolower($input['conference_state']))) {
+                        if ($input['conference_passage_type']=='long') {
+                            $passage_amount = floatval($ca_amount_settings->local_long_passage_amt ?? 0);
+                        } elseif ($input['conference_passage_type']=='medium') {
+                            $passage_amount = floatval($ca_amount_settings->local_medium_passage_amt ?? 0);
+                        } elseif ($input['conference_passage_type']=='short') {
+                            $passage_amount = floatval($ca_amount_settings->local_short_passage_amt ?? 0);
+                        }
+                    
+                        $input['passage_amount'] = $passage_amount;
+                        $input['paper_presentation_fee'] = $input['has_paper_presentation']==true ? floatval($ca_amount_settings->local_paper_production_amt??0) : 0.00;
+                        $input['total_requested_amount'] = $input['conference_fee_amount_local'] + $input['dta_amount'] + $input['local_runs_amount'
+                        ] + $input['passage_amount'] + $input['paper_presentation_fee'];
+                    }
+
+               } elseif($ca_amount_settings->country_nigeria->id != $input['tf_iterum_portal_country_id']) {
+                    
+                    // setting amount column if conference is foreign
+                    $input['dta_amount'] = floatval(($ca_amount_settings->estacode_amt??0) * $ca_amount_settings->dollar_exchange_rate_to_naira);
+                    $input['conference_fee_amount_local'] = floatval($input['conference_fee_amount_local'] ?? 0);
+                    $input['local_runs_amount'] = floatval($ca_amount_settings->foreign_visa_processing_except_ecowas_amt??0);
+
+                    $passage_amount = 0.00;                    
+                    if ($input['conference_passage_type']=='long') {
+                        $passage_amount = floatval($ca_amount_settings->foreign_long_passage_amt ?? 0);
+                    } elseif ($input['conference_passage_type']=='medium') {
+                        $passage_amount = floatval($ca_amount_settings->foreign_medium_passage_amt ?? 0);
+                    } elseif ($input['conference_passage_type']=='short') {
+                        $passage_amount = floatval($ca_amount_settings->foreign_short_passage_amt ?? 0);
+                    }  elseif ($input['conference_passage_type']=='africa') {
+                        $passage_amount = floatval($ca_amount_settings->african_passage_amt ?? 0);
+                    }            
+
+                    $input['passage_amount'] = $passage_amount;
+                    $input['paper_presentation_fee'] = $input['has_paper_presentation']==true ? floatval($ca_amount_settings->foreign_paper_production_amt??0) : 0.00;
+                    $input['total_requested_amount'] = $input['conference_fee_amount_local'] + $input['dta_amount'] + $input['local_runs_amount'] + $input['passage_amount'] + $input['paper_presentation_fee'];
+                }
+            }
 
         } else if ($request->nomination_type == 'tsas') {
             $request = app('App\Http\Requests\API\CreateTSASNominationAPIRequest');
@@ -203,9 +235,6 @@ class NominationRequestAPIController extends BaseController
             $nominationRequestOBJ = new TSASNomination();
         }
         
-        // nomination request creation
-        $current_user = auth()->user();
-        $bi_beneficiary_id = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first()->beneficiary_id;
 
         $nominationRequest = new NominationRequest();   
         $nominationRequest->organization_id = $current_user->organization_id;

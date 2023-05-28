@@ -177,13 +177,12 @@ class CANominationAPIController extends AppBaseController
 
         /*class constructor to fetch conference*/
         $tetFundServer = new TETFundServer();
-        $url_path ="tetfund-astd-api/conferences/".$cANomination->tf_iterum_portal_conference_id;
-        $payload = ['_method'=>'GET', 'id'=>$cANomination->tf_iterum_portal_conference_id];
-        $conference = $tetFundServer->get_row_records_from_server($url_path, $payload);
+        $url_path ="tetfund-astd-api/countries/".$cANomination->tf_iterum_portal_country_id;
+        $payload = ['_method'=>'GET', 'id'=>$cANomination->tf_iterum_portal_country_id];
+        $conference_country = $tetFundServer->get_row_records_from_server($url_path, $payload);
 
         $cANomination->beneficiary = ($cANomination->beneficiary_conference_id != null) ? $cANomination->beneficiary : [];
-        $cANomination->conference = ($conference != null) ? $conference : null;
-        $cANomination->country = optional($conference)->country;
+        $cANomination->country = $conference_country;
         $cANomination->user = ($cANomination->user_id != null) ? $cANomination->user : [];
 
         return $this->sendResponse($cANomination->toArray(), 'C A Nomination retrieved successfully');

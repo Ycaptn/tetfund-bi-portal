@@ -75,8 +75,8 @@
             {!! Form::hidden('attendee_grade_level_ca', $attendee_grade_level, ['id'=>'attendee_grade_level_ca', 'class'=>'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
             
             <i class="attendee_grade_level">
-               - {{ucfirst($attendee_member_type)}} Staff <br>
-               - GL-{{$attendee_grade_level}}
+               - {{ $attendee_member_type ? ucfirst($attendee_member_type). ' Staff' : ''}} <br>
+               - {{ $attendee_grade_level ? 'GL-'.ucfirst($attendee_grade_level) : ''}}
             </i>
         </div>
     </div>
@@ -191,7 +191,6 @@
             <option value='short'>Short</option>
             <option value='medium'>Medium</option>
             <option value='long'>Long</option>
-            <option value='state'>State</option>
             <option value='africa'>Africa</option>
         </select>
     </div>
@@ -215,25 +214,29 @@
 
 <!-- Conference Start Date Field -->
 <div id="div-conference_start_date_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="conference_start_date_ca" class="col-sm-11 col-form-label">Conference Start Date:</label>
+    <label for="conference_start_date_ca" class="col-sm-11 col-form-label">Conference Start Date <i class="text-danger">(6 months ahead)</i>:</label>
     <div class="col-sm-12">
-        {!! Form::date('conference_start_date_ca', null, ['id'=>'conference_start_date_ca', 'class' => 'form-control']) !!}
+        @php
+            $sixMonthsAhead = date('Y-m-d', strtotime(date('Y-m-d') . ' +6 months'));
+            $sixMonthsAheadPlusFiveDays = date('Y-m-d', strtotime($sixMonthsAhead . ' + 5 days'));
+        @endphp
+        {!! Form::date('conference_start_date_ca', null, ['id'=>'conference_start_date_ca', 'class'=>'form-control', 'min'=>$sixMonthsAhead]) !!}
     </div>
 </div>
 
 <!-- Conference End Date Field -->
 <div id="div-conference_end_date_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="conference_end_date_ca" class="col-sm-11 col-form-label">Conference End Date:</label>
+    <label for="conference_end_date_ca" class="col-sm-11 col-form-label">Conference End Date <i class="text-danger">(5 days after start date)</i>:</label>
     <div class="col-sm-12">
-        {!! Form::date('conference_end_date_ca', null, ['id'=>'conference_end_date_ca', 'class' => 'form-control']) !!}
+        {!! Form::date('conference_end_date_ca', null, ['id'=>'conference_end_date_ca', 'class' => 'form-control', 'min'=>$sixMonthsAhead, 'max'=>$sixMonthsAheadPlusFiveDays]) !!}
     </div>
 </div>
 
 <!-- conference_fee_amount_local Field -->
 <div id="div-conference_fee_amount_local_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="conference_fee_amount_local_ca" class="col-sm-11 col-form-label">Conference Fee Amount (₦):</label>
+    <label for="conference_fee_amount_local_ca" class="col-sm-11 col-form-label">Conference Fee Amount (₦) :</label>
     <div class="col-sm-12">
-        {!! Form::text('conference_fee_amount_local_ca', null, ['id'=>'conference_fee_amount_local_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+        {!! Form::text('conference_fee_amount_local_ca', null, ['id'=>'conference_fee_amount_local_ca', 'class'=>'form-control', 'placeholder'=>'required field']) !!}
     </div>
 </div>
 

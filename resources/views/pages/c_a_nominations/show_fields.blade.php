@@ -1,5 +1,5 @@
 <!-- Email Field -->
-<div id="div_cANomination_email" class="col-sm-12 mb-10">
+<div id="div_cANomination_email" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('email', 'Email:', ['class'=>'control-label']) !!} 
@@ -15,7 +15,7 @@
 </div>
 
 <!-- Telephone Field -->
-<div id="div_cANomination_telephone" class="col-sm-12 mb-10">
+<div id="div_cANomination_telephone" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('telephone', 'Telephone:', ['class'=>'control-label']) !!} 
@@ -31,7 +31,7 @@
 </div>
 
 <!-- Beneficiary Institution Field -->
-<div id="div_cANomination_beneficiary_institution_name" class="col-sm-12 mb-10">
+<div id="div_cANomination_beneficiary_institution_name" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('beneficiary_institution_id', 'Beneficiary Institution:', ['class'=>'control-label']) !!}
@@ -48,7 +48,7 @@
 </div>
 
 <!-- country Name Field -->
-<div id="div_cANomination_country_name" class="col-sm-12 mb-10">
+<div id="div_cANomination_country_name" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('country_id', 'Country:', ['class'=>'control-label']) !!}
@@ -64,7 +64,7 @@
 </div>
 
 <!-- Conference Field -->
-<div id="div_cANomination_conference_name" class="col-sm-12 mb-10">
+<div id="div_cANomination_conference_name" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('conference_id', 'Conference:', ['class'=>'control-label']) !!}
@@ -80,7 +80,7 @@
 </div>
 
 <!-- Gender Field -->
-<div id="div_cANomination_gender" class="col-sm-12 mb-10">
+<div id="div_cANomination_gender" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('gender', 'Gender:', ['class'=>'control-label']) !!} 
@@ -96,7 +96,7 @@
 </div>
 
 <!-- First Name Field -->
-<div id="div_cANomination_first_name" class="col-sm-12 mb-10">
+<div id="div_cANomination_first_name" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('first_name', 'First Name:', ['class'=>'control-label']) !!} 
@@ -112,7 +112,7 @@
 </div>
 
 <!-- Middle Name Field -->
-<div id="div_cANomination_middle_name" class="col-sm-12 mb-10">
+<div id="div_cANomination_middle_name" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('middle_name', 'Middle Name:', ['class'=>'control-label']) !!} 
@@ -128,7 +128,7 @@
 </div>
 
 <!-- Last Name Field -->
-<div id="div_cANomination_last_name" class="col-sm-12 mb-10">
+<div id="div_cANomination_last_name" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('last_name', 'Last Name:', ['class'=>'control-label']) !!} 
@@ -144,7 +144,7 @@
 </div>
 
 <!-- Bank Account Name Field -->
-<div id="div_cANomination_bank_account_name" class="col-sm-12 mb-10">
+<div id="div_cANomination_bank_account_name" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('bank_account_name', 'Bank Account Name:', ['class'=>'control-label']) !!} 
@@ -160,7 +160,7 @@
 </div>
 
 <!-- Bank Account Number Field -->
-<div id="div_cANomination_bank_account_number" class="col-sm-12 mb-10">
+<div id="div_cANomination_bank_account_number" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('bank_account_number', 'Bank Account Number:', ['class'=>'control-label']) !!} 
@@ -176,7 +176,7 @@
 </div>
 
 <!-- Bank Name Field -->
-<div id="div_cANomination_bank_name" class="col-sm-12 mb-10">
+<div id="div_cANomination_bank_name" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('bank_name', 'Bank Name:', ['class'=>'control-label']) !!} 
@@ -192,7 +192,7 @@
 </div>
 
 <!-- Bank Sort Code Field -->
-<div id="div_cANomination_bank_sort_code" class="col-sm-12 mb-10">
+<div id="div_cANomination_bank_sort_code" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('bank_sort_code', 'Bank Sort Code:', ['class'=>'control-label']) !!} 
@@ -208,7 +208,7 @@
 </div>
 
 <!-- Intl Passport Number Field -->
-<div id="div_cANomination_intl_passport_number" class="col-sm-12 mb-10">
+<div id="div_cANomination_intl_passport_number" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('intl_passport_number', 'Intl Passport Number:', ['class'=>'control-label']) !!} 
@@ -224,7 +224,7 @@
 </div>
 
 <!-- Bank Verification Number Field -->
-<div id="div_cANomination_bank_verification_number" class="col-sm-12 mb-10">
+<div id="div_cANomination_bank_verification_number" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('bank_verification_number', 'Bank Verification Number:', ['class'=>'control-label'])
@@ -241,7 +241,7 @@
 </div>
 
 <!-- National Id Number Field -->
-<div id="div_cANomination_national_id_number" class="col-sm-12 mb-10">
+<div id="div_cANomination_national_id_number" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('national_id_number', 'National Id Number:', ['class'=>'control-label']) !!} 
@@ -257,7 +257,7 @@
 </div>
 
 <!-- Organizer Name Field -->
-<div id="div_cANomination_organizer_name" class="col-sm-12 mb-10">
+<div id="div_cANomination_organizer_name" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('organizer_name', 'Organizer Name:', ['class'=>'control-label']) !!} 
@@ -273,7 +273,7 @@
 </div>
 
 <!-- Conference Theme Field -->
-<div id="div_cANomination_conference_theme" class="col-sm-12 mb-10">
+<div id="div_cANomination_conference_theme" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('conference_theme', 'Conference Theme:', ['class'=>'control-label']) !!} 
@@ -289,7 +289,7 @@
 </div>
 
 <!-- Accepted Paper Title Field -->
-<div id="div_cANomination_accepted_paper_title" class="col-sm-12 mb-10">
+<div id="div_cANomination_accepted_paper_title" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('accepted_paper_title', 'Accepted Paper Title:', ['class'=>'control-label']) !!} 
@@ -305,7 +305,7 @@
 </div>
 
 <!-- Attendee Department Name Field -->
-<div id="div_cANomination_attendee_department_name" class="col-sm-12 mb-10">
+<div id="div_cANomination_attendee_department_name" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('attendee_department_name', 'Attendee Department Name:', ['class'=>'control-label'])
@@ -322,7 +322,7 @@
 </div>
 
 <!-- Attendee Grade Level Field -->
-<div id="div_cANomination_attendee_grade_level" class="col-sm-12 mb-10">
+<div id="div_cANomination_attendee_grade_level" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('attendee_grade_level', 'Attendee Grade Level:', ['class'=>'control-label']) !!} 
@@ -339,7 +339,7 @@
 
 
 <!-- Has Paper Presentation Field -->
-<div id="div_cANomination_has_paper_presentation" class="col-sm-12 mb-10">
+<div id="div_cANomination_has_paper_presentation" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('has_paper_presentation', 'Has Paper Presentation:', ['class'=>'control-label']) !!}
@@ -355,7 +355,7 @@
 </div>
 
 <!-- Is Academic Staff Field -->
-<div id="div_cANomination_is_academic_staff" class="col-sm-12 mb-10">
+<div id="div_cANomination_is_academic_staff" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('is_academic_staff', 'Is Academic Staff:', ['class'=>'control-label']) !!} 
@@ -371,7 +371,7 @@
 </div>
 
 <!-- Conference Start Date Field -->
-<div id="div_cANomination_conference_start_date" class="col-sm-12 mb-10">
+<div id="div_cANomination_conference_start_date" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('conference_start_date', 'Conference Start Date:', ['class'=>'control-label']) !!}
@@ -387,7 +387,7 @@
 </div>
 
 <!-- Conference end date -->
-<div id="div_cANomination_conference_end_date" class="col-sm-12 mb-10">
+<div id="div_cANomination_conference_end_date" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('conference_end_date', 'Conference End Date:', ['class'=>'control-label']) !!}
@@ -403,7 +403,7 @@
 </div>
 
 <!-- Final Remarks Field -->
-<div id="div_cANomination_final_remarks" class="col-sm-12 mb-10">
+<div id="div_cANomination_final_remarks" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('final_remarks', 'Final Remarks:', ['class'=>'control-label']) !!} 
@@ -419,7 +419,7 @@
 </div>
 
 <!-- Total Requested Amount Field -->
-<div id="div_cANomination_total_requested_amount" class="col-sm-12 mb-10">
+<div id="div_cANomination_total_requested_amount" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('total_requested_amount', 'Total Requested Amount:', ['class'=>'control-label']) !!} 
@@ -435,7 +435,7 @@
 </div>
 
 <!-- Total Approved Amount Field -->
-<div id="div_cANomination_total_approved_amount" class="col-sm-12 mb-10">
+<div id="div_cANomination_total_approved_amount" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
             {!! Form::label('total_approved_amount', 'Total Approved Amount:', ['class'=>'control-label']) !!} 

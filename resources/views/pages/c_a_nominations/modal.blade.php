@@ -25,10 +25,8 @@
 
                             <input type="hidden" id="txt-cANomination-primary-id" value="0" />
                             <div id="div-show-txt-cANomination-primary-id">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        @include('tf-bi-portal::pages.c_a_nominations.show_fields')
-                                    </div>
+                                <div class="row col-sm-12">
+                                    @include('tf-bi-portal::pages.c_a_nominations.show_fields')
                                 </div>
                             </div>
                             <div id="div-edit-txt-cANomination-primary-id">
@@ -192,7 +190,7 @@ $(document).ready(function() {
 
             $('#spn_cANomination_beneficiary_institution_name').html(response.data.beneficiary.full_name);
             $('#spn_cANomination_country_name').html(response.data.country.name + ' (' + response.data.country.country_code + ')');
-            $('#spn_cANomination_conference_name').html(response.data.conference.name); 
+            $('#spn_cANomination_conference_name').html(response.data.conference_title); 
 
             /*$('#spn_cANomination_conference_name').html(response.data.conference_fee_amount_local); 
             $('#spn_cANomination_conference_name').html(response.data.local_runs_amount); 
@@ -256,6 +254,7 @@ $(document).ready(function() {
     		$('#bank_verification_number_ca').val(response.data.bank_verification_number);
     		$('#national_id_number_ca').val(response.data.national_id_number);
             $('#conference_title_ca').val(response.data.conference_title);
+            $('#conference_state_select_ca').val(response.data.conference_state);
     		$('#organizer_name_ca').val(response.data.organizer_name);
     		$('#conference_theme_ca').val(response.data.conference_theme);
             $('#conference_address_ca').val(response.data.conference_address);
@@ -286,7 +285,6 @@ $(document).ready(function() {
             var conference_end_date = new Date(response.data.conference_end_date).toISOString().slice(0, 10);
             $('#conference_end_date_ca').val(conference_end_date);
 
-            $('#state_id_select_ca option[value="' + response.data.conference_state + '"]').prop('selected', 'selected');
             $('#country_id_select_ca option[value="' + response.data.tf_iterum_portal_country_id + '"]').prop('selected', 'selected');
 
             // let conferences_filtered = "<option value=''>-- None selected --</option>";
@@ -384,15 +382,6 @@ $(document).ready(function() {
 
         $('#conference_fee_amount_local_ca').keyup(function(event) {
             $('#conference_fee_amount_local_ca').digits();
-        });
-        $('#local_runs_amount_ca').keyup(function(event) {
-            $('#local_runs_amount_ca').digits();
-        });
-        $('#passage_amount_ca').keyup(function(event) {
-            $('#passage_amount_ca').digits();
-        });
-        $('#paper_presentation_fee_ca').keyup(function(event) {
-            $('#paper_presentation_fee_ca').digits();
         });
 
         //check for internet status 
