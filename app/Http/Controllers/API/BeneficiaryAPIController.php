@@ -167,7 +167,7 @@ class BeneficiaryAPIController extends AppBaseController
             "gender" => strtolower($request->bi_staff_gender),
             'organization_id' => $request->organization_id ?? null,
             'beneficiary_bi_id' => $beneficiary->id,
-            'memeber_type' => $request->bi_member_type,
+            'member_type' => $request->bi_member_type,
             'grade_level' => $request->bi_grade_level,
             'beneficiary_tetfund_iterum_id' => $beneficiary->tf_iterum_portal_key_id,
             'user_roles_arr' => $selectedRoles
