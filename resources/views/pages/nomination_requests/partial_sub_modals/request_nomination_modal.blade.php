@@ -59,11 +59,6 @@ $(document).ready(function() {
     let institutions = '{!! json_encode($institutions) !!}';
     let country_nigeria_id = '{!! $country_nigeria_id !!}';
 
-    // CA DIgit amoutn input 
-    $('#conference_fee_amount_local_ca').keyup(function(event) {
-        $('#conference_fee_amount_local_ca').digits();
-    });
-
     // toggle TSAS international passport attachement input filed
     $('#intl_passport_number_tsas').on('keyup', function() {
         let intl_passport_number_set_tsas = $(this).val();
@@ -72,6 +67,11 @@ $(document).ready(function() {
         } else if (intl_passport_number_set_tsas == '' || intl_passport_number_set_tsas.length == 0) {
             $('#div-international_passport_bio_page_tsas').hide();
         }
+    });
+
+    // CA DIgit amoutn input 
+    $('#conference_fee_amount_local_ca').keyup(function(event) {
+        $('#conference_fee_amount_local_ca').digits();
     });
 
     // toggle CA presention paper attachement input filed on is_conference_workshop_ca

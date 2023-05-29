@@ -169,60 +169,7 @@ class NominationRequestAPIController extends BaseController
             //hitting CA API Controller
             $nominationRequestAPIControllerOBJ = new CANominationAPIController();
 
-            /* server class constructor to retrieve amout settings */
-            $pay_load = [ '_method' => 'GET'];
-            $tetFundServer = new TETFundServer();
-            $ca_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/ca_cost_settings/'.$input['attendee_grade_level'], $pay_load);
-
-            if (isset($ca_amount_settings->country_nigeria->id) && isset($input['tf_iterum_portal_country_id'])) {
-
-                if ($ca_amount_settings->country_nigeria->id == $input['tf_iterum_portal_country_id']) {
-                    
-                    // setting amount column if conference is local
-                    $input['dta_amount'] = floatval($ca_amount_settings->dta_amount ?? 0);
-                    $input['local_runs_amount'] = ($input['dta_amount'] * floatval($ca_amount_settings->dta_local_runs_percentage??0)) / 100;
-                    $input['conference_fee_amount_local'] = floatval($input['conference_fee_amount_local'] ?? 0);
-
-                    $passage_amount = 0.00;
-                    // checking that nominees institution in not in the same state as conference state
-                    if (isset($input['conference_state']) && !str_contains(strtolower($bi_beneficiary->address_state), strtolower($input['conference_state']))) {
-                        if ($input['conference_passage_type']=='long') {
-                            $passage_amount = floatval($ca_amount_settings->local_long_passage_amt ?? 0);
-                        } elseif ($input['conference_passage_type']=='medium') {
-                            $passage_amount = floatval($ca_amount_settings->local_medium_passage_amt ?? 0);
-                        } elseif ($input['conference_passage_type']=='short') {
-                            $passage_amount = floatval($ca_amount_settings->local_short_passage_amt ?? 0);
-                        }
-                    
-                        $input['passage_amount'] = $passage_amount;
-                        $input['paper_presentation_fee'] = $input['has_paper_presentation']==true ? floatval($ca_amount_settings->local_paper_production_amt??0) : 0.00;
-                        $input['total_requested_amount'] = $input['conference_fee_amount_local'] + $input['dta_amount'] + $input['local_runs_amount'
-                        ] + $input['passage_amount'] + $input['paper_presentation_fee'];
-                    }
-
-               } elseif($ca_amount_settings->country_nigeria->id != $input['tf_iterum_portal_country_id']) {
-                    
-                    // setting amount column if conference is foreign
-                    $input['dta_amount'] = floatval(($ca_amount_settings->estacode_amt??0) * $ca_amount_settings->dollar_exchange_rate_to_naira);
-                    $input['conference_fee_amount_local'] = floatval($input['conference_fee_amount_local'] ?? 0);
-                    $input['local_runs_amount'] = floatval($ca_amount_settings->foreign_visa_processing_except_ecowas_amt??0);
-
-                    $passage_amount = 0.00;                    
-                    if ($input['conference_passage_type']=='long') {
-                        $passage_amount = floatval($ca_amount_settings->foreign_long_passage_amt ?? 0);
-                    } elseif ($input['conference_passage_type']=='medium') {
-                        $passage_amount = floatval($ca_amount_settings->foreign_medium_passage_amt ?? 0);
-                    } elseif ($input['conference_passage_type']=='short') {
-                        $passage_amount = floatval($ca_amount_settings->foreign_short_passage_amt ?? 0);
-                    }  elseif ($input['conference_passage_type']=='africa') {
-                        $passage_amount = floatval($ca_amount_settings->african_passage_amt ?? 0);
-                    }            
-
-                    $input['passage_amount'] = $passage_amount;
-                    $input['paper_presentation_fee'] = $input['has_paper_presentation']==true ? floatval($ca_amount_settings->foreign_paper_production_amt??0) : 0.00;
-                    $input['total_requested_amount'] = $input['conference_fee_amount_local'] + $input['dta_amount'] + $input['local_runs_amount'] + $input['passage_amount'] + $input['paper_presentation_fee'];
-                }
-            }
+            $input = $nominationRequestAPIControllerOBJ->set_ca_nominee_amounts($input, $bi_beneficiary);
 
         } else if ($request->nomination_type == 'tsas') {
             $request = app('App\Http\Requests\API\CreateTSASNominationAPIRequest');

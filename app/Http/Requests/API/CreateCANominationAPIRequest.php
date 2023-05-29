@@ -44,7 +44,6 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             'conference_state' => "required_if:tf_iterum_portal_country_id,=,". request()->country_nigeria_id ."|string|min:2|max:100|in:". implode(BaseController::statesList(), ','),
             'conference_title' => 'required|string|min:2|max:100',
             'organizer_name' => 'required|string|max:190',
-            'organizer_name' => 'required|string|max:190',
             'conference_theme' => 'required|string|max:190',
             'conference_address' => 'required|string|max:200',
             'conference_passage_type' => "required|string|max:50|in:". implode(['short', 'medium', 'long', 'state', 'africa'], ','),
@@ -65,7 +64,6 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             'intl_passport_number' => 'required_unless:tf_iterum_portal_country_id,'.request()->country_nigeria_id.'|max:100',
             'national_id_number' => 'required|numeric',
             
-            // 'conference_fee_amount' => 'nullable|numeric|min:0|max:100000000',
             'conference_fee_amount_local' => 'required|numeric|min:0|max:100000000',
             
             'passport_photo' => 'required|file|mimes:pdf,png,jpeg,jpg|max:5240',

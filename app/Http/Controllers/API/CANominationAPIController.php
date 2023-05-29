@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Models\Beneficiary;
 use App\Models\CANomination;
 use App\Models\NominationRequest;
 
@@ -71,35 +72,9 @@ class CANominationAPIController extends AppBaseController
     {
         $input = $request->all();
 
-        /* server class constructor to retrieve amout settings */
-        $pay_load = [ '_method' => 'GET', 'query_like_parameters' => 'ca_', ];
-        $tetFundServer = new TETFundServer(); 
-        $ca_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/dashboard/get_configured_amounts', $pay_load);
-
-        $beneficiary = BeneficiaryMember::where('beneficiary_user_id', auth()->user()->id)->first()->beneficiary ?? null;
-        $user_institution_type = optional($beneficiary)->type == 'university' ? 'uni' : 'poly_coe';
-        $user_staff_type = isset($request->is_academic_staff) && $request->is_academic_staff == 1 ? 'ts' : 'nts';
-        $field_to_fetch = "ca_{$user_institution_type}_{$user_staff_type}_{$request->attendee_grade_level}_daily_tour_allowance";
-
-        $conference_fee_amount_local = floatval($ca_amount_settings->ca_conference_reg_fees_local ?? 0);
-        $dta_amount = floatval($ca_amount_settings->{$field_to_fetch} ?? 0);
-        $local_runs_amount = floatval($ca_amount_settings->ca_local_runs_fees ?? 0);
-        $paper_presentation_fee = isset($request->has_paper_presentation) && $request->has_paper_presentation == 1 ? floatval($ca_amount_settings->ca_paper_presentation_fees ?? 0) : 0;
-        $passage_amount = floatval($ca_amount_settings->ca_passage_amount ?? 0);
-
-        // setting amount colunm
-        $input['conference_fee_amount_local'] = $request->conference_fee_amount_local ?? 0;
-        //$input['conference_fee_amount_local'] = $conference_fee_amount_local;
-        $input['dta_amount'] = $dta_amount;
-        $input['local_runs_amount'] = $request->local_runs_amount ?? 0;
-        //$input['local_runs_amount'] = $local_runs_amount;
-        $input['passage_amount'] = $request->passage_amount ?? 0;
-        //$input['passage_amount'] = $passage_amount;
-        $input['paper_presentation_fee'] = $request->paper_presentation_fee ?? 0;
-        //$input['paper_presentation_fee'] = $paper_presentation_fee;
-        $input['total_requested_amount'] = $input['conference_fee_amount_local'] + $input['dta_amount'] + $input['local_runs_amount'] + $input['passage_amount'] + $input['paper_presentation_fee'];
-        //$input['total_requested_amount'] = $input['conference_fee_amount_local'] + $input['dta_amount'] + $input['local_runs_amount'] + $input['passage_amount'] + $input['paper_presentation_fee'];
-
+        $bi_beneficiary = Beneficiary::find($request->get('beneficiary_institution_id'));
+        $input = $this->set_ca_nominee_amounts($request->all(), $bi_beneficiary);
+        
         /** @var CANomination $cANomination */
         $cANomination = CANomination::create($input);
         
@@ -206,10 +181,10 @@ class CANominationAPIController extends AppBaseController
             return $this->sendError('C A Nomination not found');
         }
 
-        $total_requested_amount = ($request->conference_fee_amount_local ?? 0) + ($cANomination->dta_amount ?? 0) + ($request->local_runs_amount ?? 0) + ($request->passage_amount ?? 0) + ($request->paper_presentation_fee ?? 0);
-        $request->request->add(['total_requested_amount' => $total_requested_amount]);
+        $bi_beneficiary = Beneficiary::find($request->get('beneficiary_institution_id'));
+        $input = $this->set_ca_nominee_amounts($request->all(), $bi_beneficiary);
 
-        $cANomination->fill($request->all());
+        $cANomination->fill($input);
         $cANomination->save();
         $nominationRequest = $cANomination->nomination_request;
         
@@ -299,5 +274,66 @@ class CANominationAPIController extends AppBaseController
         $cANomination->delete();
         CANominationDeleted::dispatch($cANomination);
         return $this->sendSuccess('C A Nomination deleted successfully');
+    }
+
+    public function set_ca_nominee_amounts($input, $bi_beneficiary) {
+
+        /* server class constructor to retrieve amout settings */
+        $pay_load = [ '_method' => 'GET'];
+        $tetFundServer = new TETFundServer();
+        $ca_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/ca_cost_settings/'.$input['attendee_grade_level'], $pay_load);
+
+        if (isset($ca_amount_settings->country_nigeria->id) && isset($input['tf_iterum_portal_country_id'])) {
+
+            if ($ca_amount_settings->country_nigeria->id == $input['tf_iterum_portal_country_id']) {
+                
+                // setting amount column if conference is local
+                $input['dta_amount'] = floatval($ca_amount_settings->dta_amount ?? 0);
+                $input['local_runs_amount'] = ($input['dta_amount'] * floatval($ca_amount_settings->dta_local_runs_percentage??0)) / 100;
+                $input['conference_fee_amount_local'] = floatval($input['conference_fee_amount_local'] ?? 0);
+
+                $passage_amount = 0.00;
+                // checking that nominees institution in not in the same state as conference state
+                if (isset($input['conference_state']) && !str_contains(strtolower($bi_beneficiary->address_state), strtolower($input['conference_state']))) {
+                    if ($input['conference_passage_type']=='long') {
+                        $passage_amount = floatval($ca_amount_settings->local_long_passage_amt ?? 0);
+                    } elseif ($input['conference_passage_type']=='medium') {
+                        $passage_amount = floatval($ca_amount_settings->local_medium_passage_amt ?? 0);
+                    } elseif ($input['conference_passage_type']=='short') {
+                        $passage_amount = floatval($ca_amount_settings->local_short_passage_amt ?? 0);
+                    }
+                
+                    $input['passage_amount'] = $passage_amount;
+                    $input['paper_presentation_fee'] = $input['has_paper_presentation']==true ? floatval($ca_amount_settings->local_paper_production_amt??0) : 0.00;
+                    $input['total_requested_amount'] = $input['conference_fee_amount_local'] + $input['dta_amount'] + $input['local_runs_amount'
+                    ] + $input['passage_amount'] + $input['paper_presentation_fee'];
+                }
+
+           } elseif($ca_amount_settings->country_nigeria->id != $input['tf_iterum_portal_country_id']) {
+                
+                // setting amount column if conference is foreign
+                $input['dta_amount'] = floatval(($ca_amount_settings->estacode_amt??0) * $ca_amount_settings->dollar_exchange_rate_to_naira);
+                $input['conference_fee_amount_local'] = floatval($input['conference_fee_amount_local'] ?? 0);
+                $input['local_runs_amount'] = floatval($ca_amount_settings->foreign_visa_processing_except_ecowas_amt??0);
+
+                $passage_amount = 0.00;                    
+                if ($input['conference_passage_type']=='long') {
+                    $passage_amount = floatval($ca_amount_settings->foreign_long_passage_amt ?? 0);
+                } elseif ($input['conference_passage_type']=='medium') {
+                    $passage_amount = floatval($ca_amount_settings->foreign_medium_passage_amt ?? 0);
+                } elseif ($input['conference_passage_type']=='short') {
+                    $passage_amount = floatval($ca_amount_settings->foreign_short_passage_amt ?? 0);
+                }  elseif ($input['conference_passage_type']=='africa') {
+                    $passage_amount = floatval($ca_amount_settings->african_passage_amt ?? 0);
+                }            
+
+                $input['passage_amount'] = $passage_amount;
+                $input['paper_presentation_fee'] = $input['has_paper_presentation']==true ? floatval($ca_amount_settings->foreign_paper_production_amt??0) : 0.00;
+                $input['total_requested_amount'] = $input['conference_fee_amount_local'] + $input['dta_amount'] + $input['local_runs_amount'] + $input['passage_amount'] + $input['paper_presentation_fee'];
+            }
+
+        }
+
+        return $input;
     }
 }

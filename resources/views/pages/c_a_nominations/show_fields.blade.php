@@ -3,7 +3,7 @@
     <p>
         <strong>
             {!! Form::label('email', 'Email:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_email">
         @if (isset($cANomination->email) && empty($cANomination->email)==false)
             {!! $cANomination->email !!}
@@ -19,7 +19,7 @@
     <p>
         <strong>
             {!! Form::label('telephone', 'Telephone:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_telephone">
         @if (isset($cANomination->telephone) && empty($cANomination->telephone)==false)
             {!! $cANomination->telephone !!}
@@ -35,7 +35,7 @@
     <p>
         <strong>
             {!! Form::label('beneficiary_institution_id', 'Beneficiary Institution:', ['class'=>'control-label']) !!}
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_beneficiary_institution_name">
         @if (isset($cANomination->beneficiary_institution_id) && empty($cANomination->beneficiary)==false)
             {!! $cANomination->beneficiary->full_name !!}
@@ -52,7 +52,7 @@
     <p>
         <strong>
             {!! Form::label('country_id', 'Country:', ['class'=>'control-label']) !!}
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_country_name">
         @if (isset($cANomination->country_id) && empty($cANomination->country_id)==false)
             {!! $cANomination->country->name !!}
@@ -68,7 +68,7 @@
     <p>
         <strong>
             {!! Form::label('conference_id', 'Conference:', ['class'=>'control-label']) !!}
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_conference_name">
         @if (isset($cANomination->conference_id) && empty($cANomination->conference)==false)
             {!! $cANomination->conference->name !!}
@@ -84,7 +84,7 @@
     <p>
         <strong>
             {!! Form::label('gender', 'Gender:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_gender">
         @if (isset($cANomination->gender) && empty($cANomination->gender)==false)
             {!! $cANomination->gender !!}
@@ -100,7 +100,7 @@
     <p>
         <strong>
             {!! Form::label('first_name', 'First Name:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_first_name">
         @if (isset($cANomination->first_name) && empty($cANomination->first_name)==false)
             {!! $cANomination->first_name !!}
@@ -116,7 +116,7 @@
     <p>
         <strong>
             {!! Form::label('middle_name', 'Middle Name:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_middle_name">
         @if (isset($cANomination->middle_name) && empty($cANomination->middle_name)==false)
             {!! $cANomination->middle_name !!}
@@ -132,7 +132,7 @@
     <p>
         <strong>
             {!! Form::label('last_name', 'Last Name:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_last_name">
         @if (isset($cANomination->last_name) && empty($cANomination->last_name)==false)
             {!! $cANomination->last_name !!}
@@ -148,7 +148,7 @@
     <p>
         <strong>
             {!! Form::label('bank_account_name', 'Bank Account Name:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_bank_account_name">
         @if (isset($cANomination->bank_account_name) && empty($cANomination->bank_account_name)==false)
             {!! $cANomination->bank_account_name !!}
@@ -164,7 +164,7 @@
     <p>
         <strong>
             {!! Form::label('bank_account_number', 'Bank Account Number:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_bank_account_number">
         @if (isset($cANomination->bank_account_number) && empty($cANomination->bank_account_number)==false)
             {!! $cANomination->bank_account_number !!}
@@ -180,7 +180,7 @@
     <p>
         <strong>
             {!! Form::label('bank_name', 'Bank Name:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_bank_name">
         @if (isset($cANomination->bank_name) && empty($cANomination->bank_name)==false)
             {!! $cANomination->bank_name !!}
@@ -196,7 +196,7 @@
     <p>
         <strong>
             {!! Form::label('bank_sort_code', 'Bank Sort Code:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_bank_sort_code">
         @if (isset($cANomination->bank_sort_code) && empty($cANomination->bank_sort_code)==false)
             {!! $cANomination->bank_sort_code !!}
@@ -212,7 +212,7 @@
     <p>
         <strong>
             {!! Form::label('intl_passport_number', 'Intl Passport Number:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_intl_passport_number">
         @if (isset($cANomination->intl_passport_number) && empty($cANomination->intl_passport_number)==false)
             {!! $cANomination->intl_passport_number !!}
@@ -229,7 +229,7 @@
         <strong>
             {!! Form::label('bank_verification_number', 'Bank Verification Number:', ['class'=>'control-label'])
              !!}
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_bank_verification_number">
         @if (isset($cANomination->bank_verification_number) && empty($cANomination->bank_verification_number)==false)
             {!! $cANomination->bank_verification_number !!}
@@ -245,7 +245,7 @@
     <p>
         <strong>
             {!! Form::label('national_id_number', 'National Id Number:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_national_id_number">
         @if (isset($cANomination->national_id_number) && empty($cANomination->national_id_number)==false)
             {!! $cANomination->national_id_number !!}
@@ -261,7 +261,7 @@
     <p>
         <strong>
             {!! Form::label('organizer_name', 'Organizer Name:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_organizer_name">
         @if (isset($cANomination->organizer_name) && empty($cANomination->organizer_name)==false)
             {!! $cANomination->organizer_name !!}
@@ -277,7 +277,7 @@
     <p>
         <strong>
             {!! Form::label('conference_theme', 'Conference Theme:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_conference_theme">
         @if (isset($cANomination->conference_theme) && empty($cANomination->conference_theme)==false)
             {!! $cANomination->conference_theme !!}
@@ -293,7 +293,7 @@
     <p>
         <strong>
             {!! Form::label('accepted_paper_title', 'Accepted Paper Title:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_accepted_paper_title">
         @if (isset($cANomination->accepted_paper_title) && empty($cANomination->accepted_paper_title)==false)
             {!! $cANomination->accepted_paper_title !!}
@@ -310,7 +310,7 @@
         <strong>
             {!! Form::label('attendee_department_name', 'Attendee Department Name:', ['class'=>'control-label'])
              !!}
-        </strong> 
+        </strong> <br>        
         <span id="spn_cANomination_attendee_department_name">
         @if (isset($cANomination->attendee_department_name) && empty($cANomination->attendee_department_name)==false)
             {!! $cANomination->attendee_department_name !!}
@@ -326,7 +326,7 @@
     <p>
         <strong>
             {!! Form::label('attendee_grade_level', 'Attendee Grade Level:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_attendee_grade_level">
         @if (isset($cANomination->attendee_grade_level) && empty($cANomination->attendee_grade_level)==false)
             {!! $cANomination->attendee_grade_level !!}
@@ -343,7 +343,7 @@
     <p>
         <strong>
             {!! Form::label('has_paper_presentation', 'Has Paper Presentation:', ['class'=>'control-label']) !!}
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_has_paper_presentation">
         @if (isset($cANomination->has_paper_presentation))
             {!! $cANomination->has_paper_presentation ? 'Yes' : 'No' !!}
@@ -359,7 +359,7 @@
     <p>
         <strong>
             {!! Form::label('is_academic_staff', 'Is Academic Staff:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_is_academic_staff">
         @if (isset($cANomination->is_academic_staff))
             {!! $cANomination->is_academic_staff ? 'Yes' : 'No' !!}
@@ -375,7 +375,7 @@
     <p>
         <strong>
             {!! Form::label('conference_start_date', 'Conference Start Date:', ['class'=>'control-label']) !!}
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_conference_start_date">
         @if (isset($cANomination->conference_start_date) && empty($cANomination->conference_start_date)==false)
             {!! date('D, d-M-Y', strtotime($cANomination->conference_start_date)) !!}
@@ -391,7 +391,7 @@
     <p>
         <strong>
             {!! Form::label('conference_end_date', 'Conference End Date:', ['class'=>'control-label']) !!}
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_conference_end_date">
         @if (isset($cANomination->conference_end_date) && empty($cANomination->conference_end_date)==false)
             {!! date('D, d-M-Y', strtotime($cANomination->conference_end_date)) !!}
@@ -407,7 +407,7 @@
     <p>
         <strong>
             {!! Form::label('final_remarks', 'Final Remarks:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_final_remarks">
         @if (isset($cANomination->final_remarks) && empty($cANomination->final_remarks)==false)
             {!! $cANomination->final_remarks !!}
@@ -423,7 +423,7 @@
     <p>
         <strong>
             {!! Form::label('total_requested_amount', 'Total Requested Amount:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_total_requested_amount">
         @if (isset($cANomination->total_requested_amount) && empty($cANomination->total_requested_amount)==false)
             {!! $cANomination->total_requested_amount !!}
@@ -439,7 +439,7 @@
     <p>
         <strong>
             {!! Form::label('total_approved_amount', 'Total Approved Amount:', ['class'=>'control-label']) !!} 
-        </strong>
+        </strong><br>        
         <span id="spn_cANomination_total_approved_amount">
         @if (isset($cANomination->total_approved_amount) && empty($cANomination->total_approved_amount)==false)
             {!! $cANomination->total_approved_amount !!}
