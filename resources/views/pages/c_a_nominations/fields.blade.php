@@ -218,7 +218,7 @@
 
 <!-- Conference Start Date Field -->
 <div id="div-conference_start_date_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="conference_start_date_ca" class="col-sm-12 col-form-label">Conference Start Date :<i class="text-danger">-- 6 months ahead</i></label>
+    <label for="conference_start_date_ca" class="col-sm-12 col-form-label">Conference Start Date :<i class="text-danger">-- (6 months ahead)</i></label>
     <div class="col-sm-12">
         {!! Form::date('conference_start_date_ca', null, ['id'=>'conference_start_date_ca', 'class'=>'form-control', 'min'=>$sixMonthsAhead]) !!}
     </div>
@@ -226,7 +226,7 @@
 
 <!-- Conference End Date Field -->
 <div id="div-conference_end_date_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="conference_end_date_ca" class="col-sm-12 col-form-label">Conference End Date :<i class="text-danger">-- 5 days after start date</i></label>
+    <label for="conference_end_date_ca" class="col-sm-12 col-form-label">Conference End Date :<i class="text-danger">-- (Not more than 5 days after start date)</i></label>
     <div class="col-sm-12">
         {!! Form::date('conference_end_date_ca', null, ['id'=>'conference_end_date_ca', 'class' => 'form-control', 'min'=>$sixMonthsAhead]) !!}
     </div>

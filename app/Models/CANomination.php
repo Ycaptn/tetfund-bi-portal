@@ -7,6 +7,7 @@ use Response;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
+use App\Managers\TETFundServer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -166,6 +167,36 @@ class CANomination extends Model {
     public function attachables()
     {
         return $this->hasMany(EloquentAttachable::class, 'attachable_id', 'id');
+    }
+
+    public static function getMaxConferenceFeeAmount($attendee_grade_level, $selected_country_id, $return_ca_data=false) {
+        
+        // server class constructor to retrieve amout settings
+        $pay_load = [ '_method' => 'GET'];
+        $tetFundServer = new TETFundServer();
+        $ca_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/ca_cost_settings/'.$attendee_grade_level, $pay_load);
+
+        $max_conference_fee_amt = 0.00;
+        if (!empty($selected_country_id) && isset($ca_amount_settings->country_nigeria->id)) {
+            if ($selected_country_id == $ca_amount_settings->country_nigeria->id && isset($ca_amount_settings->local_conf_fee_limit)) {
+                
+                // set max limit if its local conference
+                $max_conference_fee_amt = $ca_amount_settings->local_conf_fee_limit;
+
+            } elseif(isset($ca_amount_settings->dollar_exchange_rate_to_naira) && isset($ca_amount_settings->foreign_conf_fee_limit_amt)) {
+
+                // set max limit if its foreign conference
+                $max_conference_fee_amt = $ca_amount_settings->dollar_exchange_rate_to_naira * $ca_amount_settings->foreign_conf_fee_limit_amt;
+            }
+        }
+
+        // return ca_amount_settings is true
+        if ($return_ca_data==true) {
+            return $ca_amount_settings;
+        }
+
+        // return max conference feee amt based on type (local or foreign)
+        return $max_conference_fee_amt;
     }
 
 }

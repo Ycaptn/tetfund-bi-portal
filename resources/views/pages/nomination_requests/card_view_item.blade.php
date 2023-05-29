@@ -42,7 +42,7 @@
                             {{ strtoupper($data_item->user->first_name) }}
                             {{ strtoupper($data_item->user->last_name) }} 
                                 @if($data_item->head_of_institution_checked_status == 'approved')
-                                    || <span class="text-success"> REQUEST {{ strtoupper($data_item->head_of_institution_checked_status) }} </span>
+                                    || <span class="text-success"> REQUEST CONSIDERED FOR SUBMISSION</span>
                                 @elseif($data_item->head_of_institution_checked_status == 'declined')
                                     || <span class="text-danger"> REQUEST {{ strtoupper($data_item->head_of_institution_checked_status) }} </span>
                                 @else

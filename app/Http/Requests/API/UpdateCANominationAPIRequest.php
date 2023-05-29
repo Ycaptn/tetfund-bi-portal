@@ -8,6 +8,8 @@ use Hasob\FoundationCore\Controllers\BaseController;
 
 class UpdateCANominationAPIRequest extends AppBaseFormRequest
 {
+
+    public $max_conference_fee_amt = 0.00;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -26,6 +28,7 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
     public function rules() {
         $start_date = $this->conference_start_date;
         $plus_5_days = date('d-M-Y', strtotime($start_date . ' + 5 days'));
+        $this->max_conference_fee_amt = isset($this->attendee_grade_level) ? CANomination::getMaxConferenceFeeAmount($this->attendee_grade_level??'', $this->tf_iterum_portal_country_id??'') : 0.00;
 
         $return_arr =  [
             'organization_id' => 'required',
@@ -35,23 +38,24 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
             'middle_name' => 'nullable|string|max:100',
             'last_name' => 'required|string|max:100',
             'email' => 'required|email|max:190',
-            'gender' => "required|string|max:50|in:". implode(['male', 'female'], ','),
+            'gender' => "required|string|max:50|in:male,female",
             'telephone' => 'required|digits:11',
-            'is_conference_workshop' => "required_if:is_academic_staff,=,0|string|max:50|in:". implode(['0', '1'], ','),
+            'is_conference_workshop' => "required_if:is_academic_staff,=,0|string|max:50|in:0,1",
             'tf_iterum_portal_country_id' => 'required|uuid',
             //'tf_iterum_portal_conference_id' => 'required|uuid',
             'nomination_request_id' => 'required|exists:tf_bi_nomination_requests,id',
-            'conference_state' => "required_if:tf_iterum_portal_country_id,=,". request()->country_nigeria_id ."|string|min:2|max:100|in:". implode(BaseController::statesList(), ','),
+            'conference_state' => "required_if:tf_iterum_portal_country_id,=,". request()->country_nigeria_id ."
+                |string|min:2|max:100|in:". implode(',', BaseController::statesList()),
             'conference_title' => 'required|string|min:2|max:100',
             'organizer_name' => 'required|string|max:190',
             'conference_theme' => 'required|string|max:190',
             'conference_address' => 'required|string|max:200',
-            'conference_passage_type' => "required|string|max:50|in:". implode(['short', 'medium', 'long', 'state', 'africa'], ','),
+            'conference_passage_type' => "required|string|max:50|in:short,medium,long,africa,state",
             'attendee_department_name' => 'required|string|max:190',
             'attendee_grade_level' => 'required|string|max:190',
-            'has_paper_presentation' => "required|string|max:50|in:". implode(['0', '1'], ','),
+            'has_paper_presentation' => "required|string|max:50|in:0,1",
             'accepted_paper_title' => 'required_if:has_paper_presentation,=,1|nullable|string|max:190',
-            'is_academic_staff' => "required|string|max:50|in:". implode(['0', '1'], ','),
+            'is_academic_staff' => "required|string|max:50|in:0,1",
             'conference_start_date' => 'required|date|after:today',
             'conference_end_date' => 'required|date|after_or_equal:conference_start_date|before:'.$plus_5_days,
             'name_title' => 'nullable|string|max:50',
@@ -63,8 +67,7 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
             'bank_verification_number' => 'required|numeric',
             'intl_passport_number' => 'required_unless:tf_iterum_portal_country_id,'.request()->country_nigeria_id.'|max:100',
             'national_id_number' => 'required|numeric',
-
-            'conference_fee_amount_local' => 'required|numeric|min:0|max:100000000',
+            'conference_fee_amount_local' => "required|numeric|min:0|max:{$this->max_conference_fee_amt}",
         ];
 
         if(request()->hasFile('passport_photo') && request()->passport_photo != 'undefined') {
@@ -92,7 +95,8 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
             'conference_state.required_if' => 'The :attribute field is required when selected Country is Nigeria.',
             'paper_presentation.required_if' => 'The Presentation Paper attachment is required.',
             'accepted_paper_title.required_if' => 'The :attribute field is required.',
-            'intl_passport_number.required_unless' => 'The :attribute field is required when the selected country isn\'t Nigeria.'
+            'intl_passport_number.required_unless' => 'The :attribute field is required when the selected country isn\'t Nigeria.',
+            'conference_fee_amount_local.max' => 'The Conference Fee Amount must not be greater than ₦'.number_format($this->max_conference_fee_amt, 2)
         ];
     }
     
@@ -139,5 +143,4 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
             'international_passport_bio_page' => 'International Passport Bio Page',
         ];
     }
-
 }
