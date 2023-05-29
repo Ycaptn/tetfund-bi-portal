@@ -31,10 +31,10 @@ class ReprioritizeSubmissionRequestAPIRequest extends AppBaseFormRequest
 
         $return_arr = [
             'reprioritize_amount_requested' => 'required|numeric|min:0|max:100000000000',
-            'reprioritize_intervention_year1' => "nullable|numeric|in:". implode($years, ','),
-            'reprioritize_intervention_year2' => "nullable|numeric|in:". implode($years, ','),
-            'reprioritize_intervention_year3' => "nullable|numeric|in:". implode($years, ','),
-            'reprioritize_intervention_year4' => "nullable|numeric|in:". implode($years, ','),
+            'reprioritize_intervention_year1' => "nullable|numeric|in:". implode(',', $years),
+            'reprioritize_intervention_year2' => "nullable|numeric|in:". implode(',', $years),
+            'reprioritize_intervention_year3' => "nullable|numeric|in:". implode(',', $years),
+            'reprioritize_intervention_year4' => "nullable|numeric|in:". implode(',', $years),
         ];
 
         if (request()->reprioritize_intervention_year1==null && request()->reprioritize_intervention_year2==null && request()->reprioritize_intervention_year3==null && request()->reprioritize_intervention_year4==null) {

@@ -34,10 +34,10 @@ class CreateSubmissionRequestAPIRequest extends AppBaseFormRequest
             //'organization_id' => 'required',
             'tf_iterum_intervention_line_key_id' => 'required|string|max:300',
             'title' => 'required|string|max:300',
-            'intervention_year1' => "nullable|numeric|in:". implode($years, ','),
-            'intervention_year2' => "nullable|numeric|in:". implode($years, ','),
-            'intervention_year3' => "nullable|numeric|in:". implode($years, ','),
-            'intervention_year4' => "nullable|numeric|in:". implode($years, ','),
+            'intervention_year1' => "nullable|numeric|in:". implode(',', $years),
+            'intervention_year2' => "nullable|numeric|in:". implode(',', $years),
+            'intervention_year3' => "nullable|numeric|in:". implode(',', $years),
+            'intervention_year4' => "nullable|numeric|in:". implode(',', $years),
         ];
 
         // reqiure proposed request date field when submission is monitoring request
@@ -59,7 +59,7 @@ class CreateSubmissionRequestAPIRequest extends AppBaseFormRequest
                 '1st_Tranche_Payment', '2nd_Tranche_Payment', 'Final_Tranche_Payment', 'Monitoring_Request'
             ];
 
-            $returned_arr['ongoing_submission_stage'] = "required|string|max:50|in:". implode($valid_ongoing_submission_stages,',');
+            $returned_arr['ongoing_submission_stage'] = "required|string|max:50|in:". implode(',', $valid_ongoing_submission_stages);
 
             if (request()->hasFile('file_attachments') && count(request()->file_attachments)>0) {
                 $returned_arr['file_attachments.*'] = 'required|file|mimes:pdf|max:100000';

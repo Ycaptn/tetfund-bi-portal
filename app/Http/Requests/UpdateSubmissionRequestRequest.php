@@ -34,10 +34,10 @@ class UpdateSubmissionRequestRequest extends AppBaseFormRequest
             'intervention_type' => 'required|string|max:100',
             'tf_iterum_intervention_line_key_id' => 'required|string|max:300',
             'intervention_title' => 'required|string|max:300',
-            'intervention_year1' => "nullable|numeric|in:". implode($years, ','),
-            'intervention_year2' => "nullable|numeric|in:". implode($years, ','),
-            'intervention_year3' => "nullable|numeric|in:". implode($years, ','),
-            'intervention_year4' => "nullable|numeric|in:". implode($years, ','),
+            'intervention_year1' => "nullable|numeric|in:". implode(',', $years),
+            'intervention_year2' => "nullable|numeric|in:". implode(',', $years),
+            'intervention_year3' => "nullable|numeric|in:". implode(',', $years),
+            'intervention_year4' => "nullable|numeric|in:". implode(',', $years),
         ];
 
         if (request()->intervention_year1==null && request()->intervention_year2==null && request()->intervention_year3==null && request()->intervention_year4==null) {

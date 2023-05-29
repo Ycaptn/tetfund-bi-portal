@@ -23,8 +23,6 @@ class CreateNominationRequestAPIRequest extends AppBaseFormRequest
      * @return array
      */
     public function rules() {
-        $gender_arr = ['male', 'female'];
-        $nomination_type = ['ca', 'tsas', 'tp'];
 
         $return_arr = [
             'organization_id' => 'required',
@@ -32,8 +30,8 @@ class CreateNominationRequestAPIRequest extends AppBaseFormRequest
             'bi_staff_fname' => 'required|string|max:100',
             'bi_staff_lname' => 'required|string|max:100',
             'bi_telephone' => 'required|digits:11',
-            'bi_staff_gender' => "required|string|max:50|in:". implode($gender_arr, ','),
-            'nomination_type' => "required|string|max:50|in:". implode($nomination_type, ','),
+            'bi_staff_gender' => "required|string|max:50|in:male,female",
+            'nomination_type' => "required|string|max:50|in:ca,tsas,tp",
         ];
 
         return $return_arr;

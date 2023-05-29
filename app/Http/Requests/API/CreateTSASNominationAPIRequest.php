@@ -34,7 +34,7 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             //'country_id' => 'required|exists:tf_astd_countries,id',
             'tf_iterum_portal_country_id' => 'required|uuid',
             'tf_iterum_portal_institution_id' => 'required|uuid',
-            'gender' => "required|string|max:50|in:". implode(['male', 'female'], ','),
+            'gender' => "required|string|max:50|in:male,female",
             'name_title' => 'nullable|string|max:50',
             'first_name' => 'required|string|max:100',
             'middle_name' => 'nullable|string|max:100',
@@ -49,7 +49,7 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'national_id_number' => 'required|numeric',
             'degree_type' => 'required|max:100',
             'program_title' => 'required|string|max:100',
-            'is_science_program' => "required|string|max:50|in:". implode(['0', '1'], ','),
+            'is_science_program' => "required|string|max:50|in:0,1",
             'program_start_date' => 'required|date|after:today',
             'program_end_date' => 'required|date|after:program_start_date',
 

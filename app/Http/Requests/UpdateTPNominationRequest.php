@@ -36,7 +36,7 @@ class UpdateTPNominationRequest extends AppBaseFormRequest
             'tf_iterum_portal_country_id' => 'required|uuid',
             'nomination_request_id' => 'required|exists:tf_bi_nomination_requests,id',
             'user_id' => 'required|exists:fc_users,id',
-            'gender' => "required|string|max:50|in:". implode(['male', 'female'], ','),
+            'gender' => "required|string|max:50|in:male,female",
             'rank_gl_equivalent' => 'nullable|string|max:50',
             'first_name' => 'required|string|max:100',
             'middle_name' => 'nullable|string|max:100',
@@ -52,7 +52,7 @@ class UpdateTPNominationRequest extends AppBaseFormRequest
             'degree_type' => 'required|max:100',
             'program_title' => 'required|string|max:100',
             'program_type' => 'required|max:100',
-            'is_science_program' => "required|string|max:50|in:". implode(['0', '1'], ','),
+            'is_science_program' => "required|string|max:50|in:0,1",
             'program_start_date' => 'nullable|date|after:today',
             'program_end_date' => 'nullable|date|after:program_start_date',
             /*'program_duration_months' => 'nullable|min:0|max:365',*/

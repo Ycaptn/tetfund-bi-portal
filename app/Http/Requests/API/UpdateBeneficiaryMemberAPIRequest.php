@@ -26,7 +26,6 @@ class UpdateBeneficiaryMemberAPIRequest extends AppBaseFormRequest
      */
 
     public function rules() {
-        $gender_arr = ['male', 'female']; // possible genders
         $roles_set = false; //role flag
 
         // array of errors to be retured
@@ -36,7 +35,7 @@ class UpdateBeneficiaryMemberAPIRequest extends AppBaseFormRequest
             'bi_staff_fname' => 'required|string|max:100',
             'bi_staff_lname' => 'required|string|max:100',
             'bi_telephone' => 'required|digits:11',
-            'bi_staff_gender' => "required|string|max:50|in:". implode($gender_arr, ','),
+            'bi_staff_gender' => "required|string|max:50|in:male,female",
             'beneficiary_id' => 'required|string|exists:tf_bi_portal_beneficiaries,id|max:300',
             'bi_grade_level' => 'required|numeric',
             'bi_member_type' => 'required',

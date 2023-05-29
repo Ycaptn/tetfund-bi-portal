@@ -33,7 +33,7 @@ class CreateTPNominationAPIRequest extends AppBaseFormRequest
             //'institution_id' => 'required|exists:tf_astd_institutions,id',
             //'country_id' => 'required|exists:tf_astd_countries,id',
             'tf_iterum_portal_institution_id' => 'required|uuid',
-            'gender' => "required|string|max:50|in:". implode(['male', 'female'], ','),
+            'gender' => "required|string|max:50|in:male,female",
             'rank_gl_equivalent' => 'required|string|max:50',
             'first_name' => 'required|string|max:100',
             'middle_name' => 'nullable|string|max:100',
@@ -48,7 +48,7 @@ class CreateTPNominationAPIRequest extends AppBaseFormRequest
             'degree_type' => 'nullable|max:100',
             'program_title' => 'nullable|string|max:100',
             'program_type' => 'nullable|max:100',
-            'is_science_program' => "nullable|string|max:50|in:". implode(['0', '1'], ','),
+            'is_science_program' => "nullable|string|max:50|in:0,1",
             'program_start_date' => 'required|date|after:today',
             'program_end_date' => 'required|date|after:program_start_date',
 
