@@ -205,7 +205,7 @@
 </div>
 
 <!-- Accepted Paper Title Field -->
-<div id="div-accepted_paper_title_ca" class="form-group mb-3 col-md-6 col-lg-4" style="display: none;">
+<div id="div-accepted_paper_title_ca" class="form-group mb-3 col-md-6 col-lg-4" style="display: {{$attendee_member_type_flag=='1' ? 'block' : 'none'}};">
     <label for="accepted_paper_title_ca" class="col-sm-11 col-form-label">Accepted Presentation Paper Title:</label>
     <div class="col-sm-12">
         {!! Form::text('accepted_paper_title_ca', null, ['id'=>'accepted_paper_title_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
@@ -325,7 +325,7 @@
 </div>
 
 <!-- paper presentation -->
-<div id="div-paper_presentation_ca" class="form-group col-md-4" style="display: none;">
+<div id="div-paper_presentation_ca" class="form-group col-md-4" style="display: {{$attendee_member_type_flag=='1' ? 'block' : 'none'}};">
     <label for="paper_presentation_ca" class="col-sm-11 col-form-label">Presentation paper:</label>
     <div class="col-sm-12">
         <input type="file" id="paper_presentation_ca" name="paper_presentation_ca" class="form-control">
