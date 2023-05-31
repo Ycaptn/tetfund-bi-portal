@@ -22,8 +22,6 @@ class CreateTfBiTpNominationsTable extends Migration
             $table->string('telephone')->nullable();
             $table->foreignUuid('beneficiary_institution_id')->references('id')->on('tf_bi_portal_beneficiaries');
             $table->foreignUuid('bi_submission_request_id')->nullable()->references('id')->on('tf_bi_submission_requests');
-            //$table->foreignUuid('institution_id')->references('id')->on('tf_astd_institutions');
-            //$table->foreignUuid('country_id')->references('id')->on('tf_astd_countries');
             $table->uuid('tf_iterum_portal_institution_id')->nullable();
             $table->uuid('tf_iterum_portal_country_id')->nullable();
             $table->foreignUuid('nomination_request_id')->references('id')->on('tf_bi_nomination_requests');

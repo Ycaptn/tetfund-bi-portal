@@ -8,8 +8,8 @@ if ($('#beneficiary_institution_id_select_tsas').length && $('#beneficiary_insti
 
 if ($('#country_id_select_tsas').length && $('#country_id_select_tsas').val().trim().length > 0){   formData.append('tf_iterum_portal_country_id',$('#country_id_select_tsas').val());   }
 
-if ($('#institution_id_select_tsas').length && $('#institution_id_select_tsas').val().trim().length > 0){  
-		formData.append('tf_iterum_portal_institution_id',$('#institution_id_select_tsas').val());  
+if ($('#institution_name_tsas').length && $('#institution_name_tsas').val().trim().length > 0){
+	formData.append('institution_name',$('#institution_name_tsas').val());  
 }
 
 if ($('#gender_tsas').length && $('#gender_tsas').val().trim().length > 0){   formData.append('gender',$('#gender_tsas').val());   }

@@ -162,26 +162,22 @@ class NominationRequestAPIController extends BaseController
 
         } else if ($request->nomination_type == 'ca') {    
             $request = app('App\Http\Requests\API\CreateCANominationAPIRequest');
-            
             $this->validate($request, $request->rules());   // validate for CA
-        
             $nominationRequestOBJ = new CANomination();
+
             //hitting CA API Controller
             $nominationRequestAPIControllerOBJ = new CANominationAPIController();
-
             $input = $nominationRequestAPIControllerOBJ->set_ca_nominee_amounts($input, $bi_beneficiary);
 
         } else if ($request->nomination_type == 'tsas') {
             $request = app('App\Http\Requests\API\CreateTSASNominationAPIRequest');
-        
             $this->validate($request, $request->rules());   // validate for TSAS
-        
-            $nominationRequestAPIControllerOBJ = new TSASNominationAPIController();  
-
-            //hitting TSAS API Controller
             $nominationRequestOBJ = new TSASNomination();
-        }
-        
+            
+            //hitting TSAS API Controller
+            $nominationRequestAPIControllerOBJ = new TSASNominationAPIController();  
+            $input = $nominationRequestAPIControllerOBJ->set_tsas_nominee_amounts($input, $bi_beneficiary);
+        }        
 
         $nominationRequest = new NominationRequest();   
         $nominationRequest->organization_id = $current_user->organization_id;

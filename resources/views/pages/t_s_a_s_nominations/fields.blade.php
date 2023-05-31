@@ -102,12 +102,20 @@
 </div>
 
 <!-- Institution Field -->
-<div id="div-institution_id_tsas" class="form-group mb-3 col-md-6">
+{{-- <div id="div-institution_id_tsas" class="form-group mb-3 col-md-6">
     <label for="institution_id_tsas" class="col-sm-11 col-form-label">Institution:</label>
     <div class="col-sm-12">
         <select id="institution_id_select_tsas" class="form-select">
             <option value=''>-- None selected --</option>
         </select>
+    </div>
+</div> --}}
+
+<!-- Institution Field -->
+<div id="div-institution_name_tsas" class="form-group mb-3 col-md-6">
+    <label for="institution_name_tsas" class="col-sm-11 col-form-label">Institution Name:</label>
+    <div class="col-sm-12">
+        {!! Form::text('institution_name_tsas', null, ['id'=>'institution_name_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
     </div>
 </div>
 
@@ -124,46 +132,6 @@
     {{-- <label for="name_suffix" class="col-sm-12 col-form-label">Name Suffix:</label> --}}
     <div class="col-sm-12">
         {!! Form::hidden('name_suffix_tsas', null, ['id'=>'name_suffix_tsas', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
-
-<!-- Bank Account Name Field -->
-<div id="div-bank_account_name_tsas" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="bank_account_name_tsas" class="col-sm-11 col-form-label">Bank Account Name:</label>
-    <div class="col-sm-12">
-        {!! Form::text('bank_account_name_tsas', null, ['id'=>'bank_account_name_tsas', 'class' => 'form-control','minlength' => 2,'maxlength' => 100, 'placeholder'=>'required field']) !!}
-    </div>
-</div>
-
-<!-- Bank Account Number Field -->
-<div id="div-bank_account_number_tsas" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="bank_account_number_tsas" class="col-sm-11 col-form-label">Bank Account Number:</label>
-    <div class="col-sm-12">
-        {!! Form::text('bank_account_number_tsas', null, ['id'=>'bank_account_number_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div>
-
-<!-- Bank Name Field -->
-<div id="div-bank_name_tsas" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="bank_name_tsas" class="col-sm-11 col-form-label">Bank Name:</label>
-    <div class="col-sm-12">
-        {!! Form::text('bank_name_tsas', null, ['id'=>'bank_name_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div>
-
-<!-- Bank Sort Code Field -->
-<div id="div-bank_sort_code_tsas" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="bank_sort_code_tsas" class="col-sm-11 col-form-label">Bank Sort Code:</label>
-    <div class="col-sm-12">
-        {!! Form::text('bank_sort_code_tsas', null, ['id'=>'bank_sort_code_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
-    </div>
-</div>
-
-<!-- Bank Verification Number Field -->
-<div id="div-bank_verification_number_tsas" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="bank_verification_number_tsas" class="col-sm-11 col-form-label">Bank Verification Number:</label>
-    <div class="col-sm-12">
-        {!! Form::text('bank_verification_number_tsas', null, ['id'=>'bank_verification_number_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
     </div>
 </div>
 
@@ -217,11 +185,16 @@
     </div>
 </div>
 
+@php
+    // $sixMonthsAhead = date('Y-m-d', strtotime(date('Y-m-d') . ' +6 months'));
+    $todayDate = date('Y-m-d');
+@endphp
+
 <!-- Program Start Date Field -->
 <div id="div-program_start_date_tsas" class="form-group mb-3 col-md-4">
     <label for="program_start_date_tsas" class="col-sm-12 col-form-label">Program Start Date:</label>
     <div class="col-sm-12">
-        {!! Form::date('program_start_date_tsas', null, ['id'=>'program_start_date_tsas', 'class' => 'form-control']) !!}
+        {!! Form::date('program_start_date_tsas', null, ['id'=>'program_start_date_tsas', 'class' => 'form-control', 'min'=>$todayDate]) !!}
     </div>
 </div>
 
@@ -229,7 +202,47 @@
 <div id="div-program_end_date_tsas" class="form-group mb-3 col-md-4">
     <label for="program_end_date_tsas" class="col-sm-12 col-form-label">Program End Date:</label>
     <div class="col-sm-12">
-        {!! Form::date('program_end_date_tsas', null, ['id'=>'program_end_date_tsas', 'class' => 'form-control']) !!}
+        {!! Form::date('program_end_date_tsas', null, ['id'=>'program_end_date_tsas', 'class' => 'form-control', 'min' => $todayDate]) !!}
+    </div>
+</div>
+
+<!-- Bank Account Name Field -->
+<div id="div-bank_account_name_tsas" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="bank_account_name_tsas" class="col-sm-11 col-form-label">Bank Account Name:</label>
+    <div class="col-sm-12">
+        {!! Form::text('bank_account_name_tsas', null, ['id'=>'bank_account_name_tsas', 'class' => 'form-control','minlength' => 2,'maxlength' => 100, 'placeholder'=>'required field']) !!}
+    </div>
+</div>
+
+<!-- Bank Account Number Field -->
+<div id="div-bank_account_number_tsas" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="bank_account_number_tsas" class="col-sm-11 col-form-label">Bank Account Number:</label>
+    <div class="col-sm-12">
+        {!! Form::text('bank_account_number_tsas', null, ['id'=>'bank_account_number_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+    </div>
+</div>
+
+<!-- Bank Name Field -->
+<div id="div-bank_name_tsas" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="bank_name_tsas" class="col-sm-11 col-form-label">Bank Name:</label>
+    <div class="col-sm-12">
+        {!! Form::text('bank_name_tsas', null, ['id'=>'bank_name_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+    </div>
+</div>
+
+<!-- Bank Sort Code Field -->
+<div id="div-bank_sort_code_tsas" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="bank_sort_code_tsas" class="col-sm-11 col-form-label">Bank Sort Code:</label>
+    <div class="col-sm-12">
+        {!! Form::text('bank_sort_code_tsas', null, ['id'=>'bank_sort_code_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+    </div>
+</div>
+
+<!-- Bank Verification Number Field -->
+<div id="div-bank_verification_number_tsas" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="bank_verification_number_tsas" class="col-sm-11 col-form-label">Bank Verification Number:</label>
+    <div class="col-sm-12">
+        {!! Form::text('bank_verification_number_tsas', null, ['id'=>'bank_verification_number_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
     </div>
 </div>
 
@@ -242,6 +255,7 @@
         </i>
     </small>
 </div>
+
 <!-- passport photo -->
 <div id="div-passport_photo_tsas" class="form-group  col-md-4">
     <label for="passport_photo_tsas" class="col-sm-11 col-form-label">Passport Photo:</label>
@@ -252,7 +266,7 @@
 
 <!-- admission letter -->
 <div id="div-admission_letter_tsas" class="form-group  col-md-4">
-    <label for="admission_letter_tsas" class="col-sm-11 col-form-label">Admission Letter:</label>
+    <label for="admission_letter_tsas" class="col-sm-12 col-form-label">Admission Letter: <i class="text-danger">(Containing tuition fee invoice)</i></label>
     <div class="col-sm-12">
         <input type="file" id="admission_letter_tsas" name="admission_letter_tsas" class="form-control">
     </div>

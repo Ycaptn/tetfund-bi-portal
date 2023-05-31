@@ -23,6 +23,7 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
      *
      * @return array
      */
+
     public function rules() {
         $return_rules = [
             'organization_id' => 'required',
@@ -30,21 +31,15 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'email' => 'required|email|max:190',
             'telephone' => 'required|digits:11',
             'beneficiary_institution_id' => 'required|exists:tf_bi_portal_beneficiaries,id',
-            //'institution_id' => 'required|exists:tf_astd_institutions,id',
-            //'country_id' => 'required|exists:tf_astd_countries,id',
             'tf_iterum_portal_country_id' => 'required|uuid',
-            'tf_iterum_portal_institution_id' => 'required|uuid',
+            // 'tf_iterum_portal_institution_id' => 'required|uuid',
             'gender' => "required|string|max:50|in:male,female",
             'name_title' => 'nullable|string|max:50',
             'first_name' => 'required|string|max:100',
             'middle_name' => 'nullable|string|max:100',
             'last_name' => 'required|string|max:100',
             'name_suffix' => 'nullable|string|max:100',
-            'bank_account_name' => 'required|min:2|max:190',
-            'bank_account_number' => 'required|digits:10',
-            'bank_name' => 'required|max:100',
-            'bank_sort_code' => 'required|max:100',
-            'bank_verification_number' => 'required|numeric',
+            'institution_name' => 'required|string|max:200',
             'intl_passport_number' => 'required_unless:tf_iterum_portal_country_id,'.request()->country_nigeria_id.'|max:100',
             'national_id_number' => 'required|numeric',
             'degree_type' => 'required|max:100',
@@ -52,6 +47,11 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'is_science_program' => "required|string|max:50|in:0,1",
             'program_start_date' => 'required|date|after:today',
             'program_end_date' => 'required|date|after:program_start_date',
+            'bank_account_name' => 'required|min:2|max:190',
+            'bank_account_number' => 'required|digits:10',
+            'bank_name' => 'required|max:100',
+            'bank_sort_code' => 'required|max:100',
+            'bank_verification_number' => 'required|numeric',
 
             'passport_photo' => 'required|file|mimes:pdf,png,jpeg,jpg|max:5240',
             'admission_letter' => 'required|file|mimes:pdf|max:5240',
@@ -59,20 +59,8 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'curriculum_vitae' => 'required|file|mimes:pdf,doc,docx|max:5240',
             'signed_bond_with_beneficiary' => 'required|file|mimes:pdf,doc,docx|max:5240',
             'international_passport_bio_page' => 'required_with:intl_passport_number|file|mimes:pdf,doc,docx|max:5240',
-            //'program_duration_months' => 'nullable|min:0|max:365',
-            //'fee_amount' => 'nullable|numeric|min:0|max:100000000',
+            
             //'tuition_amount' => 'nullable|numeric|min:0|max:100000000',
-            //'upgrade_fee_amount' => 'nullable|numeric|min:0|max:100000000',
-            //'stipend_amount' => 'nullable|numeric|min:0|max:100000000',
-            //'passage_amount' => 'nullable|numeric|min:0|max:100000000',
-            //'medical_amount' => 'nullable|numeric|min:0|max:100000000',
-            //'warm_clothing_amount' => 'nullable|numeric|min:0|max:100000000',
-            //'study_tours_amount' => 'nullable|numeric|min:0|max:100000000',
-            //'education_materials_amount' => 'nullable|numeric|min:0|max:100000000',
-            //'thesis_research_amount' => 'nullable|numeric|min:0|max:100000000',
-            //'final_remarks' => 'nullable|string|max:500',
-            //'total_requested_amount' => 'nullable|numeric|min:0|max:100000000',
-            //'total_approved_amount' => 'nullable|numeric|min:0|max:100000000'
         ];
 
         if (!(request()->has('nomination_request_and_submission'))) {
@@ -102,12 +90,7 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'middle_name' => 'Middle Name',
             'last_name' => 'Last Name',
             //'name_suffix' => 'Name Suffix',
-            'bank_account_name' => 'Bank Account Name',
-            'bank_account_number' => 'Bank Account Number',
-            'bank_name' => 'Bank Name',
-            'bank_sort_code' => 'Bank Sort Code',
-            'intl_passport_number' => 'Intl Passport Number',
-            'bank_verification_number' => 'Bank Verification Number',
+            'institution_name' => 'Institution Name',
             'national_id_number' => 'National Id Number',
             'degree_type' => ' Degree Type',
             'program_title' => ' Program Title',
@@ -117,25 +100,17 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'program_end_date' => 'Program End Date',
             
             'passport_photo' => 'Passport Photo',
+            'bank_account_name' => 'Bank Account Name',
+            'bank_account_number' => 'Bank Account Number',
+            'bank_name' => 'Bank Name',
+            'bank_sort_code' => 'Bank Sort Code',
+            'intl_passport_number' => 'Intl Passport Number',
+            'bank_verification_number' => 'Bank Verification Number',
             'admission_letter' => 'Admission Letter',
             'health_report' => 'Health Report',
             'curriculum_vitae' => 'Curriculum Vitae',
             'signed_bond_with_beneficiary' => 'Signed Bond With Beneficiary',
             'international_passport_bio_page' => 'International Passport Bio Page',
-
-            //'fee_amount' => 'Fee Amount',
-            //'tuition_amount' => 'Tuition Amount',
-            //'upgrade_fee_amount' => 'Upgrade Fee Amount',
-            //'stipend_amount' => 'Stipend Amount',
-            //'passage_amount' => 'Passage Amount',
-            //'medical_amount' => 'Medical Amount',
-            //'warm_clothing_amount' => 'Warm Clothing Amount',
-            //'study_tours_amount' => 'Study Tours Amount',
-            //'education_materials_amount' => 'Education Materials Amount',
-            //'thesis_research_amount' => 'Thesis Research Amount',
-            //'final_remarks' => 'Final Remarks',
-            //'total_requested_amount' => 'Total Requested Amount:',
-            //'total_approved_amount' => 'Total Approved Amount'
         ];
     }
 

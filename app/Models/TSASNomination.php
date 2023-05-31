@@ -91,6 +91,7 @@ class TSASNomination extends Model {
         'final_remarks',
         'total_requested_amount',
         'total_approved_amount',
+        'institution_name',
     ];
 
     /**
@@ -108,6 +109,7 @@ class TSASNomination extends Model {
         'middle_name' => 'string',
         'last_name' => 'string',
         'name_suffix' => 'string',
+        'institution_name' => 'string',
         'face_picture_attachment_id' => 'string',
         'bank_account_name' => 'string',
         'bank_account_number' => 'string',

@@ -44,8 +44,7 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
             'tf_iterum_portal_country_id' => 'required|uuid',
             //'tf_iterum_portal_conference_id' => 'required|uuid',
             'nomination_request_id' => 'required|exists:tf_bi_nomination_requests,id',
-            'conference_state' => "required_if:tf_iterum_portal_country_id,=,". request()->country_nigeria_id ."
-                |string|min:2|max:100|in:". implode(',', BaseController::statesList()),
+            'conference_state' => 'required_if:tf_iterum_portal_country_id,'. $this->country_nigeria_id .'|string|min:2|max:100|in:'. implode(',', BaseController::statesList()),
             'conference_title' => 'required|string|min:2|max:100',
             'organizer_name' => 'required|string|max:190',
             'conference_theme' => 'required|string|max:190',
@@ -65,7 +64,7 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
             'bank_name' => 'required|max:100',
             'bank_sort_code' => 'required|max:100',
             'bank_verification_number' => 'required|numeric',
-            'intl_passport_number' => 'required_unless:tf_iterum_portal_country_id,'.request()->country_nigeria_id.'|max:100',
+            'intl_passport_number' => 'required_unless:tf_iterum_portal_country_id,'.$this->country_nigeria_id.'|max:100',
             'national_id_number' => 'required|numeric',
             'conference_fee_amount_local' => "required|numeric|min:0|max:{$this->max_conference_fee_amt}",
         ];
@@ -125,6 +124,7 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
  
             'organizer_name' => 'Organizer Name',
             'conference_theme' => 'Conference Theme',
+            'conference_state' => 'Conference State',
             'conference_address' => 'Conference Address',
             'conference_passage_type' => 'Conference Passage Type',
             'accepted_paper_title' => 'Accepted Presentation Paper Title',

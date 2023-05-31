@@ -73,6 +73,7 @@ $(document).ready(function() {
         
         // actions if Nigeria is selected
         if (selected_country == country_nigeria_id || selected_country == '') {
+            $('#intl_passport_number_tsas').val('');
             $('#div-intl_passport_number_tsas').hide();
             $('#div-international_passport_bio_page_tsas').hide();
         } else {
@@ -215,6 +216,7 @@ $(document).ready(function() {
                 $('#div-intl_passport_number_tsas').show();
                 $('#div-international_passport_bio_page_tsas').show();
             } else {
+                $('#intl_passport_number_tsas').val('');
                 $('#div-intl_passport_number_tsas').hide();
                 $('#div-international_passport_bio_page_tsas').hide();
             }
@@ -368,7 +370,7 @@ $(document).ready(function() {
         if ($('#email_tsas').length){	formData.append('email',$('#email_tsas').val());	}
 		if ($('#telephone_tsas').length){	formData.append('telephone',$('#telephone_tsas').val());	}
 		if ($('#beneficiary_institution_id_select_tsas').length){	formData.append('beneficiary_institution_id',$('#beneficiary_institution_id_select_tsas').val());	}
-        if ($('#institution_id_select_tsas').length){   formData.append('tf_iterum_portal_institution_id',$('#institution_id_select_tsas').val());   }
+        if ($('#institution_name_tsas').length){   formData.append('institution_name',$('#institution_name_tsas').val());   }
         if ($('#country_id_select_tsas').length){   formData.append('tf_iterum_portal_country_id',$('#country_id_select_tsas').val());   }
         if ($('#gender_tsas').length){   formData.append('gender',$('#gender_tsas').val());   }
 		if ($('#name_title_tsas').length){	formData.append('name_title',$('#name_title_tsas').val());	}

@@ -150,8 +150,8 @@
 </div>
  --}}
 
- <div id="div-conference_id_ca" class="form-group mb-3 col-md-4">
-    <label for="conference_id_ca" class="col-sm-11 col-form-label">Conference Title:</label>
+ <div id="div-conference_title_ca" class="form-group mb-3 col-md-4">
+    <label for="conference_title_ca" class="col-sm-11 col-form-label">Conference Title:</label>
     <div class="col-sm-12">
         {!! Form::text('conference_title_ca', null, ['id'=>'conference_title_ca', 'class' => 'form-control','minlength' => 2,'maxlength' => 100, 'placeholder'=>'required field']) !!}
     </div>

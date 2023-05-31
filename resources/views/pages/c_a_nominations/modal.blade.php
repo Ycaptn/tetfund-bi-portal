@@ -75,11 +75,10 @@ $(document).ready(function() {
         let is_conference_workshop = $(this).val();
         if (is_conference_workshop != '' && is_conference_workshop == '1') {
             $('#div-paper_presentation_ca').hide();
-            $('#div-paper_presentation_fee_ca').hide();
+            $('#accepted_paper_title_ca').val('');
             $('#div-accepted_paper_title_ca').hide();
         } else if (is_conference_workshop == '' || is_conference_workshop == 0) {
             $('#div-paper_presentation_ca').show();
-            $('#div-paper_presentation_fee_ca').show();
             $('#div-accepted_paper_title_ca').show();
         }
     });
@@ -101,6 +100,7 @@ $(document).ready(function() {
         
         // actions on intl passport input filed if Nigeria is selected
         if (selected_country == country_nigeria_id || selected_country == '') {
+            $('#intl_passport_number_ca').val('');
             $('#div-intl_passport_number_ca').hide();
             $('#div-international_passport_bio_page_ca').hide();
         } else {
@@ -109,6 +109,7 @@ $(document).ready(function() {
 
         // toggle conference state input selection field if Nigerial is selected
         if (selected_country == country_nigeria_id && selected_country != '') {
+            $('#conference_state_select_ca').val('');
             $('#div-conference_state_select_ca').show();
         } else {
             $('#div-conference_state_select_ca').hide();
@@ -246,12 +247,14 @@ $(document).ready(function() {
     		$('#bank_sort_code_ca').val(response.data.bank_sort_code);
             
             if (response.data.intl_passport_number != null && response.data.intl_passport_number.length > 0) {
+                $('#conference_state_select_ca').val('');
                 $('#div-conference_state_select_ca').hide();
                 $('#div-intl_passport_number_ca').show();
                 $('#div-international_passport_bio_page_ca').show();
     		    $('#intl_passport_number_ca').val(response.data.intl_passport_number);
             }  else {
                 $('#div-conference_state_select_ca').show();
+                $('#intl_passport_number_ca').val('');
                 $('#div-intl_passport_number_ca').hide();
                 $('#div-international_passport_bio_page_ca').hide();
             }
@@ -274,6 +277,7 @@ $(document).ready(function() {
                 $('#div-paper_presentation_ca').show();
                 $('#is_conference_workshop_ca').val('0');
             } else {
+                $('#accepted_paper_title_ca').val('');
                 $('#div-accepted_paper_title_ca').hide();
                 $('#div-paper_presentation_ca').hide();
                 $('#is_conference_workshop_ca').val('1');

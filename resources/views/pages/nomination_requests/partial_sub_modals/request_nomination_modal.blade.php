@@ -80,6 +80,7 @@ $(document).ready(function() {
         if (is_conference_workshop != '' && is_conference_workshop == '1') {
             $('#div-paper_presentation_ca').hide();
             $('#div-paper_presentation_fee_ca').hide();
+            $('#paper_presentation_fee_ca').val('');
             $('#div-accepted_paper_title_ca').hide();
         } else if (is_conference_workshop == '' || is_conference_workshop == 0) {
             $('#div-paper_presentation_ca').show();
@@ -115,6 +116,7 @@ $(document).ready(function() {
         if (selected_country == country_nigeria_id && selected_country != '') {
             $('#div-conference_state_select_ca').show();
         } else {
+            $('#conference_state_select_ca').val('');
             $('#div-conference_state_select_ca').hide();
         }
 
@@ -134,6 +136,7 @@ $(document).ready(function() {
         
         // actions if Nigeria is selected
         if (selected_country == country_nigeria_id || selected_country == '') {
+            $('#intl_passport_number_tsas').val('');
             $('#div-intl_passport_number_tsas').hide();
             $('#div-international_passport_bio_page_tsas').hide();
         } else {

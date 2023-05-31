@@ -70,8 +70,6 @@ class CANominationAPIController extends AppBaseController
      */
     public function store(CreateCANominationAPIRequest $request, Organization $organization)
     {
-        $input = $request->all();
-
         $bi_beneficiary = Beneficiary::find($request->get('beneficiary_institution_id'));
         $input = $this->set_ca_nominee_amounts($request->all(), $bi_beneficiary);
         
@@ -302,12 +300,12 @@ class CANominationAPIController extends AppBaseController
                     } elseif ($input['conference_passage_type']=='short') {
                         $passage_amount = floatval($ca_amount_settings->local_short_passage_amt ?? 0);
                     }
-                
-                    $input['passage_amount'] = $passage_amount;
-                    $input['paper_presentation_fee'] = $input['has_paper_presentation']==true ? floatval($ca_amount_settings->local_paper_production_amt??0) : 0.00;
-                    $input['total_requested_amount'] = $input['conference_fee_amount_local'] + $input['dta_amount'] + $input['local_runs_amount'
-                    ] + $input['passage_amount'] + $input['paper_presentation_fee'];
                 }
+                
+                $input['passage_amount'] = $passage_amount;
+                $input['paper_presentation_fee'] = $input['has_paper_presentation']==true ? floatval($ca_amount_settings->local_paper_production_amt??0) : 0.00;
+                $input['total_requested_amount'] = $input['conference_fee_amount_local'] + $input['dta_amount'] + $input['local_runs_amount'
+                ] + $input['passage_amount'] + $input['paper_presentation_fee'];
 
            } elseif($ca_amount_settings->country_nigeria->id != $input['tf_iterum_portal_country_id']) {
                 

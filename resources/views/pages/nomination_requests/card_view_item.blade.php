@@ -45,6 +45,8 @@
                                     || <span class="text-success"> REQUEST CONSIDERED FOR SUBMISSION</span>
                                 @elseif($data_item->head_of_institution_checked_status == 'declined')
                                     || <span class="text-danger"> REQUEST {{ strtoupper($data_item->head_of_institution_checked_status) }} </span>
+                                @elseif($data_item->committee_head_checked_status == 'declined')
+                                    || <span class="text-danger"> REQUEST {{ strtoupper($data_item->committee_head_checked_status) }} </span>
                                 @else
                                     || <span class="text-danger"> REQUEST UNDER REVIEW </span>
                                 @endif
