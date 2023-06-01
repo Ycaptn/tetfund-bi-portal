@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Models\Beneficiary;
 use App\Models\TPNomination;
 use App\Models\NominationRequest;
 
@@ -68,24 +69,8 @@ class TPNominationAPIController extends AppBaseController
      */
     public function store(CreateTPNominationAPIRequest $request, Organization $organization)
     {
-        $input = $request->all();
-
-         /* server class constructor to retrieve amout settings */
-        $pay_load = [ '_method' => 'GET', 'query_like_parameters' => 'tp_', ];
-        $tetFundServer = new TETFundServer(); 
-        $tp_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/dashboard/get_configured_amounts', $pay_load);
-
-        $dta_amount = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_dta_amount'} ?? 0);
-        $dta_no_days = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_dta_nights_amount'} ?? 0);
-        $local_runs_percentage = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_local_runs_percentage'} ?? 0);
-        $taxi_fare_amount = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_taxi_fare_amount'} ?? 0);
-
-        // setting amount colunm
-        $input['dta_amount_requested'] = $dta_amount;
-        $input['dta_nights_amount_requested'] = $dta_amount * $dta_no_days;
-        $input['local_runs_amount_requested'] = ($local_runs_percentage * floatval($input['dta_nights_amount_requested'])) / 100;
-        $input['taxi_fare_amount_requested'] = $taxi_fare_amount;
-        $input['total_requested_amount'] = $input['dta_nights_amount_requested'] + $input['local_runs_amount_requested'] + $taxi_fare_amount;
+        $bi_beneficiary = Beneficiary::find($request->get('beneficiary_institution_id'));
+        $input = $this->set_tp_nominee_amounts($request->all(), $bi_beneficiary);
 
         /** @var TPNomination $tPNomination */
         $tPNomination = TPNomination::create($input);
@@ -178,7 +163,10 @@ class TPNominationAPIController extends AppBaseController
             return $this->sendError('T P Nomination not found');
         }
 
-        $tPNomination->fill($request->all());
+        $bi_beneficiary = Beneficiary::find($request->get('beneficiary_institution_id'));
+        $input = $this->set_tp_nominee_amounts($request->all(), $bi_beneficiary);
+
+        $tPNomination->fill($input);
         $tPNomination->save();
         $nominationRequest = $tPNomination->nomination_request;
         
@@ -244,5 +232,27 @@ class TPNominationAPIController extends AppBaseController
         $tPNomination->delete();
         TPNominationDeleted::dispatch($tPNomination);
         return $this->sendSuccess('T P Nomination deleted successfully');
+    }
+
+    public function set_tp_nominee_amounts($input, $bi_beneficiary) {
+        /* server class constructor to retrieve amout settings */
+        $pay_load = [ '_method' => 'GET'];
+        $tetFundServer = new TETFundServer();
+        $tp_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/tp_cost_settings/'.$input['rank_gl_equivalent'], $pay_load);
+
+        if (!empty($tp_amount_settings)) {
+            // no. of days
+            $date_diff = strtotime($input['program_end_date']) - strtotime($input['program_start_date']);
+            $no_days = round($date_diff / (60 * 60 * 24)) + 1;
+
+            // setting amount colunm
+            $input['dta_amount_requested'] = floatval($tp_amount_settings->dta_amount ?? 0);
+            $input['dta_nights_amount_requested'] = $input['dta_amount_requested'] * $no_days;
+            $input['local_runs_amount_requested'] = (floatval($tp_amount_settings->dta_local_runs_percentage??0) * $input['dta_nights_amount_requested']) / 100;
+            $input['taxi_fare_amount_requested'] = floatval($tp_amount_settings->taxi_fare_amt ?? 0);
+            $input['total_requested_amount'] = $input['dta_nights_amount_requested'] + $input['local_runs_amount_requested'] + $input['taxi_fare_amount_requested'];
+        }
+
+        return $input;
     }
 }

@@ -7,7 +7,9 @@
     $email = (isset($nominationRequest->user->email) ? $nominationRequest->user->email : ($current_user->hasRole('BI-staff') ? $current_user->email : '') );
     $telephone = (isset($nominationRequest->user->telephone) ? $nominationRequest->user->telephone : ($current_user->hasRole('BI-staff') ? $current_user->telephone : '') );
     $gender = (isset($nominationRequest->user->gender) ? $nominationRequest->user->gender : ($current_user->hasRole('BI-staff') ? $current_user->gender : '') );
-    $gender = (isset($nominationRequest->user->gender) ? $nominationRequest->user->gender : ($current_user->hasRole('BI-staff') ? $current_user->gender : '') );
+    $attendee_member_type = isset($beneficiary_member->member_type) && in_array($beneficiary_member->member_type, ['academic', 'non-academic']) ? $beneficiary_member->member_type : '';
+    $attendee_member_type_flag = isset($beneficiary_member->member_type) && in_array($beneficiary_member->member_type, ['academic', 'non-academic']) ? ($beneficiary_member->member_type=='academic' ? '1' : '0') : '';
+    $attendee_grade_level = isset($beneficiary_member->grade_level) ? $beneficiary_member->grade_level : '';
 
 @endphp
 
@@ -21,7 +23,7 @@
             {!! Form::hidden('beneficiary_institution_id_select', $beneficiary->id ?? '', ['id'=>'beneficiary_institution_id_select_tp', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
 
             <i class="beneficiary_institution_id_select">
-                {{$beneficiary->full_name ?? ''}}
+                - {{$beneficiary->full_name ?? ''}}
                 {{(isset($beneficiary->short_name) && !empty($beneficiary->short_name)) ? '('.strtoupper($beneficiary->short_name).')' : ''}}
             </i>
         </div>
@@ -40,21 +42,41 @@
             {!! Form::hidden('last_name_tp', $last_name, ['id'=>'last_name_tp', 'class'=>'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
 
             <i class="full_name">
-                {{$first_name}}
-                {{$middle_name}}
-                {{$last_name}}
+                - {{$first_name}} {{$middle_name}} {{$last_name}}
             </i>
         </div>
     </div>
 
     <div class="col-sm-12 col-md-4 col-lg-3 mb-3">
-        <label class="col-sm-12"><b>Email:</b></label>
+        <label class="col-sm-12"><b>Email/Gender:</b></label>
         <div class="col-sm-12 ">
             <!-- Email Field -->
             {!! Form::hidden('email_tp', $email, ['id'=>'email_tp', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
 
+            <!-- Gender Field -->
+            {!! Form::hidden('gender_tp', $gender, ['id'=>'gender_tp', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
+            
             <i class="email">
-                {{$email}}
+                - {{$email}} 
+            </i><br>
+            <i class="gender">
+                - {{ ucfirst($gender) }}                
+            </i>
+        </div>
+    </div>
+    
+    <div class="col-sm-12 col-md-4 col-lg-2 mb-3">
+        <label class="col-sm-12"><b>Type/Grade Level:</b></label>
+        <div class="col-sm-12 ">            
+            <!-- Attendee Member Level Field -->
+            {!! Form::hidden('is_academic_staff_tp', $attendee_member_type_flag, ['id'=>'is_academic_staff_tp', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
+            
+            <!-- Attendee Grade Level Field -->
+            {!! Form::hidden('rank_gl_equivalent_tp', $attendee_grade_level, ['id'=>'rank_gl_equivalent_tp', 'class'=>'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
+            
+            <i class="attendee_grade_level">
+               - {{ $attendee_member_type ? ucfirst($attendee_member_type). ' Staff' : ''}} <br>
+               - {{ $attendee_grade_level ? 'GL-'.ucfirst($attendee_grade_level) : ''}}
             </i>
         </div>
     </div>
@@ -66,19 +88,7 @@
             {!! Form::hidden('telephone_tp', $telephone, ['id'=>'telephone_tp', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
             
             <i class="telephone">
-                {{$telephone}}
-            </i>
-        </div>
-    </div>
-
-    <div class="col-sm-12 col-md-4 col-lg-2 mb-3">
-        <label class="col-sm-12"><b>Gender:</b></label>
-        <div class="col-sm-12 ">
-            <!-- Gender Field -->
-            {!! Form::hidden('gender_tp', $gender, ['id'=>'gender_tp', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
-            
-            <i class="gender">
-                {{ ucfirst($gender) }}                
+               - {{$telephone}}
             </i>
         </div>
     </div>
@@ -104,21 +114,6 @@
                     @endif
                 @endforeach
             @endif
-        </select>
-    </div>
-</div>
-
-<!-- Name Title Field -->
-<div id="div-rank_gl_equivalent_tp" class="form-group col-md-6 col-lg-4">
-    <label for="rank_gl_equivalent_tp" class="col-sm-11 col-form-label">Rank/GL. Equivalent:</label>
-    <div class="col-sm-12">
-        <select class="form-select" name="rank_gl_equivalent_tp" id="rank_gl_equivalent_tp" >
-            <option value=''>-- None Selected--</option>
-            <option value='chief_lecturer'>Chief Lecturer</option>
-            <option value='principal_lecturer'>Principal Lecturer</option>
-            <option value='senior_lecturer'>Senior Lecturer</option>
-            <option value='lecturer_1'>Lecturer 1</option>
-            <option value='lecturer_2'>Lecturer 2</option>
         </select>
     </div>
 </div>
@@ -173,11 +168,16 @@
     </div>
 </div>
 
+@php
+    // $sixMonthsAhead = date('Y-m-d', strtotime(date('Y-m-d') . ' +6 months'));
+    $todayDate = date('Y-m-d');
+@endphp
+
 <!-- Program Start Date Field -->
 <div id="div-program_start_date_tp" class="form-group mb-3 col-md-4 col-lg-4">
     <label for="program_start_date_tp" class="col-sm-12 col-form-label">Program Start Date:</label>
     <div class="col-sm-12">
-        {!! Form::date('program_start_date_tp', null, ['id'=>'program_start_date_tp', 'class' => 'form-control']) !!}
+        {!! Form::date('program_start_date_tp', null, ['id'=>'program_start_date_tp', 'class' => 'form-control', 'min'=>$todayDate]) !!}
     </div>
 </div>
 
@@ -185,7 +185,7 @@
 <div id="div-program_end_date_tp" class="form-group mb-3 col-md-4 col-lg-4">
     <label for="program_end_date_tp" class="col-sm-12 col-form-label">Program End Date:</label>
     <div class="col-sm-12">
-        {!! Form::date('program_end_date_tp', null, ['id'=>'program_end_date_tp', 'class' => 'form-control']) !!}
+        {!! Form::date('program_end_date_tp', null, ['id'=>'program_end_date_tp', 'class' => 'form-control', 'min'=>$todayDate ]) !!}
     </div>
 </div>
 

@@ -21,10 +21,8 @@
 
                             <input type="hidden" id="txt-tPNomination-primary-id" value="0" />
                             <div id="div-show-txt-tPNomination-primary-id">
-                                <div class="row">
-                                    <div class="col-sm-12">
+                                <div class="row col-sm-12">
                                     @include('tf-bi-portal::pages.t_p_nominations.show_fields')
-                                    </div>
                                 </div>
                             </div>
                             <div id="div-edit-txt-tPNomination-primary-id">
@@ -108,7 +106,7 @@ $(document).ready(function() {
             $('#spn_tPNomination_email').html(response.data.email);
     		$('#spn_tPNomination_telephone').html(response.data.telephone);
     		$('#spn_tPNomination_gender').html(response.data.gender);
-    		$('#spn_tPNomination_rank_gl_equivalent').html(response.data.rank_gl_equivalent);
+    		$('#spn_tPNomination_rank_gl_equivalent').html('GL ' + response.data.rank_gl_equivalent);
     		$('#spn_tPNomination_first_name').html(response.data.first_name);
     		$('#spn_tPNomination_middle_name').html(response.data.middle_name);
     		$('#spn_tPNomination_last_name').html(response.data.last_name);
@@ -122,9 +120,6 @@ $(document).ready(function() {
     		$('#spn_tPNomination_national_id_number').html(response.data.national_id_number);
     		$('#spn_tPNomination_program_start_date').html(response.data.program_start_date);
     		$('#spn_tPNomination_program_end_date').html(response.data.program_end_date);
-    		/*$('#spn_tPNomination_final_remarks').html(response.data.final_remarks);
-    		$('#spn_tPNomination_total_requested_amount').html(response.data.total_requested_amount);
-    		$('#spn_tPNomination_total_approved_amount').html(response.data.total_approved_amount);*/
             $('#spn_tPNomination_beneficiary_institution_name').html(response.data.beneficiary.full_name);
             $('#spn_tPNomination_institution_name').html(response.data.institution.name); 
             $('#spn_tPNomination_country_name').html(response.data.country.name + ' (' + response.data.country.country_code + ')');

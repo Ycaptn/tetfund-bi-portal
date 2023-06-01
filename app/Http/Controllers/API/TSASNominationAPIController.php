@@ -194,7 +194,10 @@ class TSASNominationAPIController extends AppBaseController
             return $this->sendError('T S A S Nomination not found');
         }
 
-        $tSASNomination->fill($request->all());
+        $bi_beneficiary = Beneficiary::find($request->get('beneficiary_institution_id'));
+        $input = $this->set_tsas_nominee_amounts($request->all(), $bi_beneficiary);
+
+        $tSASNomination->fill($input);
         $tSASNomination->save();
         $nominationRequest = $tSASNomination->nomination_request;
         
