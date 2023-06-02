@@ -201,8 +201,13 @@ class SubmissionRequestController extends BaseController
         }
 
         $input['type'] = $request->request_tranche ?? 'Request for AIP';
+        $type_surfix = $input['type'];
+        if (SubmissionRequest::is_astd_intervention($request->intervention_title) == true) {
+            $type_surfix = 'Request For Fund';   
+        }
+
         $input['status'] = 'not-submitted';
-        $input['title'] = $input['intervention_title']. ' - ' .$input['type']. ' (' .implode(', ', $years_unique) .')';
+        $input['title'] = $input['intervention_title']. ' - '. $type_surfix .' (' .implode(', ', $years_unique) .')';
         $input['requesting_user_id'] = $current_user->id;
         $input['organization_id'] = $current_user->organization_id;
         $input['beneficiary_id'] = $beneficiary_member->beneficiary_id;
@@ -327,17 +332,30 @@ class SubmissionRequestController extends BaseController
    
         $guessed_intervention_name = explode('-', $submissionRequest->title);
         if ($submissionRequest->is_aip_request==true || ($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention(trim($guessed_intervention_name[0])))) {
+            
             //get total fund available 
-            $tetFundServer = new TETFundServer();   /* server class constructor */
-            $fund_availability = $tetFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
+            if ($submissionRequest->is_astd_intervention(optional($request)->intervention_name)) {
 
+                $tetFundServer = new TETFundServer();   /* server class constructor */
+                $some_server_data_array = $tetFundServer->getSomeDataArrayFromServer(['getASTDFundAvailabilityData' => [
+                    'beneficiary_id' => $beneficiary->tf_iterum_portal_key_id,
+                    'intervention_name' => optional($request)->intervention_name,
+                    'intervention_line_id' => $submissionRequest->tf_iterum_intervention_line_key_id
+                ]]);
 
-            //error when no fund allocation for selected year(s) is found
-            if (isset($fund_availability->success) && $fund_availability->success == false && $fund_availability->message != null) {
-                array_push($errors_array, $fund_availability->message);
-            }            
+                //Get the ASTD funding data and total_funds.
+                $fund_availability = $some_server_data_array->getASTDFundAvailabilityData ?? null;
+            } else {
+                $tetFundServer = new TETFundServer();   /* server class constructor */
+                $fund_availability = $tetFundServer->getFundAvailabilityData($beneficiary->tf_iterum_portal_key_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
 
-            if (isset($fund_availability->total_funds) && $fund_availability->total_funds != $submissionRequest->amount_requested && ($submissionRequest->is_aip_request==true || $submissionRequest->is_first_tranche_request==true) && ( (!str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') && !str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') && !str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship') ) || ($submissionRequest->is_start_up_first_tranche_intervention(optional($request)->intervention_name) && $submissionRequest->getParentAIPSubmissionRequest()==null) )) {
+                //error when no fund allocation for selected year(s) is found
+                if (isset($fund_availability->success) && $fund_availability->success == false && $fund_availability->message != null) {
+                    array_push($errors_array, $fund_availability->message);
+                }            
+            }
+
+            if (isset($fund_availability->total_funds) && $fund_availability->total_funds != $submissionRequest->amount_requested && ($submissionRequest->is_aip_request==true || $submissionRequest->is_first_tranche_request==true) && (!$submissionRequest->is_astd_intervention(optional($request)->intervention_name) || ($submissionRequest->is_start_up_first_tranche_intervention(optional($request)->intervention_name) && $submissionRequest->getParentAIPSubmissionRequest()==null) )) {
             
                 //error for requested fund mismatched to allocated fund non-astd interventions
                 if(str_contains( strtolower(optional($request)->intervention_name), "academic manuscript into books") || str_contains( strtolower(optional($request)->intervention_name), "academic research journal") ){
@@ -347,14 +365,14 @@ class SubmissionRequestController extends BaseController
                 }
                
            
-            } else if (isset($fund_availability->total_funds) && $submissionRequest->amount_requested > $fund_availability->total_funds && (str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') || str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') || str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) ) {
+            } else if (isset($fund_availability->total_available_fund) && $submissionRequest->amount_requested > $fund_availability->total_available_fund && $submissionRequest->is_astd_intervention(optional($request)->intervention_name)==true) {
                 
                 //error for requested fund mismatched to allocated fund for all ASTD interventions
-                array_push($errors_array, "Fund requested cannot be greater than allocated amount.");
+                array_push($errors_array, "Fund requested cannot be greater than allocated/available amount.");
             }
-         
+
             //error when at least one selected allocation year is found
-            if (isset($fund_availability->allocation_records) && count($fund_availability->allocation_records) > 0) {
+            if (isset($fund_availability->allocation_records) && count($fund_availability->allocation_records) > 0 && !$submissionRequest->is_astd_intervention(optional($request)->intervention_name)) {
                 $all_valid_allocation_year = array_column($fund_availability->allocation_records, 'year');
                 foreach($years as $year) {
                     if (!in_array($year, $all_valid_allocation_year)) {
@@ -363,7 +381,7 @@ class SubmissionRequestController extends BaseController
                 }
             }
 
-            if ($submissionRequest->is_aip_request==true && (!str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') && !str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') && !str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship')) && isset($fund_availability->allocation_records) && count($fund_availability->allocation_records) > 0) {
+            if ($submissionRequest->is_aip_request==true && !$submissionRequest->is_astd_intervention(optional($request)->intervention_name) && isset($fund_availability->allocation_records) && count($fund_availability->allocation_records) > 0) {
                 foreach($fund_availability->allocation_records as $allocation) {
                     if($allocation->utilization_status != null && $allocation->utilization_status == 'utilized') {
                         array_push($errors_array, "Allocated fund of ₦".number_format($allocation->allocated_amount, 2) ." for ". $allocation->year . " intervention year has been utilized.");
@@ -417,9 +435,7 @@ class SubmissionRequestController extends BaseController
         }
 
         // execute for ASTD Interventions only
-        if (str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') || 
-            str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') || 
-            str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship') ) {
+        if ($submissionRequest->is_astd_intervention(optional($request)->intervention_name)==true) {
 
             $final_nominations_arr = NominationRequest::with($nomination_table)
                     ->with('attachables.attachment')
@@ -447,9 +463,7 @@ class SubmissionRequestController extends BaseController
             $submissionRequest->save();
 
             // execute for ASTD Interventions only
-            if (str_contains(strtolower(optional($request)->intervention_name), 'teaching practice') || 
-                str_contains(strtolower(optional($request)->intervention_name), 'conference attendance') || 
-                str_contains(strtolower(optional($request)->intervention_name), 'tetfund scholarship') ) {
+            if ($submissionRequest->is_astd_intervention(optional($request)->intervention_name)==true) {
 
                 //update attached final_nominations_arr
                 NominationRequest::where('bi_submission_request_id', null)
@@ -577,9 +591,26 @@ class SubmissionRequestController extends BaseController
                 $tetFundServer = new TETFundServer();   /* server class constructor */
                 $intervention_types_server_response = $tetFundServer->get_row_records_from_server("tetfund-ben-mgt-api/interventions/".$submissionRequest->tf_iterum_intervention_line_key_id, $pay_load);
 
-                // get fund availability
-                $tetFundServer = new TETFundServer();   /* server class constructor */
-                $submission_allocations = $tetFundServer->getFundAvailabilityData($submitted_request_data->beneficiary_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
+                // decide fund availability type to be retrived is ASTD based
+                if ($submissionRequest->is_astd_intervention(optional($intervention_types_server_response)->name)==true) {
+                    $data_to_rerieve_payload['getASTDFundAvailabilityData'] = [
+                            'beneficiary_id' => $beneficiary->tf_iterum_portal_key_id,
+                            'intervention_name' => optional($intervention_types_server_response)->name,
+                            'intervention_line_id' => $submissionRequest->tf_iterum_intervention_line_key_id,
+                            'allocation_details'=>true
+                        ];                    
+
+                    $tetFundServer = new TETFundServer();   /* server class constructor */
+                    $some_server_data_array = $tetFundServer->getSomeDataArrayFromServer($data_to_rerieve_payload);
+                    //Get the ASTD funding data and total_funds.
+                    $submission_allocations = $some_server_data_array->getASTDFundAvailabilityData ?? null;
+
+                } else {
+                    // get fund availability
+                    $tetFundServer = new TETFundServer();   /* server class constructor */
+                    $submission_allocations = $tetFundServer->getFundAvailabilityData($submitted_request_data->beneficiary_id, $submissionRequest->tf_iterum_intervention_line_key_id, $years, true);
+                }
+
             } else {
                 // changing submission status to Approved
                 if (($submitted_request_data->has_generated_aip || $submitted_request_data->has_generated_disbursement_memo) && $submissionRequest->status != 'approved') {
@@ -621,17 +652,29 @@ class SubmissionRequestController extends BaseController
             // get some array of data from server
             $data_to_rerieve_payload = [
                 'getInterventionChecklistData' => [
-                        'request' => $additional_checklists_pay_load,
-                        'checklist_group_name' => $checklist_group_name
-                    ],
+                    'request' => $additional_checklists_pay_load,
+                    'checklist_group_name' => $checklist_group_name
+                ]
+            ];
 
-                'getFundAvailabilityData' => [
+            // decide fund availability type to be retrived
+            $is_astd_intervention = false;
+            if ($submissionRequest->is_astd_intervention(optional($intervention_types_server_response)->name)==true) {
+                $is_astd_intervention = true;
+                $data_to_rerieve_payload['getASTDFundAvailabilityData'] = [
+                        'beneficiary_id' => $beneficiary->tf_iterum_portal_key_id,
+                        'intervention_name' => optional($intervention_types_server_response)->name,
+                        'intervention_line_id' => $submissionRequest->tf_iterum_intervention_line_key_id,
+                        'allocation_details'=>true
+                    ];
+            } else {
+                $data_to_rerieve_payload['getFundAvailabilityData'] = [
                         'beneficiary_id' => $beneficiary->tf_iterum_portal_key_id,
                         'years' => $years,
                         'tf_iterum_intervention_line_key_id' => $submissionRequest->tf_iterum_intervention_line_key_id,
                         'allocation_details'=>true
-                    ],
-            ];
+                    ];
+            }
 
             $tetFundServer = new TETFundServer();   /* server class constructor */
             $some_server_data_array = $tetFundServer->getSomeDataArrayFromServer($data_to_rerieve_payload);
@@ -639,8 +682,8 @@ class SubmissionRequestController extends BaseController
             // get checklist for specified intervention
             $checklist_items = $some_server_data_array->getInterventionChecklistData??[];
 
-            //Get the funding data and total_funds for the selected intervention year(s).
-            $submission_allocations = $some_server_data_array->getFundAvailabilityData??null;
+            //Get the funding data and total_funds for the selected intervention year(s) if non-astd.
+            $submission_allocations = $is_astd_intervention==true ? $some_server_data_array->getASTDFundAvailabilityData : $some_server_data_array->getFundAvailabilityData??null;
         }
 
         if(isset($request->sub_menu_items) && $request->sub_menu_items == 'nominations_binded') {
@@ -672,7 +715,8 @@ class SubmissionRequestController extends BaseController
                     'submissionRequest' => $submissionRequest,
                     'years' => $years,
                     'checklist_items' => $checklist_items,
-                    'fund_available' => optional($submission_allocations)->total_funds,
+                    'astd_allocations_details' => $submission_allocations,
+                    'fund_available' => $submission_allocations->total_funds ?? $submission_allocations->total_available_fund ?? '',
                     'submission_allocations' => $submission_allocations->allocation_records ?? [],
                     'beneficiary' => $beneficiary, 
                     'submitted_request_data' => $submitted_request_data ?? []
@@ -692,6 +736,7 @@ class SubmissionRequestController extends BaseController
             ->with('allSubmissionAttachments', $submissionRequest->get_all_attachments($submissionRequest->id))
             ->with('years', $years)
             ->with('checklist_items', $checklist_items)
+            ->with('astd_allocations_details', $submission_allocations)
             ->with('fund_available', optional($submission_allocations)->total_funds)
             ->with('submission_allocations', $submission_allocations->allocation_records ?? [])
             ->with('bi_request_released_communications', $bi_request_released_communications ?? [])
@@ -824,7 +869,12 @@ class SubmissionRequestController extends BaseController
                     return redirect()->back()->withErrors([$error_msg])->withInput();
             }
 
-            $input['title'] = $input['intervention_title']. ' - ' .$submissionRequest->type. ' (' .implode(', ', $years_unique) .')';
+            $type_surfix = $submissionRequest->type;
+            if (SubmissionRequest::is_astd_intervention($request->intervention_title) == true) {
+                $type_surfix = 'Request For Fund';
+            }
+
+            $input['title'] = $input['intervention_title']. ' - ' .$type_surfix. ' (' .implode(', ', $years_unique) .')';
 
             $submissionRequest->fill($input);
             $submissionRequest->save();

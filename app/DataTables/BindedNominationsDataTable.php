@@ -48,6 +48,13 @@ class BindedNominationsDataTable extends DataTable
             return "N/A";  
         })->escapeColumns('active')->make(true);
 
+        $dataTable->editColumn('amount_requested', function ($query) {
+            if ($query->total_requested_amount != null){
+                return '₦ ' . number_format($query->total_requested_amount, '2');
+            }
+            return "N/A";  
+        })->escapeColumns('active')->make(true);
+
         $dataTable->addColumn('sn', function ($query) {
             return $this->counter += 1;
         });
@@ -71,20 +78,34 @@ class BindedNominationsDataTable extends DataTable
      */
     public function query(NominationRequest $model)
     {
-        
         return $model->newQuery()->with('user')
             ->where('beneficiary_id', $this->user_beneficiary->id)
             ->where('type', $this->intervention_name)
             ->where('head_of_institution_checked_status', 'approved')
+            ->when($this->intervention_name=='tp', function($qry) {
+                return  $qry->join('tf_bi_tp_nominations', 'tf_bi_tp_nominations.nomination_request_id', '=', 'tf_bi_nomination_requests.id')
+                        ->where('tf_bi_tp_nominations.deleted_at', null)
+                        ->select('tf_bi_nomination_requests.*', 'tf_bi_tp_nominations.total_requested_amount');
+            })
+            ->when($this->intervention_name=='ca', function($qry) {
+                return  $qry->join('tf_bi_ca_nominations', 'tf_bi_ca_nominations.nomination_request_id', '=', 'tf_bi_nomination_requests.id')
+                        ->where('tf_bi_ca_nominations.deleted_at', null)
+                        ->select('tf_bi_nomination_requests.*', 'tf_bi_ca_nominations.total_requested_amount');
+            })
+            ->when($this->intervention_name=='tsas', function($qry) {
+                return  $qry->join('tf_bi_tsas_nominations', 'tf_bi_tsas_nominations.nomination_request_id', '=', 'tf_bi_nomination_requests.id')
+                        ->where('tf_bi_tsas_nominations.deleted_at', null)
+                        ->select('tf_bi_nomination_requests.*', 'tf_bi_tsas_nominations.total_requested_amount');
+            })
             ->when((isset($this->organization) && $this->organization != null), function ($que) {
-                return $que->where("organization_id", $this->organization->id);
+                return $que->where("tf_bi_nomination_requests.organization_id", $this->organization->id);
             })
             ->when($this->submission_request->status != 'not-submitted', function ($que) {
-                return $que->where('bi_submission_request_id', $this->submission_request->id)
+                return $que->where('tf_bi_nomination_requests.bi_submission_request_id', $this->submission_request->id)
                         ->where('is_set_for_final_submission', 1);
             })
             ->when($this->submission_request->status == 'not-submitted', function ($que) {
-                return $que->whereNull('bi_submission_request_id')
+                return $que->whereNull('tf_bi_nomination_requests.bi_submission_request_id')
                         ->where('is_set_for_final_submission', 0);
             });
     }
@@ -124,6 +145,7 @@ class BindedNominationsDataTable extends DataTable
         return [
             ['title'=>'S/N','data'=>'sn', 'name'=>'user.email'],
             Column::make('nominee_name')->name('user.first_name'),
+            Column::make('amount_requested')->name('tf_bi_tp_nominations.total_requested_amount'),
             ['title'=>'Date Completed','data'=>'updated_at', 'name'=>'updated_at' ],
         ];
     }

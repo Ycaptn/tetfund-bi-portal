@@ -74,6 +74,8 @@ Edit Submission Request
         function filter_removing_comma() {
             var numeric_amount = $('#amount_requested_digit').val().replace(/,/g,'');
             $("#amount_requested").val(numeric_amount);
+            let intervention_year1 = $('#intervention_year1').val();
+            $('.intervention_year1').val(intervention_year1);
             //console.log(numeric_amount);
         }
 

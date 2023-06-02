@@ -204,6 +204,18 @@ class SubmissionRequest extends Model
         return [];
     }
 
+    // all ASTD interventions
+    public static function is_astd_intervention($intervention_name) {
+        $astd_interventions = [
+            'teaching practice',
+            'conference attendance',
+            'tetfund scholarship',
+            'tetfund scholarship for academic staff'
+        ];
+
+        return in_array(strtolower($intervention_name), $astd_interventions);
+    }
+
     // all first tranche interventions percentage
     public function first_tranche_intervention_percentage ($intervention_name) {
         $first_tranche_interventions = [

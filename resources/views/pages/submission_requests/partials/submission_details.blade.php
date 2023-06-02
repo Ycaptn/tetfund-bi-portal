@@ -58,8 +58,8 @@
                                             <td> {{ $sn_counter += 1 }}. </td>
                                             <td> {{ $sub_allocation->year }} </td>
                                             <td>    
-                                                {{ ucwords($sub_allocation->type) }} - 
-                                                {{ $sub_allocation->name }} 
+                                                {{ ucwords($sub_allocation->type ?? $sub_allocation->intervention_beneficiary_type->type) }} - 
+                                                {{ $sub_allocation->name ?? $sub_allocation->intervention_beneficiary_type->intervention->name ?? '' }} 
                                             </td>
                                             <td> {{ $sub_allocation->allocation_code }} </td>
                                             <td> &#8358; 
@@ -99,8 +99,21 @@
             <i class="fa fa-bank fa-fw"></i> <b>{{ ucwords($intervention->type) }} Intervention &nbsp; - &nbsp; </b> &nbsp; {{ $intervention->name}} <br/>
             <i class="fa fa-briefcase fa-fw"></i> <b>Purpose of Request:</b> &nbsp; {{ $submissionRequest->type }} <br/>
             <i class="fa fa-crosshairs fa-fw"></i> <b>Intervention Year(s) &nbsp; - &nbsp; </b> &nbsp; {{ $years_str }} <br/>
-            <i class="fa fa-money fa-fw"></i> <b>Total Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($fund_available) ? $fund_available : 0), 2) }} <br/>
-            <i class="fa fa-money fa-fw"></i> <b>Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>
+
+            {{-- ammount figures to be displayed based on ASTD and Non-ASTD interventions --}}
+            @if($submissionRequest->is_astd_intervention($intervention->name)==true)
+                <i class="fa fa-money fa-fw"></i> <b>Total Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_allocated_fund : 0), 2) }} &nbsp; <b><i><small>({{ $astd_allocations_details->allocation_end_year }} - {{ $astd_allocations_details->allocation_start_year }})</small></i></b> <br/>
+                <i class="fa fa-money fa-fw"></i> <b>Current Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_available_fund : 0), 2) }} <br/>
+                <i class="fa fa-money fa-fw"></i> <b>Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>
+
+                @if(isset($astd_allocations_details->total_available_fund))
+                    <i class="fa fa-money fa-fw"></i> <b>Expected Balance After Disbursement &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($astd_allocations_details->total_available_fund - $submissionRequest->amount_requested, 2) }} <br/>
+                @endif
+            @else
+                <i class="fa fa-money fa-fw"></i> <b>Total Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($fund_available) ? $fund_available : 0), 2) }} <br/>
+                <i class="fa fa-money fa-fw"></i> <b>Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>
+            @endif
+
             <i class="fa fa-thumbs-up fa-fw"> </i><b>Current Stage &nbsp; - &nbsp; </b> &nbsp; {{ strtoupper($submitted_request_data->work_item->active_assignment->assigned_user->department->long_name ?? $submissionRequest->status) }}<br/>
             @if($submissionRequest->is_aip_request && !empty($submitted_request_data) && $submitted_request_data->request_status == 'reprioritized')
                 <i class="text-danger">

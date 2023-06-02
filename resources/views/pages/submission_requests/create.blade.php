@@ -70,7 +70,7 @@ New Submission
                             <tbody id="current_nomination_details_submitted">
                                 <tr>
                                    <td colspan="4" class="text-danger text-center">
-                                       <i>No record found!</i>
+                                       <i>No record found!</i>year
                                    </td> 
                                 </tr>
                             </tbody>
@@ -100,15 +100,19 @@ New Submission
         function filter_removing_comma() {
             var numeric_amount = $('#amount_requested_digit').val().replace(/,/g,'');
             $("#amount_requested").val(numeric_amount);
+            let intervention_year1 = $('#intervention_year1').val();
+            $('.intervention_year1').val(intervention_year1);
             //console.log(numeric_amount);
         }
 
         $(document).ready(function() {
+            const d = new Date();
+            let year = d.getFullYear();
             let all_astd_interventions_id = [];
             let all_none_astd_interventions_id = [];
             let all_intervention_records = '{!! json_encode($intervention_types) ?? [] !!}';
 
-            // hide 3 intervention years input fields
+            // hide 4 intervention years input fields
             $("#intervention_year2").val('');
             $("#intervention_year2").attr('disabled', true);
             $("#intervention_year3").val('');
@@ -123,6 +127,8 @@ New Submission
 
             // hiding 3 intervention years
             function hide_3_intervention_years() {
+                $(".intervention_year1").val(year);
+                $("#intervention_year1").attr('disabled', true);
                 $("#intervention_year2").val('');
                 $("#intervention_year2").attr('disabled', true);
                 $("#intervention_year3").val('');
@@ -192,6 +198,7 @@ New Submission
                            
                             if (response.data) {
                                 let s_n_counter = 1;
+                                let requested_amount = 0.00;
                                 $.each(response.data, function(key, nominee) {
                                     
                                     let formated_date = new Date(nominee[relationship_name]['updated_at']).toDateString();
@@ -200,20 +207,38 @@ New Submission
 
                                     let total_request_amount = nominee[relationship_name]['total_requested_amount'] ? nominee[relationship_name]['total_requested_amount'] : "0.00";
 
-                                    html_to_return += "<tr><td>"+ s_n_counter +"</td>  <td>"+ nominee[relationship_name]['first_name'] + " " + middle_name + " " + nominee[relationship_name]['last_name'] +"</td>  <td> &#8358 "+ total_request_amount +"</td>  <td>"+ formated_date +"</td>  </tr>";
+                                    let formated_total_request_amount = parseFloat(total_request_amount).toLocaleString('en-US', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        });
+                                
+                                    html_to_return += "<tr><td>"+ s_n_counter +"</td>  <td>"+ nominee[relationship_name]['first_name'] + " " + middle_name + " " + nominee[relationship_name]['last_name'] +"</td>  <td> &#8358 "+ formated_total_request_amount +"</td>  <td>"+ formated_date +"</td>  </tr>";
 
                                     s_n_counter += 1;
+                                    requested_amount += parseFloat(total_request_amount);
 
                                 }); 
                                 
+                                let formated_requested_total = requested_amount.toLocaleString('en-US', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+
+                                html_to_return += "<tr><td colspan='2'><b> &nbsp; &nbsp; &nbsp; Grand Total</b></td>  <td colspan='2'><b> &#8358 "+ formated_requested_total +"</b></td></tr>";
+
                                 $('#nomination_type').text(nomination_label);
                                 $('#div_current_nomination_details_submitted').show();
                                 $('#current_nomination_details_submitted').html(html_to_return);
+                                $('#amount_requested').val(requested_amount);
+                                $('#amount_requested_digit').val(formated_requested_total);
                             }
                         });
                     }
                 } else {
-
+                    $('#amount_requested').val('');
+                    $('#amount_requested_digit').val('');
+                    $("#intervention_year1").val('');
+                    $("#intervention_year1").attr('disabled', false);
                     $("#intervention_year2").attr('disabled', false);
                     $("#intervention_year3").attr('disabled', false);
                     $("#intervention_year4").attr('disabled', false);

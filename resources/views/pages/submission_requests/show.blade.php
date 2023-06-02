@@ -105,31 +105,42 @@ Submission
                             @if (count($attachments_aside_additional) < count($checklist_items)) 
                                 <li>Please attach the <strong>required documents</strong> before submitting your request.</li>
                             @endif 
-                            @if (isset($fund_available) && $fund_available != $submissionRequest->amount_requested && (($submissionRequest->is_aip_request==true && (!str_contains(strtolower(optional($intervention)->name), 'teaching practice') && !str_contains(strtolower(optional($intervention)->name), 'conference attendance') && !str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship')) ) || ($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention(optional($intervention)->name) && $submissionRequest->getParentAIPSubmissionRequest()==null) ))
+                            @if (isset($fund_available) && $fund_available != $submissionRequest->amount_requested && (($submissionRequest->is_aip_request==true && $submissionRequest->is_astd_intervention(optional($intervention)->name)==false) || ($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention(optional($intervention)->name) && $submissionRequest->getParentAIPSubmissionRequest()==null) ))
            
                                 {{-- error for requested fund mismatched to allocated fund for non-astd interventions --}}
                                 <li>Fund requested must be equal to the 
                                     <strong>
                                         <a title="Preview allocation amount details" data-val='{{$submissionRequest->id}}' href="#" class="btn-show-submissionRequestAllocationAmount text-primary"> 
-                                            <u>allocated amount</u>.
+                                            <u>allocated/available amount</u>.
                                         </a>
                                     </strong>
                                 </li>
                            
-                            @elseif (isset($fund_available) && $submissionRequest->amount_requested > $fund_available && (str_contains(strtolower(optional($intervention)->name), 'teaching practice') || str_contains(strtolower(optional($intervention)->name), 'conference attendance') || str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship')) )
+                            @elseif (isset($astd_allocations_details) && $submissionRequest->is_astd_intervention(optional($intervention)->name)==true)
                                 
                                 {{-- error for requested fund mismatched to allocated fund for all ASTD interventions --}}
-                                <li>Fund requested cannot be greater than 
-                                    <strong>
-                                        <a title="Preview allocation amount details" data-val='{{$submissionRequest->id}}' href="#" class="btn-show-submissionRequestAllocationAmount text-primary"> 
-                                            <u>allocated amount</u>.
-                                        </a>
-                                    </strong>
-                                </li>
+                                @if($submissionRequest->amount_requested > $astd_allocations_details->total_available_fund)
+                                    <li>Fund requested cannot be greater than 
+                                        <strong>
+                                            <a title="Preview allocation amount details" data-val='{{$submissionRequest->id}}' href="#" class="btn-show-submissionRequestAllocationAmount text-primary"> 
+                                                <u>allocated/available amount</u>.
+                                            </a>
+                                        </strong>
+                                    </li>
+                                @else 
+                                    <li>Preview all
+                                        <strong>
+                                            <a title="Preview allocation amount details" data-val='{{$submissionRequest->id}}' href="#" class="btn-show-submissionRequestAllocationAmount text-primary"> 
+                                                <u> fund allocations </u>
+                                            </a>
+                                        </strong>
+                                        for {{ optional($intervention)->name }} Intervention.
+                                    </li>
+                                @endif
                             @endif
                             
                             {{-- message for utilized fund belonging to non-ASTD interventions --}}
-                            @if ($submissionRequest->is_aip_request==true && (!str_contains(strtolower(optional($intervention)->name), 'teaching practice') && !str_contains(strtolower(optional($intervention)->name), 'conference attendance') && !str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship')) && count($submission_allocations) > 0)
+                            @if ($submissionRequest->is_aip_request==true && $submissionRequest->is_astd_intervention(optional($intervention)->name)==false && count($submission_allocations) > 0)
                                 @foreach($submission_allocations as $allocation)
                                     @if($allocation->utilization_status != null && $allocation->utilization_status == 'utilized')
                                         <li>
@@ -159,7 +170,7 @@ Submission
                 @include('tf-bi-portal::pages.submission_requests.partials.submission_details')
 
                 {{-- sub menu buttons --}}
-                @if(strtolower($submissionRequest->status) == 'submitted' || str_contains(strtolower(optional($intervention)->name), 'teaching practice') || str_contains(strtolower(optional($intervention)->name), 'conference attendance') || str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship'))
+                @if(strtolower($submissionRequest->status) == 'submitted' || $submissionRequest->is_astd_intervention(optional($intervention)->name)==true)
                     <div class="col-sm-12">
                         <div class="tab">
                             <ul class="nav nav-tabs nav-primary" role="tablist">
@@ -175,7 +186,7 @@ Submission
                                     </a>
                                 </li>
 
-                                @if(str_contains(strtolower(optional($intervention)->name), 'teaching practice') || str_contains(strtolower(optional($intervention)->name), 'conference attendance') || str_contains(strtolower(optional($intervention)->name), 'tetfund scholarship'))
+                                @if($submissionRequest->is_astd_intervention(optional($intervention)->name)==true)
                                     <li class="nav-item" role="presentation">
                                         <a class="nav-link {{(request()->sub_menu_items=="nominations_binded")?'active':''}}" href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=nominations_binded" >
                                             <div class="d-flex align-items-center">
