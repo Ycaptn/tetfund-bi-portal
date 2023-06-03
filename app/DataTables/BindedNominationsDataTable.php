@@ -145,7 +145,7 @@ class BindedNominationsDataTable extends DataTable
         return [
             ['title'=>'S/N','data'=>'sn', 'name'=>'user.email'],
             Column::make('nominee_name')->name('user.first_name'),
-            Column::make('amount_requested')->name('tf_bi_tp_nominations.total_requested_amount'),
+            Column::make('amount_requested')->name("tf_bi_{$this->intervention_name}_nominations.total_requested_amount"),
             ['title'=>'Date Completed','data'=>'updated_at', 'name'=>'updated_at' ],
         ];
     }

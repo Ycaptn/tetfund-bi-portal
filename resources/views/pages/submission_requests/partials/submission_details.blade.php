@@ -102,13 +102,33 @@
 
             {{-- ammount figures to be displayed based on ASTD and Non-ASTD interventions --}}
             @if($submissionRequest->is_astd_intervention($intervention->name)==true)
+            
+            <hr style="margin: 0; border: none; border-top: 1px solid #000;">
                 <i class="fa fa-money fa-fw"></i> <b>Total Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_allocated_fund : 0), 2) }} &nbsp; <b><i><small>({{ $astd_allocations_details->allocation_end_year }} - {{ $astd_allocations_details->allocation_start_year }})</small></i></b> <br/>
+                
+                {{-- display when intervention is conference attendance --}}
+                @if(str_contains(strtolower($intervention->name), 'conference attendance'))
+                    <i class="fa fa-money fa-fw"></i> <b>Academic Staffs Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_academic_staff_allocated_fund : 0), 2) }} <br/>
+                    <i class="fa fa-money fa-fw"></i> <b>None-Academic Staffs Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_non_academic_staff_allocated_fund : 0), 2) }} <br/>
+                @endif
+
+            <hr style="margin: 0; border: none; border-top: 1px solid #000;">
                 <i class="fa fa-money fa-fw"></i> <b>Current Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_available_fund : 0), 2) }} <br/>
-                <i class="fa fa-money fa-fw"></i> <b>Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>
+                
+                {{-- display when intervention is conference attendance --}}
+                @if(str_contains(strtolower($intervention->name), 'conference attendance'))
+                    <i class="fa fa-money fa-fw"></i> <b>Academic Staffs Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_academic_staff_available_fund : 0), 2) }} <br/>
+                    <i class="fa fa-money fa-fw"></i> <b>None-Academic Staffs Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_non_academic_staff_available_fund : 0), 2) }} <br/>
+                @endif
+
+            <hr style="margin: 0; border: none; border-top: 1px solid #000;">
+                <i class="fa fa-money fa-fw"></i> <b>Total Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>                
 
                 @if(isset($astd_allocations_details->total_available_fund))
                     <i class="fa fa-money fa-fw"></i> <b>Expected Balance After Disbursement &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($astd_allocations_details->total_available_fund - $submissionRequest->amount_requested, 2) }} <br/>
                 @endif
+            <hr style="margin: 0; border: none; border-top: 1px solid #000;">
+
             @else
                 <i class="fa fa-money fa-fw"></i> <b>Total Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($fund_available) ? $fund_available : 0), 2) }} <br/>
                 <i class="fa fa-money fa-fw"></i> <b>Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>
