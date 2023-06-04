@@ -16,7 +16,10 @@ Submission
         $submitted_request_data->title : $submissionRequest->title }} - 
     @if(!empty($submitted_request_data) && ( ($submissionRequest->is_aip_request==true && $submitted_request_data->has_generated_aip==true) || ( ($submissionRequest->is_first_tranche_request==true || $submissionRequest->is_second_tranche_request==true || $submissionRequest->is_final_tranche_request==true) && $submitted_request_data->has_generated_disbursement_memo==true) ) )
         <b class="text-success">
-            {{$submissionRequest->is_aip_request==true ? $submissionRequest->type : $submissionRequest->type.' Request' }} Processed
+            {{$submissionRequest->is_aip_request==true ? 
+                ($submissionRequest->is_astd_intervention($intervention->name)==true ? 'Request for Funding' : $submissionRequest->type)  
+            : 
+                $submissionRequest->type.' Request' }} Processed
         </b>
     @else
         @if(optional($submitted_request_data)->request_status=='pending-recall')

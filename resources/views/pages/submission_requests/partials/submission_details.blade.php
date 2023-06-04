@@ -97,7 +97,7 @@
             <i class="fa fa-calendar-o fa-fw"></i> <strong>Created on </strong> {{ \Carbon\Carbon::parse($submissionRequest->created_at)->format('l jS F Y') }} - {!! \Carbon\Carbon::parse($submissionRequest->created_at)->diffForHumans() !!} <br/>
 
             <i class="fa fa-bank fa-fw"></i> <b>{{ ucwords($intervention->type) }} Intervention &nbsp; - &nbsp; </b> &nbsp; {{ $intervention->name}} <br/>
-            <i class="fa fa-briefcase fa-fw"></i> <b>Purpose of Request:</b> &nbsp; {{ $submissionRequest->type }} <br/>
+            <i class="fa fa-briefcase fa-fw"></i> <b>Purpose of Request:</b> &nbsp; {{ $submissionRequest->is_astd_intervention($intervention->name)==true ? 'Request For Funding' : $submissionRequest->type }} <br/>
             <i class="fa fa-crosshairs fa-fw"></i> <b>Intervention Year(s) &nbsp; - &nbsp; </b> &nbsp; {{ $years_str }} <br/>
 
             {{-- ammount figures to be displayed based on ASTD and Non-ASTD interventions --}}
@@ -246,7 +246,7 @@
                 <small>
                     @if(($submitted_request_data->has_generated_aip || $submitted_request_data->has_generated_disbursement_memo) && $submitted_request_data->request_status!='recalled')
                         <span class="text-success">
-                            Please note that your <b>{{$submissionRequest->is_aip_request==true ? 'Approval-In-Principle (AIP)' : $submissionRequest->type.' Request' }}</b> has been completely processed{!! ucwords(' <b>@ TETFund ' . $dept_name . ' Department.</b>' ?? '.') !!}
+                            Please note that your <b>{{$submissionRequest->is_aip_request==true ? ($submissionRequest->is_astd_intervention($intervention->name)==true ? 'Request for Funding' : 'Approval-In-Principle (AIP)') : $submissionRequest->type.' Request' }}</b> has been completely processed{!! ucwords(' <b>@ TETFund ' . $dept_name . ' Department.</b>' ?? '.') !!}
 
                             @if($approved_tranche_document != null && $submissionRequest->is_aip_request==false)
                                 <form action="{{route('display-response-attachment')}}" target="__blank" method="POST">
@@ -266,7 +266,7 @@
                         </span>
                     @else
                         <span class="text-danger"> 
-                            Please note that your <b>{{$submissionRequest->is_aip_request==true ? 'Approval-In-Principle (AIP)' : $submissionRequest->type.' Request' }}</b> is currently being processed{!! ucwords(' <b>@ TETFund ' . $dept_name . ' Department.</b>' ?? '.') !!}
+                            Please note that your <b>{{$submissionRequest->is_aip_request==true ? ($submissionRequest->is_astd_intervention($intervention->name)==true ? 'Request for Funding' : 'Approval-In-Principle (AIP)') : $submissionRequest->type.' Request' }}</b> is currently being processed{!! ucwords(' <b>@ TETFund ' . $dept_name . ' Department.</b>' ?? '.') !!}
                             Once final approval is completed, you will be contacted for collection. 
 
                             @if($submitted_request_data->request_status=='pending-recall')
@@ -279,7 +279,7 @@
                 </small>
             @else
                 <small class="text-danger">
-                    Please note that your <b>{{$submissionRequest->is_aip_request==true ? 'Approval-In-Principle (AIP)' : $submissionRequest->type.' Request' }}</b> is yet to be submitted to TETFund.
+                    Please note that your <b>{{$submissionRequest->is_aip_request==true ? ($submissionRequest->is_astd_intervention($intervention->name)==true ? 'Request for Funding' : 'Approval-In-Principle (AIP)') : $submissionRequest->type.' Request' }}</b> is yet to be submitted to TETFund.
                 </small>
             @endif
         </div>
