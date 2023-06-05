@@ -7,7 +7,9 @@
                 <option value="tp">Teaching Practice &nbsp; (TP)</option> 
             @endif
             <option value="ca">Conference Attendance &nbsp; (CA)</option> 
-            <option value="tsas">TETFund Scholarship for Academic Staff &nbsp; (TSAS)</option>
+            @if(isset($beneficiary_member->member_type) && strtolower($beneficiary_member->member_type)=='academic')
+                <option value="tsas">TETFund Scholarship for Academic Staff &nbsp; (TSAS)</option>
+            @endif
         </select>
         <span class="input-group-text"><span class="fa fa-archive"></span></span>
     </div>
