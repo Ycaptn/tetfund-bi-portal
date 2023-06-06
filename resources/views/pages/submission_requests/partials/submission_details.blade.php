@@ -110,6 +110,13 @@
                 @if(str_contains(strtolower($intervention->name), 'conference attendance'))
                     <i class="fa fa-money fa-fw"></i> <b>Academic Staffs Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_academic_staff_allocated_fund : 0), 2) }} <br/>
                     <i class="fa fa-money fa-fw"></i> <b>None-Academic Staffs Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_non_academic_staff_allocated_fund : 0), 2) }} <br/>
+
+                {{-- display when intervention is tetfunbd scholarship for academic staffs --}}
+                @elseif(str_contains(strtolower($intervention->name), 'tetfund scholarship'))
+                    <i class="fa fa-money fa-fw"></i> <b>Ph.D Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_phd_allocated_fund : 0), 2) }} <br/>
+                    <i class="fa fa-money fa-fw"></i> <b>M.Sc. Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_msc_allocated_fund : 0), 2) }} <br/>
+                    <i class="fa fa-money fa-fw"></i> <b>Post. Doc. Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_post_doc_allocated_fund : 0), 2) }} <br/>
+                    <i class="fa fa-money fa-fw"></i> <b>Bench-Work Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_bw_allocated_fund : 0), 2) }} <br/>
                 @endif
 
             <hr style="margin: 0; border: none; border-top: 1px solid #000;">
@@ -119,6 +126,13 @@
                 @if(str_contains(strtolower($intervention->name), 'conference attendance'))
                     <i class="fa fa-money fa-fw"></i> <b>Academic Staffs Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_academic_staff_available_fund : 0), 2) }} <br/>
                     <i class="fa fa-money fa-fw"></i> <b>None-Academic Staffs Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_non_academic_staff_available_fund : 0), 2) }} <br/>
+
+                {{-- display when intervention is tetfunbd scholarship for academic staffs --}}
+                @elseif(str_contains(strtolower($intervention->name), 'tetfund scholarship'))
+                    <i class="fa fa-money fa-fw"></i> <b>Ph.D Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_phd_available_fund : 0), 2) }} <br/>
+                    <i class="fa fa-money fa-fw"></i> <b>M.Sc. Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_msc_available_fund : 0), 2) }} <br/>
+                    <i class="fa fa-money fa-fw"></i> <b>Post. Doc. Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_post_doc_available_fund : 0), 2) }} <br/>
+                    <i class="fa fa-money fa-fw"></i> <b>Bench-Work Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_bw_available_fund : 0), 2) }} <br/>
                 @endif
 
             <hr style="margin: 0; border: none; border-top: 1px solid #000;">
