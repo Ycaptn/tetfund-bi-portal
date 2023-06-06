@@ -184,15 +184,15 @@
 </div>
 
 @php
-    // $sixMonthsAhead = date('Y-m-d', strtotime(date('Y-m-d') . ' +6 months'));
-    $todayDate = date('Y-m-d');
+    $sixMonthsAhead = date('Y-m-d', strtotime(date('Y-m-d') . ' +6 months'));
+    // $todayDate = date('Y-m-d');
 @endphp
 
 <!-- Program Start Date Field -->
 <div id="div-program_start_date_tsas" class="form-group mb-3 col-md-4">
-    <label for="program_start_date_tsas" class="col-sm-12 col-form-label">Program Start Date:</label>
+    <label for="program_start_date_tsas" class="col-sm-12 col-form-label">Program Start Date:<i class="text-danger">-- (6 months ahead)</i></label>
     <div class="col-sm-12">
-        {!! Form::date('program_start_date_tsas', null, ['id'=>'program_start_date_tsas', 'class' => 'form-control', 'min'=>$todayDate]) !!}
+        {!! Form::date('program_start_date_tsas', null, ['id'=>'program_start_date_tsas', 'class' => 'form-control', 'min'=>$sixMonthsAhead]) !!}
     </div>
 </div>
 
@@ -200,7 +200,7 @@
 <div id="div-program_end_date_tsas" class="form-group mb-3 col-md-4">
     <label for="program_end_date_tsas" class="col-sm-12 col-form-label">Program End Date:</label>
     <div class="col-sm-12">
-        {!! Form::date('program_end_date_tsas', null, ['id'=>'program_end_date_tsas', 'class' => 'form-control', 'min' => $todayDate]) !!}
+        {!! Form::date('program_end_date_tsas', null, ['id'=>'program_end_date_tsas', 'class' => 'form-control', 'min' => $sixMonthsAhead]) !!}
     </div>
 </div>
 

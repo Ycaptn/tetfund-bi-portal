@@ -85,8 +85,8 @@ if($('#passport_photo_ca').get(0).files.length != 0){
 	formData.append('passport_photo', $('#passport_photo_ca')[0].files[0]);
 }
 
-if($('#conference_attendance_letter_ca').get(0).files.length != 0){
-	formData.append('conference_attendance_letter', $('#conference_attendance_letter_ca')[0].files[0]);      
+if($('#conference_attendance_flyer_ca').get(0).files.length != 0){
+	formData.append('conference_attendance_flyer', $('#conference_attendance_flyer_ca')[0].files[0]);      
 }
 
 if($('#paper_presentation_ca').get(0).files.length != 0){

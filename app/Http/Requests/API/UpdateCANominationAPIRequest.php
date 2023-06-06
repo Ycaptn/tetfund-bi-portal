@@ -63,7 +63,7 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
             'bank_account_number' => 'required|digits:10',
             'bank_name' => 'required|max:100',
             'bank_sort_code' => 'required|max:100',
-            'bank_verification_number' => 'required|numeric',
+            'bank_verification_number' => 'required|digits:12',
             'intl_passport_number' => 'required_unless:tf_iterum_portal_country_id,'.$this->country_nigeria_id.'|max:100',
             'national_id_number' => 'required|numeric',
             'conference_fee_amount_local' => "required|numeric|min:0|max:{$this->max_conference_fee_amt}",
@@ -73,8 +73,8 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
             $return_arr['passport_photo'] = 'file|mimes:pdf,png,jpeg,jpg|max:5240';
         }
 
-        if(request()->hasFile('conference_attendance_letter') && request()->conference_attendance_letter != 'undefined') {
-            $return_arr['conference_attendance_letter'] = 'file|mimes:pdf|max:5240';
+        if(request()->hasFile('conference_attendance_flyer') && request()->conference_attendance_flyer != 'undefined') {
+            $return_arr['conference_attendance_flyer'] = 'file|mimes:pdf|max:5240';
         }
 
         if(request()->hasFile('paper_presentation') && request()->paper_presentation != 'undefined') {
@@ -138,7 +138,7 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
             'conference_fee_amount_local' => 'Conference Fee Amount (₦)',
             
             'passport_photo' => 'Passport Photo',
-            'conference_attendance_letter' => 'Conference Attendance Letter',
+            'conference_attendance_flyer' => 'Conference Attendance Flyer',
             'paper_presentation' => 'Presentation Paper',
             'international_passport_bio_page' => 'International Passport Bio Page',
         ];

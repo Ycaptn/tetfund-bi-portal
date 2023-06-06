@@ -48,7 +48,7 @@ All T P Nomination
             @endif
         @elseif(request()->view_type == 'committee_head_consideration')
             @if($current_user->hasRole('BI-TP-committee-head'))
-                Considered Nomination
+                Consider Nomination
             @endif
         @endif
     @else
@@ -133,7 +133,7 @@ All T P Nomination
                                     <a  href="{{ route('tf-bi-portal.t_p_nominations.index') }}?view_type=committee_head_consideration&nomination_type=tp"
                                         class="nav-link {{ (isset(request()->view_type) && request()->view_type == 'committee_head_consideration') ? 'active' : ''}}"
                                         title="Preview TP Nomination(s) forwarded by Desk-Officer and take find decision on behalf of TPNomination committee" ><i class="fas fa-bell"></i><b><sup class="fa-layers-counter text-danger" style="background-color:white; border-radius: 20%;">{{number_format($count_array_returned['committee_members_considered_nomination'] ?? 0)}}</sup></b>
-                                        Considered Nomination
+                                        Consider Nomination
                                     </a>
                                 </li> 
                             @endif

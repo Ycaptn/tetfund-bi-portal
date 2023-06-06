@@ -45,7 +45,7 @@ class UpdateTPNominationAPIRequest extends AppBaseFormRequest
             'bank_account_number' => 'required|digits:10',
             'bank_name' => 'required|max:100',
             'bank_sort_code' => 'required|max:100',
-            'bank_verification_number' => 'required|numeric',
+            'bank_verification_number' => 'required|digits:12',
             'national_id_number' => 'nullable|numeric',
             'degree_type' => 'nullable|max:100',
             'program_title' => 'nullable|string|max:100',

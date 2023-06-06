@@ -287,11 +287,15 @@ $(document).ready(function() {
             initially_selected_conference_id = response.data.conference_id;
             initially_selected_country_id = response.data.country_id;
 
-            var conference_start_date= new Date(response.data.conference_start_date).toISOString().slice(0, 10);
-            $('#conference_start_date_ca').val(conference_start_date);
+            let conference_start_date = new Date(response.data.conference_start_date);
+            let local_conference_start_date = new Date(conference_start_date.getTime() - (conference_start_date.getTimezoneOffset() * 60000)).toISOString().slice(0, 10);
 
-            var conference_end_date = new Date(response.data.conference_end_date).toISOString().slice(0, 10);
-            $('#conference_end_date_ca').val(conference_end_date);
+            let conference_end_date = new Date(response.data.conference_end_date);
+            let local_conference_end_date = new Date(conference_end_date.getTime() - (conference_end_date.getTimezoneOffset() * 60000)).toISOString().slice(0, 10);
+
+            $('#conference_start_date_ca').val(local_conference_start_date);
+
+            $('#conference_end_date_ca').val(local_conference_end_date);
 
             $('#country_id_select_ca option[value="' + response.data.tf_iterum_portal_country_id + '"]').prop('selected', 'selected');
 
@@ -487,8 +491,8 @@ $(document).ready(function() {
         if($('#passport_photo_ca').get(0).files.length != 0){
             formData.append('passport_photo', $('#passport_photo_ca')[0].files[0]);
         }
-        if($('#conference_attendance_letter_ca').get(0).files.length != 0){
-            formData.append('conference_attendance_letter', $('#conference_attendance_letter_ca')[0].files[0]);      
+        if($('#conference_attendance_flyer_ca').get(0).files.length != 0){
+            formData.append('conference_attendance_flyer', $('#conference_attendance_flyer_ca')[0].files[0]);      
         }
         if($('#paper_presentation_ca').get(0).files.length != 0){
             formData.append('paper_presentation', $('#paper_presentation_ca')[0].files[0]);  

@@ -67,7 +67,7 @@ class CreateCANominationRequest extends AppBaseFormRequest
             'total_approved_amount' => 'nullable|numeric|min:0|max:100000000'*/
             
             'passport_photo' => 'required|file|mimes:pdf,png,jpeg,jpg|max:5240',
-            'conference_attendance_letter' => 'required|file|mimes:pdf|max:5240',
+            'conference_attendance_flyer' => 'required|file|mimes:pdf|max:5240',
             'health_report' => 'required|file|mimes:pdf,doc,docx|max:5240',
             'curriculum_vitae' => 'required|file|mimes:pdf,doc,docx|max:5240',
             'international_passport_bio_page' => 'required|file|mimes:pdf,doc,docx|max:5240',
@@ -121,7 +121,7 @@ class CreateCANominationRequest extends AppBaseFormRequest
             'total_approved_amount' => 'Total Approved Aamount'
         
             'passport_photo' => 'Passport Photo',
-            'conference_attendance_letter' => 'Conference Attendance Letter',
+            'conference_attendance_flyer' => 'Conference Attendance Flyer',
             'paper_presentation' => 'Presentation Paper',
             'international_passport_bio_page' => 'International Passport Bio Page',
 

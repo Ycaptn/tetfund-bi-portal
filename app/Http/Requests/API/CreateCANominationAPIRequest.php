@@ -55,7 +55,7 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             'has_paper_presentation' => "required|string|max:50|in:0,1",
             'accepted_paper_title' => 'required_if:has_paper_presentation,=,1|nullable|string|max:190',
             'is_academic_staff' => "required|string|max:50|in:0,1",
-            'conference_start_date' => 'required|date|after:'.date('d-M-Y', strtotime('+6 months')),
+            'conference_start_date' => 'required|date|after:'.date('d-M-Y', strtotime('+3 months')),
             'conference_end_date' => 'required|date|after_or_equal:conference_start_date|before:'.$plus_5_days,
             'name_title' => 'nullable|string|max:50',
             'name_suffix' => 'nullable|string|max:100',
@@ -63,13 +63,13 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             'bank_account_number' => 'required|digits:10',
             'bank_name' => 'required|max:100',
             'bank_sort_code' => 'required|max:100',
-            'bank_verification_number' => 'required|numeric',
+            'bank_verification_number' => 'required|digits:12',
             'intl_passport_number' => 'required_unless:tf_iterum_portal_country_id,'.request()->country_nigeria_id.'|max:100',
             'national_id_number' => 'required|numeric',            
             'conference_fee_amount_local' => "required|numeric|min:0|max:{$this->max_conference_fee_amt}",
             
             'passport_photo' => 'required|file|mimes:pdf,png,jpeg,jpg|max:5240',
-            'conference_attendance_letter' => 'required|file|mimes:pdf|max:5240',
+            'conference_attendance_flyer' => 'required|file|mimes:pdf|max:5240',
             'paper_presentation' => 'required_if:has_paper_presentation,=,1|file|mimes:pdf,doc,docx|max:5240',
             'international_passport_bio_page' => 'required_with:intl_passport_number|file|mimes:pdf,doc,docx|max:5240',
         ];
@@ -131,7 +131,7 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             'conference_fee_amount_local' => 'Conference Fee Amount (₦)',
             
             'passport_photo' => 'Passport Photo',
-            'conference_attendance_letter' => 'Conference Attendance Letter',
+            'conference_attendance_flyer' => 'Conference Attendance Flyer',
             'paper_presentation' => 'Presentation Paper',
             'international_passport_bio_page' => 'International Passport Bio Page',
 
