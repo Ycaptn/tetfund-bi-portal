@@ -87,7 +87,14 @@ class BeneficiaryAPIController extends AppBaseController
      */
     public function show($id, Organization $organization)
     {
+        $beneficiary = Beneficiary::find($id);
 
+        if(empty($beneficiary)){
+            return $this->sendError("Beneficiary not found");
+
+        }
+
+       return  $this->sendResponse($beneficiary->toArray(),"Benficiary retrieved succesfully");
     }
 
     /**

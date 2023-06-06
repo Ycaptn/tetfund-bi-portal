@@ -21,9 +21,9 @@ All Beneficiary
 @stop
 
 @section('page_title_buttons')
-<a id="btn-new-mdl-beneficiary-modal" class="btn btn-sm btn-primary btn-new-mdl-beneficiary-modal">
+{{-- <a id="btn-new-mdl-beneficiary-modal" class="btn btn-sm btn-primary btn-new-mdl-beneficiary-modal">
     <i class="bx bx-book-add mr-1"></i>New Beneficiary
-</a>
+</a> --}}
 @if (Auth()->user()->hasAnyRole(['','admin']))
     @include('xyz::pages.beneficiaries.bulk-upload-modal')
 @endif
