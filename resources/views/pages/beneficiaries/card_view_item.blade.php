@@ -18,13 +18,13 @@
                 <div class="d-flex align-items-center">
                     {{-- <div><h4 class="card-title"><a href='{{$detail_page_url}}'>{{$data_item->id}}</a></h4></div> --}}
                     <div class="ms-auto"> 
-                       {{--  <a data-toggle="tooltip" 
+                        <a data-toggle="tooltip" 
                             title="Edit" 
                             data-val='{{$data_item->id}}' 
                             class="btn-edit-mdl-beneficiary-modal me-1" href="#">
                             <i class="bx bxs-edit"></i>
                         </a>
-                        <a data-toggle="tooltip" 
+                       {{--  <a data-toggle="tooltip" 
                             title="Delete" 
                             data-val='{{$data_item->id}}' 
                             class="btn-delete-mdl-beneficiary-modal me-1" href="#">

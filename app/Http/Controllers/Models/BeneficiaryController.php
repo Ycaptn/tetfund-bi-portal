@@ -57,6 +57,7 @@ class BeneficiaryController extends BaseController
                     ->with('current_user', $current_user)
                     ->with('months_list', BaseController::monthsList())
                     ->with('states_list', BaseController::statesList())
+                    ->with('geo_zone_list', BaseController::geoZoneList())
                     ->with('cdv_beneficiaries', $cdv_beneficiaries);
     }
 

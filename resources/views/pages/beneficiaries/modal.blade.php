@@ -1,4 +1,54 @@
+<div class="modal fade" id="mdl-beneficiary-modal" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
 
+            <div class="modal-header">
+                <h5 id="lbl-beneficiary-modal-title" class="modal-title"><span id="prefix_info"></span> Beneficiary </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div id="div-beneficiary-modal-error" class="alert alert-danger" role="alert"></div>
+                <form class="form-horizontal" id="frm-beneficiary-modal" role="form" method="POST" enctype="multipart/form-data" action="">
+                    <div class="row m-3">
+                        <div class="col-sm-12">
+                            
+                            @csrf
+                            
+                            <div class="offline-flag"><span class="offline-beneficiaries">You are currently offline</span></div>
+
+                            <input type="hidden" id="txt-beneficiary-primary-id" value="0" />
+                            <div id="div-show-txt-beneficiary-primary-id">
+                                <div class="row col-sm-12">
+                                    @include('tf-bi-portal::pages.beneficiaries.show_fields')
+                                </div>
+                            </div>
+                            <div id="div-edit-txt-beneficiary-primary-id">
+                                <div class="row col-sm-12">
+                                    @include('tf-bi-portal::pages.beneficiaries.fields')
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        
+            <div class="modal-footer" id="div-save-mdl-beneficiary-modal">
+                <button type="button" class="btn btn-primary" id="btn-save-mdl-beneficiary-modal" value="add">
+                    <div id="spinner-beneficiaries" style="color: white;">
+                        <div class="spinner-border" style="width: 1rem; height: 1rem;" role="status">
+                        </div>
+                        <span class="">Loading...</span><hr>
+                    </div>
+                    Save Beneficiary
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 
 
@@ -64,11 +114,11 @@ $(document).ready(function() {
                             });
                             location.reload(true);
                         }else{
-                            console.log(result)
+                          //  console.log(result)
                             swal("Error", "Oops an error occurred. Please try again.", "error");
                         }
                     }, error: function(data){
-                        console.log(data);
+                       //console.log(data);
                         swal("Error", "Oops an error occurred. Please try again.", "error");
                     },
                 });
@@ -155,21 +205,22 @@ $(document).ready(function() {
         let itemId = $(this).attr('data-val');
 
         $.get( "{{ route('tf-bi-portal-api.beneficiaries.show','') }}/"+itemId).done(function( response ) {     
-
+           
 			$('#txt-beneficiary-primary-id').val(response.data.id);
-            		$('#email').val(response.data.email);
-		$('#full_name').val(response.data.full_name);
-		$('#short_name').val(response.data.short_name);
-		$('#official_email').val(response.data.official_email);
-		$('#official_website').val(response.data.official_website);
-		$('#official_phone').val(response.data.official_phone);
-		$('#address_street').val(response.data.address_street);
-		$('#address_town').val(response.data.address_town);
-		$('#address_state').val(response.data.address_state);
-		$('#head_of_institution_title').val(response.data.head_of_institution_title);
-		$('#geo_zone').val(response.data.geo_zone);
-		$('#owner_agency_type').val(response.data.owner_agency_type);
-		$('#tf_iterum_portal_beneficiary_status').val(response.data.tf_iterum_portal_beneficiary_status);
+            		$('#bi_email').val(response.data.email);
+		$('#bi_full_name').val(response.data.full_name);
+		$('#bi_short_name').val(response.data.short_name);
+		$('#bi_official_email').val(response.data.official_email);
+		$('#bi_official_website').val(response.data.official_website);
+		$('#bi_type').val(response.data.type);
+		$('#bi_official_phone').val(response.data.official_phone);
+		$('#bi_address_street').val(response.data.address_street);
+		$('#bi_address_town').val(response.data.address_town);
+		$('#bi_address_state').val(response.data.address_state.toLowerCase());
+		$('#bi_head_of_institution_title').val(response.data.head_of_institution_title);
+		$('#bi_geo_zone').val(response.data.geo_zone.toLowerCase());
+		$('#bi_owner_agency_type').val(response.data.owner_agency_type);
+		$('#bi_tf_iterum_portal_beneficiary_status').val(response.data.tf_iterum_portal_beneficiary_status);
 
 
             $("#spinner-beneficiaries").hide();
@@ -220,7 +271,7 @@ $(document).ready(function() {
                         dataType: 'json',
                         success: function(result){
                             if(result.errors){
-                                console.log(result.errors)
+                             //   console.log(result.errors)
                                 swal("Error", "Oops an error occurred. Please try again.", "error");
                             }else{
                                 swal({
@@ -276,19 +327,20 @@ $(document).ready(function() {
             formData.append('organization_id', '{{$organization->id}}');
         @endif
         // formData.append('', $('#').val());
-        		if ($('#email').length){	formData.append('email',$('#email').val());	}
-		if ($('#full_name').length){	formData.append('full_name',$('#full_name').val());	}
-		if ($('#short_name').length){	formData.append('short_name',$('#short_name').val());	}
-		if ($('#official_email').length){	formData.append('official_email',$('#official_email').val());	}
-		if ($('#official_website').length){	formData.append('official_website',$('#official_website').val());	}
-		if ($('#official_phone').length){	formData.append('official_phone',$('#official_phone').val());	}
-		if ($('#address_street').length){	formData.append('address_street',$('#address_street').val());	}
-		if ($('#address_town').length){	formData.append('address_town',$('#address_town').val());	}
-		if ($('#address_state').length){	formData.append('address_state',$('#address_state').val());	}
-		if ($('#head_of_institution_title').length){	formData.append('head_of_institution_title',$('#head_of_institution_title').val());	}
-		if ($('#geo_zone').length){	formData.append('geo_zone',$('#geo_zone').val());	}
-		if ($('#owner_agency_type').length){	formData.append('owner_agency_type',$('#owner_agency_type').val());	}
-		if ($('#tf_iterum_portal_beneficiary_status').length){	formData.append('tf_iterum_portal_beneficiary_status',$('#tf_iterum_portal_beneficiary_status').val());	}
+        		if ($('#bi_email').length){	formData.append('email',$('#bi_email').val());	}
+		if ($('#bi_full_name').length){	formData.append('full_name',$('#bi_full_name').val());	}
+		if ($('#bi_short_name').length){	formData.append('short_name',$('#bi_short_name').val());	}
+		if ($('#bi_official_email').length){	formData.append('official_email',$('#bi_official_email').val());	}
+        if ($('#bi_official_email').length){	formData.append('type',$('#bi_type').val());	}
+		if ($('#bi_official_website').length){	formData.append('official_website',$('#bi_official_website').val());	}
+		if ($('#bi_official_phone').length){	formData.append('official_phone',$('#bi_official_phone').val());	}
+		if ($('#bi_address_street').length){	formData.append('address_street',$('#bi_address_street').val());	}
+		if ($('#bi_address_town').length){	formData.append('address_town',$('#bi_address_town').val());	}
+		if ($('#bi_address_state').length){	formData.append('address_state',$('#bi_address_state').val());	}
+		if ($('#bi_head_of_institution_title').length){	formData.append('head_of_institution_title',$('#bi_head_of_institution_title').val());	}
+		if ($('#bi_geo_zone').length){	formData.append('geo_zone',$('#bi_geo_zone').val());	}
+		if ($('#bi_owner_agency_type').length){	formData.append('owner_agency_type',$('#bi_owner_agency_type').val());	}
+		//if ($('#bi_tf_iterum_portal_beneficiary_status').length){	formData.append('tf_iterum_portal_beneficiary_status',$('#tf_iterum_portal_beneficiary_status').val());	}
 
 
         $.ajax({
@@ -328,7 +380,7 @@ $(document).ready(function() {
                 $("#div-save-mdl-beneficiary-modal").attr('disabled', false);
                 
             }, error: function(data){
-                console.log(data);
+              //  console.log(data);
                 swal("Error", "Oops an error occurred. Please try again.", "error");
 
                 $("#spinner-beneficiaries").hide();

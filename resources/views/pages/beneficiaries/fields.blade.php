@@ -1,7 +1,7 @@
 <!-- Full Name Field -->
 <div id="div-bi_full_name" class="col-md-12 form-group mt-3">
     <label for="bi_full_name" class="col-sm-12 col-form-label"><strong>Beneficiary Full Name</strong></label>
-    {!! Form::text('full_name', strtoupper($beneficiary->full_name), ['id'=>'bi_full_name', 'class' => 'form-control', 'disabled'=>'disabled']) !!}
+    {!! Form::text('full_name', null, ['id'=>'bi_full_name', 'class' => 'form-control']) !!}
 </div>
 
 <!-- Institution Type Field -->
@@ -9,40 +9,40 @@
     <label for="bi_type" class="col-sm-12 col-form-label"><strong>Institution Type</strong></label>
     <select class="form-select" id="bi_type" name="type" disabled='disabled'>
         <option value="">-- None Selected --</option>
-        <option value="university" {{ $beneficiary->type=='university'? 'selected':'' }}>University</option>
-        <option value="polytechnic" {{ $beneficiary->type=='polytechnic'? 'selected':'' }}>Polytechnic</option>
-        <option value="college" {{ $beneficiary->type=='college'? 'selected':'' }}>College</option>
+        <option value="university">University</option>
+        <option value="polytechnic">Polytechnic</option>
+        <option value="college">College</option>
     </select>
 </div>
 
 <!-- Email Field -->
 <div id="div-bi_email" class="col-md-4 form-group mt-3">
     <label for="bi_email" class="col-sm-12 col-form-label"><strong>Email</strong></label>
-    {!! Form::text('email', $beneficiary->email, ['id'=>'bi_email', 'class' => 'form-control']) !!}
+    {!! Form::text('email', '', ['id'=>'bi_email', 'class' => 'form-control']) !!}
 </div>
 
 <!-- Official Email Field -->
 <div id="div-bi_official_email" class="col-md-4 form-group mt-3">
     <label for="bi_official_email" class="col-sm-12 col-form-label"><strong>Official Email</strong></label>
-    {!! Form::text('official_email', $beneficiary->official_email, ['id'=>'bi_official_email', 'class' => 'form-control','maxlength' => 200, 'disabled'=>'disabled']) !!}
+    {!! Form::text('official_email', '', ['id'=>'bi_official_email', 'class' => 'form-control','maxlength' => 200, 'disabled'=>'disabled']) !!}
 </div>
 
 <!-- Short Name Field -->
 <div id="div-bi_short_name" class="col-md-4 form-group mt-3">
     <label for="bi_short_name" class="col-sm-12 col-form-label"><strong>Short Name</strong></label>
-    {!! Form::text('short_name', $beneficiary->short_name, ['id'=>'bi_short_name', 'class' => 'form-control']) !!}
+    {!! Form::text('short_name', '', ['id'=>'bi_short_name', 'class' => 'form-control']) !!}
 </div>
 
 <!-- Official Website Field -->
 <div id="div-bi_official_website" class="col-md-4 form-group mt-3">
     <label for="bi_official_website" class="col-sm-12 col-form-label"><strong>Official Website</strong></label>
-    {!! Form::text('official_website', $beneficiary->official_website, ['id'=>'bi_official_website', 'class' => 'form-control','maxlength' => 200]) !!}
+    {!! Form::text('official_website', '', ['id'=>'bi_official_website', 'class' => 'form-control','maxlength' => 200]) !!}
 </div>
 
 <!-- Official Phone Field -->
 <div id="div-bi_official_phone" class="col-md-4 form-group mt-3">
     <label for="bi_official_phone" class="col-sm-12 col-form-label"><strong>Official Phone</strong></label>
-    {!! Form::text('official_phone', $beneficiary->official_phone, ['id'=>'bi_official_phone', 'class' => 'form-control']) !!}
+    {!! Form::text('official_phone','', ['id'=>'bi_official_phone', 'class' => 'form-control']) !!}
 </div>
 
 <div class="col-sm-12 mt-5">
@@ -50,13 +50,13 @@
         <!-- Address Street Field -->
         <div id="div-bi_address_street" class="col-md-4 form-group mt-3">
             <label for="bi_address_street" class="col-sm-12 col-form-label"><strong>Address Street</strong></label>
-            {!! Form::text('address_street', $beneficiary->address_street, ['id'=>'bi_address_street', 'class' => 'form-control','maxlength' => 200]) !!}
+            {!! Form::text('address_street', '', ['id'=>'bi_address_street', 'class' => 'form-control','maxlength' => 200]) !!}
         </div>
 
         <!-- Address Town Field -->
         <div id="div-bi_address_town" class="col-md-4 form-group mt-3">
             <label for="bi_address_town" class="col-sm-12 col-form-label"><strong>Address Town</strong></label>
-            {!! Form::text('address_town', $beneficiary->address_town, ['id'=>'bi_address_town', 'class' => 'form-control','maxlength' => 200]) !!}
+            {!! Form::text('address_town', '', ['id'=>'bi_address_town', 'class' => 'form-control','maxlength' => 200]) !!}
         </div>
 
         <!-- Address State Field -->
@@ -66,7 +66,7 @@
                 <option value="">-- None Selected --</option>
                 @if(isset($states_list) && count($states_list) > 0)
                     @foreach($states_list as $state)
-                        <option value="{{strtolower($state)}}" {{$beneficiary->address_state==strtolower($state) ? 'selected':''}}>
+                        <option value="{{strtolower($state)}}">
                             {{ ucwords($state) }}
                         </option>
                     @endforeach
@@ -82,25 +82,25 @@
                 <option value="">
                     -- None Selected --
                 </option>
-                <option value="chancellor" {{$beneficiary->head_of_institution_title=='chancellor'?'selected':''}}>
+                <option value="chancellor">
                     Chancellor
                 </option>
-                <option value="vice chancellor" {{ $beneficiary->head_of_institution_title=='vice chancellor'? 'selected':'' }}>
+                <option value="vice chancellor">
                     Vice Chancellor
                 </option>
-                <option value="rector" {{ $beneficiary->head_of_institution_title=='rector'? 'selected':'' }}>
+                <option value="rector">
                     Rector
                 </option>
-                <option value="provost" {{ $beneficiary->head_of_institution_title=='provost'? 'selected':'' }}>
+                <option value="provost">
                     Provost
                 </option>
-                <option value="director" {{ $beneficiary->head_of_institution_title=='director'? 'selected':'' }}>
+                <option value="director">
                     Director
                 </option>
-                <option value="chairman" {{ $beneficiary->head_of_institution_title=='chairman'? 'selected':'' }}>
+                <option value="chairman">
                     Chairman
                 </option>
-                <option value="principal" {{ $beneficiary->head_of_institution_title=='principal'? 'selected':'' }}>
+                <option value="principal">
                     Principal
                 </option>
             </select>
@@ -113,7 +113,7 @@
                 <option value="">-- None Selected --</option>
                 @if(isset($geo_zone_list) && count($geo_zone_list) > 0)
                     @foreach($geo_zone_list as $geo_zone)
-                        <option value="{{strtolower($geo_zone)}}" {{$beneficiary->geo_zone==strtolower($geo_zone) ? 'selected':''}}>
+                        <option value="{{strtolower($geo_zone)}}">
                             {{ ucwords($geo_zone) }}
                         </option>
 
@@ -127,8 +127,8 @@
             <label for="bi_owner_agency_type" class="col-sm-12 col-form-label"><strong>Owner Agency Type</strong></label>
             <select class="form-select" id="bi_owner_agency_type" name="owner_agency_type">
                 <option value="">-- None Selected --</option>
-                <option value="federal" {{ $beneficiary->owner_agency_type=='federal'? 'selected':'' }}>Federal</option>
-                <option value="state" {{ $beneficiary->owner_agency_type=='state'? 'selected':'' }}>State</option>
+                <option value="federal">Federal</option>
+                <option value="state">State</option>
             </select>
         </div>
     </div>
