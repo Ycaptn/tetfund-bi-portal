@@ -152,7 +152,7 @@ Beneficiary Dashboard
                     </div>
                     <div class="accordion-item">
                         <h4 class="accordion-header" id="acc_ess">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc_ess_div" aria-expanded="false" aria-controls="acc_ess_div">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#app_ess_div" aria-expanded="false" aria-controls="app_ess_div">
                                 <b>
                                     <sup class="fa-layers-counter text-white bg-danger" style="background-color:white; border-radius: 20%;">
                                         &nbsp;{{ count($approved_submissions) }}&nbsp;
@@ -161,9 +161,9 @@ Beneficiary Dashboard
                                 Approved Submissions
                             </button>
                         </h4>
-                        <div id="acc_ess_div" class="accordion-collapse collapse" aria-labelledby="acc_ess_div" data-bs-parent="#acc_main" style="">
+                        <div id="app_ess_div" class="accordion-collapse collapse" aria-labelledby="app_ess_div" data-bs-parent="#acc_main" style="">
                             <div class="accordion-body">
-                                @include('tf-bi-portal::dashboard.partials.active_submissions')
+                                @include('tf-bi-portal::dashboard.partials.approved_submissions')
                             </div>
                         </div>
                     </div>

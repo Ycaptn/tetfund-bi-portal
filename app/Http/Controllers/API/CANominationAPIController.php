@@ -284,8 +284,8 @@ class CANominationAPIController extends AppBaseController
         if (isset($ca_amount_settings->country_nigeria->id) && isset($input['tf_iterum_portal_country_id'])) {
             
             // calculate the interval of days
-            $startDate = new DateTime($input['conference_start_date']);
-            $endDate = new DateTime($input['conference_end_date']);
+            $startDate = new \DateTime($input['conference_start_date']);
+            $endDate = new \DateTime($input['conference_end_date']);
             $interval = $endDate->diff($startDate);
             $days = intval($interval->days) + 1;
 
