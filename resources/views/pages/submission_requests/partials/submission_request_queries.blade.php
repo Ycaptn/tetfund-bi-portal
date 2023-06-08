@@ -116,7 +116,7 @@
 			$(document).ready(function() {
 				$('.offline-submission-clarification-response').hide();
 				let array_clarification_queries = '{!! json_encode($array_clarification_queries) !!}';
-				let array_clarification_queries_decoded = JSON.parse(array_clarification_queries.replace(/[\r\n]+/gm, ''));
+				let array_clarification_queries_decoded = JSON.parse(array_clarification_queries.replace(/['"\r\n]+/gm, ''));
 
 				// Show Modal to reply clarification query
 			    $(document).on('click', ".btn-show-submission-clarification-response", function(e) {
