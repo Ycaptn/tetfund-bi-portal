@@ -7,7 +7,7 @@ use Response;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-
+use App\Models\Beneficiary;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -190,6 +190,17 @@ class AuthController extends AppBaseController
             $user->update($user_data);
         } else {
             $user->create($user_data);
+        }
+        
+        $beneficiary = Beneficiary::where([
+            'tf_iterum_portal_key_id' => $request->beneficiary_id,
+        ])->first();
+
+        if(!empty($beneficiary)){
+           $member = \App\Models\BeneficiaryMember::firstOrNew(['beneficiary_user_id' => $user->id,'beneficiary_id' => $beneficiary->id]);
+           $member->organization_id = $org->id;
+           $member->beneficiary_tetfund_iterum_id = $beneficiary->tf_iterum_portal_key_id;
+           $member->save();
         }
         
         return $this->sendResponse($user_data, "User record successfully sync.");

@@ -31,6 +31,7 @@ $orgRoutes = function() {
                 Route::post('/password/reset', [App\Http\Controllers\API\AuthController::class, 'resetPassword']);
                 Route::get('/reset', [App\Http\Controllers\API\AuthController::class, 'reset']);
                 Route::get('/syn-user', [App\Http\Controllers\API\AuthController::class, 'sycUserRecord']);
+                Route::post('/sync-beneficiary', [App\Http\Controllers\API\BeneficiaryAPIController::class, 'syncTFPortalBeneficiary']);
                 Route::post('/logout', [App\Http\Controllers\API\AuthController::class, 'logout']);
 
                 Route::resource('beneficiaries', \App\Http\Controllers\API\BeneficiaryAPIController::class);
