@@ -48,6 +48,7 @@ $orgRoutes = function() {
                 Route::get('show_beneficiary_member/{id}', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'show_beneficiary_member'])->name('show_beneficiary_member');
                 Route::get('enable_disable_beneficiary_member/{id}', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'enable_disable_beneficiary_member'])->name('enable_disable_beneficiary_member');
                 Route::delete('delete_beneficiary_member/{id}', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'delete_beneficiary_member'])->name('delete_beneficiary_member');
+                Route::post('process_bulk_beneficiary_users_upload', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'processBulkBeneficiaryUsersUpload'])->name('process_bulk_beneficiary_users_upload');
                 
                 //submission_requests
                 Route::get('/submission_requests/ongoing-submission/{ongoing_type}', [\App\Http\Controllers\API\SubmissionRequestAPIController::class, 'ongoingSubmission'])->name('submission_requests.ongoing-submission');

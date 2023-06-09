@@ -18,6 +18,8 @@ use Hasob\FoundationCore\Traits\ApiResponder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\File;
 
 /**
  * Class BeneficiaryController
@@ -453,5 +455,85 @@ class BeneficiaryAPIController extends AppBaseController
         $beneficiary->save();
 
         return $this->sendResponse($beneficiary->toArray(), 'Beneficiary Synced Successfully');
+    }
+
+
+    public function processBulkBeneficiaryUsersUpload(Organization $org, Request $request) {
+        $validator = Validator::make($request->all(), [
+            'bulk_users_file' => 'required|file|mimes:csv,txt|max:2048',
+        ]);
+
+        $validator->setAttributeNames([
+            'bulk_users_file' => 'Bulk Users CSV',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 200);
+        }
+
+        $current_user = auth()->user();
+        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+        $beneficiary = optional($beneficiary_member)->beneficiary;
+        $file = $request->file('bulk_users_file');
+
+        $attachedFileName = strval(time()+1) . '.' . $request->bulk_users_file->getClientOriginalExtension();
+        $request->bulk_users_file->move(public_path('uploads'), $attachedFileName);
+        $path_to_file = public_path('uploads').'/'.$attachedFileName;
+
+        //Process each line
+        $loop = 1;
+        $errors = [];
+        $lines = file($path_to_file);
+        $newly_created_users = [];
+
+        if (count($lines) > 1) {
+            foreach ($lines as $line) {
+                
+                if ($loop > 1) {
+                    $data = explode(',', $line);
+                    if (count($data) == 7) {
+
+                        //new beneficiary staff payload
+                        $pay_load = [
+                            "email" => $this->sanitize_email_prefix($data['0']),
+                            "first_name" => ucwords($data['1']),
+                            "last_name" => ucwords($data['2']),
+                            "telephone" => is_numeric($data['3']) ? $data['3'] : null,
+                            'password' => $this->generateStrongPassword(),
+                            "gender" => in_array(strtolower($data['4']), ['male', 'female']) ? strtolower($data['4']) : null,
+                            'organization_id' => $org->id ?? null,
+                            'beneficiary_bi_id' => $beneficiary->id,
+                            'grade_level' => $data['5'],
+                            'member_type' => in_array(strtolower($data['6']), ['academic', 'non-academic']) ? $data['6'] : null,
+                            'beneficiary_tetfund_iterum_id' => $beneficiary->tf_iterum_portal_key_id,
+                            'user_roles_arr' => ['bi-staff'],
+                        ];
+
+                        // creating beneficiary staff user to DB and on BIMS
+                        if (!empty(User::where('email', $pay_load['email'])->first())) {
+                            continue;
+                        }
+
+                        $new_user_response = $this->create_new_bims_and_local_user($pay_load);
+
+                        if (isset($new_user_response['beneficiary_user_id']) && isset($new_user_response['beneficiary_user_email'])) {
+                            array_push($newly_created_users, $new_user_response['beneficiary_user_email']);
+                        }
+                    }
+                }
+                $loop++;
+            }
+        }else{
+            $errors[] = 'The uploaded csv file is empty';
+        }
+        
+        if (count($errors) > 0) {
+            return $this->sendError($this->array_flatten($errors), 'Errors processing file');
+        }
+
+        // Delete the bulk_users_file after processing
+        File::delete($path_to_file);
+
+        return $this->sendResponse($newly_created_users, 'Bulk upload completed successfully');
     }
 }

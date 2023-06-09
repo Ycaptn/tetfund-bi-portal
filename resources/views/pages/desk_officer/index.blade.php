@@ -39,9 +39,14 @@ Desk Officer
                         <strong>
                             Beneficiary User Accounts
                         </strong>
-                         <a title="Create New Beneficiary Member" class="btn btn-primary btn-sm pull-right btn-new-beneficiary-member" href="#">
-                            <span class="fa fa-plus"></span> <small>Add User</small>
-                        </a>
+                        <div class="pull-right">
+                            <a title="Create New Beneficiary Member" class="btn btn-primary btn-sm btn-new-beneficiary-member" href="#">
+                                <span class="fa fa-plus"></span> <small>Add User</small>
+                            </a>
+                            <a title="Create Many Beneficiary Members" class="btn btn-danger btn-sm" href="#" id="btn-bulk-new-beneficiary-members">
+                                <span class="fa fa-upload"></span> <small>Bulk Uploads</small>
+                            </a>
+                        </div>
                     </h6>
                     @include('tf-bi-portal::pages.desk_officer.edit_beneficiary_modal')
                     @include('tf-bi-portal::pages.beneficiaries.table')
