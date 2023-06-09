@@ -97,7 +97,7 @@
 <hr>
 
 <!-- Institution Field -->
-<div id="div-institution_id_select_tp" class="form-group mb-3 col-md-6 col-lg-4">
+{{-- <div id="div-institution_id_select_tp" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="institution_id_select_tp" class="col-sm-11 col-form-label">Institution:</label>
     <div class="col-sm-12">
         @php
@@ -115,6 +115,37 @@
                 @endforeach
             @endif
         </select>
+    </div>
+</div> --}}
+
+<!-- Institution FullName Field -->
+<div id="div-institution_name_tp" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="institution_name_tp" class="col-sm-11 col-form-label">Institution FullName:</label>
+    <div class="col-sm-12">
+        {!! Form::text('institution_name_tp', null, ['id'=>'institution_name_tp', 'class' => 'form-control','minlength' => 2,'maxlength' => 100, 'placeholder'=>'required field']) !!}
+    </div>
+</div>
+
+<!-- Institution State Field -->
+<div id="div-institution_state_tp" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="institution_state_tp" class="col-sm-11 col-form-label">Institution State:</label>
+    <div class="col-sm-12">
+        <select id="institution_state_tp" class="form-select">
+            <option value=''>-- None selected --</option>
+            @if(isset($nigerian_states))
+                @foreach($nigerian_states as $state)
+                    <option value='{{$state}}'> {{$state}} </option>
+                @endforeach
+            @endif
+        </select>
+    </div>
+</div>
+
+<!-- Institution Address Field -->
+<div id="div-institution_address_tp" class="form-group mb-3 col-md-6 col-lg-4">
+    <label for="institution_address_tp" class="col-sm-11 col-form-label">Institution Address:</label>
+    <div class="col-sm-12">
+        {!! Form::text('institution_address_tp', null, ['id'=>'institution_address_tp', 'class' => 'form-control','minlength' => 2,'maxlength' => 190, 'placeholder'=>'required field']) !!}
     </div>
 </div>
 

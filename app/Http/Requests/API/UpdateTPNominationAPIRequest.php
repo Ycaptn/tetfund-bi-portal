@@ -3,6 +3,7 @@ namespace App\Http\Requests\API;
 
 use App\Models\TPNomination;
 use App\Http\Requests\AppBaseFormRequest;
+use Hasob\FoundationCore\Controllers\BaseController;
 
 
 class UpdateTPNominationAPIRequest extends AppBaseFormRequest
@@ -32,7 +33,10 @@ class UpdateTPNominationAPIRequest extends AppBaseFormRequest
             'email' => 'required|email|max:190',
             'telephone' => 'required|digits:11',
             'beneficiary_institution_id' => 'required|exists:tf_bi_portal_beneficiaries,id',
-            'tf_iterum_portal_institution_id' => 'required|uuid',
+            // 'tf_iterum_portal_institution_id' => 'required|uuid',
+            'institution_name' => 'required|string|min:2|max:100',
+            'intitution_state' => "required|string|min:2|max:100|in:". implode(',', BaseController::statesList()),
+            'institution_address' => 'required|string|max:200',
             'nomination_request_id' => 'required|exists:tf_bi_nomination_requests,id',
             'user_id' => 'required|exists:fc_users,id',
             'gender' => "required|string|max:50|in:male,female",
@@ -72,6 +76,9 @@ class UpdateTPNominationAPIRequest extends AppBaseFormRequest
             'telephone' => 'Telephone',
             'beneficiary_institution_id' => 'Beneficiary Institution',
             'tf_iterum_portal_institution_id' => 'Institution',
+            'institution_name' => 'Institution FullName',
+            'intitution_state' => 'Institution State',
+            'institution_address' => 'Institution Address',
             'tf_iterum_portal_country_id' => 'Country',
             'gender' => 'Gender',
             'rank_gl_equivalent' => 'Rank or GL Equivalent',

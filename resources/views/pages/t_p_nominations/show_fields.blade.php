@@ -47,15 +47,47 @@
     </p>
 </div>
 
-<!-- Institution Field -->
+<!-- Institution FullName Field -->
 <div id="div_tPNomination_institution_name" class="col-sm-12 col-md-4 col-lg-3 mb-10">
     <p>
         <strong>
-            {!! Form::label('institution_id', 'Institution:', ['class'=>'control-label']) !!}
+            {!! Form::label('institution_name', 'Institution FullName:', ['class'=>'control-label']) !!}
         </strong><br>
         <span id="spn_tPNomination_institution_name">
-        @if (isset($tPNomination->institution_id) && empty($tPNomination->institution)==false)
-            {!! $tPNomination->institution->name !!}
+        @if (isset($tPNomination->institution_name) && empty($tPNomination->institution_name)==false)
+            {!! $tPNomination->institution_name !!}
+        @else
+            N/A
+        @endif
+        </span>
+    </p>
+</div>
+
+<!-- Institution State Field -->
+<div id="div_tPNomination_institution_state" class="col-sm-12 col-md-4 col-lg-3 mb-10">
+    <p>
+        <strong>
+            {!! Form::label('institution_state', 'Institution State:', ['class'=>'control-label']) !!}
+        </strong><br>
+        <span id="spn_tPNomination_institution_state">
+        @if (isset($tPNomination->intitution_state) && empty($tPNomination->intitution_state)==false)
+            {!! $tPNomination->intitution_state !!}
+        @else
+            N/A
+        @endif
+        </span>
+    </p>
+</div>
+
+<!-- Institution Address Field -->
+<div id="div_tPNomination_institution_address" class="col-sm-12 col-md-4 col-lg-3 mb-10">
+    <p>
+        <strong>
+            {!! Form::label('institution_address', 'Institution Address:', ['class'=>'control-label']) !!}
+        </strong><br>
+        <span id="spn_tPNomination_institution_address">
+        @if (isset($tPNomination->institution_address) && empty($tPNomination->institution_address)==false)
+            {!! $tPNomination->institution_address !!}
         @else
             N/A
         @endif
