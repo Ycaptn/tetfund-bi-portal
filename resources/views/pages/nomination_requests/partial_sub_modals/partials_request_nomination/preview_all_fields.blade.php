@@ -304,51 +304,23 @@
     </div>
 
     <div class="col-sm-12 col-md-4 mb-3">
-        <label class="col-sm-12"><b>Bank Account Name:</b></label>
-        <div class="col-sm-12 ">
-            <i id="bank_account_name_data_tsas"></i>
-        </div>
-    </div>
-
-    <div class="col-sm-12 col-md-4 mb-3">
-        <label class="col-sm-12"><b>Bank Account Number:</b></label>
-        <div class="col-sm-12 ">
-            <i id="bank_account_number_data_tsas"></i>
-        </div>
-    </div>
-
-    <div class="col-sm-12 col-md-4 mb-3">
-        <label class="col-sm-12"><b>Bank Name:</b></label>
-        <div class="col-sm-12 ">
-            <i id="bank_name_data_tsas"></i>
-        </div>
-    </div>
-
-    <div class="col-sm-12 col-md-4 mb-3">
-        <label class="col-sm-12"><b>Bank Sort Code:</b></label>
-        <div class="col-sm-12 ">
-            <i id="bank_sort_code_data_tsas"></i>
-        </div>
-    </div>
-
-    <div class="col-sm-12 col-md-4 mb-3">
         <label class="col-sm-12"><b>Intl Passport Number:</b></label>
         <div class="col-sm-12 ">
             <i id="intl_passport_number_data_tsas"></i>
         </div>
     </div>
-
-    <div class="col-sm-12 col-md-4 mb-3">
-        <label class="col-sm-12"><b>Bank Verification Number:</b></label>
-        <div class="col-sm-12 ">
-            <i id="bank_verification_number_data_tsas"></i>
-        </div>
-    </div>
-
+    
     <div class="col-sm-12 col-md-4 mb-3">
         <label class="col-sm-12"><b>National ID Number:</b></label>
         <div class="col-sm-12 ">
             <i id="national_id_number_data_tsas"></i>
+        </div>
+    </div>
+    
+    <div class="col-sm-12 col-md-4 mb-3">
+        <label class="col-sm-12"><b>Institution FullName:</b></label>
+        <div class="col-sm-12 ">
+            <i id="institution_name_data_tsas"></i>
         </div>
     </div>
 
@@ -384,6 +356,41 @@
         <label class="col-sm-12"><b>Program End Date:</b></label>
         <div class="col-sm-12 ">
             <i id="program_end_date_data_tsas"></i>
+        </div>
+    </div>
+
+     <div class="col-sm-12 col-md-4 mb-3">
+        <label class="col-sm-12"><b>Bank Account Name:</b></label>
+        <div class="col-sm-12 ">
+            <i id="bank_account_name_data_tsas"></i>
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-4 mb-3">
+        <label class="col-sm-12"><b>Bank Account Number:</b></label>
+        <div class="col-sm-12 ">
+            <i id="bank_account_number_data_tsas"></i>
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-4 mb-3">
+        <label class="col-sm-12"><b>Bank Name:</b></label>
+        <div class="col-sm-12 ">
+            <i id="bank_name_data_tsas"></i>
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-4 mb-3">
+        <label class="col-sm-12"><b>Bank Sort Code:</b></label>
+        <div class="col-sm-12 ">
+            <i id="bank_sort_code_data_tsas"></i>
+        </div>
+    </div>
+    
+    <div class="col-sm-12 col-md-4 mb-3">
+        <label class="col-sm-12"><b>Bank Verification Number:</b></label>
+        <div class="col-sm-12 ">
+            <i id="bank_verification_number_data_tsas"></i>
         </div>
     </div>
 </div>

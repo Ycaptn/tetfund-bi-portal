@@ -509,11 +509,16 @@ class BeneficiaryAPIController extends AppBaseController
                             'user_roles_arr' => ['bi-staff'],
                         ];
 
-                        // creating beneficiary staff user to DB and on BIMS
-                        if (!empty(User::where('email', $pay_load['email'])->first())) {
-                            continue;
+
+                        $validator = Validator::make(['email' => $pay_load['email']], [
+                            'email' => 'required|email',
+                        ]);
+
+                        if (!empty(User::where('email', $pay_load['email'])->first()) || $validator->fails()) {
+                            continue;                        
                         }
 
+                        // creating beneficiary staff user to DB and on BIMS
                         $new_user_response = $this->create_new_bims_and_local_user($pay_load);
 
                         if (isset($new_user_response['beneficiary_user_id']) && isset($new_user_response['beneficiary_user_email'])) {

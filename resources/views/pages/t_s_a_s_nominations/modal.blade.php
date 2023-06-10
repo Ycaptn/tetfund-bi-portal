@@ -24,10 +24,8 @@
 
                             <input type="hidden" id="txt-tSASNomination-primary-id" value="0" />
                             <div id="div-show-txt-tSASNomination-primary-id">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        @include('tf-bi-portal::pages.t_s_a_s_nominations.show_fields')
-                                    </div>
+                                <div class="row col-sm-12">
+                                    @include('tf-bi-portal::pages.t_s_a_s_nominations.show_fields')
                                 </div>
                             </div>
                             <div id="div-edit-txt-tSASNomination-primary-id">
@@ -141,7 +139,8 @@ $(document).ready(function() {
         let itemId = $(this).attr('data-val');
 
         $.get( "{{ route('tf-bi-portal-api.t_s_a_s_nominations.show','') }}/"+itemId).done(function( response ) {
-			
+			console.log(response.data);
+
 			$('#txt-tSASNomination-primary-id').val(response.data.id);
             $('#spn_tSASNomination_email').html(response.data.email);
     		$('#spn_tSASNomination_telephone').html(response.data.telephone);
@@ -168,7 +167,7 @@ $(document).ready(function() {
     		$('#spn_tSASNomination_total_requested_amount').html(response.data.total_requested_amount);
     		$('#spn_tSASNomination_total_approved_amount').html(response.data.total_approved_amount);
             $('#spn_tSASNomination_beneficiary_institution_name').html(response.data.beneficiary.full_name);
-            $('#spn_tSASNomination_institution_name').html(response.data.institution.name); 
+            $('#spn_tSASNomination_institution_name').html(response.data.institution_name); 
             $('#spn_tSASNomination_country_name').html(response.data.country.name + ' (' + response.data.country.country_code + ')');
 
             $("#spinner-t_s_a_s_nominations").hide();
@@ -211,6 +210,7 @@ $(document).ready(function() {
     		$('#bank_name_tsas').val(response.data.bank_name);
     		$('#bank_sort_code_tsas').val(response.data.bank_sort_code);
     		$('#intl_passport_number_tsas').val(response.data.intl_passport_number);
+            $('#institution_name_tsas').val(response.data.institution_name);
             
             if (response.data.intl_passport_number.length > 0) {
                 $('#div-intl_passport_number_tsas').show();
@@ -228,24 +228,26 @@ $(document).ready(function() {
             $('#is_science_program_tsas').val(response.data.is_science_program ? '1' : '0');
             $('#div-international_passport_bio_page_tsas').show();
 
-            var program_start_date_tsas = new Date(response.data.program_start_date).toISOString().slice(0, 10);
-            $('#program_start_date_tsas').val(program_start_date_tsas);
+            let program_start_date = new Date(response.data.program_start_date);
+            let local_program_start_date = new Date(program_start_date.getTime() - (program_start_date.getTimezoneOffset() * 60000)).toISOString().slice(0, 10);
 
-            var program_end_date_tsas = new Date(response.data.program_end_date).toISOString().slice(0, 10);
-            $('#program_end_date_tsas').val(program_end_date_tsas);
+            let program_end_date = new Date(response.data.program_end_date);
+            let local_program_end_date = new Date(program_end_date.getTime() - (program_end_date.getTimezoneOffset() * 60000)).toISOString().slice(0, 10);
 
+            $('#program_start_date_tsas').val(local_program_start_date);
+            $('#program_end_date_tsas').val(local_program_end_date);
             $('#country_id_select_tsas option[value="' + response.data.tf_iterum_portal_country_id + '"]').prop('selected', 'selected');
             
-            let institutions_filtered = "<option value=''>-- None selected --</option>";
-            $.each(JSON.parse(institutions), function(key, institution) {
-                if (institution.country_id == response.data.tf_iterum_portal_country_id && response.data.tf_iterum_portal_institution_id == institution.id) {
-                    institutions_filtered += "<option selected='selected' value='"+ institution.id +"'>"+ institution.name +"</option>";
-                } else if (institution.country_id == response.data.tf_iterum_portal_country_id) {
-                    institutions_filtered += "<option value='"+ institution.id +"'>"+ institution.name +"</option>";
-                }
-            });
+            // let institutions_filtered = "<option value=''>-- None selected --</option>";
+            // $.each(JSON.parse(institutions), function(key, institution) {
+            //     if (institution.country_id == response.data.tf_iterum_portal_country_id && response.data.tf_iterum_portal_institution_id == institution.id) {
+            //         institutions_filtered += "<option selected='selected' value='"+ institution.id +"'>"+ institution.name +"</option>";
+            //     } else if (institution.country_id == response.data.tf_iterum_portal_country_id) {
+            //         institutions_filtered += "<option value='"+ institution.id +"'>"+ institution.name +"</option>";
+            //     }
+            // });
 
-            $('#institution_id_select_tsas').html(institutions_filtered);
+            // $('#institution_id_select_tsas').html(institutions_filtered);
             
             $("#spinner-t_s_a_s_nominations").hide();
             $("#div-save-mdl-tSASNomination-modal").show();

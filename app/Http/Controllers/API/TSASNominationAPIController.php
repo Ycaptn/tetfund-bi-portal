@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Models\Beneficiary;
 use App\Models\TSASNomination;
 use App\Models\NominationRequest;
 
@@ -164,13 +165,12 @@ class TSASNominationAPIController extends AppBaseController
 
         /*class constructor to fetch institution*/
         $tetFundServer = new TETFundServer();
-        $url_path ="tetfund-astd-api/institutions/".$tSASNomination->tf_iterum_portal_institution_id;
-        $payload = ['_method'=>'GET', 'id'=>$tSASNomination->tf_iterum_portal_institution_id];
-        $institution = $tetFundServer->get_row_records_from_server($url_path, $payload);
+        $url_path ="tetfund-astd-api/countries/".$tSASNomination->tf_iterum_portal_country_id;
+        $payload = ['_method'=>'GET', 'id'=>$tSASNomination->tf_iterum_portal_country_id];
+        $country = $tetFundServer->get_row_records_from_server($url_path, $payload);
 
         $tSASNomination->beneficiary = ($tSASNomination->beneficiary_institution_id != null) ? $tSASNomination->beneficiary : [];
-        $tSASNomination->institution = ($institution != null) ? $institution : null;
-        $tSASNomination->country = optional($institution)->country;
+        $tSASNomination->country = $country;
         $tSASNomination->user = ($tSASNomination->user_id != null) ? $tSASNomination->user : [];
 
         return $this->sendResponse($tSASNomination->toArray(), 'T S A S Nomination retrieved successfully');
@@ -320,60 +320,61 @@ class TSASNominationAPIController extends AppBaseController
         $tsas_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/tsas_country_zones/'.$input['tf_iterum_portal_country_id'], $pay_load);
 
         if (!empty($tsas_amount_settings) && isset($input['degree_type'])) {
+            $exchange_rate_to_naira = $tsas_amount_settings->tsas_country->exchange_rate_to_naira ?? 1;
 
             if ($input['degree_type'] == 'Ph.D') {
 
                 // setting amount if TSAS is Ph.D request
-                $input['tuition_amount'] = floatval($tsas_amount_settings->phd_tuition_amt ?? 0);
-                $input['stipend_amount'] = floatval($tsas_amount_settings->phd_stipend_amt ?? 0);
-                $input['passage_amount'] = floatval($tsas_amount_settings->phd_passage_amt ?? 0);
-                $input['medical_amount'] = floatval($tsas_amount_settings->phd_medical_health_ins_amt ?? 0);
-                $input['warm_clothing_amount'] = floatval($tsas_amount_settings->phd_warm_clothing_amt ?? 0);
-                $input['study_tours_amount'] = floatval($tsas_amount_settings->phd_study_tour_conference_amt ?? 0);
-                $input['education_materials_amount'] = floatval($tsas_amount_settings->phd_educational_material_amt ?? 0);
-                $input['thesis_research_amount'] = floatval($tsas_amount_settings->phd_research_disertation_amt ?? 0);
+                $input['tuition_amount'] = floatval($tsas_amount_settings->phd_tuition_amt ?? 0) * $exchange_rate_to_naira;
+                $input['stipend_amount'] = floatval($tsas_amount_settings->phd_stipend_amt ?? 0) * $exchange_rate_to_naira;
+                $input['passage_amount'] = floatval($tsas_amount_settings->phd_passage_amt ?? 0) * $exchange_rate_to_naira;
+                $input['medical_amount'] = floatval($tsas_amount_settings->phd_medical_health_ins_amt ?? 0) * $exchange_rate_to_naira;
+                $input['warm_clothing_amount'] = floatval($tsas_amount_settings->phd_warm_clothing_amt ?? 0) * $exchange_rate_to_naira;
+                $input['study_tours_amount'] = floatval($tsas_amount_settings->phd_study_tour_conference_amt ?? 0) * $exchange_rate_to_naira;
+                $input['education_materials_amount'] = floatval($tsas_amount_settings->phd_educational_material_amt ?? 0) * $exchange_rate_to_naira;
+                $input['thesis_research_amount'] = floatval($tsas_amount_settings->phd_research_disertation_amt ?? 0) * $exchange_rate_to_naira;
           
                 $input['total_requested_amount'] = $input['tuition_amount'] + $input['stipend_amount'] + $input['passage_amount'] + $input['medical_amount'] + $input['warm_clothing_amount'] + $input['study_tours_amount'] + $input['education_materials_amount'] + $input['thesis_research_amount'];
 
             } elseif($input['degree_type'] == 'M.Sc') {
 
                 // setting amount if TSAS is M.Sc request
-                $input['tuition_amount'] = floatval($tsas_amount_settings->masters_tuition_amt ?? 0);
-                $input['stipend_amount'] = floatval($tsas_amount_settings->masters_stipend_amt ?? 0);
-                $input['passage_amount'] = floatval($tsas_amount_settings->masters_passage_amt ?? 0);
-                $input['medical_amount'] = floatval($tsas_amount_settings->masters_medical_health_ins_amt ?? 0);
-                $input['warm_clothing_amount'] = floatval($tsas_amount_settings->masters_warm_clothing_amt ?? 0);
-                $input['study_tours_amount'] = floatval($tsas_amount_settings->masters_study_tour_conference_amt ?? 0);
-                $input['education_materials_amount'] = floatval($tsas_amount_settings->masters_educational_material_amt ?? 0);
-                $input['thesis_research_amount'] = floatval($tsas_amount_settings->masters_research_disertation_amt ?? 0);
+                $input['tuition_amount'] = floatval($tsas_amount_settings->masters_tuition_amt ?? 0) * $exchange_rate_to_naira;
+                $input['stipend_amount'] = floatval($tsas_amount_settings->masters_stipend_amt ?? 0) * $exchange_rate_to_naira;
+                $input['passage_amount'] = floatval($tsas_amount_settings->masters_passage_amt ?? 0) * $exchange_rate_to_naira;
+                $input['medical_amount'] = floatval($tsas_amount_settings->masters_medical_health_ins_amt ?? 0) * $exchange_rate_to_naira;
+                $input['warm_clothing_amount'] = floatval($tsas_amount_settings->masters_warm_clothing_amt ?? 0) * $exchange_rate_to_naira;
+                $input['study_tours_amount'] = floatval($tsas_amount_settings->masters_study_tour_conference_amt ?? 0) * $exchange_rate_to_naira;
+                $input['education_materials_amount'] = floatval($tsas_amount_settings->masters_educational_material_amt ?? 0) * $exchange_rate_to_naira;
+                $input['thesis_research_amount'] = floatval($tsas_amount_settings->masters_research_disertation_amt ?? 0) * $exchange_rate_to_naira;
           
                 $input['total_requested_amount'] = $input['tuition_amount'] + $input['stipend_amount'] + $input['passage_amount'] + $input['medical_amount'] + $input['warm_clothing_amount'] + $input['study_tours_amount'] + $input['education_materials_amount'] + $input['thesis_research_amount'];
 
             } elseif($input['degree_type'] == 'Bench-Work') {
 
                 // setting amount if TSAS is Bench-Work request
-                $input['tuition_amount'] = floatval($tsas_amount_settings->bw_tuition_amt ?? 0);
-                $input['stipend_amount'] = floatval($tsas_amount_settings->bw_stipend_amt ?? 0);
-                $input['passage_amount'] = floatval($tsas_amount_settings->bw_passage_amt ?? 0);
-                $input['medical_amount'] = floatval($tsas_amount_settings->bw_medical_health_ins_amt ?? 0);
-                $input['warm_clothing_amount'] = floatval($tsas_amount_settings->bw_warm_clothing_amt ?? 0);
-                $input['study_tours_amount'] = floatval($tsas_amount_settings->bw_study_tour_conference_amt ?? 0);
-                $input['education_materials_amount'] = floatval($tsas_amount_settings->bw_educational_material_amt ?? 0);
-                $input['thesis_research_amount'] = floatval($tsas_amount_settings->bw_research_disertation_amt ?? 0);
+                $input['tuition_amount'] = floatval($tsas_amount_settings->bw_tuition_amt ?? 0) * $exchange_rate_to_naira;
+                $input['stipend_amount'] = floatval($tsas_amount_settings->bw_stipend_amt ?? 0) * $exchange_rate_to_naira;
+                $input['passage_amount'] = floatval($tsas_amount_settings->bw_passage_amt ?? 0) * $exchange_rate_to_naira;
+                $input['medical_amount'] = floatval($tsas_amount_settings->bw_medical_health_ins_amt ?? 0) * $exchange_rate_to_naira;
+                $input['warm_clothing_amount'] = floatval($tsas_amount_settings->bw_warm_clothing_amt ?? 0) * $exchange_rate_to_naira;
+                $input['study_tours_amount'] = floatval($tsas_amount_settings->bw_study_tour_conference_amt ?? 0) * $exchange_rate_to_naira;
+                $input['education_materials_amount'] = floatval($tsas_amount_settings->bw_educational_material_amt ?? 0) * $exchange_rate_to_naira;
+                $input['thesis_research_amount'] = floatval($tsas_amount_settings->bw_research_disertation_amt ?? 0) * $exchange_rate_to_naira;
           
                 $input['total_requested_amount'] = $input['tuition_amount'] + $input['stipend_amount'] + $input['passage_amount'] + $input['medical_amount'] + $input['warm_clothing_amount'] + $input['study_tours_amount'] + $input['education_materials_amount'] + $input['thesis_research_amount'];
 
             } elseif($input['degree_type'] == 'Post-Doc') {
 
                 // setting amount if TSAS is Post-Doc request
-                $input['tuition_amount'] = floatval($tsas_amount_settings->postdoc_tuition_amt ?? 0);
-                $input['stipend_amount'] = floatval($tsas_amount_settings->postdoc_stipend_amt ?? 0);
-                $input['passage_amount'] = floatval($tsas_amount_settings->postdoc_passage_amt ?? 0);
-                $input['medical_amount'] = floatval($tsas_amount_settings->postdoc_medical_health_ins_amt ?? 0);
-                $input['warm_clothing_amount'] = floatval($tsas_amount_settings->postdoc_warm_clothing_amt ?? 0);
-                $input['study_tours_amount'] = floatval($tsas_amount_settings->postdoc_study_tour_conference_amt ?? 0);
-                $input['education_materials_amount'] = floatval($tsas_amount_settings->postdoc_educational_material_amt ?? 0);
-                $input['thesis_research_amount'] = floatval($tsas_amount_settings->postdoc_research_disertation_amt ?? 0);
+                $input['tuition_amount'] = floatval($tsas_amount_settings->postdoc_tuition_amt ?? 0) * $exchange_rate_to_naira;
+                $input['stipend_amount'] = floatval($tsas_amount_settings->postdoc_stipend_amt ?? 0) * $exchange_rate_to_naira;
+                $input['passage_amount'] = floatval($tsas_amount_settings->postdoc_passage_amt ?? 0) * $exchange_rate_to_naira;
+                $input['medical_amount'] = floatval($tsas_amount_settings->postdoc_medical_health_ins_amt ?? 0) * $exchange_rate_to_naira;
+                $input['warm_clothing_amount'] = floatval($tsas_amount_settings->postdoc_warm_clothing_amt ?? 0) * $exchange_rate_to_naira;
+                $input['study_tours_amount'] = floatval($tsas_amount_settings->postdoc_study_tour_conference_amt ?? 0) * $exchange_rate_to_naira;
+                $input['education_materials_amount'] = floatval($tsas_amount_settings->postdoc_educational_material_amt ?? 0) * $exchange_rate_to_naira;
+                $input['thesis_research_amount'] = floatval($tsas_amount_settings->postdoc_research_disertation_amt ?? 0) * $exchange_rate_to_naira;
           
                 $input['total_requested_amount'] = $input['tuition_amount'] + $input['stipend_amount'] + $input['passage_amount'] + $input['medical_amount'] + $input['warm_clothing_amount'] + $input['study_tours_amount'] + $input['education_materials_amount'] + $input['thesis_research_amount'];
             }

@@ -156,6 +156,7 @@ $(document).ready(function() {
             $('.offline-c_a_nominations').fadeOut(300);
         }
 
+        $('#prefix_info').text("Preview");
         $('#div-cANomination-modal-error').hide();
         $('#mdl-cANomination-modal').modal('show');
         $('#frm-cANomination-modal').trigger("reset");

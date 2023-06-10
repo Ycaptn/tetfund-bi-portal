@@ -434,19 +434,3 @@
     </p>
 </div>
 
-<!-- Total Approved Amount Field -->
-<div id="div_cANomination_total_approved_amount" class="col-sm-12 col-md-6 col-lg-3 mb-10">
-    <p>
-        <strong>
-            {!! Form::label('total_approved_amount', 'Total Approved Amount:', ['class'=>'control-label']) !!} 
-        </strong><br>        
-        <span id="spn_cANomination_total_approved_amount">
-        @if (isset($cANomination->total_approved_amount) && empty($cANomination->total_approved_amount)==false)
-            {!! $cANomination->total_approved_amount !!}
-        @else
-            N/A
-        @endif
-        </span>
-    </p>
-</div>
-
