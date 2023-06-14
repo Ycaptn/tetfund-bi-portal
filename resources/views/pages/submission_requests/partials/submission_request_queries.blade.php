@@ -111,14 +111,15 @@
 	    </table>
 	</div>
 	@php
-		$array_clarification_queries = preg_replace('/"([a-zA-Z]+[a-zA-Z0-9_]*)":/','$1:',$array_clarification_queries);
+		$array_clarification_queries_str = preg_replace('/\\\"/',"\"", json_encode($array_clarification_queries))
+		$array_clarification_queries_str = str_replace('\'', '\\\'', $array_clarification_queries_str);
 	@endphp
 	@push('page_scripts')
 		<script type="text/javascript">
 			$(document).ready(function() {
 				$('.offline-submission-clarification-response').hide();
 				
-				let array_clarification_queries = '{!! json_encode($array_clarification_queries) !!}';
+				let array_clarification_queries = "{{ $array_clarification_queries_str }}";
 				let array_clarification_queries_decoded = JSON.parse(array_clarification_queries.replace(/[\'\r\n]+/gm, ''));
 
 				// Show Modal to reply clarification query
