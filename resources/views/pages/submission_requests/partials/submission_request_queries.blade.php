@@ -111,7 +111,7 @@
 	    </table>
 	</div>
 	@php
-		$array_clarification_queries_str = str_replace('\'','\\\'',json_encode($array_clarification_queries));		
+		$array_clarification_queries_str = str_replace('\'','\\\'',json_encode($array_clarification_queries));	
 	@endphp
 	@push('page_scripts')
 		<script type="text/javascript">
