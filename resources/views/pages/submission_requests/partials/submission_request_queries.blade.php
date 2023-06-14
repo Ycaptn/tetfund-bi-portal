@@ -111,16 +111,15 @@
 	    </table>
 	</div>
 	@php
-		$array_clarification_queries_str = preg_replace('/\\\"/',"\"", json_encode($array_clarification_queries))
-		$array_clarification_queries_str = str_replace('\'', '\\\'', $array_clarification_queries_str);
+		$array_clarification_queries_str = str_replace('\'','\\\'',json_encode($array_clarification_queries));		
 	@endphp
 	@push('page_scripts')
 		<script type="text/javascript">
 			$(document).ready(function() {
 				$('.offline-submission-clarification-response').hide();
 				
-				let array_clarification_queries = "{{ $array_clarification_queries_str }}";
-				let array_clarification_queries_decoded = JSON.parse(array_clarification_queries.replace(/[\'\r\n]+/gm, ''));
+				let array_clarification_queries = '{!! $array_clarification_queries_str !!}';
+				let array_clarification_queries_decoded = JSON.parse(array_clarification_queries.replace(/[\r\n]+/gm, ''));
 
 				// Show Modal to reply clarification query
 			    $(document).on('click', ".btn-show-submission-clarification-response", function(e) {
