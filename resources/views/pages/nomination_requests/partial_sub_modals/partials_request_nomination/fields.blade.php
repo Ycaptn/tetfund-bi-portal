@@ -3,7 +3,7 @@
     <div class="col-sm-12 input-group">
         <select name="nomination_type" id="nomination_type" class="form-select">
         <option value="">Select type of Nomination</option> 
-            @if(isset($beneficiary->type) && strtolower($beneficiary->type)=='college')
+            @if(isset($beneficiary->type) && strtolower($beneficiary->type)=='college' && isset($beneficiary_member->member_type) && strtolower($beneficiary_member->member_type)=='academic')
                 <option value="tp">Teaching Practice &nbsp; (TP)</option> 
             @endif
             <option value="ca">Conference Attendance &nbsp; (CA)</option> 
@@ -15,7 +15,7 @@
     </div>
 </div>
 
-@if(isset($beneficiary->type) && strtolower($beneficiary->type)=='college')
+@if(isset($beneficiary->type) && strtolower($beneficiary->type)=='college' && isset($beneficiary_member->member_type) && strtolower($beneficiary_member->member_type)=='academic')
     <div class="row col-sm-12 form-group mb-3" id="tp_nomination_form" style="display: none;">
         <hr>
         @include('pages.t_p_nominations.fields')        
@@ -27,7 +27,9 @@
     @include('pages.c_a_nominations.fields')
 </div>
 
-<div class="row col-sm-12 form-group mb-3" id="tsas_nomination_form" style="display: none;">
-    <hr>
-    @include('pages.t_s_a_s_nominations.fields')
-</div>
+@if(isset($beneficiary_member->member_type) && strtolower($beneficiary_member->member_type)=='academic')
+    <div class="row col-sm-12 form-group mb-3" id="tsas_nomination_form" style="display: none;">
+        <hr>
+        @include('pages.t_s_a_s_nominations.fields')
+    </div>
+@endif

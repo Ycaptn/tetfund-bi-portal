@@ -492,19 +492,22 @@ class BeneficiaryAPIController extends AppBaseController
                 if ($loop > 1) {
                     $data = explode(',', $line);
                     if (count($data) == 7) {
+                        $data_3 = trim($data['3']);
+                        $data_4 = strtolower(trim($data['4']));
+                        $data_6 = strtolower(trim($data['6']));
 
                         //new beneficiary staff payload
                         $pay_load = [
-                            "email" => $this->sanitize_email_prefix($data['0']),
-                            "first_name" => ucwords($data['1']),
-                            "last_name" => ucwords($data['2']),
-                            "telephone" => is_numeric($data['3']) ? $data['3'] : null,
+                            "email" => $this->sanitize_email_prefix(trim($data['0'])),
+                            "first_name" => ucwords(trim($data['1'])),
+                            "last_name" => ucwords(trim($data['2'])),
+                            "telephone" => is_numeric($data_3) ? $data_3 : null,
                             'password' => $this->generateStrongPassword(),
-                            "gender" => in_array(strtolower($data['4']), ['male', 'female']) ? strtolower($data['4']) : null,
+                            "gender" => in_array($data_4, ['male', 'female']) ? $data_4 : null,
                             'organization_id' => $org->id ?? null,
                             'beneficiary_bi_id' => $beneficiary->id,
-                            'grade_level' => $data['5'],
-                            'member_type' => in_array(strtolower($data['6']), ['academic', 'non-academic']) ? $data['6'] : null,
+                            'grade_level' => trim($data['5']),
+                            'member_type' => in_array($data_6, ['academic', 'non-academic']) ? $data_6 : null,
                             'beneficiary_tetfund_iterum_id' => $beneficiary->tf_iterum_portal_key_id,
                             'user_roles_arr' => ['bi-staff'],
                         ];
