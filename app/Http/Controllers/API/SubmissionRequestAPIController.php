@@ -275,21 +275,46 @@ class SubmissionRequestAPIController extends AppBaseController
             'text_clarificarion_response' => $request->text_clarificarion_response
         ];
 
-        // handling monitoring request optional attachment
-        if ($request->hasFile('attachment_clarificarion_response')) {
-            $label = 'Clarification Response Optional Attachment';
-            $discription = 'This Document Contains the ' . $label;
 
-            // deleting old attachments if any
-            $attachments = $submissionRequest->get_specific_attachment($submissionRequest->id, $label);
-            if ($attachments != null) {
-                $submissionRequest->delete_attachment($attachments->label);
+        // handling array of file attachments
+        $attachments_container = [];
+        if($request->hasFile('attachments_clarification_response') && count($request->file('attachments_clarification_response')) > 0){
+            $attach_ct = 0;
+            foreach($request->file('attachments_clarification_response') as $file){
+                $label = 'Clarification Response Attachment No. '. ++$attach_ct;
+                $discription = 'This Document Contains the ' . $label;
+
+                // deleting old attachments if any
+                $attachments = $submissionRequest->get_specific_attachment($submissionRequest->id, $label);
+                if ($attachments != null) {
+                    $submissionRequest->delete_attachment($attachments->label);
+                }
+
+                $clarification_attachable = $submissionRequest->attach(auth()->user(), $label, $discription, $file);
+
+                $original_data = [];
+                $original_data['id'] = $clarification_attachable->attachment->id;
+                $original_data['uploader_user_id'] = $clarification_attachable->attachment->uploader_user_id;
+                $original_data['path'] = $clarification_attachable->attachment->path;
+                $original_data['path_type'] = $clarification_attachable->attachment->path_type;
+                $original_data['label'] = $clarification_attachable->attachment->label;
+                $original_data['description'] = $clarification_attachable->attachment->description;
+                $original_data['file_type'] = $clarification_attachable->attachment->file_type;
+                $original_data['file_number'] = $clarification_attachable->attachment->file_number;
+                $original_data['storage_driver'] = $clarification_attachable->attachment->storage_driver;
+                $original_data['allowed_viewer_user_ids'] = $clarification_attachable->attachment->allowed_viewer_user_ids;
+                $original_data['allowed_viewer_user_roles'] = $clarification_attachable->attachment->allowed_viewer_user_roles;
+                $original_data['allowed_viewer_user_departments'] = $clarification_attachable->attachment->allowed_viewer_user_departments;
+                $original_data['organization_id'] = $clarification_attachable->attachment->organization_id;
+                $original_data['deleted_at'] = $clarification_attachable->attachment->deleted_at;
+                $original_data['created_at'] = $clarification_attachable->attachment->created_at;
+                $original_data['updated_at'] = $clarification_attachable->attachment->updated_at;
+
+                array_push($attachments_container, $original_data);
             }
-
-            $clarification_attachable = $submissionRequest->attach(auth()->user(), $label, $discription, $request->attachment_clarificarion_response);
         }
 
-        $pay_load['attachment_clarificarion_response'] = $clarification_attachable->attachment ?? null;
+        $pay_load['attachments_clarification_response'] = $attachments_container;
 
         $tetFundServer = new TETFundServer();   /* server class constructor */
         $clarity_response_to_tetfund = $tetFundServer->processClarificationResponse($pay_load, $request->id);

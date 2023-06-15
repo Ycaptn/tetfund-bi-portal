@@ -90,7 +90,7 @@
                                                 </small>
                                                 
                                                 <small class="text-danger pull-right">
-                                                    You may select multiple files for upload where neccessary.<br>
+                                                    You may select multiple files for upload where neccessary by holding down <b>Ctrl key</b> then click to select the desired files to be uploaded.<br>
                                                     Each file must be a PDF document.
                                                 </small>
                                             </em>

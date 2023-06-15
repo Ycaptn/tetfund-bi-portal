@@ -41,11 +41,15 @@
                         	</div>
 
                         	<div class="form-group mb-3">
-                        		<label for="attachment_clarificarion_response" class="form-label">
-                        			<strong>Attachment (Optional)</strong>
+                        		<label for="attachments_clarification_response" class="form-label">
+                        			<strong>Attachments (Optional)</strong>
                         		</label>
-                        		<input type="file" id="attachment_clarificarion_response" class="form-control">
-                        		<small class="text-danger"><i>Max file Size 50M (Optional)</i></small>
+                        		<input multiple="multiple" type='file' class="form-control" name="attachments_clarification_response[]" id="attachments_clarification_response" />
+
+                        		<small class="text-danger"><i>
+                        			Max file Size 50M (Optional)<br>
+                        			You may select multiple files for upload where neccessary by holding down <b>Ctrl key</b> then click to select the desired files to be uploaded.
+                        		</i></small>
                         	</div>		                                  
 	                    </div>
 	                </form>
@@ -175,10 +179,13 @@
 					        formData.append('id', primaryId);
 					        formData.append('submission_request_id', '{{$submissionRequest->id}}');
 
-					        if ($('#text_clarificarion_response').length){ formData.append('text_clarificarion_response', $('#text_clarificarion_response').val()); }
-					        if($('#attachment_clarificarion_response').get(0).files.length != 0){
-								formData.append('attachment_clarificarion_response', $('#attachment_clarificarion_response')[0].files[0]);
-							}
+					        if ($('#text_clarificarion_response').length) {
+					        	formData.append('text_clarificarion_response', $('#text_clarificarion_response').val());
+					    	}
+
+					    	$.each($('#attachments_clarification_response')[0].files, function(i, file) {
+			                    formData.append('attachments_clarification_response[]', file);
+			                });
 
 					        $.ajax({
 					            url: "{{ route('tf-bi-portal-api.submission_requests.clarification_response') }}",
