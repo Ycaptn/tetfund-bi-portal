@@ -274,6 +274,7 @@ class SubmissionRequest extends Model
      public function monitoring_evaluation_interventions ($intervention_name) {
         $monitoring_evaluation_interventions = [
             'ict support',
+            'zonal intervention',
             'library development',
             'equipment fabrication',
             'advocacy and publicity',
