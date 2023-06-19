@@ -132,7 +132,7 @@ class SubmissionRequestController extends BaseController
         $intervention_types_server_response = $tetFundServer->get_all_data_list_from_server('tetfund-ben-mgt-api/interventions', $pay_load);
 
           $years = [];
-          for ($i=0; $i < 6; $i++) { 
+          for ($i=0; $i < 7; $i++) { 
               array_push($years, date("Y")-$i);
           }
 
