@@ -325,6 +325,13 @@
     </div>
 
     <div class="col-sm-12 col-md-4 mb-3">
+        <label class="col-sm-12"><b>Institution State:</b></label>
+        <div class="col-sm-12 ">
+            <i id="institution_state_data_tsas"></i>
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-4 mb-3">
         <label class="col-sm-12"><b>Degree Type:</b></label>
         <div class="col-sm-12 ">
             <i id="degree_type_data_tsas"></i>

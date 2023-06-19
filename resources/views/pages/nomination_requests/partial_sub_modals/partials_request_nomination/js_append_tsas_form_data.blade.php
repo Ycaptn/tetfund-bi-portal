@@ -12,6 +12,10 @@ if ($('#institution_name_tsas').length && $('#institution_name_tsas').val().trim
 	formData.append('institution_name',$('#institution_name_tsas').val());  
 }
 
+if ($('#institution_state_tsas').length && $('#institution_state_tsas').val().trim().length > 0) {
+	formData.append('intitution_state',$('#institution_state_tsas').val());
+}
+
 if ($('#gender_tsas').length && $('#gender_tsas').val().trim().length > 0){   formData.append('gender',$('#gender_tsas').val());   }
 
 if ($('#name_title_tsas').length && $('#name_title_tsas').val().trim().length > 0){	formData.append('name_title',$('#name_title_tsas').val());	}

@@ -50,6 +50,7 @@ if (nomination_type_lower_case == 'tp') {
 	$('#beneficiary_institution_id_select_data_tsas').text(response.data.nominee_beneficiary.full_name +' ('+ response.data.nominee_beneficiary.short_name +')');
 	$('#gender_data_tsas').text(response.data.nominee.gender);
 	$('#institution_name_data_tsas').text(response.data.nominee.institution_name);
+	$('#institution_state_data_tsas').text(response.data.nominee.intitution_state);
 	$('#bank_account_name_data_tsas').text(response.data.nominee.bank_account_name);
 	$('#bank_account_number_data_tsas').text(response.data.nominee.bank_account_number);
 	$('#bank_name_data_tsas').text(response.data.nominee.bank_name);
