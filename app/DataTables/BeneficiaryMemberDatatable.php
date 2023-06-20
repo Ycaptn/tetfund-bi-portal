@@ -128,7 +128,7 @@ class BeneficiaryMemberDatatable extends DataTable
             ['title'=>'Full Name','data'=>'full_name', 'name'=>'fc_users.first_name' ],
             ['title'=>'Email','data'=>'email', 'name'=>'fc_users.email' ],
             ['title'=>'Phone || Staff-Type || Grade-Level','data'=>'telephone', 'name'=>'fc_users.telephone' ],
-            Column::make('roles'),
+            ['title'=>'Roles','data'=>'roles', 'name'=>'tf_bi_beneficiary_members.member_type' ],
         ];
     }
 

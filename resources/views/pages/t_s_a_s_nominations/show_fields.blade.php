@@ -79,6 +79,22 @@
     </p>
 </div>
 
+<!-- Institution State Field -->
+<div id="div_tSASNomination_institution_state" class="col-sm-12 col-md-6 col-lg-3 mb-10">
+    <p>
+        <strong>
+            {!! Form::label('intitution_state', 'Institution State:', ['class'=>'control-label']) !!}
+        </strong><br>
+        <span id="spn_tSASNomination_institution_state">
+        @if (isset($tSASNomination->intitution_state) && empty($tSASNomination->intitution_state)==false)
+            {!! $tSASNomination->intitution_state !!}
+        @else
+            N/A
+        @endif
+        </span>
+    </p>
+</div>
+
 <!-- Gender Field -->
 <div id="div_tSASNomination_gender" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>

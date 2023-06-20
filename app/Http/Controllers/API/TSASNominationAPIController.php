@@ -320,7 +320,8 @@ class TSASNominationAPIController extends AppBaseController
         $tsas_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/tsas_country_zones/'.$input['tf_iterum_portal_country_id'], $pay_load);
 
         if (!empty($tsas_amount_settings) && isset($input['degree_type'])) {
-            $exchange_rate_to_naira = $tsas_amount_settings->tsas_country->exchange_rate_to_naira ?? 1;
+            $exchange_rate_to_naira = $tsas_amount_settings->dollar_exchange_rate_to_naira ?? 1;
+            // $exchange_rate_to_naira = $tsas_amount_settings->tsas_country->exchange_rate_to_naira ?? 1;
 
             if ($input['degree_type'] == 'Ph.D') {
 

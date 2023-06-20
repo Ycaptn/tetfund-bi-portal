@@ -20,6 +20,14 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
         return true;
     }
 
+   public function prepareForValidation() {
+        if ($this->tf_iterum_portal_country_id != $this->country_nigeria_id) {
+            $this->request->remove('conference_state');
+        } elseif ($this->tf_iterum_portal_country_id == $this->country_nigeria_id) {
+            $this->request->remove('intl_passport_number');   
+        }
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

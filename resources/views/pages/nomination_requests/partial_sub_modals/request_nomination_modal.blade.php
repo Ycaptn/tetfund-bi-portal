@@ -136,10 +136,13 @@ $(document).ready(function() {
         
         // actions if Nigeria is selected
         if (selected_country == country_nigeria_id || selected_country == '') {
+            $('#div-institution_state_tsas').show();
             $('#intl_passport_number_tsas').val('');
             $('#div-intl_passport_number_tsas').hide();
             $('#div-international_passport_bio_page_tsas').hide();
         } else {
+            $('#institution_state_tsas').val('');
+            $('#div-institution_state_tsas').hide();
             $('#div-intl_passport_number_tsas').show();
         }
 

@@ -71,10 +71,13 @@ $(document).ready(function() {
         
         // actions if Nigeria is selected
         if (selected_country == country_nigeria_id || selected_country == '') {
+            $('#div-institution_state_tsas').show();
             $('#intl_passport_number_tsas').val('');
             $('#div-intl_passport_number_tsas').hide();
             $('#div-international_passport_bio_page_tsas').hide();
         } else {
+            $('#institution_state_tsas').val('');
+            $('#div-institution_state_tsas').hide();
             $('#div-intl_passport_number_tsas').show();
         }
 
@@ -167,7 +170,8 @@ $(document).ready(function() {
     		$('#spn_tSASNomination_total_requested_amount').html(response.data.total_requested_amount);
     		$('#spn_tSASNomination_total_approved_amount').html(response.data.total_approved_amount);
             $('#spn_tSASNomination_beneficiary_institution_name').html(response.data.beneficiary.full_name);
-            $('#spn_tSASNomination_institution_name').html(response.data.institution_name); 
+            $('#spn_tSASNomination_institution_name').html(response.data.institution_name);
+            $('#spn_tSASNomination_institution_state').html(response.data.intitution_state);
             $('#spn_tSASNomination_country_name').html(response.data.country.name + ' (' + response.data.country.country_code + ')');
 
             $("#spinner-t_s_a_s_nominations").hide();
@@ -211,11 +215,15 @@ $(document).ready(function() {
     		$('#bank_sort_code_tsas').val(response.data.bank_sort_code);
     		$('#intl_passport_number_tsas').val(response.data.intl_passport_number);
             $('#institution_name_tsas').val(response.data.institution_name);
+            $('#institution_state_tsas').val(response.data.intitution_state);
             
-            if (response.data.intl_passport_number.length > 0) {
+            if (response.data.intl_passport_number!=null && response.data.intl_passport_number.length > 0) {
+                $('#institution_state_tsas').val('');
+                $('#div-institution_state_tsas').hide();
                 $('#div-intl_passport_number_tsas').show();
                 $('#div-international_passport_bio_page_tsas').show();
             } else {
+                $('#div-institution_state_tsas').show();
                 $('#intl_passport_number_tsas').val('');
                 $('#div-intl_passport_number_tsas').hide();
                 $('#div-international_passport_bio_page_tsas').hide();
@@ -226,7 +234,7 @@ $(document).ready(function() {
     		$('#degree_type_tsas').val(response.data.degree_type);
     		$('#program_title_tsas').val(response.data.program_title);
             $('#is_science_program_tsas').val(response.data.is_science_program ? '1' : '0');
-            $('#div-international_passport_bio_page_tsas').show();
+            // $('#div-international_passport_bio_page_tsas').show();
 
             let program_start_date = new Date(response.data.program_start_date);
             let local_program_start_date = new Date(program_start_date.getTime() - (program_start_date.getTimezoneOffset() * 60000)).toISOString().slice(0, 10);
@@ -373,6 +381,7 @@ $(document).ready(function() {
 		if ($('#telephone_tsas').length){	formData.append('telephone',$('#telephone_tsas').val());	}
 		if ($('#beneficiary_institution_id_select_tsas').length){	formData.append('beneficiary_institution_id',$('#beneficiary_institution_id_select_tsas').val());	}
         if ($('#institution_name_tsas').length){   formData.append('institution_name',$('#institution_name_tsas').val());   }
+        if ($('#institution_state_tsas').length){   formData.append('intitution_state',$('#institution_state_tsas').val());   }
         if ($('#country_id_select_tsas').length){   formData.append('tf_iterum_portal_country_id',$('#country_id_select_tsas').val());   }
         if ($('#gender_tsas').length){   formData.append('gender',$('#gender_tsas').val());   }
 		if ($('#name_title_tsas').length){	formData.append('name_title',$('#name_title_tsas').val());	}

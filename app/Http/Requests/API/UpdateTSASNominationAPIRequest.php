@@ -3,6 +3,7 @@ namespace App\Http\Requests\API;
 
 use App\Models\TSASNomination;
 use App\Http\Requests\AppBaseFormRequest;
+use Hasob\FoundationCore\Controllers\BaseController;
 
 
 class UpdateTSASNominationAPIRequest extends AppBaseFormRequest
@@ -15,6 +16,14 @@ class UpdateTSASNominationAPIRequest extends AppBaseFormRequest
     public function authorize()
     {
         return true;
+    }
+
+    public function prepareForValidation() {
+        if ($this->tf_iterum_portal_country_id != $this->country_nigeria_id) {
+            $this->request->remove('intitution_state');
+        } elseif ($this->tf_iterum_portal_country_id == $this->country_nigeria_id) {
+            $this->request->remove('intl_passport_number');   
+        }
     }
 
     /**
@@ -32,6 +41,7 @@ class UpdateTSASNominationAPIRequest extends AppBaseFormRequest
             'tf_iterum_portal_country_id' => 'required|uuid',
             // 'tf_iterum_portal_institution_id' => 'required|uuid',
             'institution_name' => 'required|string|max:200',
+            'intitution_state' => 'required_if:tf_iterum_portal_country_id,'. $this->country_nigeria_id .'|string|min:2|max:100|in:'. implode(',', BaseController::statesList()),
             'nomination_request_id' => 'required|exists:tf_bi_nomination_requests,id',
             'user_id' => 'required|exists:fc_users,id',
             'gender' => "required|string|max:50|in:male,female",
@@ -83,6 +93,7 @@ class UpdateTSASNominationAPIRequest extends AppBaseFormRequest
 
     public function messages() {
         return [
+            'intitution_state.required_if' => 'The :attribute field is required when selected Country is Nigeria.',
             'intl_passport_number.required_unless' => 'The :attribute field is required when the selected country isn\'t Nigeria.',
         ];
     }
@@ -94,6 +105,7 @@ class UpdateTSASNominationAPIRequest extends AppBaseFormRequest
             'beneficiary_institution_id' => 'Beneficiary Institution',
             'tf_iterum_portal_institution_id' => 'Institution',
             'institution_name' => 'Institution Name',
+            'intitution_state' => 'Institution State',
             'tf_iterum_portal_country_id' => 'Country',
             'gender' => 'Gender',
             //'name_title' => 'Name Title',

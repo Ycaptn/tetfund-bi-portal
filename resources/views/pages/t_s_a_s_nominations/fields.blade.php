@@ -7,6 +7,9 @@
     $email = (isset($nominationRequest->user->email) ? $nominationRequest->user->email : ($current_user->hasRole('BI-staff') ? $current_user->email : '') );
     $telephone = (isset($nominationRequest->user->telephone) ? $nominationRequest->user->telephone : ($current_user->hasRole('BI-staff') ? $current_user->telephone : '') );
     $gender = (isset($nominationRequest->user->gender) ? $nominationRequest->user->gender : ($current_user->hasRole('BI-staff') ? $current_user->gender : '') );
+    $attendee_member_type = isset($beneficiary_member->member_type) && in_array($beneficiary_member->member_type, ['academic', 'non-academic']) ? $beneficiary_member->member_type : '';
+    $attendee_member_type_flag = isset($beneficiary_member->member_type) && in_array($beneficiary_member->member_type, ['academic', 'non-academic']) ? ($beneficiary_member->member_type=='academic' ? '1' : '0') : '';
+    $attendee_grade_level = isset($beneficiary_member->grade_level) ? $beneficiary_member->grade_level : '';
 @endphp
 
 
@@ -19,7 +22,7 @@
             {!! Form::hidden('beneficiary_institution_id_select', $beneficiary->id ?? '', ['id'=>'beneficiary_institution_id_select_tsas', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
 
             <i class="beneficiary_institution_id_select">
-                {{$beneficiary->full_name ?? ''}}
+                - {{$beneficiary->full_name ?? ''}}
                 {{(isset($beneficiary->short_name) && !empty($beneficiary->short_name)) ? '('.strtoupper($beneficiary->short_name).')' : ''}}
             </i>
         </div>
@@ -38,21 +41,41 @@
             {!! Form::hidden('last_name_tsas', $last_name, ['id'=>'last_name_tsas', 'class'=>'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
 
             <i class="full_name">
-                {{$first_name}}
-                {{$middle_name}}
-                {{$last_name}}
+                - {{$first_name}} {{$middle_name}} {{$last_name}}
             </i>
         </div>
     </div>
 
     <div class="col-sm-12 col-md-4 col-lg-3 mb-3">
-        <label class="col-sm-12"><b>Email:</b></label>
+        <label class="col-sm-12"><b>Email/Gender:</b></label>
         <div class="col-sm-12 ">
             <!-- Email Field -->
             {!! Form::hidden('email_tsas', $email, ['id'=>'email_tsas', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
 
+            <!-- Gender Field -->
+            {!! Form::hidden('gender_tsas', $gender, ['id'=>'gender_tsas', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
+            
             <i class="email">
-                {{$email}}
+                - {{$email}} 
+            </i><br>
+            <i class="gender">
+                - {{ ucfirst($gender) }}                
+            </i>
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-4 col-lg-2 mb-3">
+        <label class="col-sm-12"><b>Type/Grade Level:</b></label>
+        <div class="col-sm-12 ">            
+            <!-- Attendee Member Level Field -->
+            {!! Form::hidden('is_academic_staff_tsas', $attendee_member_type_flag, ['id'=>'is_academic_staff_tsas', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
+            
+            <!-- Attendee Grade Level Field -->
+            {!! Form::hidden('rank_gl_equivalent_tsas', $attendee_grade_level, ['id'=>'rank_gl_equivalent_tsas', 'class'=>'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
+            
+            <i class="attendee_grade_level">
+               - {{ $attendee_member_type ? ucfirst($attendee_member_type). ' Staff' : ''}} <br>
+               - {{ $attendee_grade_level ? 'GL-'.ucfirst($attendee_grade_level) : ''}}
             </i>
         </div>
     </div>
@@ -64,19 +87,7 @@
             {!! Form::hidden('telephone_tsas', $telephone, ['id'=>'telephone_tsas', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
             
             <i class="telephone">
-                {{$telephone}}
-            </i>
-        </div>
-    </div>
-
-    <div class="col-sm-12 col-md-4 col-lg-2 mb-3">
-        <label class="col-sm-12"><b>Gender:</b></label>
-        <div class="col-sm-12 ">
-            <!-- Gender Field -->
-            {!! Form::hidden('gender_tsas', $gender, ['id'=>'gender_tsas', 'class'=>'form-control', 'disabled'=>'disabled']) !!}
-            
-            <i class="gender">
-                {{ ucfirst($gender) }}                
+               - {{$telephone}}
             </i>
         </div>
     </div>
@@ -117,21 +128,36 @@
     </div>
 </div>
 
-<!-- Name Title Field -->
-<div id="div-name_title_tsas" class="form-group col-md-4 col-lg-6">
-    {{-- <label for="name_title" class="col-sm-11 col-form-label">Name Title:</label> --}}
+<!-- Institution State Field -->
+<div id="div-institution_state_tsas" class="form-group mb-3 col-md-6 col-lg-4" style="display: none;">
+    <label for="institution_state_tsas" class="col-sm-11 col-form-label">Institution State:</label>
     <div class="col-sm-12">
-        {!! Form::hidden('name_title_tsas', null, ['id'=>'name_title_tsas', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
+        <select id="institution_state_tsas" class="form-select">
+            <option value=''>-- None selected --</option>
+            @if(isset($nigerian_states))
+                @foreach($nigerian_states as $state)
+                    <option value='{{$state}}'> {{$state}} </option>
+                @endforeach
+            @endif
+        </select>
     </div>
 </div>
 
+<!-- Name Title Field -->
+{{-- <div id="div-name_title_tsas" class="form-group col-md-4 col-lg-6">
+    <label for="name_title" class="col-sm-11 col-form-label">Name Title:</label>
+    <div class="col-sm-12"> --}}
+        {!! Form::hidden('name_title_tsas', null, ['id'=>'name_title_tsas', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
+{{--     </div>
+</div> --}}
+
 <!-- Name Suffix Field -->
-<div id="div-name_suffix_tsas" class="form-group col-md-4 col-lg-6">
-    {{-- <label for="name_suffix" class="col-sm-12 col-form-label">Name Suffix:</label> --}}
-    <div class="col-sm-12">
+{{-- <div id="div-name_suffix_tsas" class="form-group col-md-4 col-lg-6">
+    <label for="name_suffix" class="col-sm-12 col-form-label">Name Suffix:</label>
+    <div class="col-sm-12"> --}}
         {!! Form::hidden('name_suffix_tsas', null, ['id'=>'name_suffix_tsas', 'class' => 'form-control', 'placeholder'=>'optional field']) !!}
-    </div>
-</div>
+{{--     </div>
+</div> --}}
 
 <!-- Intl Passport Number Field -->
 <div id="div-intl_passport_number_tsas" class="form-group mb-3 col-md-6 col-lg-4" style="display: none;">

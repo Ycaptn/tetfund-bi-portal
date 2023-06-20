@@ -101,6 +101,7 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             'is_conference_workshop' => 'Is Conference More Like A Workshop',
             'tf_iterum_portal_country_id' => 'Country',
             'conference_title' => 'Conference Title',
+            'conference_state' => 'Conference State',
             'state_id' => 'State',
             'gender' => 'Gender',
             //'name_title' => 'Name Title',
