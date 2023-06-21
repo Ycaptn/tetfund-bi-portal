@@ -163,7 +163,7 @@ All T P Nomination
                     </div>
 
                     <div class="col-sm-3">
-                        @if($current_user->hasRole($tp_nomination_sent_to) && !isset(request()->view_type))
+                        @if($current_user->hasRole($tp_nomination_sent_to) && !isset(request()->view_type) && intval($count_array_returned['desk_officer_newly_submitted']) > 0)
                             {{-- appears to desk-officer to forward all tp nominations to committee --}}
                             <div class="col-sm-12">
                                 <a  class="btn btn-sm btn-danger pull-right move_all_for_consideration text-white"
@@ -175,7 +175,7 @@ All T P Nomination
                             </div>
                         @endif
 
-                        @if($current_user->hasRole($tp_committee_considered_sent_to) && isset(request()->view_type) && request()->view_type == 'committee_approved')
+                        @if($current_user->hasRole($tp_committee_considered_sent_to) && isset(request()->view_type) && request()->view_type == 'committee_approved' && intval($count_array_returned['desk_officer_committee_considered']) > 0)
                             {{-- appears for desk-officer to forward all tp nominations for approval --}}
                             <div class="col-sm-12">
                                 <a  class="btn btn-sm btn-danger pull-right move_all_for_approval text-white"
