@@ -716,7 +716,7 @@ class SubmissionRequestController extends BaseController
                     'years' => $years,
                     'checklist_items' => $checklist_items,
                     'astd_allocations_details' => $submission_allocations,
-                    'fund_available' => $submission_allocations->total_funds ?? $submission_allocations->total_available_fund ?? '',
+                    'fund_available' => $submission_allocations->total_funds ?? $submission_allocations->total_available_fund ?? 0,
                     'submission_allocations' => $submission_allocations->allocation_records ?? [],
                     'beneficiary' => $beneficiary, 
                     'submitted_request_data' => $submitted_request_data ?? []
@@ -737,7 +737,7 @@ class SubmissionRequestController extends BaseController
             ->with('years', $years)
             ->with('checklist_items', $checklist_items)
             ->with('astd_allocations_details', $submission_allocations)
-            ->with('fund_available', $submission_allocations->total_funds??$submission_allocations->total_available_fund??'')
+            ->with('fund_available', $submission_allocations->total_funds??$submission_allocations->total_available_fund??0)
             ->with('submission_allocations', $submission_allocations->allocation_records ?? [])
             ->with('bi_request_released_communications', $bi_request_released_communications ?? [])
             ->with('beneficiary', $beneficiary)
