@@ -15,13 +15,13 @@ cd /var/www/tetfund-bi-portal
 git stash pop stash@{0}
 
 #change file permission
-sudo chmod -R 777 app
-sudo chmod -R 777 resources
-sudo chmod -R 777 storage/framework/sessions*
-sudo chmod -R 777 storage/framework/views*
-sudo chmod -R 777 storage/logs/laravel.log
-sudo chmod -R 777 storage/framework/cache/data*
-sudo chmod -R 777 bootstrap/cache*
+#sudo chmod -R 777 app
+#sudo chmod -R 777 resources
+#sudo chmod -R 777 storage/framework/sessions*
+#sudo chmod -R 777 storage/framework/views*
+#sudo chmod -R 777 storage/logs/laravel.log
+#sudo chmod -R 777 storage/framework/cache/data*
+#sudo chmod -R 777 bootstrap/cache*
 
 
 # run migrations
