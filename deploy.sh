@@ -1,6 +1,7 @@
 #! /bin/bash
 
 #pull latest changes from repo
+git stash
 git pull
 
 #update modules
@@ -11,6 +12,7 @@ cd /var/www/tetfund-bi-portal/vendor/tetfund/tetfund-bims-module
 git pull
 
 cd /var/www/tetfund-bi-portal
+git stash pop stash@{0}
 
 #change file permission
 sudo chmod -R 777 app
