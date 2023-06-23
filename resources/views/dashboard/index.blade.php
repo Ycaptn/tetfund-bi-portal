@@ -106,7 +106,13 @@ Beneficiary Dashboard
                     </h4>
                     <div id="acc_platforms_div" class="accordion-collapse collapse" aria-labelledby="acc_platforms" data-bs-parent="#acc_main" style="">
                         <div class="accordion-body">
-                            @include('tf-bi-portal::dashboard.partials.official_communications')
+                            @if(auth()->user()->hasAnyRole(['BI-admin', 'BI-desk-officer', 'BI-head-of-institution']) )
+                                @include('tf-bi-portal::dashboard.partials.official_communications')
+                            @else
+                                <div class="text-center text-danger">
+                                    <i>Access to content denied!</i>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -125,7 +131,13 @@ Beneficiary Dashboard
                     </h4>
                     <div id="acc_org_sites_div" class="accordion-collapse collapse" aria-labelledby="acc_org_sites" data-bs-parent="#acc_main" style="">
                         <div class="accordion-body">
-                            @include('tf-bi-portal::dashboard.partials.upcoming_monitorings')
+                            @if(auth()->user()->hasAnyRole(['BI-admin', 'BI-desk-officer', 'BI-head-of-institution']) )
+                                @include('tf-bi-portal::dashboard.partials.upcoming_monitorings')
+                            @else
+                                <div class="text-center text-danger">
+                                    <i>Access to content denied!</i>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>

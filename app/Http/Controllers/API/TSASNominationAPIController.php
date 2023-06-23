@@ -319,35 +319,37 @@ class TSASNominationAPIController extends AppBaseController
         $tetFundServer = new TETFundServer();
         $tsas_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/tsas_country_zones/'.$input['tf_iterum_portal_country_id'], $pay_load);
 
-        if (!empty($tsas_amount_settings) && isset($input['degree_type'])) {
+        if (!empty($tsas_amount_settings) && isset($input['degree_type']) && isset($input['country_nigeria_id'])) {
             $exchange_rate_to_naira = $tsas_amount_settings->dollar_exchange_rate_to_naira ?? 1;
-            // $exchange_rate_to_naira = $tsas_amount_settings->tsas_country->exchange_rate_to_naira ?? 1;
+            
+            // flag to identified selected country
+            $is_nigeria = $input['country_nigeria_id']==$input['tf_iterum_portal_country_id'] ? true : false;
 
             if ($input['degree_type'] == 'Ph.D') {
 
                 // setting amount if TSAS is Ph.D request
-                $input['tuition_amount'] = floatval($tsas_amount_settings->phd_tuition_amt ?? 0) * $exchange_rate_to_naira;
-                $input['stipend_amount'] = floatval($tsas_amount_settings->phd_stipend_amt ?? 0) * $exchange_rate_to_naira;
-                $input['passage_amount'] = floatval($tsas_amount_settings->phd_passage_amt ?? 0) * $exchange_rate_to_naira;
-                $input['medical_amount'] = floatval($tsas_amount_settings->phd_medical_health_ins_amt ?? 0) * $exchange_rate_to_naira;
-                $input['warm_clothing_amount'] = floatval($tsas_amount_settings->phd_warm_clothing_amt ?? 0) * $exchange_rate_to_naira;
-                $input['study_tours_amount'] = floatval($tsas_amount_settings->phd_study_tour_conference_amt ?? 0) * $exchange_rate_to_naira;
-                $input['education_materials_amount'] = floatval($tsas_amount_settings->phd_educational_material_amt ?? 0) * $exchange_rate_to_naira;
-                $input['thesis_research_amount'] = floatval($tsas_amount_settings->phd_research_disertation_amt ?? 0) * $exchange_rate_to_naira;
+                $input['tuition_amount'] = $is_nigeria!=true ? (floatval($tsas_amount_settings->phd_tuition_amt??0) * $exchange_rate_to_naira) : ($input['is_science_program']==true ? $tsas_amount_settings->phd_local_science_tuition_amt??0 : $tsas_amount_settings->phd_local_art_tuition_amt??0);
+                $input['stipend_amount'] = $is_nigeria!=true ? (floatval($tsas_amount_settings->phd_stipend_amt??0) * $exchange_rate_to_naira) : 0;
+                $input['passage_amount'] = $is_nigeria!=true ? (floatval($tsas_amount_settings->phd_passage_amt??0) * $exchange_rate_to_naira) : 0;
+                $input['medical_amount'] = $is_nigeria!=true ? (floatval($tsas_amount_settings->phd_medical_health_ins_amt??0) * $exchange_rate_to_naira) : 0;
+                $input['warm_clothing_amount'] = $is_nigeria!=true ? (floatval($tsas_amount_settings->phd_warm_clothing_amt??0) * $exchange_rate_to_naira) : 0;
+                $input['study_tours_amount'] = $is_nigeria!=true ? (floatval($tsas_amount_settings->phd_study_tour_conference_amt??0) * $exchange_rate_to_naira) : 0;
+                $input['education_materials_amount'] = $is_nigeria!=true ? (floatval($tsas_amount_settings->phd_educational_material_amt??0) * $exchange_rate_to_naira) : 0;
+                $input['thesis_research_amount'] = $is_nigeria!=true ? (floatval($tsas_amount_settings->phd_research_disertation_amt??0) * $exchange_rate_to_naira) : 0;
           
                 $input['total_requested_amount'] = $input['tuition_amount'] + $input['stipend_amount'] + $input['passage_amount'] + $input['medical_amount'] + $input['warm_clothing_amount'] + $input['study_tours_amount'] + $input['education_materials_amount'] + $input['thesis_research_amount'];
 
             } elseif($input['degree_type'] == 'M.Sc') {
 
                 // setting amount if TSAS is M.Sc request
-                $input['tuition_amount'] = floatval($tsas_amount_settings->masters_tuition_amt ?? 0) * $exchange_rate_to_naira;
-                $input['stipend_amount'] = floatval($tsas_amount_settings->masters_stipend_amt ?? 0) * $exchange_rate_to_naira;
-                $input['passage_amount'] = floatval($tsas_amount_settings->masters_passage_amt ?? 0) * $exchange_rate_to_naira;
-                $input['medical_amount'] = floatval($tsas_amount_settings->masters_medical_health_ins_amt ?? 0) * $exchange_rate_to_naira;
-                $input['warm_clothing_amount'] = floatval($tsas_amount_settings->masters_warm_clothing_amt ?? 0) * $exchange_rate_to_naira;
-                $input['study_tours_amount'] = floatval($tsas_amount_settings->masters_study_tour_conference_amt ?? 0) * $exchange_rate_to_naira;
-                $input['education_materials_amount'] = floatval($tsas_amount_settings->masters_educational_material_amt ?? 0) * $exchange_rate_to_naira;
-                $input['thesis_research_amount'] = floatval($tsas_amount_settings->masters_research_disertation_amt ?? 0) * $exchange_rate_to_naira;
+                $input['tuition_amount'] = $is_nigeria!=true ? (floatval($tsas_amount_settings->masters_tuition_amt??0) * $exchange_rate_to_naira) : ($input['is_science_program']==true ? $tsas_amount_settings->masters_local_science_tuition_amt??0 : $tsas_amount_settings->masters_local_art_tuition_amt??0);
+                $input['stipend_amount'] = $is_nigeria!=true ? (floatval($tsas_amount_settings->masters_stipend_amt ?? 0) * $exchange_rate_to_naira) : 0;
+                $input['passage_amount'] = $is_nigeria!=true ? (floatval($tsas_amount_settings->masters_passage_amt ?? 0) * $exchange_rate_to_naira) : 0;
+                $input['medical_amount'] = $is_nigeria!=true ? (floatval($tsas_amount_settings->masters_medical_health_ins_amt ?? 0) * $exchange_rate_to_naira) : 0;
+                $input['warm_clothing_amount'] = $is_nigeria!=true ? (floatval($tsas_amount_settings->masters_warm_clothing_amt ?? 0) * $exchange_rate_to_naira) : 0;
+                $input['study_tours_amount'] = $is_nigeria!=true ? (floatval($tsas_amount_settings->masters_study_tour_conference_amt ?? 0) * $exchange_rate_to_naira) : 0;
+                $input['education_materials_amount'] = $is_nigeria!=true ? (floatval($tsas_amount_settings->masters_educational_material_amt ?? 0) * $exchange_rate_to_naira) : 0;
+                $input['thesis_research_amount'] = $is_nigeria!=true ? (floatval($tsas_amount_settings->masters_research_disertation_amt ?? 0) * $exchange_rate_to_naira) : 0;
           
                 $input['total_requested_amount'] = $input['tuition_amount'] + $input['stipend_amount'] + $input['passage_amount'] + $input['medical_amount'] + $input['warm_clothing_amount'] + $input['study_tours_amount'] + $input['education_materials_amount'] + $input['thesis_research_amount'];
 

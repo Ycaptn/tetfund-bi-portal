@@ -210,7 +210,7 @@
 
                     if(attachment != null) {
                         let attachment_link = window.location.origin +'/attachment/'+attachment.id;
-                        let attachment_html = "<u class='text-primary'><a href='"+ attachment_link +"' target='__blank'>"+ attachment.label +"</a></u><br>"+ attachment.description +"<br><b>MODIFIED: </b>" + new Date(response.data.updated_at).toDateString()+'.';
+                        let attachment_html = "<u class='text-primary'><a href='"+ attachment_link +"' target='__blank'>"+ attachment.label +"</a></u><br>"+ attachment.description +"<br><b>MODIFIED: </b>" + new Date(attachment.updated_at).toDateString()+'.';
                         
                         console.log(attachment_html);
                         $('#attachment_html_show').html(attachment_html);
@@ -339,7 +339,9 @@
                     if (response.data.nomination_committee_voters) {
                         let counter = 1;
                         $.each(response.data.nomination_committee_voters, function(key, value){
-                            var serverDate = new Date(value.created_at).toDateString();
+                            console.log(value);
+                            console.log(value.created_at);
+                            var serverDate = new Date(value.updated_at).toDateString();
                             let status = (value.approval_status == 1) ? '<span class=\'text-success\'>Recommended</span>' : '<span class=\'text-danger\'>Not Recommended</span>';
                             table_body += "<tr> <td>"+ counter +"</td> <td>"+value.first_name+' '+value.last_name+"</td> <td>"+status+"</td> <td>"+value.approval_comment+"</td> <td>"+serverDate+"</td> </tr>";
                             counter += 1;

@@ -243,7 +243,11 @@ class NominationRequestAPIController extends BaseController
             $nomination_committee_voters = [];  
             if (count($nominationRequest->nomination_committee_votes) > 0) {
                 foreach ($nominationRequest->nomination_committee_votes as $key => $value) {
-                    array_push($nomination_committee_voters, array_merge($value->user->toArray(), ['approval_comment'=>$value->approval_comment, 'approval_status'=>$value->approval_status,]));
+                    array_push($nomination_committee_voters, array_merge($value->user->toArray(), [
+                        'approval_comment' => $value->approval_comment,
+                        'approval_status'=>$value->approval_status,
+                        'updated_at'=>$value->updated_at,
+                    ]));
                 }
             }
             $nominationRequestDetails['nomination_committee_voters'] = $nomination_committee_voters;
