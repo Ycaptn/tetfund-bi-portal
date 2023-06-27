@@ -477,8 +477,12 @@ class NominationRequestAPIController extends BaseController
 
     // general function processing forwarding of all nomination details
     public function process_forward_all_details(Request $request, NominationRequest $nominationRequest, $itemIdType) {
+        $current_user = auth()->user();
+        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id',optional($current_user)->id)->first();
+
         $nominationRequest = $nominationRequest->where('type', $itemIdType)
                 ->where($request->column_to_update, 0)
+                ->where('beneficiary_id', optional($beneficiary_member)->beneficiary_id)
                 ->when(($request->column_to_update == 'is_desk_officer_check_after_average_committee_members_checked'), function ($query) {
                     return $query->where('is_average_committee_members_check', 1)
                                  ->where('committee_head_checked_status', 'approved');
