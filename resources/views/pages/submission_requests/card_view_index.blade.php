@@ -23,9 +23,11 @@ Submissions
 @stop
 
 @section('page_title_buttons')
-<a id="btn-new-mdl-submissionRequest-modal" class="btn btn-sm btn-primary btn-new-mdl-submissionRequest-modal" href="{{ route("tf-bi-portal.submissionRequests.create") }}">
-    <i class="bx bx-book-add mr-1"></i> New Submission
-</a>
+    @if($current_user->hasRole('BI-desk-officer'))
+        <a id="btn-new-mdl-submissionRequest-modal" class="btn btn-sm btn-primary btn-new-mdl-submissionRequest-modal" href="{{ route("tf-bi-portal.submissionRequests.create") }}">
+            <i class="bx bx-book-add mr-1"></i> New Submission
+        </a>
+    @endif
 @stop
 
 @section('content')
