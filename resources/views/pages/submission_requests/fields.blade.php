@@ -109,6 +109,6 @@
         </div>
     </div>
 
-    <input type='hidden' id="intervention_title" name="intervention_title" value="{{ (isset($submissionRequest) && old('intervention_title') == null) ? $submissionRequest->title : old('intervention_title')  }}" />
+    <input type='hidden' id="intervention_title" name="intervention_title" value="{{ (isset($submissionRequest) && empty(old('intervention_title'))) ? $submissionRequest->title : old('intervention_title') }}" />
 
 
