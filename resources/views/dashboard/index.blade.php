@@ -67,7 +67,7 @@ Beneficiary Dashboard
                     <div class="col-sm-10">
                         <ul>
                             <li>
-                                All submissions to the Fund must be submitted <b>ONLINE</b> and <b>PHYSICAL</b>.
+                                All submissions to the Fund must be submitted <b>ONLINE</b>.
                             </li>
                             <li>
                                 For <b>NEW SUBMISSIONS</b>, i.e., Request for Approval in Principle (AIP), click the New Submission Button
