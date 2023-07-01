@@ -88,6 +88,7 @@ class TETFundServer {
     }
     
     public static function getInterventionChecklistData($checklist_name, $additional_checklist=null) {
+        $checklist_name = str_replace('/', '%252F', $checklist_name);
         $server_api_url = Config::get('keys.tetfund.server_api_url');
         $token = self::get_auth_token();
         $checklist_group_name_audit = $additional_checklist['checklist_group_name_audit'] ?? null;
