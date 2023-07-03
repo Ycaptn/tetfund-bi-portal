@@ -31,6 +31,8 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
         $plus_5_days = date('d-M-Y', strtotime($start_date . ' + 5 days'));
         $this->max_conference_fee_amt = isset($this->attendee_grade_level) ? CANomination::getMaxConferenceFeeAmount($this->attendee_grade_level??'', $this->tf_iterum_portal_country_id??'') : 0.00;
 
+        $more_state_validations = ( $this->tf_iterum_portal_country_id == $this->country_nigeria_id) ? "|string|min:2|max:100|in:". implode(',', BaseController::statesList()) : '';
+
         $return_rules = [
             'organization_id' => 'required',
             'display_ordinal' => 'nullable|min:0|max:365',
@@ -44,7 +46,7 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             'is_conference_workshop' => "required_if:is_academic_staff,=,0|string|max:50|in:0,1",
             'tf_iterum_portal_country_id' => 'required|uuid',
             //'tf_iterum_portal_conference_id' => 'required|uuid',
-            'conference_state' => "required_if:tf_iterum_portal_country_id,=,". request()->country_nigeria_id ."|string|min:2|max:100|in:". implode(',', BaseController::statesList()),
+            'conference_state' => "required_if:tf_iterum_portal_country_id,=,". $this->country_nigeria_id . $more_state_validations,
             'conference_title' => 'required|string|min:2|max:100',
             'organizer_name' => 'required|string|max:190',
             'conference_theme' => 'required|string|max:190',

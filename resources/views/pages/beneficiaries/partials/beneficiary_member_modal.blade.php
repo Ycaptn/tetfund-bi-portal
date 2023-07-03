@@ -165,6 +165,18 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('.offline-beneficiary-member').hide();
+
+            // toggle visibility on Academic Staff Level div field
+            $(document).on('change', "#bi_member_type", function(e) {
+                let selected_val = $(this).val();
+                if(selected_val == 'academic') {
+                    $('#div_bi_academic_member_level').show();
+                } else {
+                    $('#bi_academic_member_level').val('');
+                    $('#div_bi_academic_member_level').hide();
+                }
+            });
+
         
             //Show Modal for New beneficiary members Entry
             $(document).on('click', ".btn-new-beneficiary-member", function(e) {
@@ -328,6 +340,7 @@
                     $('#bi_staff_gender_preview').text((response.data.gender != null) ? response.data.gender.toUpperCase() : 'N/A');
                     $('#bi_staff_grade_level_preview').text((response.data.grade_level != null) ? "GL-"+response.data.grade_level: 'N/A');
                     $('#bi_staff_member_type_preview').text((response.data.member_type != null) ? response.data.member_type.toUpperCase() : 'N/A');
+                    $('#bi_academic_member_level_preview').text((response.data.academic_member_level != null) ? response.data.academic_member_level.toUpperCase().replace('_', ' ') : 'N/A');
                     // handling data for role(s)
                     $('#bi_staff_userRoles').text('N/A');
                     if(response.data.user_roles != '') {
@@ -515,6 +528,17 @@
                     $('#bi_staff_gender').val((response.data.gender != null) ? response.data.gender.toLowerCase() : '');
                     $('#bi_grade_level').val((response.data.grade_level != null) ? response.data.grade_level : '');
                     $('#bi_member_type').val((response.data.member_type != null) ? response.data.member_type : '');
+                    $('#bi_academic_member_level').val((response.data.academic_member_level != null) ? response.data.academic_member_level : '');
+                    
+                    // toggle visibility on Academic Staff Level div field
+                    if(response.data.member_type == 'academic') {
+                        $('#bi_academic_member_level').val(response.data.academic_member_level);
+                        $('#div_bi_academic_member_level').show();
+                    } else {
+                        $('#bi_academic_member_level').val('');
+                        $('#div_bi_academic_member_level').hide();
+                    }
+
                     // handling data for role(s)
                     if(response.data.user_roles != '') {
                         $.each(response.data.user_roles, function(key, value){
@@ -572,6 +596,7 @@
                 if ($('#bi_staff_gender').length){ formData.append('bi_staff_gender',$('#bi_staff_gender').val()); }
                 if ($('#bi_member_type').length){ formData.append('bi_member_type',$('#bi_member_type').val()); }
                 if ($('#bi_grade_level').length){ formData.append('bi_grade_level',$('#bi_grade_level').val()); }
+                if ($('#bi_academic_member_level').length){ formData.append('bi_academic_member_level',$('#bi_academic_member_level').val()); }
                 // handling data for role(s)
                 @if(isset($roles) && count($roles) > 0)
                     @foreach($roles as $role)

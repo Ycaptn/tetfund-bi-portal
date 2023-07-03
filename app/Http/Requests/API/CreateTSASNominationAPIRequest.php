@@ -26,6 +26,8 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
      */
 
     public function rules() {
+        $more_state_validations = ($this->tf_iterum_portal_country_id == $this->country_nigeria_id) ? "|string|min:2|max:100|in:". implode(',', BaseController::statesList()) : '';
+
         $return_rules = [
             'organization_id' => 'required',
             'display_ordinal' => 'nullable|min:0|max:365',
@@ -41,7 +43,7 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'last_name' => 'required|string|max:100',
             'name_suffix' => 'nullable|string|max:100',
             'institution_name' => 'required|string|max:200',
-            'intitution_state' => "required_if:tf_iterum_portal_country_id,=,". request()->country_nigeria_id ."|string|min:2|max:100|in:". implode(',', BaseController::statesList()),
+            'intitution_state' => "required_if:tf_iterum_portal_country_id,=,". $this->country_nigeria_id . $more_state_validations,
             'intl_passport_number' => 'required_unless:tf_iterum_portal_country_id,'.request()->country_nigeria_id.'|max:100',
             'national_id_number' => 'required|numeric',
             'degree_type' => 'required|max:100',

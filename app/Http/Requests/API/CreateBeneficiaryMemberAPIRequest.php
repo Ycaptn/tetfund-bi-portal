@@ -34,11 +34,14 @@ class CreateBeneficiaryMemberAPIRequest extends AppBaseFormRequest
             'bi_staff_email' => 'required|email|unique:fc_users,email|max:300',
             'bi_staff_fname' => 'required|string|max:100',
             'bi_staff_lname' => 'required|string|max:100',
-            'bi_telephone' => 'required|digits:11',
+            'bi_telephone' => 'required|digits:11|unique:fc_users,telephone',
             'bi_staff_gender' => "required|string|max:50|in:male,female",
             'beneficiary_id' => 'required|string|exists:tf_bi_portal_beneficiaries,id|max:300',
             'bi_grade_level' => 'required|numeric',
-            'bi_member_type' => 'required',
+            'bi_member_type' => 'required|in:academic,non-academic',
+            'bi_academic_member_level' => 'required_if:bi_member_type,academic'.
+                isset($this->bi_member_type) && $this->bi_member_type=='academic' ? 
+                "|max:100|in:chief_lecturer,principal_lecturer,senior_lecturer,lecturer_1,lecturer_2,lecturer_3" : '',
         ];
 
         $allRoles = Role::where('guard_name', 'web')
@@ -72,7 +75,8 @@ class CreateBeneficiaryMemberAPIRequest extends AppBaseFormRequest
             'bi_staff_gender' => 'Gender',
             'beneficiary_id' => 'Beneficiary',
             'bi_grade_level' => 'Grade Level',
-            'bi_member_type' => 'Member Type',
+            'bi_member_type' => 'User Type',
+            'bi_academic_member_level' => 'Academic Staff Level',
         ];
     }
 

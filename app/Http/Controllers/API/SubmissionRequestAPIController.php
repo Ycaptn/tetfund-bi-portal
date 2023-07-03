@@ -292,6 +292,10 @@ class SubmissionRequestAPIController extends AppBaseController
 
                 $clarification_attachable = $submissionRequest->attach(auth()->user(), $label, $discription, $file);
 
+                if (empty($clarification_attachable)) {
+                    return $this->sendError("Oops! An error was encountered while processing an attachment upload.");
+                }
+
                 $original_data = [];
                 $original_data['id'] = $clarification_attachable->attachment->id;
                 $original_data['uploader_user_id'] = $clarification_attachable->attachment->uploader_user_id;

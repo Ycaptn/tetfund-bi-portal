@@ -41,7 +41,8 @@ class BeneficiaryMemberDatatable extends DataTable
             if ($query->telephone != null || $query->member_type != null || $query->grade_level){
                 return  ($query->telephone!=null ? '- '. $query->telephone.'<br>' : '').
                         ($query->member_type!=null ? '- '.ucfirst($query->member_type).' Staff<br>':'').
-                        ($query->grade_level!=null ? '- Grade-Level '.$query->grade_level : '');
+                        ($query->grade_level!=null ? '- Grade-Level '.$query->grade_level.'<br>' : '').
+                        ($query->academic_member_level!=null ? '- '. ucwords(str_replace('_', ' ', $query->academic_member_level)) : '');
             }
             return "N/A";
         })->escapeColumns('active')->make(true);;
@@ -80,15 +81,14 @@ class BeneficiaryMemberDatatable extends DataTable
                                 'fc_users.deleted_at'=>null,
                                 'tf_bi_beneficiary_members.deleted_at'=>null])
                     ->orderBy('fc_users.created_at', 'DESC')
-                    ->select('fc_users.*', 'tf_bi_beneficiary_members.member_type', 'tf_bi_beneficiary_members.grade_level');
+                    ->select('fc_users.*', 'tf_bi_beneficiary_members.member_type', 'tf_bi_beneficiary_members.grade_level', 'tf_bi_beneficiary_members.academic_member_level');
         }
 
         return $model->newQuery()->join('fc_users', 'tf_bi_beneficiary_members.beneficiary_user_id', '=', 'fc_users.id')
-                    ->where([   "fc_users.organization_id"=>$this->organization->id,
-                                'fc_users.deleted_at'=>null,
+                    ->where([   'fc_users.deleted_at'=>null,
                                 'tf_bi_beneficiary_members.deleted_at'=>null])
                     ->orderBy('fc_users.created_at', 'DESC')
-                    ->select('fc_users.*', 'tf_bi_beneficiary_members.beneficiary_id');
+                    ->select('fc_users.*', 'tf_bi_beneficiary_members.member_type', 'tf_bi_beneficiary_members.grade_level', 'tf_bi_beneficiary_members.academic_member_level');
     }
 
     /**
