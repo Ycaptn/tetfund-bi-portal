@@ -140,10 +140,18 @@ $(document).ready(function() {
             $('#intl_passport_number_tsas').val('');
             $('#div-intl_passport_number_tsas').hide();
             $('#div-international_passport_bio_page_tsas').hide();
+            $('#is_science_program_tsas').val('');
+            if(selected_country == '') {
+                $('#div-is_science_program_tsas').hide();
+            } else {
+                $('#div-is_science_program_tsas').show();
+            }
         } else {
             $('#institution_state_tsas').val('');
             $('#div-institution_state_tsas').hide();
             $('#div-intl_passport_number_tsas').show();
+            $('#is_science_program_tsas').val('1');
+            $('#div-is_science_program_tsas').hide();
         }
 
         $.each(JSON.parse(institutions), function(key, institution) {

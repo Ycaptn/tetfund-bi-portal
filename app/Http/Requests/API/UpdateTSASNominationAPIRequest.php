@@ -32,6 +32,9 @@ class UpdateTSASNominationAPIRequest extends AppBaseFormRequest
      * @return array
      */
     public function rules() {
+        $more_state_validations = ($this->tf_iterum_portal_country_id == $this->country_nigeria_id) ? "|string|min:2|max:100|in:". implode(',', BaseController::statesList()) : '';
+        $is_science_validations = ($this->tf_iterum_portal_country_id == $this->country_nigeria_id) ? "|string|max:50|in:0,1" : '';
+
         $return_arr =  [
             'organization_id' => 'required',
             'display_ordinal' => 'nullable|min:0|max:365',
@@ -41,7 +44,7 @@ class UpdateTSASNominationAPIRequest extends AppBaseFormRequest
             'tf_iterum_portal_country_id' => 'required|uuid',
             // 'tf_iterum_portal_institution_id' => 'required|uuid',
             'institution_name' => 'required|string|max:200',
-            'intitution_state' => 'required_if:tf_iterum_portal_country_id,'. $this->country_nigeria_id .'|string|min:2|max:100|in:'. implode(',', BaseController::statesList()),
+            'intitution_state' => "required_if:tf_iterum_portal_country_id,=,". $this->country_nigeria_id . $more_state_validations,
             'nomination_request_id' => 'required|exists:tf_bi_nomination_requests,id',
             'user_id' => 'required|exists:fc_users,id',
             'gender' => "required|string|max:50|in:male,female",
@@ -59,7 +62,7 @@ class UpdateTSASNominationAPIRequest extends AppBaseFormRequest
             'national_id_number' => 'required|numeric',
             'degree_type' => 'required|max:100',
             'program_title' => 'required|string|max:100',
-            'is_science_program' => "required|string|max:50|in:0,1",
+            'is_science_program' => "required_if:tf_iterum_portal_country_id,=,". $this->country_nigeria_id . $is_science_validations,
             'program_start_date' => 'required|date',
             'program_end_date' => 'required|date|after:program_start_date',
         ];
@@ -94,6 +97,7 @@ class UpdateTSASNominationAPIRequest extends AppBaseFormRequest
     public function messages() {
         return [
             'intitution_state.required_if' => 'The :attribute field is required when selected Country is Nigeria.',
+            'is_science_program.required_if' => 'The :attribute field is required when selected Country is Nigeria.',
             'intl_passport_number.required_unless' => 'The :attribute field is required when the selected country isn\'t Nigeria.',
         ];
     }

@@ -198,7 +198,7 @@
 </div>
 
 <!-- Is Science Program Field -->
-<div id="div-is_science_program_tsas" class="form-group mb-3 col-md-4">
+<div id="div-is_science_program_tsas" class="form-group mb-3 col-md-4" style="display: none;">
     <label for="is_science_program_tsas" class="col-sm-12 col-form-label">Is Science Program ? </label>
     <div class="col-sm-12">
         <select name="is_science_program_tsas" id="is_science_program_tsas" class="form-select">
