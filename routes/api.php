@@ -33,6 +33,7 @@ $orgRoutes = function() {
                 Route::get('/syn-user', [App\Http\Controllers\API\AuthController::class, 'sycUserRecord']);
                 Route::post('/logout', [App\Http\Controllers\API\AuthController::class, 'logout']);
 
+                Route::match(['put', 'patch'],'beneficiaries/sync-bims-tetfund-id', [ \App\Http\Controllers\API\BeneficiaryAPIController::class, 'syncBimsTetfundId'])->name('beneficiaries.sync_bims_tetfund_id');
                 Route::resource('beneficiaries', \App\Http\Controllers\API\BeneficiaryAPIController::class);
                 Route::resource('committee_meeting_minutes', \App\Http\Controllers\API\CommitteeMeetingsMinutesController::class);
                 

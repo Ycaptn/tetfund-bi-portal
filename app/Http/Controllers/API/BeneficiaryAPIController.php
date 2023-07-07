@@ -21,6 +21,7 @@ use Hasob\FoundationCore\Traits\ApiResponder;
 use Hasob\FoundationCore\Models\Organization;
 use DB;
 use Hasob\FoundationCore\Controllers\BaseController as AppBaseController;
+use App\Managers\BIMSTETFundServer;
 use App\Managers\TETFundServer;
 use App\Http\Traits\BeneficiaryUserTrait;
 use Hasob\FoundationCore\Models\User;
@@ -412,5 +413,29 @@ class BeneficiaryAPIController extends AppBaseController
 
         return $this->sendResponse($bi_users_emails_enroled, 'Beneficiary List successfully synchronized with ('.count($bi_users_emails_enroled).") User(s) replicated");
 
+    }
+
+    public function syncBimsTetfundId(Organization $org, Request $request){
+        $bims_tetfund_server = new BIMSTETFundServer();
+        $institions = $bims_tetfund_server->getInstitionsList();
+        $beneficiaries_sync = 0;
+
+        if(is_null($institions) || empty($institions)){
+            return $this->sendError('BIMS TETFUND instititions list is empty');
+        }
+
+        foreach ($institions as $key => $institution){
+            $beneficiary = Beneficiary::where('full_name','LIKE', '%'.$institution->name.'%')
+            ->orWhere('short_name', 'LIKE', '%'.$institution->short_name.'%')->first();
+
+            if(is_null($beneficiary))
+            continue;
+
+            $beneficiary->bims_tetfund_id = $institution->id;
+            $beneficiary->save();
+            $beneficiaries_sync++;
+        }
+
+        return $this->sendResponse(null, count($institions).' BIMS TETFUND institutions retrieved. '. $beneficiaries_sync.' of '.Beneficiary::all()->count().' beneficiaries synchronized successfully' );
     }
 }

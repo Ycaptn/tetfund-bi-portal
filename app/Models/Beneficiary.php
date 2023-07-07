@@ -79,7 +79,8 @@ class Beneficiary extends Model
         'head_of_institution_title',
         'geo_zone',
         'owner_agency_type',
-        'tf_iterum_portal_beneficiary_status'
+        'tf_iterum_portal_beneficiary_status',
+        'bims_tetfund_id',
     ];
 
     /**
@@ -103,7 +104,8 @@ class Beneficiary extends Model
         'geo_zone' => 'string',
         'owner_agency_type' => 'string',
         'tf_iterum_portal_beneficiary_status' => 'string',
-        'tf_iterum_portal_response_meta_data' => 'string'
+        'tf_iterum_portal_response_meta_data' => 'string',
+        'bims_tetfund_id' => 'integer',
     ];
 
     public function hasRequest($tf_iterum_intervention_line_key_id, $intervention_year1=null, $intervention_year2=null, $intervention_year3=null, $intervention_year4=null, $id_to_skip=null, $intervention_name=null) {
