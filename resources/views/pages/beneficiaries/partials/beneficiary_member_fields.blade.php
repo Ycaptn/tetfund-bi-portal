@@ -40,7 +40,7 @@
             <label class="col-sm-12 control-label" for="bi_staff_gender">Gender</label>
             <div class="col-sm-12 input-group">
                 <select class="form-select" name="bi_staff_gender" id="bi_staff_gender">
-                    <option value="">None Selected</option>
+                    <option value="">-- None Selected --</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                 </select>
@@ -68,7 +68,7 @@
         </div>
 
         <div class="col-sm-6 form-group mb-3">
-            <label class="col-sm-12 control-label" for="bi_member_type">Type</label>
+            <label class="col-sm-12 control-label" for="bi_member_type">User Type</label>
             <div class="col-sm-12 input-group">
                 <select class="form-select" name="bi_member_type" id="bi_member_type">
                     <option value="">--- Select Type ---</option>
@@ -76,7 +76,23 @@
                     <option value="non-academic">Non-Academic</option>
                 </select>
             </div>
+        </div>
+
+        <div class="col-sm-6 form-group mb-3" id="div_bi_academic_member_level" style="display:none;">
+            <label class="col-sm-12 control-label" for="bi_academic_member_level">Academic Staff Level</label>
+            <div class="col-sm-12 input-group">
+                <select class="form-select" name="bi_academic_member_level" id="bi_academic_member_level">
+                    <option value="">-- None Selected --</option>
+                    <option value="chief_lecturer">Chief Lecturer</option>
+                    <option value="principal_lecturer">Principal Lecturer</option>
+                    <option value="senior_lecturer">Senior Lecturer</option>
+                    <option value="lecturer_1">Lecturer 1</option>
+                    <option value="lecturer_2">Lecturer 2</option>
+                    <option value="lecturer_3">Lecturer 3</option>
+                </select>
+            </div>
         </div> 
+
         <div class="row col-sm-12 mb-3 mt-3">
             <hr><strong>USER ROLE(s)</strong><hr>
             

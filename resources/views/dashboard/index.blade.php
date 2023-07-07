@@ -56,10 +56,10 @@ Beneficiary Dashboard
                                 <i class="fa fa-edit"></i>
                                 <br>New
                             </a>
-                            <a href="" class="btn btn-app bg-orange col-md-10 mt-3 text-white" id="btn-ongoing-submission" title="Process an ongoing submission request by selecting it current stage.">
+                           {{--  <a href="" class="btn btn-app bg-orange col-md-10 mt-3 text-white" id="btn-ongoing-submission" title="Process an ongoing submission request by selecting it current stage.">
                                 <i class="fa fa-copy"></i>
                                 <br>Ongoing
-                            </a>
+                            </a> --}}
                             <br/>
                         </center>
                     </div>
@@ -67,12 +67,12 @@ Beneficiary Dashboard
                     <div class="col-sm-10">
                         <ul>
                             <li>
-                                All submissions to the Fund must be submitted <b>ONLINE</b> and <b>PHYSICAL</b>.
+                                All submissions to the Fund must be submitted <b>ONLINE</b>.
                             </li>
                             <li>
                                 For <b>NEW SUBMISSIONS</b>, i.e., Request for Approval in Principle (AIP), click the New Submission Button
                             </li>
-                            <li class="mt-4">
+                           {{--  <li class="mt-4">
                                 For <b>ONGOING SUBMISSIONS</b>, i.e. First Tranche, Second Tranche, Final Tranche, Monitoring Request, Audit Clearance etc, that the processing wasn't start online of this platform click the Ongoing Submission Button 
                             </li>
                             <li>
@@ -80,7 +80,7 @@ Beneficiary Dashboard
                             </li>
                             <li>
                                  <span class="text-danger">Note the Ongoing Submissions button is only meant for submission that was started manually i.e not through this submission portal. </span>
-                            </li>
+                            </li> --}}
                         </ul>
                     </div>
                 </div>
@@ -106,7 +106,13 @@ Beneficiary Dashboard
                     </h4>
                     <div id="acc_platforms_div" class="accordion-collapse collapse" aria-labelledby="acc_platforms" data-bs-parent="#acc_main" style="">
                         <div class="accordion-body">
-                            @include('tf-bi-portal::dashboard.partials.official_communications')
+                            @if(auth()->user()->hasAnyRole(['BI-admin', 'BI-desk-officer', 'BI-head-of-institution']) )
+                                @include('tf-bi-portal::dashboard.partials.official_communications')
+                            @else
+                                <div class="text-center text-danger">
+                                    <i>Access to content denied!</i>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -125,7 +131,13 @@ Beneficiary Dashboard
                     </h4>
                     <div id="acc_org_sites_div" class="accordion-collapse collapse" aria-labelledby="acc_org_sites" data-bs-parent="#acc_main" style="">
                         <div class="accordion-body">
-                            @include('tf-bi-portal::dashboard.partials.upcoming_monitorings')
+                            @if(auth()->user()->hasAnyRole(['BI-admin', 'BI-desk-officer', 'BI-head-of-institution']) )
+                                @include('tf-bi-portal::dashboard.partials.upcoming_monitorings')
+                            @else
+                                <div class="text-center text-danger">
+                                    <i>Access to content denied!</i>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -152,7 +164,7 @@ Beneficiary Dashboard
                     </div>
                     <div class="accordion-item">
                         <h4 class="accordion-header" id="acc_ess">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc_ess_div" aria-expanded="false" aria-controls="acc_ess_div">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#app_ess_div" aria-expanded="false" aria-controls="app_ess_div">
                                 <b>
                                     <sup class="fa-layers-counter text-white bg-danger" style="background-color:white; border-radius: 20%;">
                                         &nbsp;{{ count($approved_submissions) }}&nbsp;
@@ -161,9 +173,9 @@ Beneficiary Dashboard
                                 Approved Submissions
                             </button>
                         </h4>
-                        <div id="acc_ess_div" class="accordion-collapse collapse" aria-labelledby="acc_ess_div" data-bs-parent="#acc_main" style="">
+                        <div id="app_ess_div" class="accordion-collapse collapse" aria-labelledby="app_ess_div" data-bs-parent="#acc_main" style="">
                             <div class="accordion-body">
-                                @include('tf-bi-portal::dashboard.partials.active_submissions')
+                                @include('tf-bi-portal::dashboard.partials.approved_submissions')
                             </div>
                         </div>
                     </div>

@@ -137,28 +137,12 @@ class NominationRequestAPIController extends BaseController
 
         if ($request->nomination_type == 'tp') {
             $request = app('App\Http\Requests\API\CreateTPNominationAPIRequest');
-          
             $this->validate($request, $request->rules());   // validate for TP  
             $nominationRequestOBJ = new TPNomination();
 
-            $nominationRequestAPIControllerOBJ = new TPNominationAPIController();   // hitting TP API Controller
-
-            /* server class constructor to retrieve amout settings */
-            $pay_load = [ '_method' => 'GET', 'query_like_parameters' => 'tp_', ];
-            $tetFundServer = new TETFundServer(); 
-            $tp_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/dashboard/get_configured_amounts', $pay_load);
-
-            $dta_amount = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_dta_amount'} ?? 0);
-            $dta_no_days = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_dta_nights_amount'} ?? 0);
-            $local_runs_percentage = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_local_runs_percentage'} ?? 0);
-            $taxi_fare_amount = floatval($tp_amount_settings->{'tp_'.strtolower($request->rank_gl_equivalent).'_taxi_fare_amount'} ?? 0);
-
-            // setting amount colunm
-            $input['dta_amount_requested'] = $dta_amount;
-            $input['dta_nights_amount_requested'] = $dta_amount * $dta_no_days;
-            $input['local_runs_amount_requested'] = ($local_runs_percentage * floatval($input['dta_nights_amount_requested'])) / 100;
-            $input['taxi_fare_amount_requested'] = $taxi_fare_amount;
-            $input['total_requested_amount'] = $input['dta_nights_amount_requested'] + $input['local_runs_amount_requested'] + $taxi_fare_amount;
+            // hitting TP API Controller
+            $nominationRequestAPIControllerOBJ = new TPNominationAPIController();
+            $input = $nominationRequestAPIControllerOBJ->set_tp_nominee_amounts($input, $bi_beneficiary);
 
         } else if ($request->nomination_type == 'ca') {    
             $request = app('App\Http\Requests\API\CreateCANominationAPIRequest');
@@ -259,7 +243,11 @@ class NominationRequestAPIController extends BaseController
             $nomination_committee_voters = [];  
             if (count($nominationRequest->nomination_committee_votes) > 0) {
                 foreach ($nominationRequest->nomination_committee_votes as $key => $value) {
-                    array_push($nomination_committee_voters, array_merge($value->user->toArray(), ['approval_comment'=>$value->approval_comment, 'approval_status'=>$value->approval_status,]));
+                    array_push($nomination_committee_voters, array_merge($value->user->toArray(), [
+                        'approval_comment' => $value->approval_comment,
+                        'approval_status'=>$value->approval_status,
+                        'updated_at'=>$value->updated_at,
+                    ]));
                 }
             }
             $nominationRequestDetails['nomination_committee_voters'] = $nomination_committee_voters;
@@ -489,8 +477,12 @@ class NominationRequestAPIController extends BaseController
 
     // general function processing forwarding of all nomination details
     public function process_forward_all_details(Request $request, NominationRequest $nominationRequest, $itemIdType) {
+        $current_user = auth()->user();
+        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id',optional($current_user)->id)->first();
+
         $nominationRequest = $nominationRequest->where('type', $itemIdType)
                 ->where($request->column_to_update, 0)
+                ->where('beneficiary_id', optional($beneficiary_member)->beneficiary_id)
                 ->when(($request->column_to_update == 'is_desk_officer_check_after_average_committee_members_checked'), function ($query) {
                     return $query->where('is_average_committee_members_check', 1)
                                  ->where('committee_head_checked_status', 'approved');

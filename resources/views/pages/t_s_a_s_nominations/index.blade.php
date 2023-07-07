@@ -47,7 +47,7 @@ All T S A S Nomination
             @endif
         @elseif(request()->view_type == 'committee_head_consideration')
             @if($current_user->hasRole('BI-TSAS-committee-head'))
-                Considered Nomination
+                Consider Nomination
             @endif
         @endif
     @else
@@ -131,7 +131,7 @@ All T S A S Nomination
                                     <a  href="{{ route('tf-bi-portal.t_s_a_s_nominations.index') }}?view_type=committee_head_consideration&nomination_type=tsas"
                                         class="nav-link {{ (isset(request()->view_type) && request()->view_type == 'committee_head_consideration') ? 'active' : ''}}"
                                         title="Preview TSAS Nomination(s) forwarded by Desk-Officer and take find decision on behalf of TSASNomination committee" ><i class="fas fa-bell"></i><b><sup class="fa-layers-counter text-danger" style="background-color:white; border-radius: 20%;">{{number_format($count_array_returned['committee_members_considered_nomination'] ?? 0)}}</sup></b>
-                                        Considered Nomination
+                                        Consider Nomination
                                     </a>
                                 </li> 
                             @endif
@@ -160,7 +160,7 @@ All T S A S Nomination
                         </ul>
                     </div>
                     <div class="col-sm-3">
-                        @if($current_user->hasRole($tsas_nomination_sent_to) && !isset(request()->view_type))
+                        @if($current_user->hasRole($tsas_nomination_sent_to) && !isset(request()->view_type) && intval($count_array_returned['desk_officer_newly_submitted']) > 0)
                             {{-- appears to desk-officer to forward all tsas nominations to committee --}}
                             <div class="col-sm-12">
                                 <a  class="mb-3 btn btn-sm btn-danger pull-right move_all_for_consideration text-white"
@@ -172,7 +172,7 @@ All T S A S Nomination
                             </div>
                         @endif
 
-                        @if($current_user->hasRole($tsas_committee_considered_sent_to) && isset(request()->view_type) && request()->view_type == 'committee_approved')
+                        @if($current_user->hasRole($tsas_committee_considered_sent_to) && isset(request()->view_type) && request()->view_type == 'committee_approved' && intval($count_array_returned['desk_officer_committee_considered']) > 0)
                             {{-- appears for desk-officer to forward all tsas nominations for approval --}}
                             <div class="col-sm-12">
                                 <a  class="mb-3 btn btn-sm btn-danger pull-right move_all_for_approval text-white"

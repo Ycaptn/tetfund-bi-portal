@@ -4,6 +4,7 @@ namespace App\Http\Requests\API;
 
 use App\Models\TSASNomination;
 use App\Http\Requests\AppBaseFormRequest;
+use Hasob\FoundationCore\Controllers\BaseController;
 
 
 class CreateTSASNominationAPIRequest extends AppBaseFormRequest
@@ -25,6 +26,9 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
      */
 
     public function rules() {
+        $more_state_validations = ($this->tf_iterum_portal_country_id == $this->country_nigeria_id) ? "|string|min:2|max:100|in:". implode(',', BaseController::statesList()) : '';
+        $is_science_validations = ($this->tf_iterum_portal_country_id == $this->country_nigeria_id) ? "|string|max:50|in:0,1" : '';
+
         $return_rules = [
             'organization_id' => 'required',
             'display_ordinal' => 'nullable|min:0|max:365',
@@ -40,18 +44,19 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'last_name' => 'required|string|max:100',
             'name_suffix' => 'nullable|string|max:100',
             'institution_name' => 'required|string|max:200',
+            'intitution_state' => "required_if:tf_iterum_portal_country_id,=,". $this->country_nigeria_id . $more_state_validations,
             'intl_passport_number' => 'required_unless:tf_iterum_portal_country_id,'.request()->country_nigeria_id.'|max:100',
             'national_id_number' => 'required|numeric',
             'degree_type' => 'required|max:100',
             'program_title' => 'required|string|max:100',
-            'is_science_program' => "required|string|max:50|in:0,1",
-            'program_start_date' => 'required|date|after:today',
+            'is_science_program' => "required_if:tf_iterum_portal_country_id,=,". $this->country_nigeria_id . $is_science_validations,
+            'program_start_date' => 'required|date|after:'.date('d-M-Y', strtotime('+6 months')),
             'program_end_date' => 'required|date|after:program_start_date',
             'bank_account_name' => 'required|min:2|max:190',
             'bank_account_number' => 'required|digits:10',
             'bank_name' => 'required|max:100',
             'bank_sort_code' => 'required|max:100',
-            'bank_verification_number' => 'required|numeric',
+            'bank_verification_number' => 'required|digits:12',
 
             'passport_photo' => 'required|file|mimes:pdf,png,jpeg,jpg|max:5240',
             'admission_letter' => 'required|file|mimes:pdf|max:5240',
@@ -73,6 +78,8 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
 
     public function messages() {
         return [
+            'intitution_state.required_if' => 'The :attribute field is required when selected Country is Nigeria.',
+            'is_science_program.required_if' => 'The :attribute field is required when selected Country is Nigeria.',
             'intl_passport_number.required_unless' => 'The :attribute field is required when the selected country isn\'t Nigeria.',
         ];
     }
@@ -91,6 +98,7 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'last_name' => 'Last Name',
             //'name_suffix' => 'Name Suffix',
             'institution_name' => 'Institution Name',
+            'intitution_state' => 'Institution State',
             'national_id_number' => 'National Id Number',
             'degree_type' => ' Degree Type',
             'program_title' => ' Program Title',

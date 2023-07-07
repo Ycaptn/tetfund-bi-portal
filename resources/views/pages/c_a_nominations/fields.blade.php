@@ -183,7 +183,8 @@
 </div>
 
 <!-- Conference Passage Type -->
-<div id="div-conference_passage_type_ca" class="form-group mb-3 col-md-6 col-lg-4">
+<input type="hidden" name="conference_passage_type_ca" id="conference_passage_type_ca" value="medium">
+{{-- <div id="div-conference_passage_type_ca" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="conference_passage_type_ca" class="col-sm-11 col-form-label">Conference Passage Type:</label>
     <div class="col-sm-12">
         <select class="form-select" name="conference_passage_type_ca" id="conference_passage_type_ca" >
@@ -194,7 +195,7 @@
             <option value='africa'>Africa</option>
         </select>
     </div>
-</div>
+</div> --}}
 
 <!-- Attendee Department Name Field -->
 <div id="div-attendee_department_name_ca" class="form-group mb-3 col-md-6 col-lg-4">
@@ -213,14 +214,14 @@
 </div>
 
 @php
-    $sixMonthsAhead = date('Y-m-d', strtotime(date('Y-m-d') . ' +6 months'));
+    $threeMonthsAhead = date('Y-m-d', strtotime(date('Y-m-d') . ' +3 months'));
 @endphp
 
 <!-- Conference Start Date Field -->
 <div id="div-conference_start_date_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="conference_start_date_ca" class="col-sm-12 col-form-label">Conference Start Date :<i class="text-danger">-- (6 months ahead)</i></label>
+    <label for="conference_start_date_ca" class="col-sm-12 col-form-label">Conference Start Date :<i class="text-danger">-- (3 months ahead)</i></label>
     <div class="col-sm-12">
-        {!! Form::date('conference_start_date_ca', null, ['id'=>'conference_start_date_ca', 'class'=>'form-control', 'min'=>$sixMonthsAhead]) !!}
+        {!! Form::date('conference_start_date_ca', null, ['id'=>'conference_start_date_ca', 'class'=>'form-control', 'min'=>$threeMonthsAhead]) !!}
     </div>
 </div>
 
@@ -228,7 +229,7 @@
 <div id="div-conference_end_date_ca" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="conference_end_date_ca" class="col-sm-12 col-form-label">Conference End Date :<i class="text-danger">-- (Not more than 5 days after start date)</i></label>
     <div class="col-sm-12">
-        {!! Form::date('conference_end_date_ca', null, ['id'=>'conference_end_date_ca', 'class' => 'form-control', 'min'=>$sixMonthsAhead]) !!}
+        {!! Form::date('conference_end_date_ca', null, ['id'=>'conference_end_date_ca', 'class' => 'form-control', 'min'=>$threeMonthsAhead]) !!}
     </div>
 </div>
 
@@ -317,10 +318,10 @@
 </div>
 
 <!-- admission letter -->
-<div id="div-conference_attendance_letter_ca" class="form-group  col-md-4">
-    <label for="conference_attendance_letter_ca" class="col-sm-11 col-form-label">Conference Attendance Letter:</label>
+<div id="div-conference_attendance_flyer_ca" class="form-group  col-md-4">
+    <label for="conference_attendance_flyer_ca" class="col-sm-11 col-form-label">Conference Attendance Flyer:</label>
     <div class="col-sm-12">
-        <input type="file" id="conference_attendance_letter_ca" name="conference_attendance_letter_ca" class="form-control">
+        <input type="file" id="conference_attendance_flyer_ca" name="conference_attendance_flyer_ca" class="form-control">
     </div>
 </div>
 

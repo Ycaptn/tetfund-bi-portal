@@ -37,6 +37,16 @@ class BeneficiaryMemberDatatable extends DataTable
             return "N/A";
         });
 
+        $dataTable->addColumn('telephone', function ($query) {
+            if ($query->telephone != null || $query->member_type != null || $query->grade_level){
+                return  ($query->telephone!=null ? '- '. $query->telephone.'<br>' : '').
+                        ($query->member_type!=null ? '- '.ucfirst($query->member_type).' Staff<br>':'').
+                        ($query->grade_level!=null ? '- Grade-Level '.$query->grade_level.'<br>' : '').
+                        ($query->academic_member_level!=null ? '- '. ucwords(str_replace('_', ' ', $query->academic_member_level)) : '');
+            }
+            return "N/A";
+        })->escapeColumns('active')->make(true);;
+
         $dataTable->addColumn('roles', function ($query) {
             if ($query->id != null) {
                 $user = User::find($query->id);
@@ -71,15 +81,14 @@ class BeneficiaryMemberDatatable extends DataTable
                                 'fc_users.deleted_at'=>null,
                                 'tf_bi_beneficiary_members.deleted_at'=>null])
                     ->orderBy('fc_users.created_at', 'DESC')
-                    ->select('fc_users.*', 'tf_bi_beneficiary_members.beneficiary_id');
+                    ->select('fc_users.*', 'tf_bi_beneficiary_members.member_type', 'tf_bi_beneficiary_members.grade_level', 'tf_bi_beneficiary_members.academic_member_level');
         }
 
         return $model->newQuery()->join('fc_users', 'tf_bi_beneficiary_members.beneficiary_user_id', '=', 'fc_users.id')
-                    ->where([   "fc_users.organization_id"=>$this->organization->id,
-                                'fc_users.deleted_at'=>null,
+                    ->where([   'fc_users.deleted_at'=>null,
                                 'tf_bi_beneficiary_members.deleted_at'=>null])
                     ->orderBy('fc_users.created_at', 'DESC')
-                    ->select('fc_users.*', 'tf_bi_beneficiary_members.beneficiary_id');
+                    ->select('fc_users.*', 'tf_bi_beneficiary_members.member_type', 'tf_bi_beneficiary_members.grade_level', 'tf_bi_beneficiary_members.academic_member_level');
     }
 
     /**
@@ -118,8 +127,8 @@ class BeneficiaryMemberDatatable extends DataTable
         return [
             ['title'=>'Full Name','data'=>'full_name', 'name'=>'fc_users.first_name' ],
             ['title'=>'Email','data'=>'email', 'name'=>'fc_users.email' ],
-            ['title'=>'Phone','data'=>'telephone', 'name'=>'fc_users.telephone' ],
-            Column::make('roles'),
+            ['title'=>'Phone || Staff-Type || Grade-Level','data'=>'telephone', 'name'=>'fc_users.telephone' ],
+            ['title'=>'Roles','data'=>'roles', 'name'=>'tf_bi_beneficiary_members.member_type' ],
         ];
     }
 

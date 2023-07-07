@@ -99,12 +99,12 @@ class CANominationAPIController extends AppBaseController
             $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo);
         }
 
-        /*handling conference_attendance_letter upload process*/
-        if($request->hasFile('conference_attendance_letter')) {
-            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Attendance Letter";
+        /*handling conference_attendance_flyer upload process*/
+        if($request->hasFile('conference_attendance_flyer')) {
+            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Attendance Flyer";
             $discription = "This " . strtolower("Document contains $label");
 
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendance_letter);
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendance_flyer);
         } 
 
         /*handling paper_presentation upload process*/
@@ -198,16 +198,16 @@ class CANominationAPIController extends AppBaseController
             $nominationRequest->attach(auth()->user(), $label, $discription, $request->passport_photo);
         }
 
-        /*handling conference_attendance_letter update process*/
-        if($request->hasFile('conference_attendance_letter')) {
-            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Attendance Letter";
+        /*handling conference_attendance_flyer update process*/
+        if($request->hasFile('conference_attendance_flyer')) {
+            $label = $cANomination->first_name . " " . $cANomination->last_name . " CANomination Attendance Flyer";
             $discription = "This " . strtolower("Document contains $label");
 
             $attachement = $nominationRequest->get_specific_attachment($nominationRequest->id, $label); //looking for old passport photo
             if ($attachement != null) {
                 $nominationRequest->delete_attachment($label); // delete old passport photo
             }
-            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendance_letter);
+            $nominationRequest->attach(auth()->user(), $label, $discription, $request->conference_attendance_flyer);
         }
 
         /*handling paper_presentation update process*/
@@ -282,11 +282,17 @@ class CANominationAPIController extends AppBaseController
         $ca_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/ca_cost_settings/'.$input['attendee_grade_level'], $pay_load);
 
         if (isset($ca_amount_settings->country_nigeria->id) && isset($input['tf_iterum_portal_country_id'])) {
+            
+            // calculate the interval of days
+            $startDate = new \DateTime($input['conference_start_date']);
+            $endDate = new \DateTime($input['conference_end_date']);
+            $interval = $endDate->diff($startDate);
+            $days = intval($interval->days) + 1;
 
-            if ($ca_amount_settings->country_nigeria->id == $input['tf_iterum_portal_country_id']) {
-                
+            if ($ca_amount_settings->country_nigeria->id == $input['tf_iterum_portal_country_id']) {                
+
                 // setting amount column if conference is local
-                $input['dta_amount'] = floatval($ca_amount_settings->dta_amount ?? 0);
+                $input['dta_amount'] = floatval($ca_amount_settings->dta_amount ?? 0) * $days;
                 $input['local_runs_amount'] = ($input['dta_amount'] * floatval($ca_amount_settings->dta_local_runs_percentage??0)) / 100;
                 $input['conference_fee_amount_local'] = floatval($input['conference_fee_amount_local'] ?? 0);
 
@@ -310,7 +316,7 @@ class CANominationAPIController extends AppBaseController
            } elseif($ca_amount_settings->country_nigeria->id != $input['tf_iterum_portal_country_id']) {
                 
                 // setting amount column if conference is foreign
-                $input['dta_amount'] = floatval(($ca_amount_settings->estacode_amt??0) * $ca_amount_settings->dollar_exchange_rate_to_naira);
+                $input['dta_amount'] = floatval(($ca_amount_settings->estacode_amt??0) * $ca_amount_settings->dollar_exchange_rate_to_naira) * $days;
                 $input['conference_fee_amount_local'] = floatval($input['conference_fee_amount_local'] ?? 0);
                 $input['local_runs_amount'] = floatval($ca_amount_settings->foreign_visa_processing_except_ecowas_amt??0);
 

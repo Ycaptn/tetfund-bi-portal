@@ -49,7 +49,8 @@
         <div class="col-lg-12">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 row-cols-xl-4 g-3">
                 <div class="col">
-                    <select name="intervention_year1" class="form-select">
+                    <input type="hidden" name="intervention_year1" class="intervention_year1">
+                    <select id="intervention_year1" class="intervention_year1 form-select">
                         <option value="">N/A</option>
                         @if(isset($years))
                             @foreach($years as $idx=>$year)
@@ -108,6 +109,6 @@
         </div>
     </div>
 
-    <input type='hidden' id="intervention_title" name="intervention_title" value="{{ (isset($submissionRequest) && old('intervention_title') == null) ? $submissionRequest->title : old('intervention_title')  }}" />
+    <input type='hidden' id="intervention_title" name="intervention_title" value="{{ (isset($submissionRequest) && empty(old('intervention_title'))) ? $submissionRequest->title : old('intervention_title') }}" />
 
 

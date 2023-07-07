@@ -243,7 +243,7 @@
                 let itemType = $('#nomination_type').val().toUpperCase()+'Nomination';
 
                 swal({
-                    title: "Are you sure you want to save you decision in respect to this " + itemType + " request?",
+                    title: "Are you sure you want to save your decision?",
                     text: "You will not be able to revert this decision once completed.",
                     type: "warning",
                     showCancelButton: true,

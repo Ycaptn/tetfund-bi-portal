@@ -54,6 +54,7 @@ class BeneficiaryMember extends Model
         'additional_param',
         'member_type',
         'grade_level',
+        'academic_member_level',
     ];
 
     /**

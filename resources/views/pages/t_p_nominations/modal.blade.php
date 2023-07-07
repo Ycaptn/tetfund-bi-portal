@@ -21,10 +21,8 @@
 
                             <input type="hidden" id="txt-tPNomination-primary-id" value="0" />
                             <div id="div-show-txt-tPNomination-primary-id">
-                                <div class="row">
-                                    <div class="col-sm-12">
+                                <div class="row col-sm-12">
                                     @include('tf-bi-portal::pages.t_p_nominations.show_fields')
-                                    </div>
                                 </div>
                             </div>
                             <div id="div-edit-txt-tPNomination-primary-id">
@@ -108,7 +106,7 @@ $(document).ready(function() {
             $('#spn_tPNomination_email').html(response.data.email);
     		$('#spn_tPNomination_telephone').html(response.data.telephone);
     		$('#spn_tPNomination_gender').html(response.data.gender);
-    		$('#spn_tPNomination_rank_gl_equivalent').html(response.data.rank_gl_equivalent);
+    		$('#spn_tPNomination_rank_gl_equivalent').html('GL ' + response.data.rank_gl_equivalent);
     		$('#spn_tPNomination_first_name').html(response.data.first_name);
     		$('#spn_tPNomination_middle_name').html(response.data.middle_name);
     		$('#spn_tPNomination_last_name').html(response.data.last_name);
@@ -122,12 +120,12 @@ $(document).ready(function() {
     		$('#spn_tPNomination_national_id_number').html(response.data.national_id_number);
     		$('#spn_tPNomination_program_start_date').html(response.data.program_start_date);
     		$('#spn_tPNomination_program_end_date').html(response.data.program_end_date);
-    		/*$('#spn_tPNomination_final_remarks').html(response.data.final_remarks);
-    		$('#spn_tPNomination_total_requested_amount').html(response.data.total_requested_amount);
-    		$('#spn_tPNomination_total_approved_amount').html(response.data.total_approved_amount);*/
             $('#spn_tPNomination_beneficiary_institution_name').html(response.data.beneficiary.full_name);
-            $('#spn_tPNomination_institution_name').html(response.data.institution.name); 
-            $('#spn_tPNomination_country_name').html(response.data.country.name + ' (' + response.data.country.country_code + ')');
+            $('#spn_tPNomination_institution_name').html(response.data.institution_name); 
+            $('#spn_tPNomination_institution_state').html(response.data.intitution_state); 
+            $('#spn_tPNomination_institution_address').html(response.data.institution_address); 
+            $('#spn_tPNomination_total_requested_amount').html(response.data.total_requested_amount); 
+            // $('#spn_tPNomination_country_name').html(response.data.country.name + ' (' + response.data.country.country_code + ')');
 
             $("#spinner-t_p_nominations").hide();
             $("#div-save-mdl-tPNomination-modal").hide();
@@ -174,19 +172,22 @@ $(document).ready(function() {
     		$('#degree_type_tp').val(response.data.degree_type);
     		$('#program_title_tp').val(response.data.program_title);
     		$('#program_type_tp').val(response.data.program_type);
-    		/*$('#fee_amount').val(response.data.fee_amount);
-    		$('#final_remarks').val(response.data.final_remarks);
-    		$('#total_requested_amount').val(response.data.total_requested_amount);
-    		$('#total_approved_amount').val(response.data.total_approved_amount);*/
-            $('#is_science_program_tp').val(response.data.is_science_program ? '1' : '0');
+    		$('#is_science_program_tp').val(response.data.is_science_program ? '1' : '0');
+            $('#institution_name_tp').val(response.data.institution_name);
+            $('#institution_state_tp').val(response.data.intitution_state);
+            $('#institution_address_tp').val(response.data.institution_address);
 
-            var program_start_date = new Date(response.data.program_start_date).toISOString().slice(0, 10);
-            $('#program_start_date_tp').val(program_start_date);
 
-            var program_end_date = new Date(response.data.program_end_date).toISOString().slice(0, 10);
-            $('#program_end_date_tp').val(program_end_date);
+            let program_start_date = new Date(response.data.program_start_date);
+            let local_program_start_date = new Date(program_start_date.getTime() - (program_start_date.getTimezoneOffset() * 60000)).toISOString().slice(0, 10);
 
-            $('#institution_id_select_tp option[value="' + response.data.tf_iterum_portal_institution_id + '"]').prop('selected', 'selected');
+            let program_end_date = new Date(response.data.program_end_date);
+            let local_program_end_date = new Date(program_end_date.getTime() - (program_end_date.getTimezoneOffset() * 60000)).toISOString().slice(0, 10);
+
+            $('#program_start_date_tp').val(local_program_start_date);
+            $('#program_end_date_tp').val(local_program_end_date);
+
+            // $('#institution_id_select_tp option[value="' + response.data.tf_iterum_portal_institution_id + '"]').prop('selected', 'selected');
             $('#country_id_select_tp option[value="' + response.data.tf_iterum_portal_country_id + '"]').prop('selected', 'selected');
            
             $("#spinner-t_p_nominations").hide();
@@ -311,7 +312,10 @@ $(document).ready(function() {
         if ($('#email_tp').length){	formData.append('email',$('#email_tp').val());	}
 		if ($('#telephone_tp').length){	formData.append('telephone',$('#telephone_tp').val());	}
 		if ($('#beneficiary_institution_id_select_tp').length){	formData.append('beneficiary_institution_id',$('#beneficiary_institution_id_select_tp').val());	}
-        if ($('#institution_id_select_tp').length){   formData.append('tf_iterum_portal_institution_id',$('#institution_id_select_tp').val());   }
+        // if ($('#institution_id_select_tp').length){   formData.append('tf_iterum_portal_institution_id',$('#institution_id_select_tp').val());   }
+        if ($('#institution_name_tp').length){   formData.append('institution_name',$('#institution_name_tp').val());   }
+        if ($('#institution_state_tp').length){   formData.append('intitution_state',$('#institution_state_tp').val());   }
+        if ($('#institution_address_tp').length){   formData.append('institution_address',$('#institution_address_tp').val());   }
         if ($('#country_id_select_tp').length){   formData.append('tf_iterum_portal_country_id',$('#country_id_select_tp').val());   }
         if ($('#gender_tp').length){   formData.append('gender',$('#gender_tp').val());   }
 		if ($('#rank_gl_equivalent_tp').length){	formData.append('rank_gl_equivalent',$('#rank_gl_equivalent_tp').val());	}

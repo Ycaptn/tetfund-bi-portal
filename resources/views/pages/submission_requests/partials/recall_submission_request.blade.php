@@ -192,7 +192,7 @@
 			                    $('#div-request-recall-submission-request-modal-error').hide();
 			                    
 			                    swal({
-			                        title: "Submission Racall Processed.",
+			                        title: "Submission Recall Processed.",
 			                        text: "Submission Recall Processed Successfully!",
 			                        type: "success"
 			                    });

@@ -100,11 +100,83 @@
     </div>
 </div>
 
+{{-- Bulk upload modal bulk-new-beneficiary-members modal --}}
+<div class="modal fade" id="mdl-bulk-new-beneficiary-members-modal" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="lbl-beneficiary-modal-title" class="modal-title"><span class="opposite_create">Create</span> Bulk Beneficiary Users</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="offline-flag"><span class="offline-bulk-beneficiary-users">You are currently offline</span></div>
+
+            <div class="modal-body">
+                <div class="col-sm-12 alert alert-info">
+                    <i class=""><strong>NOTE:</strong> <span id='opposite_creating'>You will be creating new</span> beneficiary users for <strong>{{ ucwords(strtolower($beneficiary->full_name)); }}</strong></i>
+                </div>
+                
+                <div id="div-bulk-new-beneficiary-members-modal-error" class="alert alert-danger" role="alert"></div>
+
+                <form id="form-bulk-new-beneficiary-members-modal" class="form-bulk-new-beneficiary-members-modal">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div id="div-bulk_user" class="form-group">
+                                <label class="col-sm-12">
+                                    <b>Please upload a csv file</b>
+                                </label>
+
+                                <div class="col-sm-9">
+                                    {!! Form::file('bulk_users', ['class' => 'form-control', 'id' => 'bulk_users']) !!}
+                                </div>
+                            </div>
+
+                            <div class=" m-2">
+                                <a id="format_csv_file" src="" class="btn btn-sm btn-danger small"
+                                    data-toggle="tootip" title="Users csv file format" href="{{ asset('csv/beneficiary_staffs_upload_cvs_format.csv') }}">
+                                    <i class="fa fa-download"></i> <small>Download</small>
+                                </a>
+                                
+                                <span class="badge-secondary mb-5 ml-30">
+                                    Users csv file format:
+                                </span>                                
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        
+            <div class="modal-footer" id="div-save-bulk-new-beneficiary-members-modal">
+                <button type="button" class="btn btn-primary " id="btn-save-mdl-bulk-beneficiary-users-modal" value="add">
+                    <div id="spinner-bulk-new-beneficiary-members" class="spinner-border text-info" role="status"> 
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    Process & Create</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @push('page_scripts')
     <script type="text/javascript">
         $(document).ready(function() {
             $('.offline-beneficiary-member').hide();
+
+            // toggle visibility on Academic Staff Level div field
+            $(document).on('change', "#bi_member_type", function(e) {
+                let selected_val = $(this).val();
+                if(selected_val == 'academic') {
+                    $('#div_bi_academic_member_level').show();
+                } else {
+                    $('#bi_academic_member_level').val('');
+                    $('#div_bi_academic_member_level').hide();
+                }
+            });
+
         
             //Show Modal for New beneficiary members Entry
             $(document).on('click', ".btn-new-beneficiary-member", function(e) {
@@ -125,6 +197,15 @@
 
                 $("#spinner-beneficiary-member").hide();
                 $("#btn-new-beneficiary-member").attr('disabled', false);
+            });
+
+            //Show Modal for Bulk New beneficiary members Entry
+            $(document).on('click', "#btn-bulk-new-beneficiary-members", function(e) {
+                e.preventDefault();
+                $('#div-bulk-new-beneficiary-members-modal-error').hide();
+                $('#mdl-bulk-new-beneficiary-members-modal').modal('show');
+                $('#form-bulk-new-beneficiary-members-modal').trigger("reset");
+                $("#spinner-bulk-new-beneficiary-members").hide();
             });
 
             //Show Modal for beneficiary member password reset
@@ -259,6 +340,7 @@
                     $('#bi_staff_gender_preview').text((response.data.gender != null) ? response.data.gender.toUpperCase() : 'N/A');
                     $('#bi_staff_grade_level_preview').text((response.data.grade_level != null) ? "GL-"+response.data.grade_level: 'N/A');
                     $('#bi_staff_member_type_preview').text((response.data.member_type != null) ? response.data.member_type.toUpperCase() : 'N/A');
+                    $('#bi_academic_member_level_preview').text((response.data.academic_member_level != null) ? response.data.academic_member_level.toUpperCase().replace('_', ' ') : 'N/A');
                     // handling data for role(s)
                     $('#bi_staff_userRoles').text('N/A');
                     if(response.data.user_roles != '') {
@@ -446,6 +528,17 @@
                     $('#bi_staff_gender').val((response.data.gender != null) ? response.data.gender.toLowerCase() : '');
                     $('#bi_grade_level').val((response.data.grade_level != null) ? response.data.grade_level : '');
                     $('#bi_member_type').val((response.data.member_type != null) ? response.data.member_type : '');
+                    $('#bi_academic_member_level').val((response.data.academic_member_level != null) ? response.data.academic_member_level : '');
+                    
+                    // toggle visibility on Academic Staff Level div field
+                    if(response.data.member_type == 'academic') {
+                        $('#bi_academic_member_level').val(response.data.academic_member_level);
+                        $('#div_bi_academic_member_level').show();
+                    } else {
+                        $('#bi_academic_member_level').val('');
+                        $('#div_bi_academic_member_level').hide();
+                    }
+
                     // handling data for role(s)
                     if(response.data.user_roles != '') {
                         $.each(response.data.user_roles, function(key, value){
@@ -503,6 +596,7 @@
                 if ($('#bi_staff_gender').length){ formData.append('bi_staff_gender',$('#bi_staff_gender').val()); }
                 if ($('#bi_member_type').length){ formData.append('bi_member_type',$('#bi_member_type').val()); }
                 if ($('#bi_grade_level').length){ formData.append('bi_grade_level',$('#bi_grade_level').val()); }
+                if ($('#bi_academic_member_level').length){ formData.append('bi_academic_member_level',$('#bi_academic_member_level').val()); }
                 // handling data for role(s)
                 @if(isset($roles) && count($roles) > 0)
                     @foreach($roles as $role)
@@ -557,6 +651,77 @@
                 });
             });
 
+            // process and save bulk beneficiary users upload
+            $(document).on('click', '#btn-save-mdl-bulk-beneficiary-users-modal', function(e) {
+                e.preventDefault();
+                $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+                //check for internet status 
+                if (!window.navigator.onLine) {
+                    $('.offline-beneficiary-member').fadeIn(300);
+                    return;
+                }else{
+                    $('.offline-beneficiary-member').fadeOut(300);
+                }
+
+                $("#spinner-bulk-new-beneficiary-members").show();
+                $("#btn-save-mdl-bulk-beneficiary-users-modal").attr('disabled', true);
+
+                let formData = new FormData();
+                formData.append('_method', "POST");
+                @if (isset($organization) && $organization != null)
+                    formData.append('organization_id', '{{ $organization->id }}');
+                @endif
+                formData.append('_token', $('input[name="_token"]').val());
+
+                if ($('#bulk_users')[0].files.length > 0) {
+                    formData.append('bulk_users_file', $('#bulk_users')[0].files[0]);
+                }
+
+                $.ajax({
+                    url: "{{ route('tf-bi-portal-api.process_bulk_beneficiary_users_upload','') }}",
+                    type: "POST",
+                    data: formData,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function(result) {
+                        console.log(result);
+                        
+                        if (result.errors) {
+                            $('#div-bulk-new-beneficiary-members-modal-error').html('');
+                            $('#div-bulk-new-beneficiary-members-modal-error').show();
+                            
+                            $.each(result.errors, function(key, value){
+                                $('#div-bulk-new-beneficiary-members-modal-error').append('<li class="">'+value+'</li>');
+                            });
+                        } else {
+                            $('#div-bulk-user-modal-error').hide();
+                            window.setTimeout(function() {
+                                $('#div-bulk-new-beneficiary-members-modal-error').hide();
+                                swal({
+                                    title: "Bulk Upload Completed",
+                                    text: result.message,
+                                    type: "success"
+                                });
+                                location.reload(true);
+                            }, 20);
+                        }
+
+                        $("#spinner-bulk-new-beneficiary-members").hide();
+                        $("#btn-save-mdl-bulk-beneficiary-users-modal").attr('disabled', false);
+
+                    }, error: function(data) {
+                        console.log(data);
+                        swal("Error", "Oops an error occurred. Please try again.", "error");
+
+                        $("#spinner-bulk-new-beneficiary-members").hide();
+                        $("#btn-save-mdl-bulk-beneficiary-users-modal").attr('disabled', false);
+
+                    }
+                });
+            });
         });
     </script>
 @endpush

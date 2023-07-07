@@ -73,8 +73,8 @@ class UpdateCANominationRequest extends AppBaseFormRequest
             $return_arr['passport_photo'] = 'file|mimes:pdf,png,jpeg,jpg|max:5240';
         }
 
-        if(request()->hasFile('conference_attendance_letter') && request()->conference_attendance_letter != 'undefined') {
-            $return_arr['conference_attendance_letter'] = 'file|mimes:pdf|max:5240';
+        if(request()->hasFile('conference_attendance_flyer') && request()->conference_attendance_flyer != 'undefined') {
+            $return_arr['conference_attendance_flyer'] = 'file|mimes:pdf|max:5240';
         }
 
         if(request()->hasFile('paper_presentation') && request()->paper_presentation != 'undefined') {
@@ -128,7 +128,7 @@ class UpdateCANominationRequest extends AppBaseFormRequest
             'total_approved_amount' => 'Total Approved Aamount'
         
             'passport_photo' => 'Passport Photo',
-            'conference_attendance_letter' => 'Conference Attendance Letter',
+            'conference_attendance_flyer' => 'Conference Attendance Flyer',
             'paper_presentation' => 'Presentation Paper',
             'international_passport_bio_page' => 'International Passport Bio Page',
         ];

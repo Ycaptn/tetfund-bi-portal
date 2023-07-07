@@ -58,8 +58,8 @@
                                             <td> {{ $sn_counter += 1 }}. </td>
                                             <td> {{ $sub_allocation->year }} </td>
                                             <td>    
-                                                {{ ucwords($sub_allocation->type) }} - 
-                                                {{ $sub_allocation->name }} 
+                                                {{ ucwords($sub_allocation->type ?? $sub_allocation->intervention_beneficiary_type->type) }} - 
+                                                {{ $sub_allocation->name ?? $sub_allocation->intervention_beneficiary_type->intervention->name ?? '' }} 
                                             </td>
                                             <td> {{ $sub_allocation->allocation_code }} </td>
                                             <td> &#8358; 
@@ -97,10 +97,57 @@
             <i class="fa fa-calendar-o fa-fw"></i> <strong>Created on </strong> {{ \Carbon\Carbon::parse($submissionRequest->created_at)->format('l jS F Y') }} - {!! \Carbon\Carbon::parse($submissionRequest->created_at)->diffForHumans() !!} <br/>
 
             <i class="fa fa-bank fa-fw"></i> <b>{{ ucwords($intervention->type) }} Intervention &nbsp; - &nbsp; </b> &nbsp; {{ $intervention->name}} <br/>
-            <i class="fa fa-briefcase fa-fw"></i> <b>Purpose of Request:</b> &nbsp; {{ $submissionRequest->type }} <br/>
+            <i class="fa fa-briefcase fa-fw"></i> <b>Purpose of Request:</b> &nbsp; {{ $submissionRequest->is_astd_intervention($intervention->name)==true ? 'Request For Funding' : $submissionRequest->type }} <br/>
             <i class="fa fa-crosshairs fa-fw"></i> <b>Intervention Year(s) &nbsp; - &nbsp; </b> &nbsp; {{ $years_str }} <br/>
-            <i class="fa fa-money fa-fw"></i> <b>Total Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($fund_available) ? $fund_available : 0), 2) }} <br/>
-            <i class="fa fa-money fa-fw"></i> <b>Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>
+
+            {{-- ammount figures to be displayed based on ASTD and Non-ASTD interventions --}}
+            @if($submissionRequest->is_astd_intervention($intervention->name)==true)
+            
+            <hr style="margin: 0; border: none; border-top: 1px solid #000;">
+                <i class="fa fa-money fa-fw"></i> <b>Total Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_allocated_fund : 0), 2) }} &nbsp; <b><i><small>({{ $astd_allocations_details->allocation_end_year }} - {{ $astd_allocations_details->allocation_start_year }})</small></i></b> <br/>
+                
+                {{-- display when intervention is conference attendance --}}
+                @if(str_contains(strtolower($intervention->name), 'conference attendance'))
+                    <i class="fa fa-money fa-fw"></i> <b>Academic Staffs Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_academic_staff_allocated_fund : 0), 2) }} <br/>
+                    <i class="fa fa-money fa-fw"></i> <b>None-Academic Staffs Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_non_academic_staff_allocated_fund : 0), 2) }} <br/>
+
+                {{-- display when intervention is tetfunbd scholarship for academic staffs --}}
+                @elseif(str_contains(strtolower($intervention->name), 'tetfund scholarship'))
+                    <i class="fa fa-money fa-fw"></i> <b>Ph.D Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_phd_allocated_fund : 0), 2) }} <br/>
+                    <i class="fa fa-money fa-fw"></i> <b>M.Sc. Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_msc_allocated_fund : 0), 2) }} <br/>
+                    <i class="fa fa-money fa-fw"></i> <b>Post. Doc. Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_post_doc_allocated_fund : 0), 2) }} <br/>
+                    <i class="fa fa-money fa-fw"></i> <b>Bench-Work Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_bw_allocated_fund : 0), 2) }} <br/>
+                @endif
+
+            <hr style="margin: 0; border: none; border-top: 1px solid #000;">
+                <i class="fa fa-money fa-fw"></i> <b>Current Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_available_fund : 0), 2) }} <br/>
+                
+                {{-- display when intervention is conference attendance --}}
+                @if(str_contains(strtolower($intervention->name), 'conference attendance'))
+                    <i class="fa fa-money fa-fw"></i> <b>Academic Staffs Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_academic_staff_available_fund : 0), 2) }} <br/>
+                    <i class="fa fa-money fa-fw"></i> <b>None-Academic Staffs Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_non_academic_staff_available_fund : 0), 2) }} <br/>
+
+                {{-- display when intervention is tetfunbd scholarship for academic staffs --}}
+                @elseif(str_contains(strtolower($intervention->name), 'tetfund scholarship'))
+                    <i class="fa fa-money fa-fw"></i> <b>Ph.D Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_phd_available_fund : 0), 2) }} <br/>
+                    <i class="fa fa-money fa-fw"></i> <b>M.Sc. Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_msc_available_fund : 0), 2) }} <br/>
+                    <i class="fa fa-money fa-fw"></i> <b>Post. Doc. Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_post_doc_available_fund : 0), 2) }} <br/>
+                    <i class="fa fa-money fa-fw"></i> <b>Bench-Work Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_bw_available_fund : 0), 2) }} <br/>
+                @endif
+
+            <hr style="margin: 0; border: none; border-top: 1px solid #000;">
+                <i class="fa fa-money fa-fw"></i> <b>Total Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>                
+
+                @if(isset($astd_allocations_details->total_available_fund))
+                    <i class="fa fa-money fa-fw"></i> <b>Expected Balance After Disbursement &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($astd_allocations_details->total_available_fund - $submissionRequest->amount_requested, 2) }} <br/>
+                @endif
+            <hr style="margin: 0; border: none; border-top: 1px solid #000;">
+
+            @else
+                <i class="fa fa-money fa-fw"></i> <b>Total Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($fund_available) ? $fund_available : 0), 2) }} <br/>
+                <i class="fa fa-money fa-fw"></i> <b>Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>
+            @endif
+
             <i class="fa fa-thumbs-up fa-fw"> </i><b>Current Stage &nbsp; - &nbsp; </b> &nbsp; {{ strtoupper($submitted_request_data->work_item->active_assignment->assigned_user->department->long_name ?? $submissionRequest->status) }}<br/>
             @if($submissionRequest->is_aip_request && !empty($submitted_request_data) && $submitted_request_data->request_status == 'reprioritized')
                 <i class="text-danger">
@@ -131,7 +178,9 @@
                     @endif --}}
 
                     {{-- Recall Submission request--}}
-                    @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && $submissionRequest->is_aip_request && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==false && ($submitted_request_data->request_status!='pending-recall'|| $submitted_request_data->request_status!='recalled'))
+                    @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && 
+                    ($submissionRequest->is_aip_request || $submissionRequest->is_first_tranche_request || $submissionRequest->is_second_tranche_request || $submissionRequest->is_third_tranche_request || $submissionRequest->is_final_tranche_request ) && 
+                    !empty($submitted_request_data) && ($submitted_request_data->has_generated_aip==false || $submitted_request_data->has_generated_disbursement_memo==false) && ($submitted_request_data->request_status!='pending-recall'|| $submitted_request_data->request_status!='recalled'))
                         @include('tf-bi-portal::pages.submission_requests.partials.recall_submission_request')
                     @endif
 
@@ -213,7 +262,7 @@
                 <small>
                     @if(($submitted_request_data->has_generated_aip || $submitted_request_data->has_generated_disbursement_memo) && $submitted_request_data->request_status!='recalled')
                         <span class="text-success">
-                            Please note that your <b>{{$submissionRequest->is_aip_request==true ? 'Approval-In-Principle (AIP)' : $submissionRequest->type.' Request' }}</b> has been completely processed{!! ucwords(' <b>@ TETFund ' . $dept_name . ' Department.</b>' ?? '.') !!}
+                            Please note that your <b>{{$submissionRequest->is_aip_request==true ? ($submissionRequest->is_astd_intervention($intervention->name)==true ? 'Request for Funding' : 'Approval-In-Principle (AIP)') : $submissionRequest->type.' Request' }}</b> has been completely processed{!! ucwords(' <b>@ TETFund ' . $dept_name . ' Department.</b>' ?? '.') !!}
 
                             @if($approved_tranche_document != null && $submissionRequest->is_aip_request==false)
                                 <form action="{{route('display-response-attachment')}}" target="__blank" method="POST">
@@ -233,7 +282,7 @@
                         </span>
                     @else
                         <span class="text-danger"> 
-                            Please note that your <b>{{$submissionRequest->is_aip_request==true ? 'Approval-In-Principle (AIP)' : $submissionRequest->type.' Request' }}</b> is currently being processed{!! ucwords(' <b>@ TETFund ' . $dept_name . ' Department.</b>' ?? '.') !!}
+                            Please note that your <b>{{$submissionRequest->is_aip_request==true ? ($submissionRequest->is_astd_intervention($intervention->name)==true ? 'Request for Funding' : 'Approval-In-Principle (AIP)') : $submissionRequest->type.' Request' }}</b> is currently being processed{!! ucwords(' <b>@ TETFund ' . $dept_name . ' Department.</b>' ?? '.') !!}
                             Once final approval is completed, you will be contacted for collection. 
 
                             @if($submitted_request_data->request_status=='pending-recall')
@@ -246,7 +295,7 @@
                 </small>
             @else
                 <small class="text-danger">
-                    Please note that your <b>{{$submissionRequest->is_aip_request==true ? 'Approval-In-Principle (AIP)' : $submissionRequest->type.' Request' }}</b> is yet to be submitted to TETFund.
+                    Please note that your <b>{{$submissionRequest->is_aip_request==true ? ($submissionRequest->is_astd_intervention($intervention->name)==true ? 'Request for Funding' : 'Approval-In-Principle (AIP)') : $submissionRequest->type.' Request' }}</b> is yet to be submitted to TETFund.
                 </small>
             @endif
         </div>

@@ -7,7 +7,7 @@ use Response;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-
+use App\Models\Beneficiary;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -158,7 +158,7 @@ class AuthController extends AppBaseController
         $is_new_user = false;
         $user = User::where('email', $request->get('email'))->first();
 
-        if ($user==null) {
+        if (empty($user)) {
             $user = new User();
             $is_new_user = true;
         }
@@ -178,10 +178,6 @@ class AuthController extends AppBaseController
             'bi_student' => 'BI-student',
         ];
 
-        if ($request->has('role') && $roles_arr[$request->input('role')]) {
-            $user->syncRoles([$roles_arr[$request->input('role')]]);    
-        }
-
         if ($request->has('password')) {
             $user_data['password'] = bcrypt($request->input('password'));
         }
@@ -189,7 +185,21 @@ class AuthController extends AppBaseController
         if ($is_new_user==false) {
             $user->update($user_data);
         } else {
-            $user->create($user_data);
+            $user = $user->create($user_data);
+        }
+        if ($request->has('role') && $roles_arr[$request->input('role')]) {
+            $user->syncRoles([$roles_arr[$request->input('role')]]);    
+        }
+        
+        $beneficiary = Beneficiary::where([
+            'tf_iterum_portal_key_id' => $request->beneficiary_id,
+        ])->first();
+
+        if(!empty($beneficiary)){
+           $member = \App\Models\BeneficiaryMember::firstOrNew(['beneficiary_user_id' => $user->id,'beneficiary_id' => $beneficiary->id]);
+           $member->organization_id = $org->id;
+           $member->beneficiary_tetfund_iterum_id = $beneficiary->tf_iterum_portal_key_id;
+           $member->save();
         }
         
         return $this->sendResponse($user_data, "User record successfully sync.");

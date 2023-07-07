@@ -88,6 +88,7 @@ class TETFundServer {
     }
     
     public static function getInterventionChecklistData($checklist_name, $additional_checklist=null) {
+        $checklist_name = str_replace('/', '%252F', $checklist_name);
         $server_api_url = Config::get('keys.tetfund.server_api_url');
         $token = self::get_auth_token();
         $checklist_group_name_audit = $additional_checklist['checklist_group_name_audit'] ?? null;
@@ -95,7 +96,7 @@ class TETFundServer {
         $api_response = curl_exec($checklists);
         $api_response_data = json_decode($api_response);
         curl_close ($checklists);
-        return ($api_response != null && $api_response_data !=null && is_array($api_response_data->data)) ?  $api_response_data->data : [];
+        return ($api_response != null && $api_response_data !=null && isset($api_response_data->data)) ?  $api_response_data->data : [];
     }
 
     public static function getFundAvailabilityData($beneficiary_id, $tf_iterum_intervention_line_key_id, $years=null, $allocation_details=false) {
