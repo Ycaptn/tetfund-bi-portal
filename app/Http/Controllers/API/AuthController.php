@@ -181,6 +181,10 @@ class AuthController extends AppBaseController
         if ($request->has('password')) {
             $user_data['password'] = bcrypt($request->input('password'));
         }
+
+        if ($request->has('status')) {
+            $user_data['is_disabled'] = ($request->get('status')=='active') ? false : true;
+        }
         
         if ($is_new_user==false) {
             $user->update($user_data);

@@ -46,7 +46,6 @@ $orgRoutes = function() {
                 Route::get('show_beneficiary_member/{id}', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'show_beneficiary_member'])->name('show_beneficiary_member');
                 Route::put('update_beneficiary_member/{id}', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'update_beneficiary_member'])->name('update_beneficiary_member');
                 Route::put('reset_password_beneficiary_member/{id}', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'reset_password_beneficiary_member'])->name('reset_password_beneficiary_member');
-                Route::get('show_beneficiary_member/{id}', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'show_beneficiary_member'])->name('show_beneficiary_member');
                 Route::get('enable_disable_beneficiary_member/{id}', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'enable_disable_beneficiary_member'])->name('enable_disable_beneficiary_member');
                 Route::delete('delete_beneficiary_member/{id}', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'delete_beneficiary_member'])->name('delete_beneficiary_member');
                 Route::post('process_bulk_beneficiary_users_upload', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'processBulkBeneficiaryUsersUpload'])->name('process_bulk_beneficiary_users_upload');

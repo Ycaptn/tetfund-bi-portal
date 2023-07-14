@@ -3,8 +3,8 @@
 namespace App\Http\Requests\API;
 
 use App\Models\Beneficiary;
-use App\Http\Requests\AppBaseFormRequest;
 use Spatie\Permission\Models\Role;
+use App\Http\Requests\AppBaseFormRequest;
 
 
 class CreateBeneficiaryMemberAPIRequest extends AppBaseFormRequest

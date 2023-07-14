@@ -45,7 +45,7 @@ class BeneficiaryMemberDatatable extends DataTable
                         ($query->academic_member_level!=null ? '- '. ucwords(str_replace('_', ' ', $query->academic_member_level)) : '');
             }
             return "N/A";
-        })->escapeColumns('active')->make(true);;
+        })->escapeColumns('active')->make(true);
 
         $dataTable->addColumn('roles', function ($query) {
             if ($query->id != null) {
