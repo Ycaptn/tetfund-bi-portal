@@ -72,7 +72,10 @@ class CANominationAPIController extends AppBaseController
     {
         $bi_beneficiary = Beneficiary::find($request->get('beneficiary_institution_id'));
         $input = $this->set_ca_nominee_amounts($request->all(), $bi_beneficiary);
-        
+
+        if($input == false){
+            return $this->sendError('Something Went wrong please try again. If the problem persists please contact the system administrator.');
+        }
         /** @var CANomination $cANomination */
         $cANomination = CANomination::create($input);
         
@@ -181,6 +184,9 @@ class CANominationAPIController extends AppBaseController
 
         $bi_beneficiary = Beneficiary::find($request->get('beneficiary_institution_id'));
         $input = $this->set_ca_nominee_amounts($request->all(), $bi_beneficiary);
+        if($input == false){
+            return $this->sendError('Something Went wrong please try again. If the problem persists please contact the system administrator.');
+        }
 
         $cANomination->fill($input);
         $cANomination->save();
@@ -280,7 +286,9 @@ class CANominationAPIController extends AppBaseController
         $pay_load = [ '_method' => 'GET'];
         $tetFundServer = new TETFundServer();
         $ca_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/ca_cost_settings/'.$input['attendee_grade_level'], $pay_load);
-
+        if(is_array($ca_amount_settings) && count($ca_amount_settings) == 0){
+            return false;
+        }
         if (isset($ca_amount_settings->country_nigeria->id) && isset($input['tf_iterum_portal_country_id'])) {
             
             // calculate the interval of days
