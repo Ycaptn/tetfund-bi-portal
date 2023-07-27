@@ -73,6 +73,7 @@ class TSASNominationAPIController extends AppBaseController
         $input = $this->set_tsas_nominee_amounts($request->all(), $bi_beneficiary);
 
         if($input == false){
+            NominationRequest::find($request->nomination_request_id)->delete();
             return $this->sendError('Something Went wrong please try again. If the problem persists please contact the system administrator.');
         }
         /** @var TSASNomination $tSASNomination */

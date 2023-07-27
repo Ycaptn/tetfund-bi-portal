@@ -72,6 +72,7 @@ class TPNominationAPIController extends AppBaseController
         $bi_beneficiary = Beneficiary::find($request->get('beneficiary_institution_id'));
         $input = $this->set_tp_nominee_amounts($request->all(), $bi_beneficiary);
         if($input == false){
+            NominationRequest::find($request->nomination_request_id)->delete();
             return $this->sendError('Something Went wrong please try again. If the problem persists please contact the system administrator.');
         }
         /** @var TPNomination $tPNomination */
