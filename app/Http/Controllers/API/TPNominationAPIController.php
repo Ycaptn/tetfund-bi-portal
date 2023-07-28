@@ -71,7 +71,10 @@ class TPNominationAPIController extends AppBaseController
     {
         $bi_beneficiary = Beneficiary::find($request->get('beneficiary_institution_id'));
         $input = $this->set_tp_nominee_amounts($request->all(), $bi_beneficiary);
-
+        if($input == false){
+            NominationRequest::find($request->nomination_request_id)->delete();
+            return $this->sendError('Something Went wrong please try again. If the problem persists please contact the system administrator.');
+        }
         /** @var TPNomination $tPNomination */
         $tPNomination = TPNomination::create($input);
         
@@ -165,7 +168,9 @@ class TPNominationAPIController extends AppBaseController
 
         $bi_beneficiary = Beneficiary::find($request->get('beneficiary_institution_id'));
         $input = $this->set_tp_nominee_amounts($request->all(), $bi_beneficiary);
-
+        if($input == false){
+            return $this->sendError('Something Went wrong please try again. If the problem persists please contact the system administrator.');
+        }
         $tPNomination->fill($input);
         $tPNomination->save();
         $nominationRequest = $tPNomination->nomination_request;
@@ -239,7 +244,9 @@ class TPNominationAPIController extends AppBaseController
         $pay_load = [ '_method' => 'GET'];
         $tetFundServer = new TETFundServer();
         $tp_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/tp_cost_settings/'.$input['rank_gl_equivalent'], $pay_load);
-
+        if(is_array($tp_amount_settings) && count($tp_amount_settings) == 0){
+            return false;
+        }
         if (!empty($tp_amount_settings)) {
             // no. of days
             $date_diff = strtotime($input['program_end_date']) - strtotime($input['program_start_date']);

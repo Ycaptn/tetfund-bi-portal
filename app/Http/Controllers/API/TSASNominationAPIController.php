@@ -72,6 +72,10 @@ class TSASNominationAPIController extends AppBaseController
         $bi_beneficiary = Beneficiary::find($request->get('beneficiary_institution_id'));
         $input = $this->set_tsas_nominee_amounts($request->all(), $bi_beneficiary);
 
+        if($input == false){
+            NominationRequest::find($request->nomination_request_id)->delete();
+            return $this->sendError('Something Went wrong please try again. If the problem persists please contact the system administrator.');
+        }
         /** @var TSASNomination $tSASNomination */
         $tSASNomination = TSASNomination::create($input);
         
@@ -196,7 +200,9 @@ class TSASNominationAPIController extends AppBaseController
 
         $bi_beneficiary = Beneficiary::find($request->get('beneficiary_institution_id'));
         $input = $this->set_tsas_nominee_amounts($request->all(), $bi_beneficiary);
-
+        if($input == false){
+            return $this->sendError('Something Went wrong please try again. If the problem persists please contact the system administrator.');
+        }
         $tSASNomination->fill($input);
         $tSASNomination->save();
         $nominationRequest = $tSASNomination->nomination_request;
@@ -318,13 +324,16 @@ class TSASNominationAPIController extends AppBaseController
         $pay_load = [ '_method' => 'GET', 'get_country_zone_through_country' => true];
         $tetFundServer = new TETFundServer();
         $tsas_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/tsas_country_zones/'.$input['tf_iterum_portal_country_id'], $pay_load);
-
+        
+        if(is_array($tsas_amount_settings) && count($tsas_amount_settings) == 0){
+            return false;
+        }
         if (!empty($tsas_amount_settings) && isset($input['degree_type']) && isset($input['country_nigeria_id'])) {
             $exchange_rate_to_naira = $tsas_amount_settings->dollar_exchange_rate_to_naira ?? optional($tsas_amount_settings->tsas_country)->exchange_rate_to_naira ?? 1;
             
             // flag to identified selected country
             $is_nigeria = $input['country_nigeria_id']==$input['tf_iterum_portal_country_id'] ? true : false;
-
+            
             if ($input['degree_type'] == 'Ph.D') {
 
                 // setting amount if TSAS is Ph.D request
