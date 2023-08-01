@@ -40,7 +40,6 @@ $orgRoutes = function() {
                 Route::post('/sync-beneficiary', [App\Http\Controllers\API\BeneficiaryAPIController::class, 'syncTFPortalBeneficiary']);
                 Route::post('/logout', [App\Http\Controllers\API\AuthController::class, 'logout']);
 
-                Route::post('beneficiaries/sync-bims-tetfund-id', [ \App\Http\Controllers\API\BeneficiaryAPIController::class, 'syncBimsTetfundId'])->name('beneficiaries.sync_bims_tetfund_id');
                 Route::resource('beneficiaries', \App\Http\Controllers\API\BeneficiaryAPIController::class);
                 Route::resource('committee_meeting_minutes', \App\Http\Controllers\API\CommitteeMeetingsMinutesController::class);
                 
