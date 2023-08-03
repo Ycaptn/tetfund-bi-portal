@@ -16,7 +16,13 @@ $orgRoutes = function() {
 
         // API Auth Controller Login Endpoint
         Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
+        Route::name('tf-bi-portal-api.')->prefix('tf-bi-portal-api')->group(function(){
+            Route::match(['put', 'patch'],'beneficiaries/sync-bims-tetfund-id', [ \App\Http\Controllers\API\BeneficiaryAPIController::class, 'syncBimsTetfundId'])->name('beneficiaries.sync_bims_tetfund_id');
+            Route::get('institutions', [ \App\Http\Controllers\API\BeneficiaryAPIController::class, 'institutionsList'])->name('beneficiaries.institutions');
+            Route::get('institutions/bims-sync-list', [ \App\Http\Controllers\API\BeneficiaryAPIController::class, 'institutionsBimsSyncList'])->name('beneficiaries.institutions.bimsSync');
+            Route::get('institutions/bims-unsync-list', [ \App\Http\Controllers\API\BeneficiaryAPIController::class, 'institutionsBimsUnSyncList'])->name('beneficiaries.institutions.bimsUnsync');
 
+        });
         Route::middleware(['auth:sanctum'])->group(function () {
 
             \FoundationCore::api_routes();
@@ -34,7 +40,6 @@ $orgRoutes = function() {
                 Route::post('/sync-beneficiary', [App\Http\Controllers\API\BeneficiaryAPIController::class, 'syncTFPortalBeneficiary']);
                 Route::post('/logout', [App\Http\Controllers\API\AuthController::class, 'logout']);
 
-                Route::match(['put', 'patch'],'beneficiaries/sync-bims-tetfund-id', [ \App\Http\Controllers\API\BeneficiaryAPIController::class, 'syncBimsTetfundId'])->name('beneficiaries.sync_bims_tetfund_id');
                 Route::resource('beneficiaries', \App\Http\Controllers\API\BeneficiaryAPIController::class);
                 Route::resource('committee_meeting_minutes', \App\Http\Controllers\API\CommitteeMeetingsMinutesController::class);
                 

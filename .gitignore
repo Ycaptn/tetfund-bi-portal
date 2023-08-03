@@ -2,6 +2,7 @@
 /public/hot
 /public/uploads
 /public/storage
+/public/beneficiaries_bims_unsync.csv
 /storage/*.key
 /vendor
 .vscode

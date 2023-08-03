@@ -24,6 +24,8 @@ use Hasob\FoundationCore\Traits\Attachable;
 use Hasob\FoundationCore\Traits\Artifactable;
 use Hasob\FoundationCore\Traits\OrganizationalConstraint;
 
+use TETFund\BIMSOnboarding\Models\BIMSRecord;
+
 use Eloquent as Model;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -154,4 +156,7 @@ class Beneficiary extends Model
         return false;
     }
 
+    public function bimsRecords(){
+        return $this->hasMany(BIMSRecord::class);
+    }
 }
