@@ -232,6 +232,7 @@ class SubmissionRequestController extends BaseController
 
     /* implement processing success */
     public function processSubmissionRequestAttachment(ProcessAttachmentsSubmissionRequest $request, $id) {
+        $any_new_attachment = false;
         $attachment_inputs = $request->all();
         $submissionRequest = SubmissionRequest::find($request->id);
 
@@ -278,6 +279,7 @@ class SubmissionRequestController extends BaseController
                     $discription = 'This Document Contains the ' . $concate_description_label;
 
                     $submissionRequest->attach(auth()->user(), $label, $discription, $attachment_inputs[$checklist_input_name]);
+                    $any_new_attachment = true;
                 }
             }
         }
@@ -285,12 +287,19 @@ class SubmissionRequestController extends BaseController
         //handling additional files submission
         if (isset($request->additional_attachment) && $request->hasFile('additional_attachment')) {
             $label = Str::limit($request->additional_attachment_name.' Additional Attachment', 495, ""); 
+            $any_new_attachment = true;
             $discription = 'This Document Contains the ' . $label ;
             $submissionRequest->attach(auth()->user(), $label, $discription, $attachment_inputs['additional_attachment']);
         }   
 
-        $success_message = 'Submission Request Attachments saved successfully!';
-        return redirect()->back()->with('success', $success_message);
+
+        if ($any_new_attachment) {
+            $success_message = 'Submission Request Attachments saved successfully!';
+            return redirect()->back()->with('success', $success_message);
+        }
+
+        $error_message = 'No new file selection was made or provided for this Submission Request!';
+        return redirect()->back()->with('error', $error_message);
     
     }
 
