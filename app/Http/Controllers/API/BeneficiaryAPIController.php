@@ -564,11 +564,12 @@ class BeneficiaryAPIController extends AppBaseController
         foreach ($institutions as $key => $institution){
             
             $bnf_query = Beneficiary::where('full_name',$institution->name);
-            if(!empty($institution->short_name)){
-                $bnf_query->orWhere('short_name', $institution->short_name);
+            $beneficiary = $bnf_query->first();
+
+            if(empty($beneficiary) && !empty($institution->short_name)){
+                $beneficiary = $bnf_query->orWhere('short_name', $institution->short_name)->first();
             }
             
-            $beneficiary = $bnf_query->first();
             
             if(empty($beneficiary) || empty($institution->id) ){
                 \Log::info($institution->name." || ".$institution->name);
