@@ -303,116 +303,97 @@
             }else{
                 $('.offline-request-for-monitoring-evaluation').fadeOut(300);
             }
-
-
+                
             swal({
-                title: "Please confirm the request for Monitoring and Evaluation",
-                text: "Your request for Minitoring and Evaluation will be processed once comfirmed.",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonClass: "btn-danger",
-                confirmButtonText: "Yes request",
-                cancelButtonText: "No don't request",
-                closeOnConfirm: false,
-                closeOnCancel: true
-
-            }, function(isConfirm) {
-
-                if (isConfirm) {
-                    swal({
-                        title: '<div id="spinner-request-related" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br>Processing...',
-                        text: 'Please wait while request for Monitoring and Evaluation is being processed <br><br> Do not refresh this page! ',
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        html: true
-                    });
-
-                    let formData = new FormData();
-                    let primaryId = $('#m_r_primary_id').val();
-                    let actionTypeAlert = 'Saved';  
-                    let actionType = "POST";
-                    let endPointUrl = "{{ route('tf-bi-portal-api.submission_requests.store') }}";
-
-                    if (primaryId != "0"){
-                        actionType = "PUT";
-                        endPointUrl = "{{ route('tf-bi-portal-api.submission_requests.update','') }}/"+primaryId;
-                        formData.append('id', primaryId);
-                        actionTypeAlert = 'Updated';
-                    }
-
-                    formData.append('_method', actionType);
-                    formData.append('_token', $('input[name="_token"]').val());
-                    formData.append('is_monitoring_request', 1);
-
-                    if ($('#type_of_monitoring_request').length){ formData.append('type', $('#type_of_monitoring_request').val()); }
-                    if ($('#proposed_monitoring_date').length){ formData.append('proposed_request_date', $('#proposed_monitoring_date').val()); }
-                    
-                    @if(isset($can_request_monitoring) && $can_request_monitoring==true)
-                        if(primaryId=='0') {
-                            if ('{{$title}}'.length){ formData.append('title', '{{$title}}'); }
-                            if ('{{$tf_iterum_intervention_line_key_id}}'.length){ formData.append('tf_iterum_intervention_line_key_id', '{{$tf_iterum_intervention_line_key_id}}'); }
-                            if ('{{$intervention_year1}}'.length){ formData.append('intervention_year1', '{{$intervention_year1}}'); }
-                            if ('{{$intervention_year2}}'.length){ formData.append('intervention_year2', '{{$intervention_year2}}'); }
-                            if ('{{$intervention_year3}}'.length){ formData.append('intervention_year3', '{{$intervention_year3}}'); }
-                            if ('{{$intervention_year4}}'.length){ formData.append('intervention_year4', '{{$intervention_year4}}'); }
-                            if ('{{$parent_id}}'.length){ formData.append('parent_id', '{{$parent_id}}'); }
-                            if ('{{$amount_requested}}'.length){ formData.append('amount_requested', '{{$amount_requested}}'); }
-                        }
-                    @endif
-
-                    if($('#optional_attachment').get(0).files.length != 0){
-                        formData.append('optional_attachment', $('#optional_attachment')[0].files[0]);
-                    }
-
-                    $.ajax({
-                        url: endPointUrl,
-                        type: "POST",
-                        data: formData,
-                        cache: false,
-                        processData:false,
-                        contentType: false,
-                        dataType: 'json',
-                        success: function(result) {
-                            if(result.errors) {
-                                swal.close();
-                                $('#div-request-monitoring-evaluation-modal-error').html('');
-                                $('#div-request-monitoring-evaluation-modal-error').show();
-                                
-                                $.each(result.errors, function(key, value){
-                                    $('#div-request-monitoring-evaluation-modal-error').append('<li class="">'+value+'</li>');
-                                });
-                            } else {
-                                $('#div-request-monitoring-evaluation-modal-error').hide();
-                                
-                                swal({
-                                    title: "Submission Request Saved",
-                                    text: "Monitoring Request Submission "+ actionTypeAlert +" Successfully!",
-                                    type: "success"
-                                });
-                                
-                                @if(isset($redired_to_details_page_on_edit_from_card_list))
-                                    location.href = "{{ route('tf-bi-portal.showMonitoring', '') }}/"+primaryId;
-                                @else
-                                    window.location.reload(true);
-                                @endif
-                            }
-
-                            $("#spinner-request-monitoring-evaluation").hide();
-                            $("#btn-save-mdl-request-monitoring-evaluation").attr('disabled', false);
-                            
-                        }, error: function(data) {
-                            console.log(data);
-                            swal("Error", "Oops an error occurred. Please try again.", "error");
-
-                            $("#spinner-request-monitoring-evaluation").hide();
-                            $("#btn-save-mdl-request-monitoring-evaluation").attr('disabled', false);
-
-                        }
-                    });
-                }
-
+                title: '<div id="spinner-request-related" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br>Processing...',
+                text: 'Please wait while request for Monitoring and Evaluation is being processed <br><br> Do not refresh this page! ',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                html: true
             });
 
+            let formData = new FormData();
+            let primaryId = $('#m_r_primary_id').val();
+            let actionTypeAlert = 'Saved';  
+            let actionType = "POST";
+            let endPointUrl = "{{ route('tf-bi-portal-api.submission_requests.store') }}";
+
+            if (primaryId != "0"){
+                actionType = "PUT";
+                endPointUrl = "{{ route('tf-bi-portal-api.submission_requests.update','') }}/"+primaryId;
+                formData.append('id', primaryId);
+                actionTypeAlert = 'Updated';
+            }
+
+            formData.append('_method', actionType);
+            formData.append('_token', $('input[name="_token"]').val());
+            formData.append('is_monitoring_request', 1);
+
+            if ($('#type_of_monitoring_request').length){ formData.append('type', $('#type_of_monitoring_request').val()); }
+            if ($('#proposed_monitoring_date').length){ formData.append('proposed_request_date', $('#proposed_monitoring_date').val()); }
+            
+            @if(isset($can_request_monitoring) && $can_request_monitoring==true)
+                if(primaryId=='0') {
+                    if ('{{$title}}'.length){ formData.append('title', '{{$title}}'); }
+                    if ('{{$tf_iterum_intervention_line_key_id}}'.length){ formData.append('tf_iterum_intervention_line_key_id', '{{$tf_iterum_intervention_line_key_id}}'); }
+                    if ('{{$intervention_year1}}'.length){ formData.append('intervention_year1', '{{$intervention_year1}}'); }
+                    if ('{{$intervention_year2}}'.length){ formData.append('intervention_year2', '{{$intervention_year2}}'); }
+                    if ('{{$intervention_year3}}'.length){ formData.append('intervention_year3', '{{$intervention_year3}}'); }
+                    if ('{{$intervention_year4}}'.length){ formData.append('intervention_year4', '{{$intervention_year4}}'); }
+                    if ('{{$parent_id}}'.length){ formData.append('parent_id', '{{$parent_id}}'); }
+                    if ('{{$amount_requested}}'.length){ formData.append('amount_requested', '{{$amount_requested}}'); }
+                }
+            @endif
+
+            if($('#optional_attachment').get(0).files.length != 0){
+                formData.append('optional_attachment', $('#optional_attachment')[0].files[0]);
+            }
+
+            $.ajax({
+                url: endPointUrl,
+                type: "POST",
+                data: formData,
+                cache: false,
+                processData:false,
+                contentType: false,
+                dataType: 'json',
+                success: function(result) {
+                    if(result.errors) {
+                        swal.close();
+                        $('#div-request-monitoring-evaluation-modal-error').html('');
+                        $('#div-request-monitoring-evaluation-modal-error').show();
+                        
+                        $.each(result.errors, function(key, value){
+                            $('#div-request-monitoring-evaluation-modal-error').append('<li class="">'+value+'</li>');
+                        });
+                    } else {
+                        $('#div-request-monitoring-evaluation-modal-error').hide();
+                        
+                        swal({
+                            title: "Submission Request Saved",
+                            text: "Monitoring Request Submission "+ actionTypeAlert +" Successfully!",
+                            type: "success"
+                        });
+                        
+                        @if(isset($redired_to_details_page_on_edit_from_card_list))
+                            location.href = "{{ route('tf-bi-portal.showMonitoring', '') }}/"+primaryId;
+                        @else
+                            window.location.reload(true);
+                        @endif
+                    }
+
+                    $("#spinner-request-monitoring-evaluation").hide();
+                    $("#btn-save-mdl-request-monitoring-evaluation").attr('disabled', false);
+                    
+                }, error: function(data) {
+                    console.log(data);
+                    swal("Error", "Oops an error occurred. Please try again.", "error");
+
+                    $("#spinner-request-monitoring-evaluation").hide();
+                    $("#btn-save-mdl-request-monitoring-evaluation").attr('disabled', false);
+
+                }
+            });
 
         });
     });
