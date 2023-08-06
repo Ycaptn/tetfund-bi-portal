@@ -552,25 +552,79 @@ class BeneficiaryAPIController extends AppBaseController
 
     public function syncBimsTetfundId(Organization $org, Request $request){
         $bims_tetfund_server = new BIMSTETFundServer();
-        $institions = $bims_tetfund_server->getInstitionsList();
+        $institutions = $bims_tetfund_server->getInstitionsList();
+        Beneficiary::where('id','<>', null)->update(['bims_tetfund_id'=>null]);
+
         $beneficiaries_sync = 0;
 
-        if(is_null($institions) || empty($institions)){
+        if(is_null($institutions) || empty($institutions)){
             return $this->sendError('BIMS TETFUND instititions list is empty');
         }
 
-        foreach ($institions as $key => $institution){
-            $beneficiary = Beneficiary::where('full_name','LIKE', '%'.$institution->name.'%')
-            ->orWhere('short_name', 'LIKE', '%'.$institution->short_name.'%')->first();
+        foreach ($institutions as $key => $institution){
+            
+            $bnf_query = Beneficiary::where('full_name',$institution->name);
+            $beneficiary = $bnf_query->first();
 
-            if(is_null($beneficiary))
-            continue;
+            if(empty($beneficiary) && !empty($institution->short_name)){
+                $beneficiary = $bnf_query->orWhere('short_name', $institution->short_name)->first();
+            }
+            
+            
+            if(empty($beneficiary) || empty($institution->id) ){
+                \Log::info($institution->name." || ".$institution->name);
+                continue;
+            }
 
             $beneficiary->bims_tetfund_id = $institution->id;
             $beneficiary->save();
-            $beneficiaries_sync++;
+        
+            $beneficiaries_sync += 1;
+            
         }
 
-        return $this->sendResponse(null, count($institions).' BIMS TETFUND institutions retrieved. '. $beneficiaries_sync.' of '.Beneficiary::all()->count().' beneficiaries synchronized successfully' );
+        return $this->sendResponse(null, count($institutions).' BIMS TETFUND institutions retrieved. '. $beneficiaries_sync.' of '.Beneficiary::count().' beneficiaries synchronized successfully' );
+    }
+
+    public function institutionsList(Organization $org, Request $request){
+       $institutions =  Beneficiary::select(
+            'tf_iterum_portal_key_id as id',
+            'short_name', 
+            'full_name', 
+            'official_email', 
+            'official_website',
+            'type', 
+            'geo_zone',
+            'bims_tetfund_id as bims_institution_id'
+        )->orderBy('short_name')->get();
+        return $this->sendResponse($institutions, count($institutions).' institutions retrieved' );
+    }
+
+    public function institutionsBimsSyncList(Organization $org, Request $request){
+        $institutions =  Beneficiary::select(
+            'tf_iterum_portal_key_id as id',
+            'short_name', 
+            'full_name', 
+            'official_email', 
+            'official_website',
+            'type', 
+            'geo_zone',
+            'bims_tetfund_id as bims_institution_id'
+        )->where('bims_tetfund_id', '<>', null)->orderBy('short_name')->get();
+        return $this->sendResponse($institutions, count($institutions).' institutions bims sync retrieved' );
+    }
+
+    public function institutionsBimsUnSyncList(){
+        $institutions =  Beneficiary::select(
+            'tf_iterum_portal_key_id as id',
+            'short_name', 
+            'full_name', 
+            'official_email', 
+            'official_website',
+            'type', 
+            'geo_zone',
+            'bims_tetfund_id as bims_institution_id'
+        )->where('bims_tetfund_id', null)->orderBy('short_name')->get();
+        return $this->sendResponse($institutions, count($institutions).' institutions bims unsync retrieved' );
     }
 }

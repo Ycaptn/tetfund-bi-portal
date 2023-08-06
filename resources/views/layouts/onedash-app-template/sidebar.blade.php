@@ -141,7 +141,7 @@
 				<a href="{{ route('tf-bi-portal.submissionRequests.index') }}" class="">
 					<div class="parent-icon"><i class='bx bx-layer-plus'></i>
 					</div>
-					<div class="menu-title">INTERV. Submissions</div>
+					<div class="menu-title">Intervention Submissions</div>
 				</a>
 			</li>
 			@endif

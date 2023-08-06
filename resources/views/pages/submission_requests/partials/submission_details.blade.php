@@ -111,7 +111,7 @@
                     <i class="fa fa-money fa-fw"></i> <b>Academic Staffs Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_academic_staff_allocated_fund : 0), 2) }} <br/>
                     <i class="fa fa-money fa-fw"></i> <b>None-Academic Staffs Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_non_academic_staff_allocated_fund : 0), 2) }} <br/>
 
-                {{-- display when intervention is tetfunbd scholarship for academic staffs --}}
+                {{-- display when intervention is tetfunb scholarship for academic staffs --}}
                 @elseif(str_contains(strtolower($intervention->name), 'tetfund scholarship'))
                     <i class="fa fa-money fa-fw"></i> <b>Ph.D Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_phd_allocated_fund : 0), 2) }} <br/>
                     <i class="fa fa-money fa-fw"></i> <b>M.Sc. Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_msc_allocated_fund : 0), 2) }} <br/>
@@ -178,9 +178,9 @@
                     @endif --}}
 
                     {{-- Recall Submission request--}}
-                    @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && 
+                    @if(($submissionRequest->status=='not-submitted' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && 
                     ($submissionRequest->is_aip_request || $submissionRequest->is_first_tranche_request || $submissionRequest->is_second_tranche_request || $submissionRequest->is_third_tranche_request || $submissionRequest->is_final_tranche_request ) && 
-                    !empty($submitted_request_data) && ($submitted_request_data->has_generated_aip==false || $submitted_request_data->has_generated_disbursement_memo==false) && ($submitted_request_data->request_status!='pending-recall'|| $submitted_request_data->request_status!='recalled'))
+                    !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==false && $submitted_request_data->has_generated_disbursement_memo==false && ($submitted_request_data->request_status!='pending-recall'|| $submitted_request_data->request_status!='recalled'))
                         @include('tf-bi-portal::pages.submission_requests.partials.recall_submission_request')
                     @endif
 
@@ -190,12 +190,14 @@
                     @endif
 
                     {{-- process repriotization for intervention request --}}
-                    @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==true && $submissionRequest->is_aip_request==true && empty($get_all_related_requests))
+                    @if(($submissionRequest->status=='approved') && !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==true && $submissionRequest->is_aip_request==true && empty($get_all_related_requests))
+
                         @include('tf-bi-portal::pages.submission_requests.partials.submission_request_reprioritization')
                     @endif
 
                     {{-- current intervention none AIP submission request  --}}
                     @if(($submissionRequest->status=='approved' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && !empty($submitted_request_data) && (($submissionRequest->is_aip_request==true && $submitted_request_data->has_generated_aip==true) || ( ($submissionRequest->is_first_tranche_request==true || $submissionRequest->is_second_tranche_request==true || $submissionRequest->is_final_tranche_request==true) && $submitted_request_data->has_generated_disbursement_memo==true)))
+
                         @include('tf-bi-portal::pages.submission_requests.partials.submission_request_none_aip_tranches')
                     @endif
                 </div>
