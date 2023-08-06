@@ -43,6 +43,26 @@
     </div>
 </div>
 
+<div class="card radius-5">
+    <div class="card-body">
+        <div>
+            <h5 class="card-title">Intervention Guidelines</h5>
+        </div>
+
+        <p>
+            <a href="{{asset('guidlines/21-22-23-ICT-Suport-guideline.pdf')}}" download>
+                <i class="bx bx-right-arrow-alt mx-1"></i>ICT SUPPORT INTERVENTION 2021/2022/2023
+                <br/>
+            </a>
+            {{-- <i class="bx bx-right-arrow-alt mx-1"></i>ASTD Nominations <br/>
+            <i class="bx bx-right-arrow-alt mx-1"></i>Portal User Guide <br/> --}}
+
+            {{-- <i class="bx bx-right-arrow-alt mx-1"></i>Hosting Services <br/>
+            <i class="bx bx-right-arrow-alt mx-1"></i>Technical Support <br/> --}}
+        </p>
+
+    </div>
+</div>
 @if (optional(Auth()->user())->hasAnyRole(['BI-staff']))
 <div class="card radius-5">
     <div class="card-body">
