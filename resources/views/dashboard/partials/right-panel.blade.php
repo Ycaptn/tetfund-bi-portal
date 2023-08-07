@@ -50,7 +50,7 @@
         </div>
 
         <p>
-            <a href="{{asset('guidlines/21-22-23-ICT-Suport-guideline.pdf')}}" download>
+            <a href="{{asset('guidelines/21-22-23-ICT-Suport-guideline.pdf')}}" download>
                 <i class="bx bx-right-arrow-alt mx-1"></i>ICT SUPPORT INTERVENTION 2021/2022/2023
                 <br/>
             </a>
