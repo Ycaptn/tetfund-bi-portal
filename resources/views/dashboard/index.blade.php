@@ -56,31 +56,28 @@ Beneficiary Dashboard
                                 <i class="fa fa-edit"></i>
                                 <br>New
                             </a>
-                           {{--  <a href="" class="btn btn-app bg-orange col-md-10 mt-3 text-white" id="btn-ongoing-submission" title="Process an ongoing submission request by selecting it current stage.">
+                            <a href="" class="btn btn-app bg-orange col-md-10 mt-3 text-white" id="btn-ongoing-submission" title="Process an ongoing submission request by selecting it current stage.">
                                 <i class="fa fa-copy"></i>
                                 <br>Ongoing
-                            </a> --}}
+                            </a>
                             <br/>
                         </center>
                     </div>
 
                     <div class="col-sm-10">
                         <ul>
-                            <li>
+                            <li class="mt-3">
                                 All submissions to the Fund must be submitted <b>ONLINE</b>.
                             </li>
                             <li>
                                 For <b>NEW SUBMISSIONS</b>, i.e., Request for Approval in Principle (AIP), click the New Submission Button
                             </li>
-                           {{--  <li class="mt-4">
-                                For <b>ONGOING SUBMISSIONS</b>, i.e. First Tranche, Second Tranche, Final Tranche, Monitoring Request, Audit Clearance etc, that the processing wasn't start online of this platform click the Ongoing Submission Button 
+                            <li class="mt-4">
+                                For <b>ONGOING SUBMISSIONS</b>, i.e. First Tranche, Second Tranche, Final Tranche, Monitoring Request, Audit Clearance etc, that the processing wasn't started or completed online, click the Ongoing Submission Button 
                             </li>
                             <li>
-                                Once your submission is completed, a <b>TRACKING NUMBER</b> is provided for you, you are required to include this tracking number in the physical hard copy submission to the Fund
+                                <span class="text-danger">Note the Ongoing Submissions button is only meant for submission that was started manually or was not completed through this submission portal. </span>
                             </li>
-                            <li>
-                                 <span class="text-danger">Note the Ongoing Submissions button is only meant for submission that was started manually i.e not through this submission portal. </span>
-                            </li> --}}
                         </ul>
                     </div>
                 </div>
