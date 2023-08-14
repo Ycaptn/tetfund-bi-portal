@@ -480,40 +480,72 @@ class SubmissionRequestAPIController extends AppBaseController
             }
         }
 
-        $intevention_years_unique = array_unique($intevention_years);
-        sort($intevention_years_unique);
+        $intervention_years_unique = array_unique($intevention_years);
+        sort($intervention_years_unique);
+
+        $current_user = auth()->user();
+        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
         $well_formatted_type = str_replace('_', ' ', $request->ongoing_submission_stage);
-        $ongoingSubmission = SubmissionRequest::where('type', $well_formatted_type)
-                                ->where('tf_iterum_intervention_line_key_id', $request->tf_iterum_intervention_line_key_id)
-                                ->whereIn('intervention_year1', $intevention_years_unique)
-                                ->whereIn('intervention_year1', $intevention_years_unique)
-                                ->whereIn('intervention_year2', $intevention_years_unique)
-                                ->whereIn('intervention_year3', $intevention_years_unique)
-                                ->whereIn('intervention_year4', $intevention_years_unique)
-                                ->first();
 
-        if (!empty($ongoingSubmission)) {
+
+        $get_aip_requet = SubmissionRequest::where('type', 'Request for AIP')
+                    ->where('is_aip_request', true)
+                    ->where('beneficiary_id', optional($beneficiary_member)->beneficiary_id)
+                    ->where('tf_iterum_intervention_line_key_id', $request->tf_iterum_intervention_line_key_id)
+                    ->where(function($query) use ($intervention_years_unique) {
+                        $four_intervention_years = array_slice($intervention_years_unique, 1);
+                        return $query->whereIn('intervention_year1', $four_intervention_years)
+                            ->orWhereIn('intervention_year2', $four_intervention_years)
+                            ->orWhereIn('intervention_year3', $four_intervention_years)
+                            ->orWhereIn('intervention_year4', $four_intervention_years);
+                    })
+                    ->first();
+
+        $request_with_exact_same_data = SubmissionRequest::where('type', $well_formatted_type)
+                    ->where('beneficiary_id', optional($beneficiary_member)->beneficiary_id)
+                    ->where('tf_iterum_intervention_line_key_id', $request->tf_iterum_intervention_line_key_id)
+                    ->where(function($query) use ($intervention_years_unique) {
+                        return $query->whereIn('intervention_year1', $intervention_years_unique)
+                            ->orWhereIn('intervention_year2', $intervention_years_unique)
+                            ->orWhereIn('intervention_year3', $intervention_years_unique)
+                            ->orWhereIn('intervention_year4', $intervention_years_unique);
+                    })->first();
+
+
+        if (!empty($request_with_exact_same_data)) {
             return response()->JSON([
-                'errors'=>["A Submission Request for the selected intervention line, intervention years and ongoing submission stage already exist."]
+                'errors' => ["A Submission Request for the selected intervention line, intervention years and ongoing submission stage already exist."]
             ]);
         }
 
+
+        // if this does not have AIP_REQUET, we can consider creating... on BI and Staff Portal...
+
+        // checking for amount AIP amount requested
+        // if (!empty($get_aip_requet)) {
+        //     $exisisting_aip_amount = $get_aip_requet
+        //     return response()->JSON([
+        //         'errors' => ["A Submission Request for the selected intervention line, intervention years and ongoing submission stage already exist."]
+        //     ]);
+        // }
+
+
+
         $y_counter = 1;
-        $current_user = auth()->user();
         $disbursement_percentage = null;
-        array_shift($intevention_years_unique);
+        array_shift($intervention_years_unique);
         $ongoingSubmission = new SubmissionRequest();
-        $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
          
         $ongoingSubmission->organization_id = $org->id;
-        $ongoingSubmission->title = 'Ongoing Submission For '. $request->title .' - '. $well_formatted_type .' - ('. implode(', ', $intevention_years_unique) . ')';
+        $ongoingSubmission->title = 'Ongoing Submission For '. $request->title .' - '. $well_formatted_type .' - ('. implode(', ', $intervention_years_unique) . ')';
         $ongoingSubmission->status = 'not-submitted';
         $ongoingSubmission->type = $well_formatted_type;
         $ongoingSubmission->requesting_user_id = $current_user->id;
-        $ongoingSubmission->beneficiary_id = $beneficiary_member->beneficiary_id??null;
+        $ongoingSubmission->parent_id = optional($get_aip_requet)->id;
+        $ongoingSubmission->beneficiary_id = optional($beneficiary_member)->beneficiary_id;
         
-        foreach($intevention_years_unique as $year) {
+        foreach($intervention_years_unique as $year) {
             $ongoingSubmission->{'intervention_year'.$y_counter} = $year;
             $y_counter += 1;
         }

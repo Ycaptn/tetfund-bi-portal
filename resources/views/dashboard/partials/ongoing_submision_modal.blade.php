@@ -266,7 +266,7 @@ $(document).ready(function() {
                     formData.append('tf_iterum_intervention_line_key_id', $('#intervention_line').val());
                 }
 
-                $.each($('input[type=file]')[0].files, function(i, file) {
+                $.each($('#file_attachments')[0].files, function(i, file) {
                     formData.append('file_attachments[]', file);
                 });
                 

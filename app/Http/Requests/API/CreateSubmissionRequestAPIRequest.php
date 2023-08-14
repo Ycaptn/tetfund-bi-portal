@@ -60,7 +60,6 @@ class CreateSubmissionRequestAPIRequest extends AppBaseFormRequest
             ];
 
             $returned_arr['ongoing_submission_stage'] = "required|string|max:50|in:". implode(',', $valid_ongoing_submission_stages);
-
             if (request()->hasFile('file_attachments') && count(request()->file_attachments)>0) {
                 $returned_arr['file_attachments.*'] = 'required|file|mimes:pdf|max:100000';
             } else {
@@ -88,6 +87,10 @@ class CreateSubmissionRequestAPIRequest extends AppBaseFormRequest
                 'ongoing_submission_stage'=>'Ongoing Submission Request Stage',
                 'file_attachments'=>'File Attachments',
         ];
+
+        if (request()->has('ongoing_submission_stage') && !empty(request()->ongoing_submission_stage)) {
+            $arr_returned['amount_requested'] = 'AIP Approved Amount';
+        }
 
         if (request()->file('file_attachments') && count(request()->file_attachments) > 0) {
             $total_attachments = count(request()->file_attachments);

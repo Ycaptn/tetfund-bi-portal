@@ -102,7 +102,10 @@
 	        <span class="input-group-text"><span class="fa fa-folder-open"></span></span>
 		    <em>
 		    	<small class="text-danger">
-		    		- You may select multiple files for upload. Each file must be a PDF. Max file Size 100M each.<br>
+		    		- You may select multiple files for upload. Each file must be a PDF.<br>
+                    - Max file Size 100M each.<br>
+                    - You may select multiple files for upload where neccessary by holding down <b>Ctrl key</b> then click to select the desired files to be uploaded.<br>
+
                     @if($ongoing_label=='1st_Tranche_Payment')
                         - The files to be attached should contain a copy of your <b>AIP Document</b>.
                     @elseif($ongoing_label=='2nd_Tranche_Payment')
