@@ -473,7 +473,7 @@ class SubmissionRequestAPIController extends AppBaseController
 
     public function processOngoingSubmission(Organization $org, CreateSubmissionRequestAPIRequest $request) {
         // array of intervention years provided with request
-        $intevention_years = ['0'];
+        $intevention_years = [];
         for ($i=1; $i<=4; ++$i) {
             if(isset($request->{'intervention_year'.$i})) {
                 array_push($intevention_years, $request->{'intervention_year'.$i});
@@ -485,8 +485,10 @@ class SubmissionRequestAPIController extends AppBaseController
 
         $current_user = auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+        $beneficiary = optional($beneficiary_member)->beneficiary;
 
         $well_formatted_type = str_replace('_', ' ', $request->ongoing_submission_stage);
+        $request_aip_amount = $request->get('amount_requested')??0;
 
 
         $get_aip_requet = SubmissionRequest::where('type', 'Request for AIP')
@@ -494,11 +496,10 @@ class SubmissionRequestAPIController extends AppBaseController
                     ->where('beneficiary_id', optional($beneficiary_member)->beneficiary_id)
                     ->where('tf_iterum_intervention_line_key_id', $request->tf_iterum_intervention_line_key_id)
                     ->where(function($query) use ($intervention_years_unique) {
-                        $four_intervention_years = array_slice($intervention_years_unique, 1);
-                        return $query->whereIn('intervention_year1', $four_intervention_years)
-                            ->orWhereIn('intervention_year2', $four_intervention_years)
-                            ->orWhereIn('intervention_year3', $four_intervention_years)
-                            ->orWhereIn('intervention_year4', $four_intervention_years);
+                        return $query->whereIn('intervention_year1', $intervention_years_unique)
+                            ->orWhereIn('intervention_year2', $intervention_years_unique)
+                            ->orWhereIn('intervention_year3', $intervention_years_unique)
+                            ->orWhereIn('intervention_year4', $intervention_years_unique);
                     })
                     ->first();
 
@@ -520,21 +521,49 @@ class SubmissionRequestAPIController extends AppBaseController
         }
 
 
-        // if this does not have AIP_REQUET, we can consider creating... on BI and Staff Portal...
-
         // checking for amount AIP amount requested
-        // if (!empty($get_aip_requet)) {
-        //     $exisisting_aip_amount = $get_aip_requet
-        //     return response()->JSON([
-        //         'errors' => ["A Submission Request for the selected intervention line, intervention years and ongoing submission stage already exist."]
-        //     ]);
-        // }
+        if (!empty($get_aip_requet)) {
+            $request_aip_amount_formated = number_format($request_aip_amount, '2');
+            $exisisting_aip_amount = number_format(($get_aip_requet->amount_requested??0), '2');
 
+            if ($exisisting_aip_amount !== $request_aip_amount_formated ) {
+                return response()->JSON([
+                    'errors' => ["The API Approved Amount (₦$request_aip_amount_formated) provided does not match the AIP amount (₦$exisisting_aip_amount) record found."]
+                ]);
+            }
+            
+        } else {
+
+            // if this does not have AIP_REQUET, we can consider creating... on BI and Staff Portal...
+
+            
+            // getting the total allocated amount for the selected intervention years
+            $years = $intervention_years_unique;
+
+            $tetFundServer = new TETFundServer();   /* server class constructor */
+            $fund_availability = $tetFundServer->getFundAvailabilityData(optional($beneficiary)->tf_iterum_portal_key_id, $request->tf_iterum_intervention_line_key_id, $years, true);
+
+
+            if (isset($fund_availability->total_funds)) {
+                $total_allocated_amount = number_format($fund_availability->total_funds, '2');
+                $request_aip_amount_formated = number_format($request_aip_amount, '2');
+
+                if ($total_allocated_amount != $request_aip_amount_formated) {
+                    return response()->JSON([
+                        'errors' => ["AIP Approved Amount (₦$request_aip_amount_formated) provided does not match the total allocated amount (₦$total_allocated_amount) for the selected years (". implode(', ', $years) .")"]
+                    ]);
+                }
+
+            } else {
+                return response()->JSON([
+                    'errors' => ["No allocation records for the selected intervention years (". implode(', ', $years) .") found!"]
+                ]);
+            }
+        }
 
 
         $y_counter = 1;
         $disbursement_percentage = null;
-        array_shift($intervention_years_unique);
         $ongoingSubmission = new SubmissionRequest();
          
         $ongoingSubmission->organization_id = $org->id;

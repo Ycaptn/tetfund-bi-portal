@@ -457,8 +457,28 @@ class SubmissionRequestController extends BaseController
             $pay_load['nomination_table'] = $nomination_table;
         }
 
+
+
         $tetFundServer = new TETFundServer();   /* server class constructor */
         $final_submission_to_tetfund = $tetFundServer->processSubmissionRequest($pay_load, $tf_beneficiary_id);
+        
+        // if(isset($final_submission_to_tetfund->array_of_generated_tranches)) {
+        //     foreach ($$final_submission_to_tetfund->array_of_generated_tranches as $generated_tranches) {
+        //         $submission_tranche = new SubmissionRequest();
+
+        //         if($submission_tranche->is_aip_request==true) {
+
+        //         } elseif($submission_tranche->is_first_tranche_request==true) {
+                
+        //         } elseif($submission_tranche->is_second_tranche_request==true) {
+                
+        //         } elseif($submission_tranche->is_first_tranche_request==true) {
+
+        //         }
+        //         $submission_tranche->save();
+
+        //     }
+        // }
 
         if (isset($final_submission_to_tetfund->data) && $final_submission_to_tetfund->data != null) {
             $response = $final_submission_to_tetfund->data;
