@@ -97,7 +97,7 @@
             <i class="fa fa-calendar-o fa-fw"></i> <strong>Created on </strong> {{ \Carbon\Carbon::parse($submissionRequest->created_at)->format('l jS F Y') }} - {!! \Carbon\Carbon::parse($submissionRequest->created_at)->diffForHumans() !!} <br/>
 
             <i class="fa fa-bank fa-fw"></i> <b>{{ ucwords($intervention->type) }} Intervention &nbsp; - &nbsp; </b> &nbsp; {{ $intervention->name}} <br/>
-            <i class="fa fa-briefcase fa-fw"></i> <b>Purpose of Request:</b> &nbsp; {{ $submissionRequest->is_astd_intervention($intervention->name)==true ? 'Request For Funding' : $submissionRequest->type }} <br/>
+            <i class="fa fa-briefcase fa-fw"></i> <b>Purpose of Request:</b> &nbsp; {{ $submissionRequest->is_astd_intervention($intervention->name)==true ? 'Request For Fund' : $submissionRequest->type }} <br/>
             <i class="fa fa-crosshairs fa-fw"></i> <b>Intervention Year(s) &nbsp; - &nbsp; </b> &nbsp; {{ $years_str }} <br/>
 
             {{-- ammount figures to be displayed based on ASTD and Non-ASTD interventions --}}

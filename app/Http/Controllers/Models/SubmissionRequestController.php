@@ -200,12 +200,13 @@ class SubmissionRequestController extends BaseController
             $request->merge($new_properties);
         }
 
-        $input['type'] = $request->request_tranche ?? 'Request for AIP';
-        $type_surfix = $input['type'];
+        $type_surfix = $request->request_tranche ?? 'Request for AIP';
+
         if (SubmissionRequest::is_astd_intervention($request->intervention_title) == true) {
-            $type_surfix = 'Request For Fund';   
+            $type_surfix = 'Request For Fund';
         }
 
+        $input['type'] = $type_surfix;
         $input['status'] = 'not-submitted';
         $input['title'] = $input['intervention_title']. ' - '. $type_surfix .' (' .implode(', ', $years_unique) .')';
         $input['requesting_user_id'] = $current_user->id;
