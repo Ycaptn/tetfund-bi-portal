@@ -523,13 +523,18 @@ class SubmissionRequestAPIController extends AppBaseController
 
         // checking for amount AIP amount requested
         if (!empty($get_aip_requet)) {
-            $request_aip_amount_formated = number_format($request_aip_amount, '2');
-            $exisisting_aip_amount = number_format(($get_aip_requet->amount_requested??0), '2');
+            
+            if ($get_aip_requet->status == 'not-submitted') {
+                $get_aip_requet->delete();
+            } else {
+                $request_aip_amount_formated = number_format($request_aip_amount, '2');
+                $exisisting_aip_amount = number_format(($get_aip_requet->amount_requested??0), '2');
 
-            if ($exisisting_aip_amount !== $request_aip_amount_formated ) {
-                return response()->JSON([
-                    'errors' => ["The API Approved Amount (₦$request_aip_amount_formated) provided does not match the AIP amount (₦$exisisting_aip_amount) record found."]
-                ]);
+                if ($exisisting_aip_amount !== $request_aip_amount_formated ) {
+                    return response()->JSON([
+                        'errors' => ["The API Approved Amount (₦$request_aip_amount_formated) provided does not match the AIP amount (₦$exisisting_aip_amount) record found."]
+                    ]);
+                }
             }
             
         } else {
