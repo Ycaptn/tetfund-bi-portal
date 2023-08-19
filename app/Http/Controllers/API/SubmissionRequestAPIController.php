@@ -483,6 +483,7 @@ class SubmissionRequestAPIController extends AppBaseController
         $intervention_years_unique = array_unique($intevention_years);
         sort($intervention_years_unique);
 
+        $has_valid_aip = false;
         $current_user = auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
         $beneficiary = optional($beneficiary_member)->beneficiary;
@@ -520,21 +521,26 @@ class SubmissionRequestAPIController extends AppBaseController
             ]);
         }
 
+        if (!empty($get_aip_requet)) {
+            $has_valid_aip = true;
+
+            if ($get_aip_requet->status == 'not-submitted') {
+                $has_valid_aip = false;
+                $get_aip_requet->delete();
+            }
+        }
+
 
         // checking for amount AIP amount requested
-        if (!empty($get_aip_requet)) {
+        if ($has_valid_aip==true) {
             
-            if ($get_aip_requet->status == 'not-submitted') {
-                $get_aip_requet->delete();
-            } else {
-                $request_aip_amount_formated = number_format($request_aip_amount, '2');
-                $exisisting_aip_amount = number_format(($get_aip_requet->amount_requested??0), '2');
+            $request_aip_amount_formated = number_format($request_aip_amount, '2');
+            $exisisting_aip_amount = number_format(($get_aip_requet->amount_requested??0), '2');
 
-                if ($exisisting_aip_amount !== $request_aip_amount_formated ) {
-                    return response()->JSON([
-                        'errors' => ["The API Approved Amount (₦$request_aip_amount_formated) provided does not match the AIP amount (₦$exisisting_aip_amount) record found."]
-                    ]);
-                }
+            if ($exisisting_aip_amount !== $request_aip_amount_formated ) {
+                return response()->JSON([
+                    'errors' => ["The API Approved Amount (₦$request_aip_amount_formated) provided does not match the AIP amount (₦$exisisting_aip_amount) record found."]
+                ]);
             }
             
         } else {
@@ -555,7 +561,7 @@ class SubmissionRequestAPIController extends AppBaseController
 
                 if ($total_allocated_amount != $request_aip_amount_formated) {
                     return response()->JSON([
-                        'errors' => ["AIP Approved Amount (₦$request_aip_amount_formated) provided does not match the total allocated amount (₦$total_allocated_amount) for the selected years (". implode(', ', $years) .")"]
+                        'errors' => ["The AIP Approved Amount (₦$request_aip_amount_formated) provided does not match the total allocated amount (₦$total_allocated_amount) for the selected years (". implode(', ', $years) .")"]
                     ]);
                 }
 
