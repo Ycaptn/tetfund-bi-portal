@@ -2,13 +2,15 @@
 
 namespace App\Http\Requests\API;
 
-use App\Models\CANomination;
 use App\Http\Requests\AppBaseFormRequest;
+use App\Models\CANomination;
 use Hasob\FoundationCore\Controllers\BaseController;
-
+use Hasob\FoundationCore\Models\User;
+use App\Models\NominationRequest;
+use Carbon\Carbon;
 
 class CreateCANominationAPIRequest extends AppBaseFormRequest
-{   
+{
 
     public $max_conference_fee_amt = 0.00;
     /**
@@ -26,12 +28,12 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
      *
      * @return array
      */
-    public function rules() {
+    public function rules()
+    {
         $start_date = $this->conference_start_date;
         $plus_5_days = date('d-M-Y', strtotime($start_date . ' + 5 days'));
-        $this->max_conference_fee_amt = isset($this->attendee_grade_level) ? CANomination::getMaxConferenceFeeAmount($this->attendee_grade_level??'', $this->tf_iterum_portal_country_id??'') : 0.00;
-
-        $more_state_validations = ( $this->tf_iterum_portal_country_id == $this->country_nigeria_id) ? "|string|min:2|max:100|in:". implode(',', BaseController::statesList()) : '';
+        $this->max_conference_fee_amt = isset($this->attendee_grade_level) ? CANomination::getMaxConferenceFeeAmount($this->attendee_grade_level ?? '', $this->tf_iterum_portal_country_id ?? '') : 0.00;
+        $more_state_validations = ($this->tf_iterum_portal_country_id == $this->country_nigeria_id) ? "|string|min:2|max:100|in:" . implode(',', BaseController::statesList()) : '';
 
         $return_rules = [
             'organization_id' => 'required',
@@ -46,7 +48,7 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             'is_conference_workshop' => "required_if:is_academic_staff,=,0|string|max:50|in:0,1",
             'tf_iterum_portal_country_id' => 'required|uuid',
             //'tf_iterum_portal_conference_id' => 'required|uuid',
-            'conference_state' => "required_if:tf_iterum_portal_country_id,=,". $this->country_nigeria_id . $more_state_validations,
+            'conference_state' => "required_if:tf_iterum_portal_country_id,=," . $this->country_nigeria_id . $more_state_validations,
             'conference_title' => 'required|string|min:2|max:100',
             'organizer_name' => 'required|string|max:190',
             'conference_theme' => 'required|string|max:190',
@@ -57,8 +59,8 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             'has_paper_presentation' => "required|string|max:50|in:0,1",
             'accepted_paper_title' => 'required_if:has_paper_presentation,=,1|nullable|string|max:190',
             'is_academic_staff' => "required|string|max:50|in:0,1",
-            'conference_start_date' => 'required|date|after:'.date('d-M-Y', strtotime('+3 months')),
-            'conference_end_date' => 'required|date|after_or_equal:conference_start_date|before:'.$plus_5_days,
+            'conference_start_date' => 'required|date|after:' . date('d-M-Y', strtotime('+3 months')),
+            'conference_end_date' => 'required|date|after_or_equal:conference_start_date|before:' . $plus_5_days,
             'name_title' => 'nullable|string|max:50',
             'name_suffix' => 'nullable|string|max:100',
             'bank_account_name' => 'required|min:2|max:190',
@@ -66,10 +68,10 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             'bank_name' => 'required|max:100',
             'bank_sort_code' => 'required|max:100',
             'bank_verification_number' => 'required|digits:12',
-            'intl_passport_number' => 'required_unless:tf_iterum_portal_country_id,'.request()->country_nigeria_id.'|max:100',
-            'national_id_number' => 'required|numeric',            
+            'intl_passport_number' => 'required_unless:tf_iterum_portal_country_id,' . request()->country_nigeria_id . '|max:100',
+            'national_id_number' => 'required|numeric',
             'conference_fee_amount_local' => "required|numeric|min:0|max:{$this->max_conference_fee_amt}",
-            
+
             'passport_photo' => 'required|file|mimes:pdf,png,jpeg,jpg|max:5240',
             'conference_attendance_flyer' => 'required|file|mimes:pdf|max:5240',
             'paper_presentation' => 'required_if:has_paper_presentation,=,1|file|mimes:pdf,doc,docx|max:5240',
@@ -84,18 +86,23 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
         return $return_rules;
     }
 
-    public function messages() {
+    public function messages()
+    {
+        $is_nigeria_nomination = ($this->tf_iterum_portal_country_id == $this->country_nigeria_id ? true : false);
+        $max_nomination_amount = number_format($this->max_conference_fee_amt, 2);
+        $amt_format = $is_nigeria_nomination ? '₦'.$max_nomination_amount : '$' .$max_nomination_amount; 
         return [
             'is_conference_workshop.required_if' => 'The :attribute field is required when Staff is Non-Academic.',
             'conference_state.required_if' => 'The :attribute field is required when selected Country is Nigeria.',
             'paper_presentation.required_if' => 'The Presentation Paper attachment is required.',
             'accepted_paper_title.required_if' => 'The :attribute field is required.',
             'intl_passport_number.required_unless' => 'The :attribute field is required when the selected country isn\'t Nigeria.',
-            'conference_fee_amount_local.max' => 'The Conference Fee Amount must not be greater than ₦'.number_format($this->max_conference_fee_amt, 2)
+            'conference_fee_amount_local.max' => 'The Conference Fee Amount must not be greater than '.$amt_format,
         ];
     }
 
-    public function attributes() {
+    public function attributes()
+    {
         return [
             'email' => 'Email',
             'telephone' => 'Telephone',
@@ -118,12 +125,12 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             'intl_passport_number' => 'Intl Passport Number',
             'bank_verification_number' => 'Bank Verification Number',
             'national_id_number' => 'National Id Number',
- 
+
             'organizer_name' => 'Organizer Name',
             'conference_theme' => 'Conference Theme',
-            'conference_address' => 'Conference Address',
+            'conference_address' => 'Conference Venue',
             'conference_passage_type' => 'Conference Passage Type',
-            'accepted_paper_title' => 'Accepted Presentation Paper Title',
+            'accepted_paper_title' => 'Abstract Title',
             'attendee_department_name' => 'Attendee Department Name',
             'attendee_grade_level' => 'Attendee Rank or GL Equivalent',
             'has_paper_presentation' => 'Any Paper Presentation',
@@ -132,13 +139,53 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             'conference_end_date' => 'Conference End Date',
             'conference_fee_amount' => 'Conference Fee Amount',
             'conference_fee_amount_local' => 'Conference Fee Amount (₦)',
-            
+
             'passport_photo' => 'Passport Photo',
             'conference_attendance_flyer' => 'Conference Attendance Flyer',
             'paper_presentation' => 'Presentation Paper',
             'international_passport_bio_page' => 'International Passport Bio Page',
 
         ];
+    }
+
+    /**
+     * Get the "after" validation callables for the request.
+     */
+    public function after(): array
+    {
+        return [
+            function (Validator $validator) {
+                if ($this->validateCanmakeRequest()) {
+                    $validator->errors()->add(
+                        'year',
+                        'You not are eligible to make a nomination request at this time for the selected intervention.'
+                    );
+                }
+            },
+        ];
+    }
+
+    private function validateCanmakeRequest(){
+       
+       $latest_nomination = NominationRequest::where('user_id',auth()->user()->id)->where('details_submitted',true)->where('bi_submission_request_id','<>',null)->where('type','ca')->orderBy('created_at','desc')->first();
+
+       if(empty($latest_nominationtes)){
+        return false;
+       }
+
+       $dbDate = \Carbon\Carbon::parse($latest_nomination->created_at);
+       $diffYears = \Carbon\Carbon::now()->diffInYears($dbDate);
+
+       if(auth()->user()->hasRole('BI-staff') && $diffYears >= 2){   
+            return false;   
+       }
+
+       if(auth()->user()->hasRole('bi-hoi') && $diffYears >= 3){
+            return false;
+       }
+
+       return true;
+
     }
 
 }

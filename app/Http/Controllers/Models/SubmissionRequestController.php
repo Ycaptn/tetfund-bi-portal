@@ -446,7 +446,6 @@ class SubmissionRequestController extends BaseController
 
         // execute for ASTD Interventions only
         if ($submissionRequest->is_astd_intervention(optional($request)->intervention_name)==true) {
-
             $final_nominations_arr = NominationRequest::with($nomination_table)
                     ->with('attachables.attachment')
                     ->where('bi_submission_request_id', null)
@@ -454,6 +453,15 @@ class SubmissionRequestController extends BaseController
                     ->where('type', $intervention_name)
                     ->where('head_of_institution_checked_status', 'approved')
                     ->get();
+            if($nomination_table == "ca_submission"){
+                $filtered_nomination_arr = $final_nominations_arr->filter(function($item){
+                    $today = strtotime(now());
+                    $conference_start_date = strtotime($item->ca_submission->conference_start_date);    
+                    $month_difference = ($conference_start_date - $today) / (3600 *24 *30);
+                    return ($month_difference >= 3);
+                });
+                $final_nominations_arr = $filtered_nomination_arr;
+            }
             $pay_load['final_nominations_arr'] = $final_nominations_arr;
             $pay_load['nomination_table'] = $nomination_table;
         }
@@ -498,6 +506,7 @@ class SubmissionRequestController extends BaseController
                 //update attached final_nominations_arr
                 NominationRequest::where('bi_submission_request_id', null)
                     ->where('beneficiary_id', $beneficiary_member->beneficiary_id)
+                    ->whereIn('id',$final_nominations_arr->pluck('id'))
                     ->where('type', $intervention_name)
                     ->where('head_of_institution_checked_status', 'approved')
                     ->update([

@@ -56,20 +56,23 @@ New Submission
                                     <th width="10%">
                                         S/N
                                     </th>
-                                    <th width="50%">
+                                    <th width="35%">
                                         Nominees' Fullname
                                     </th>
                                     <th width="25%">
-                                        Total amount requested
+                                        Total Amount Requested
+                                    </th>
+                                    <th width="15%">
+                                        Conference Date
                                     </th>
                                     <th width="20%" class="text-center">
-                                        Date
+                                        Request Date
                                     </th>
                                 </tr>
                             </thead>
                             <tbody id="current_nomination_details_submitted">
                                 <tr>
-                                   <td colspan="4" class="text-danger text-center">
+                                   <td colspan="5" class="text-danger text-center">
                                        <i>No record found!</i>year
                                    </td> 
                                 </tr>
@@ -165,6 +168,14 @@ New Submission
                 $('#astd_interventions_ids').val(astd_inteventions_keys.join(','));
             });
 
+            function getMonthDifference(startDate, endDate) {
+                let diff = (endDate.getTime() - startDate.getTime());
+              
+                return (
+                    diff / (1000 *3600 * 24 * 30)
+                );
+            }
+
             // triggered on changing intervention line
             $('#intervention_line').on('change', function() {
                 let selected_intervention_line = $(this).val();
@@ -199,8 +210,20 @@ New Submission
                             if (response.data) {
                                 let s_n_counter = 1;
                                 let requested_amount = 0.00;
+                                let today = new Date();
+                               
                                 $.each(response.data, function(key, nominee) {
-                                    
+                                    console.log(nominee);
+                                  
+                                    let conference_start_date = new Date(nominee[relationship_name]['conference_start_date']);
+                                 
+                                    let additionl_msg = '';
+                                    let month_diff = getMonthDifference(today, conference_start_date);
+
+                                    if(month_diff < 3 && relationship_name == "ca_submission"){
+                                        additionl_msg = "<br><span class='text-danger'> submission grace period passed <span>";
+                                    }
+
                                     let formated_date = new Date(nominee[relationship_name]['updated_at']).toDateString();
 
                                     let middle_name = (nominee[relationship_name]['middle_name']) ? nominee[relationship_name]['middle_name'] : '';
@@ -212,10 +235,18 @@ New Submission
                                             maximumFractionDigits: 2
                                         });
                                 
-                                    html_to_return += "<tr><td>"+ s_n_counter +"</td>  <td>"+ nominee[relationship_name]['first_name'] + " " + middle_name + " " + nominee[relationship_name]['last_name'] +"</td>  <td> &#8358 "+ formated_total_request_amount +"</td>  <td>"+ formated_date +"</td>  </tr>";
+                                    html_to_return += `"<tr><td> ${s_n_counter} </td><td> ${nominee[relationship_name]['first_name']} ${middle_name}  ${nominee[relationship_name]['last_name']} </td>  <td> &#8358 ${formated_total_request_amount} </td> <td> ${conference_start_date.toDateString()} ${additionl_msg} </td>  <td> ${formated_date} </td>  </tr>"`;
 
                                     s_n_counter += 1;
-                                    requested_amount += parseFloat(total_request_amount);
+                                    if(relationship_name == "ca_submission"){
+                                        if(month_diff >= 3){
+                                            requested_amount += parseFloat(total_request_amount);
+                                        }
+                                        
+                                    }else{
+                                        requested_amount += parseFloat(total_request_amount);
+                                    }
+                                    
 
                                 }); 
                                 

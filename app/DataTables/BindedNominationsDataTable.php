@@ -2,11 +2,12 @@
 
 namespace App\DataTables;
 
+use FontLib\Table\Type\name;
 use App\Models\NominationRequest;
-use Yajra\DataTables\Services\DataTable;
-use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Column;
+use Yajra\DataTables\EloquentDataTable;
 
+use Yajra\DataTables\Services\DataTable;
 use Hasob\FoundationCore\Models\Organization;
 
 class BindedNominationsDataTable extends DataTable
@@ -50,7 +51,24 @@ class BindedNominationsDataTable extends DataTable
 
         $dataTable->editColumn('amount_requested', function ($query) {
             if ($query->total_requested_amount != null){
-                return '₦ ' . number_format($query->total_requested_amount, '2');
+                
+                if($query->type == 'ca'){
+                    $today = strtotime(now());
+                    $conference_start_date = strtotime($query->ca_submission->conference_start_date);    
+                    $month_difference = ($conference_start_date - $today) / (3600 *24 *30);
+                    if($month_difference < 3){
+                        return '₦ ' . number_format($query->total_requested_amount, '2').'<br><span class="text-danger"> submission grace period passed </span>';
+                    }else{
+                        return '₦ ' . number_format($query->total_requested_amount, '2');
+                    }
+                 
+                }else{
+
+                    return '₦ ' . number_format($query->total_requested_amount, '2');
+                }
+              
+
+               
             }
             return "N/A";  
         })->escapeColumns('active')->make(true);

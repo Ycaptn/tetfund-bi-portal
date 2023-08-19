@@ -111,7 +111,7 @@ class UpdateCANominationRequest extends AppBaseFormRequest
  
             'organizer_name' => 'Organizer Name',
             'conference_theme' => 'Conference Theme',
-            'accepted_paper_title' => 'Accepted Paper Title',
+            'accepted_paper_title' => 'Abstract Title',
             'attendee_department_name' => 'Attendee Department Name',
             'attendee_grade_level' => 'Attendee Grade Level',
             'has_paper_presentation' => 'Any Paper Presentation',
@@ -125,7 +125,7 @@ class UpdateCANominationRequest extends AppBaseFormRequest
             'passage_amount' => 'Passage Amount',
             'final_remarks' => 'Final Remarks',
             'total_requested_amount' => 'Total Requested Amount',
-            'total_approved_amount' => 'Total Approved Aamount'
+            'total_approved_amount' => 'Total Approved Aamount',
         
             'passport_photo' => 'Passport Photo',
             'conference_attendance_flyer' => 'Conference Attendance Flyer',

@@ -176,7 +176,7 @@
 
 <!-- Conference Address Field -->
 <div id="div-conference_address_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="conference_address_ca" class="col-sm-11 col-form-label">Conference Address:</label>
+    <label for="conference_address_ca" class="col-sm-11 col-form-label">Conference Venue:</label>
     <div class="col-sm-12">
         {!! Form::text('conference_address_ca', null, ['id'=>'conference_address_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
     </div>
@@ -219,7 +219,7 @@
 
 <!-- Conference Start Date Field -->
 <div id="div-conference_start_date_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="conference_start_date_ca" class="col-sm-12 col-form-label">Conference Start Date :<i class="text-danger">-- (3 months ahead)</i></label>
+    <label for="conference_start_date_ca" class="col-sm-12 col-form-label">Conference Start Date :<i class="text-danger">-- (3 months before commencement)</i></label>
     <div class="col-sm-12">
         {!! Form::date('conference_start_date_ca', null, ['id'=>'conference_start_date_ca', 'class'=>'form-control', 'min'=>$threeMonthsAhead]) !!}
     </div>
@@ -227,7 +227,7 @@
 
 <!-- Conference End Date Field -->
 <div id="div-conference_end_date_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="conference_end_date_ca" class="col-sm-12 col-form-label">Conference End Date :<i class="text-danger">-- (Not more than 5 days after start date)</i></label>
+    <label for="conference_end_date_ca" class="col-sm-12 col-form-label">Conference End Date :<i class="text-danger">-- (Not more than 5 days)</i></label>
     <div class="col-sm-12">
         {!! Form::date('conference_end_date_ca', null, ['id'=>'conference_end_date_ca', 'class' => 'form-control', 'min'=>$threeMonthsAhead]) !!}
     </div>
@@ -235,7 +235,7 @@
 
 <!-- conference_fee_amount_local Field -->
 <div id="div-conference_fee_amount_local_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="conference_fee_amount_local_ca" class="col-sm-11 col-form-label">Conference Fee Amount (₦) :</label>
+    <label for="conference_fee_amount_local_ca" class="col-sm-11 col-form-label">Conference Fee Amount (<span id="country_currency">₦</span>) :</label>
     <div class="col-sm-12">
         {!! Form::text('conference_fee_amount_local_ca', null, ['id'=>'conference_fee_amount_local_ca', 'class'=>'form-control', 'placeholder'=>'required field']) !!}
     </div>
@@ -327,7 +327,7 @@
 
 <!-- paper presentation -->
 <div id="div-paper_presentation_ca" class="form-group col-md-4" style="display: {{$attendee_member_type_flag=='1' ? 'block' : 'none'}};">
-    <label for="paper_presentation_ca" class="col-sm-11 col-form-label">Presentation paper:</label>
+    <label for="paper_presentation_ca" class="col-sm-11 col-form-label">Abstract and Evidence of Acceptance:</label>
     <div class="col-sm-12">
         <input type="file" id="paper_presentation_ca" name="paper_presentation_ca" class="form-control">
     </div>
