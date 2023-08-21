@@ -292,7 +292,7 @@
 <div id="div_cANomination_accepted_paper_title" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
-            {!! Form::label('accepted_paper_title', 'Accepted Paper Title:', ['class'=>'control-label']) !!} 
+            {!! Form::label('accepted_paper_title', 'Abstract Title:', ['class'=>'control-label']) !!} 
         </strong><br>        
         <span id="spn_cANomination_accepted_paper_title">
         @if (isset($cANomination->accepted_paper_title) && empty($cANomination->accepted_paper_title)==false)

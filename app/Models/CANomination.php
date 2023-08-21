@@ -186,8 +186,9 @@ class CANomination extends Model {
             } elseif(isset($ca_amount_settings->dollar_exchange_rate_to_naira) && isset($ca_amount_settings->foreign_conf_fee_limit_amt)) {
 
                 // set max limit if its foreign conference
-                $max_conference_fee_amt = $ca_amount_settings->dollar_exchange_rate_to_naira * $ca_amount_settings->foreign_conf_fee_limit_amt;
-            }
+                $max_conference_fee_amt =  $ca_amount_settings->foreign_conf_fee_limit_amt;
+            } 
+            
         }
 
         // return ca_amount_settings is true

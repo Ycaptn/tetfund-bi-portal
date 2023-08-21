@@ -103,7 +103,9 @@ $(document).ready(function() {
             $('#intl_passport_number_ca').val('');
             $('#div-intl_passport_number_ca').hide();
             $('#div-international_passport_bio_page_ca').hide();
+            $('#country_currency').html("₦")
         } else {
+            $('#country_currency').html("$")
             $('#div-intl_passport_number_ca').show();
         }
 
