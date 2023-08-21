@@ -231,6 +231,7 @@ class SubmissionRequestController extends BaseController
         return redirect(route('tf-bi-portal.submissionRequests.show', $submissionRequest->id))->with('success', 'Submission Request saved successfully.')->with('submissionRequest', $submissionRequest);
     }
 
+
     /* implement processing success */
     public function processSubmissionRequestAttachment(ProcessAttachmentsSubmissionRequest $request, $id) {
         $any_new_attachment = false;
@@ -303,6 +304,7 @@ class SubmissionRequestController extends BaseController
         return redirect()->back()->with('error', $error_message);
     
     }
+
 
     /* implement processing success */
     public function processSubmissionRequestToTFPortal(Request $request) {
@@ -462,24 +464,55 @@ class SubmissionRequestController extends BaseController
 
         $tetFundServer = new TETFundServer();   /* server class constructor */
         $final_submission_to_tetfund = $tetFundServer->processSubmissionRequest($pay_load, $tf_beneficiary_id);
-        
-        // if(isset($final_submission_to_tetfund->array_of_generated_tranches)) {
-        //     foreach ($$final_submission_to_tetfund->array_of_generated_tranches as $generated_tranches) {
-        //         $submission_tranche = new SubmissionRequest();
 
-        //         if($submission_tranche->is_aip_request==true) {
+        // process in cases of ongoing submission
+        if(isset($final_submission_to_tetfund->data->array_of_generated_tranches) && !empty($final_submission_to_tetfund->data->array_of_generated_tranches)) {
+            $parent_aip_request = null;
 
-        //         } elseif($submission_tranche->is_first_tranche_request==true) {
-                
-        //         } elseif($submission_tranche->is_second_tranche_request==true) {
-                
-        //         } elseif($submission_tranche->is_first_tranche_request==true) {
+            foreach ($final_submission_to_tetfund->data->array_of_generated_tranches as $generated_tranche) {
 
-        //         }
-        //         $submission_tranche->save();
+                $submission_tranche = SubmissionRequest::where('tf_iterum_portal_key_id', $generated_tranche->id)->first();
+                if (empty($submission_tranche)) {
+                    $submission_tranche = new SubmissionRequest();
+                }
 
-        //     }
-        // }
+                $submission_tranche->organization_id = $submissionRequest->organization_id;
+                $submission_tranche->title = $generated_tranche->title;
+                $submission_tranche->status = 'submitted';
+                $submission_tranche->type = $generated_tranche->requested_tranche;
+                $submission_tranche->requesting_user_id = $submissionRequest->requesting_user_id;
+                $submission_tranche->beneficiary_id = $submissionRequest->beneficiary_id;
+                $submission_tranche->intervention_year1 = $submissionRequest->intervention_year1;
+                $submission_tranche->intervention_year2 = $submissionRequest->intervention_year2;
+                $submission_tranche->intervention_year3 = $submissionRequest->intervention_year3;
+                $submission_tranche->intervention_year4 = $submissionRequest->intervention_year4;
+                $submission_tranche->proposed_request_date = $submissionRequest->proposed_request_date;
+                $submission_tranche->tf_iterum_portal_key_id = $generated_tranche->id;
+                $submission_tranche->tf_iterum_portal_request_status = $generated_tranche->request_status;
+                $submission_tranche->tf_iterum_portal_response_meta_data = json_encode($generated_tranche);
+                $submission_tranche->tf_iterum_portal_response_at = date('Y-m-d H:i:s');
+                $submission_tranche->amount_requested = $generated_tranche->request_amount;
+                $submission_tranche->tf_iterum_intervention_line_key_id = $submissionRequest->request_amount;
+
+                if($generated_tranche->is_aip_request==true) {
+                    $submission_tranche->parent_id = null;
+                    $submission_tranche->is_aip_request = true;
+                    $submission_tranche->save();
+
+                    $parent_aip_request = $submission_tranche;
+                } else {
+                    $submission_tranche->is_first_tranche_request = $generated_tranche->is_first_tranche_request;
+                    $submission_tranche->is_second_tranche_request = $generated_tranche->is_second_tranche_request;
+                    $submission_tranche->is_final_tranche_request = $generated_tranche->is_final_tranche_request;
+                    $submission_tranche->parent_id = optional($parent_aip_request)->id;
+                    $submission_tranche->save();
+                }
+            }
+            
+            // settting the parent_id for primary request
+            $submissionRequest->parent_id = optional($parent_aip_request)->id;
+        }
+
 
         if (isset($final_submission_to_tetfund->data) && $final_submission_to_tetfund->data != null) {
             $response = $final_submission_to_tetfund->data;
@@ -581,6 +614,7 @@ class SubmissionRequestController extends BaseController
                 ->with('monitoring_request_submitted', $monitoring_request_submitted ?? []);
     }
     
+
     // show details for submission request
     public function show(Organization $org, Request $request, $id) {
         /** @var SubmissionRequest $submissionRequest */
