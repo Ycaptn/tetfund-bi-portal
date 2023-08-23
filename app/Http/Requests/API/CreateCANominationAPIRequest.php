@@ -180,7 +180,7 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             return false;   
        }
 
-       if(auth()->user()->hasRole('bi-hoi') && $diffYears >= 3){
+       if(auth()->user()->hasRole('BI-head-of-institution') && $diffYears >= 3){
             return false;
        }
 

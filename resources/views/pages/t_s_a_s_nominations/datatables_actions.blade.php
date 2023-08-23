@@ -2,7 +2,7 @@
 <div class='btn-group' role="group">
     
     {{-- appears for desk officer only when request need to be forwarded to committee --}}
-    @if($is_desk_officer_check == 0 && auth()->user()->hasAnyRole(['BI-desk-officer']))
+    @if($is_desk_officer_check == 0 && auth()->user()->hasAnyRole(['BI-desk-officer','BI-astd-desk-officer']))
         <a data-toggle="tooltip" 
             title="Preview and forward Nomination details to TSASNomination Committee" 
             data-val='{{$id}}'
@@ -42,7 +42,7 @@
     @endif
 
     {{-- appears for desk-officer after committee approved and set to forward to HOI --}}
-    @if($is_average_committee_members_check==1 && $is_desk_officer_check_after_average_committee_members_checked==0 && auth()->user()->hasRole('BI-desk-officer'))
+    @if($is_average_committee_members_check==1 && $is_desk_officer_check_after_average_committee_members_checked==0 && auth()->user()->hasAnyRole(['BI-astd-desk-officer','BI-desk-officer']))
         <a data-toggle="tooltip" 
             title="Preview and forward TSASNomination details to Head of Institution" 
             data-val='{{$id}}'

@@ -18,13 +18,13 @@ All C A Nomination
         if (array_key_exists('ca_nomination_sent_to', $astd_settings)) {
             $ca_nomination_sent_to = $astd_settings['ca_nomination_sent_to']->value;
         } else {
-            $ca_nomination_sent_to = 'BI-desk-officer';
+            $ca_nomination_sent_to = ['BI-desk-officer','BI-astd-desk-officer'];
         }
 
         if (array_key_exists('ca_committee_considered_sent_to', $astd_settings)) {
             $ca_committee_considered_sent_to = $astd_settings['ca_committee_considered_sent_to']->value;
         } else {
-            $ca_committee_considered_sent_to = 'BI-desk-officer';
+            $ca_committee_considered_sent_to = ['BI-desk-officer','BI-astd-desk-officer'];
         }
 
         if (array_key_exists('ca_approved_nomination_sent_to', $astd_settings)) {
@@ -37,7 +37,7 @@ All C A Nomination
     @endphp
     @if(isset(request()->view_type))
         @if(request()->view_type == 'committee_approved')
-            @if($current_user->hasRole($ca_committee_considered_sent_to))
+            @if($current_user->hasAnyRole($ca_committee_considered_sent_to))
                 Committee Considered Nomination
             @else
                 Committee Approved

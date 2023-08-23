@@ -46,7 +46,7 @@ Beneficiary Dashboard
         </div>
     </div>
 
-    @if($current_user->hasRole('BI-desk-officer'))
+    @if($current_user->hasAnyRole(['BI-desk-officer','BI-ict','BI-astd-desk-officer','BI-head-of-institution','BI-librarian','BI-works']))
         <div class="card radius-5 border-top border-0 border-3 border-success">
             <div class="card-body">
                 <div class="row">
@@ -103,7 +103,7 @@ Beneficiary Dashboard
                     </h4>
                     <div id="acc_platforms_div" class="accordion-collapse collapse" aria-labelledby="acc_platforms" data-bs-parent="#acc_main" style="">
                         <div class="accordion-body">
-                            @if(auth()->user()->hasAnyRole(['BI-admin', 'BI-desk-officer', 'BI-head-of-institution']) )
+                            @if(auth()->user()->hasAnyRole(['BI-admin', 'BI-astd-desk-officer','BI-desk-officer', 'BI-head-of-institution']) )
                                 @include('tf-bi-portal::dashboard.partials.official_communications')
                             @else
                                 <div class="text-center text-danger">
@@ -128,7 +128,7 @@ Beneficiary Dashboard
                     </h4>
                     <div id="acc_org_sites_div" class="accordion-collapse collapse" aria-labelledby="acc_org_sites" data-bs-parent="#acc_main" style="">
                         <div class="accordion-body">
-                            @if(auth()->user()->hasAnyRole(['BI-admin', 'BI-desk-officer', 'BI-head-of-institution']) )
+                            @if(auth()->user()->hasAnyRole(['BI-admin','Bi-astd-desk-officer','BI-ict','BI-works', 'BI-desk-officer', 'BI-head-of-institution']) )
                                 @include('tf-bi-portal::dashboard.partials.upcoming_monitorings')
                             @else
                                 <div class="text-center text-danger">
@@ -141,7 +141,7 @@ Beneficiary Dashboard
 
 
                 {{-- active submissions --}}
-                @if($current_user->hasAnyRole(['BI-desk-officer', 'BI-head-institution']))
+                @if($current_user->hasAnyRole(['BI-desk-officer','BI-ict','BI-astd-desk-officer','BI-works', 'BI-head-institution']))
                     <div class="accordion-item">
                         <h4 class="accordion-header" id="acc_ess">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc_ess_div" aria-expanded="false" aria-controls="acc_ess_div">

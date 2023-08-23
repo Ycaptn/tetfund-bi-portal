@@ -48,7 +48,7 @@ Nomination Request Details {{-- {{$nominationRequest->title}} --}}
 
             <div class="row col-sm-12">
                 <div class="col-sm-12">
-                        @if(auth()->user()->hasAnyRole(['BI-desk-officer','bi-hoi']))
+                        @if(auth()->user()->hasAnyRole(['BI-desk-officer','BI-astd-desk-officer','BI-head-of-institution']))
                             @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.partials_nomination_invite.show')
                         @endif
 

@@ -52,6 +52,7 @@ class AppServiceProvider extends ServiceProvider
             'BI-physical-planning-dept'         =>  [],
             'BI-staff'                          =>  [],
             'BI-student'                        =>  [],
+            'BI-astd-desk-officer'              =>  [],
         ]);
 
         Schema::defaultStringLength(125);

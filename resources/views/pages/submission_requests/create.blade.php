@@ -114,7 +114,8 @@ New Submission
             let all_astd_interventions_id = [];
             let all_none_astd_interventions_id = [];
             let all_intervention_records = '{!! json_encode($intervention_types) ?? [] !!}';
-
+            let roles = JSON.parse('{!! json_encode(auth()->user()->getRoleNames()) ?? [] !!}');
+           console.log(roles);
             // hide 4 intervention years input fields
             $("#intervention_year2").val('');
             $("#intervention_year2").attr('disabled', true);
@@ -148,19 +149,52 @@ New Submission
                 if (selected_intevention_type != '' && all_intervention_records != null) {
 
                     all_astd_interventions_id.length = 0; /* resetting array to empty */
-                    $.each(JSON.parse(all_intervention_records), function(key, intervention) {
-                        // appending intervention lines options
-                        if (intervention.type == selected_intevention_type) {
-                            intervention_line_html += "<option value='"+ intervention.id +"'>"+ intervention.name +"</option>";
-                        }
+                    
+                    @if(auth()->user()->hasRole('BI-desk-officer','BI-head-of-institution'))
+                        $.each(JSON.parse(all_intervention_records), function(key, intervention) {
+            
+                            // appending intervention lines options
+                            if (intervention.type == selected_intevention_type) {
+                                intervention_line_html += "<option value='"+ intervention.id +"'>"+ intervention.name +"</option>";
+                            }
 
-                        // setting all astd interventions into the array
-                        if (intervention.name.includes('Teaching Practice') || intervention.name.includes('Conference Attendance') || intervention.name.includes('TETFund Scholarship')) {
-                            all_astd_interventions_id[intervention.id] = intervention.name;
-                        } else {
-                            all_none_astd_interventions_id[intervention.id] = intervention.name;
-                        }
-                    });
+                            // setting all astd interventions into the array
+                            if (intervention.name.includes('Teaching Practice') || intervention.name.includes('Conference Attendance') || intervention.name.includes('TETFund Scholarship')) {
+                                all_astd_interventions_id[intervention.id] = intervention.name;
+                            } else {
+                                all_none_astd_interventions_id[intervention.id] = intervention.name;
+                            }
+                        });
+                    @else
+
+                        $.each(JSON.parse(all_intervention_records), function(key, intervention) {
+                            // appending intervention lines options
+                            console.log(selected_intevention_type)
+                            console.log(intervention.type);
+                            let role_string = roles.join(',')
+                            if(intervention.name == "ICT Support" && role_string.includes("BI-ict") && intervention.type == selected_intevention_type){
+                                intervention_line_html += "<option value='"+ intervention.id +"'>"+ intervention.name +"</option>";
+                                all_none_astd_interventions_id[intervention.id] = intervention.name;
+                              
+                            } else if(intervention.name == "Library Development" && role_string.includes("BI-librarian") && intervention.type == selected_intevention_type){
+                                intervention_line_html += "<option value='"+ intervention.id +"'>"+ intervention.name +"</option>";
+                                all_none_astd_interventions_id[intervention.id] = intervention.name;
+                             
+                            }else if(intervention.name == "Physical Infrastructure // Program Upgrade" && role_string.includes("BI-works") && intervention.type == selected_intevention_type ){
+                                intervention_line_html += "<option value='"+ intervention.id +"'>"+ intervention.name +"</option>";
+                                all_none_astd_interventions_id[intervention.id] = intervention.name;
+                              
+                            }else if(role_string.includes("BI-astd-desk-officer") && (intervention.name.includes('Teaching Practice') || intervention.name.includes('Conference Attendance') || intervention.name.includes('TETFund Scholarship')) && intervention.type == selected_intevention_type){
+                                intervention_line_html += "<option value='"+ intervention.id +"'>"+ intervention.name +"</option>";
+                                all_astd_interventions_id[intervention.id] = intervention.name;
+                               
+                            }
+
+                         
+                            
+                        });
+                
+                     @endif
                 }
 
                 let astd_inteventions_keys = Object.keys(all_astd_interventions_id);

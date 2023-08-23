@@ -230,7 +230,7 @@ class SubmissionRequestAPIController extends AppBaseController
         }
 
         if($current_user->hasRole('BI-desk-officer') == false) {
-            return $this->sendError('Please, Kindly Contact the Institution TETFund Desk Officer, as only them has the Privilege to Submit This Request');
+            return $this->sendError('Please, Kindly Contact the TETFund Desk Officer or intervention directors, as only them has the Privilege to Submit This Request');
         }
 
         $beneficiary = $submissionRequest->beneficiary;

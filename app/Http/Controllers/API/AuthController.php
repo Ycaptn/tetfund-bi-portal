@@ -176,7 +176,9 @@ class AuthController extends AppBaseController
             'bi_pp_director' => 'BI-physical-planning-dept',
             'bi_staff' => 'BI-staff',
             'bi_student' => 'BI-student',
+            'bi_astd_desk_officer' => "BI-astd-desk-officer",
         ];
+      
 
         if ($request->has('password')) {
             $user_data['password'] = bcrypt($request->input('password'));

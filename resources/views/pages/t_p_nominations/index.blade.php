@@ -18,13 +18,13 @@ All T P Nomination
         if (array_key_exists('tp_nomination_sent_to', $astd_settings)) {
             $tp_nomination_sent_to = $astd_settings['tp_nomination_sent_to']->value;
         } else {
-            $tp_nomination_sent_to = 'BI-desk-officer';
+            $tp_nomination_sent_to = ['BI-desk-officer','BI-astd-desk-officer'];
         }
 
         if (array_key_exists('tp_committee_considered_sent_to', $astd_settings)) {
             $tp_committee_considered_sent_to = $astd_settings['tp_committee_considered_sent_to']->value;
         } else {
-            $tp_committee_considered_sent_to = 'BI-desk-officer';
+            $tp_committee_considered_sent_to = ['BI-desk-officer','BI-astd-desk-officer'];
         }
 
         if (array_key_exists('tp_approved_nomination_sent_to', $astd_settings)) {
@@ -37,7 +37,7 @@ All T P Nomination
     @endphp
     @if(isset(request()->view_type))
         @if(request()->view_type == 'committee_approved')
-            @if($current_user->hasRole($tp_committee_considered_sent_to))
+            @if($current_user->hasAnyRole($tp_committee_considered_sent_to))
                 Committee Considered Nomination
             @else
                 Committee Approved
@@ -52,7 +52,7 @@ All T P Nomination
             @endif
         @endif
     @else
-        @if($current_user->hasRole($tp_nomination_sent_to))
+        @if($current_user->hasAnyRole($tp_nomination_sent_to))
             Newly Submitted
         @elseif($current_user->hasRole('BI-head-of-institution'))
             Nomination Approval

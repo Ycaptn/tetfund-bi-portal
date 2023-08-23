@@ -144,6 +144,35 @@ class SubmissionRequest extends Model
         return $this->hasMany(EloquentAttachable::class, 'attachable_id', 'id');
     }
 
+    public function can_do_submission(){
+
+        if(auth()->user()->hasAnyRole(['BI-desk-officer','BI-head-of-institution'])){
+
+            return true;
+        }
+
+        if(auth()->user()->hasRole(['BI-astd-desk-officer'])){
+
+            return true;
+        }
+
+        if(auth()->user()->hasRole(['BI-works'])){
+
+            return true;
+        }
+        if(auth()->user()->hasRole(['BI-librarian'])){
+
+            return true;
+        }
+
+        if(auth()->user()->hasRole(['BI-ict'])){
+
+            return true;
+        }
+
+        return false;
+    }
+
     public static function get_specific_attachment($submission_request_id, $item_label) {
         $submission_request = self::find($submission_request_id);
         if ($submission_request != null) {

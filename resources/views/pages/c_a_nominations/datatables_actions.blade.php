@@ -2,7 +2,7 @@
 <div class='btn-group' role="group">
     
     {{-- appears for desk officer only when request need to be forwarded to committee --}}
-    @if($is_desk_officer_check == 0 && auth()->user()->hasAnyRole(['BI-desk-officer']))
+    @if($is_desk_officer_check == 0 && auth()->user()->hasAnyRole(['BI-desk-officer','BI-astd-desk-officer']))
         <a data-toggle="tooltip" 
             title="Preview and forward Nomination details to CANomination Committee" 
             data-val='{{$id}}'
@@ -42,7 +42,7 @@
     @endif
 
     {{-- appears for desk-officer after committee approved and set to forward to HOI --}}
-    @if($is_average_committee_members_check==1 && $is_desk_officer_check_after_average_committee_members_checked==0 && auth()->user()->hasRole('BI-desk-officer'))
+    @if($is_average_committee_members_check==1 && $is_desk_officer_check_after_average_committee_members_checked==0 && auth()->user()->hasAnyRole(['BI-desk-officer','BI-astd-desk-officer']))
         <a data-toggle="tooltip" 
             title="Preview and forward CANomination details to Head of Institution" 
             data-val='{{$id}}'
@@ -62,7 +62,7 @@
     @endif
 
      {{-- appears to HOI when approval is accomplished for preview --}}
-    @if($is_head_of_institution_check==1 && $head_of_institution_checked_status=='approved' && $is_set_for_final_submission==0 && auth()->user()->hasAnyRole(['BI-head-of-institution', 'BI-desk-officer']))
+    @if($is_head_of_institution_check==1 && $head_of_institution_checked_status=='approved' && $is_set_for_final_submission==0 && auth()->user()->hasAnyRole(['BI-head-of-institution', 'BI-desk-officer','BI-astd-desk-officer']))
         <a data-toggle="tooltip" 
             title="Preview HOI CANomination approved but pending action by Desk-Officer" 
             data-val='{{$id}}'

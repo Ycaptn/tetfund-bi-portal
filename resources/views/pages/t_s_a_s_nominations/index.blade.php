@@ -17,13 +17,13 @@ All T S A S Nomination
         if (array_key_exists('tsas_nomination_sent_to', $astd_settings)) {
             $tsas_nomination_sent_to = $astd_settings['tsas_nomination_sent_to']->value;
         } else {
-            $tsas_nomination_sent_to = 'BI-desk-officer';
+            $tsas_nomination_sent_to = ['BI-desk-officer','BI-astd-desk-officer'];
         }
 
         if (array_key_exists('tsas_committee_considered_sent_to', $astd_settings)) {
             $tsas_committee_considered_sent_to = $astd_settings['tsas_committee_considered_sent_to']->value;
         } else {
-            $tsas_committee_considered_sent_to = 'BI-desk-officer';
+            $tsas_committee_considered_sent_to = ['BI-desk-officer','BI-astd-desk-officer'];
         }
 
         if (array_key_exists('tsas_approved_nomination_sent_to', $astd_settings)) {

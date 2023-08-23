@@ -61,13 +61,13 @@ class NominationRequestDataTable extends DataTable
         } else if (Auth()->user()->hasAnyRole(['BI-head-of-institution']) && !isset(request()->view_type)) {
             $query_filter['is_head_of_institution_check'] = 0;
             $query_filter['is_desk_officer_check_after_average_committee_members_checked'] = 1;
-        } else if (Auth()->user()->hasAnyRole(['BI-desk-officer']) && !isset(request()->view_type)) {
+        } else if (Auth()->user()->hasAnyRole(['BI-desk-officer','BI-astd-desk-officer']) && !isset(request()->view_type)) {
             $query_filter['is_desk_officer_check'] = 0;
         }
         
         // request filter for selected sub-menu button
         if (isset(request()->view_type) && !empty(request()->view_type)) {
-            if (request()->view_type == 'committee_approved' && Auth()->user()->hasAnyRole(array_merge($all_committee_members, $all_committee_heads, ['BI-desk-officer']))) {
+            if (request()->view_type == 'committee_approved' && Auth()->user()->hasAnyRole(array_merge($all_committee_members, $all_committee_heads, ['BI-desk-officer','BI-astd-desk-officer']))) {
 
                 $query_filter['is_average_committee_members_check'] = 1;
                 $query_filter['committee_head_checked_status'] = 'approved';
