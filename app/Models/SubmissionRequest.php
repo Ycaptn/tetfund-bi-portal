@@ -151,21 +151,21 @@ class SubmissionRequest extends Model
             return true;
         }
 
-        if(auth()->user()->hasRole(['BI-astd-desk-officer'])){
+        if(auth()->user()->hasAnyRole(['BI-astd-desk-officer'])){
 
             return true;
         }
 
-        if(auth()->user()->hasRole(['BI-works'])){
+        if(auth()->user()->hasAnyRole(['BI-works'])){
 
             return true;
         }
-        if(auth()->user()->hasRole(['BI-librarian'])){
+        if(auth()->user()->hasAnyRole(['BI-librarian'])){
 
             return true;
         }
 
-        if(auth()->user()->hasRole(['BI-ict'])){
+        if(auth()->user()->hasAnyRole(['BI-ict'])){
 
             return true;
         }

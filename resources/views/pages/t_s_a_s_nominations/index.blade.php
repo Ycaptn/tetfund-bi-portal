@@ -21,7 +21,7 @@ All T S A S Nomination
         }
 
         if (array_key_exists('tsas_committee_considered_sent_to', $astd_settings)) {
-            $tsas_committee_considered_sent_to = $astd_settings['tsas_committee_considered_sent_to']->value;
+            $tsas_committee_considered_sent_to = [$astd_settings['tsas_committee_considered_sent_to']->value];
         } else {
             $tsas_committee_considered_sent_to = ['BI-desk-officer','BI-astd-desk-officer'];
         }
@@ -36,7 +36,7 @@ All T S A S Nomination
     @endphp
     @if(isset(request()->view_type))
         @if(request()->view_type == 'committee_approved')
-            @if($current_user->hasRole($tsas_committee_considered_sent_to))
+            @if($current_user->hasAnyRole($tsas_committee_considered_sent_to))
                 Committee Considered Nomination
             @else
                 Committee Approved

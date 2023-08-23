@@ -103,7 +103,7 @@ class TSASNominationController extends BaseController
             }
         }
 
-        if (isset(request()->view_type) && (request()->view_type == 'hoi_approved' || request()->view_type == 'final_nominations') && $current_user->hasRole(['BI-desk-officer','BI-astd-desk-officer'])) {
+        if (isset(request()->view_type) && (request()->view_type == 'hoi_approved' || request()->view_type == 'final_nominations') && $current_user->hasAnyRole(['BI-desk-officer','BI-astd-desk-officer'])) {
             $all_existing_submissions = SubmissionRequest::where('status', 'not-submitted')
                             ->orderBy('created_at', 'DESC')
                             ->get(['id', 'title', 'intervention_year1', 'intervention_year2', 'intervention_year3', 'intervention_year4', 'created_at']);

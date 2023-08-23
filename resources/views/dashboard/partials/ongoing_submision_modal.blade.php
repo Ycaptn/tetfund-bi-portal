@@ -157,7 +157,7 @@ $(document).ready(function() {
         if (selected_intevention_type != '' && all_intervention_records != null) {
             all_astd_interventions_id.length = 0; /* resetting array to empty */
             all_none_astd_interventions_id.length = 0; /* resetting array to empty */
-                    @if(auth()->user()->hasRole('BI-desk-officer','BI-head-of-institution'))
+                    @if(auth()->user()->hasAnyRole(['BI-desk-officer','BI-head-of-institution']))
                         $.each(JSON.parse(all_intervention_records), function(key, intervention) {
             
                             // appending intervention lines options
