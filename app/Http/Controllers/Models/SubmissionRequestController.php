@@ -76,8 +76,24 @@ class SubmissionRequestController extends BaseController
             $intervention_lines [$item->id]= $item->name;
         }
 
+        $current_user_roles = $current_user->roles->pluck('name')->toArray();
+        $get_user_can_do_interventions = SubmissionRequest::get_user_can_operate_interventions($current_user_roles);
+
+        $intervention_ids_user_can_do = [];
+        if(!empty($get_user_can_do_interventions) && !empty($intervention_lines)) {
+            foreach ($intervention_lines as $key => $intervention_line) {
+                if(in_array(strtolower($intervention_line), $get_user_can_do_interventions)) {
+                    array_push($intervention_ids_user_can_do, $key);
+                }
+            }
+        }
+
         $cdv_submission_requests = new CardDataView(SubmissionRequest::class, "pages.submission_requests.card_view_item", $intervention_lines);
-        $cdv_submission_requests->setDataQuery(['organization_id'=>$org->id, 'beneficiary_id'=>optional($beneficiary_member)->beneficiary_id, 'is_monitoring_request'=>false])
+        $cdv_submission_requests->setDataQuery([
+                            'organization_id' => $org->id,
+                            'is_monitoring_request' => false,
+                            'beneficiary_id' => optional($beneficiary_member)->beneficiary_id,
+                        ])
                         ->addDataGroup('All','deleted_at',null)
                         ->addDataGroup('Not Submitted','status','not-submitted')
                         ->addDataGroup('Submitted','status','submitted')
@@ -87,6 +103,7 @@ class SubmissionRequestController extends BaseController
                         ->addDataOrder('created_at', 'DESC')
                         ->enablePagination(true)
                         ->enableFilter(true)
+                        ->addFilterRelatedFields('tf_iterum_intervention_line_key_id', $intervention_ids_user_can_do)
                         ->addFilterGroupRangeSelect('Amount Requested', 'request_amount', 1,1000000000,"<")
                         ->addFilterGroupDateRangeSelect('Date Submitted', 'created_at')
                         ->addFilterGroupMultipleSelect(
@@ -182,12 +199,18 @@ class SubmissionRequestController extends BaseController
         }
 
         $current_user = auth()->user();
+        $current_user_roles = $current_user->roles->pluck('name')->toArray();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
         
         // checki if a similar request does exit
         if (!str_contains($request->astd_interventions_ids, $request->tf_iterum_intervention_line_key_id) && $beneficiary_member->beneficiary->hasRequest($request->tf_iterum_intervention_line_key_id, $input['intervention_year1'], $input['intervention_year2'], $input['intervention_year3'], $input['intervention_year4'], null, $request->intervention_title)) {
                 $error_msg = "A previous submission request for one or more of the selected years has already been submitted.";
                 return redirect()->back()->withErrors([$error_msg])->withInput();
+        }
+
+        // checking if user has the privillege to store this request
+        if (!(SubmissionRequest::can_user_operate_intervention($current_user_roles, $request->get('intervention_title')))) {
+            return redirect()->back()->withError('User does not have permission to access the Submission Request!')->withInput();
         }
 
         // setting up sadditional request parameters for interventions that starts with first tranche
@@ -636,7 +659,7 @@ class SubmissionRequestController extends BaseController
             //Flash::error('Submission Request not found');
             return redirect(route('tf-bi-portal.submissionRequests.index'));
         }
-            
+
         $beneficiary = $submissionRequest->beneficiary; // beneficiary
 
         // tracking Iterum records if submission has been completed to tetfund
@@ -837,8 +860,18 @@ class SubmissionRequestController extends BaseController
         if (($submissionRequest->status=='not-submitted' || $submissionRequest->status=='recalled') && ($submissionRequest->is_aip_request==true || ($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention(trim($supposed_intervention_name[0]))))) {
 
             $current_user = auth()->user();
+            $current_user_roles = $current_user->roles->pluck('name')->toArray();
             $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
             
+            // setting title prefix
+            $title_spilt = explode('-', $submissionRequest->title);
+            $submissionRequest->title = !empty($submissionRequest->title) && count($title_spilt)==2 ? trim($title_spilt[0]) : '';
+
+            // checking if user has the functionality to edit this request
+            if (!($submissionRequest->can_user_operate_intervention($current_user_roles, $submissionRequest->title))) {
+                return redirect()->back()->withError('User does not have permission to edit the Submission Request!')->withInput();
+            }
+
             $pay_load = [   
                 '_method' => 'GET',
                 'beneficiary_type' => $beneficiary_member->beneficiary->type ?? null,
@@ -862,9 +895,6 @@ class SubmissionRequestController extends BaseController
                 }
             }
 
-            //setting title prefix
-            $title_spilt = explode('-', $submissionRequest->title);
-            $submissionRequest->title = !empty($submissionRequest->title) && count($title_spilt)==2 ? trim($title_spilt[0]) : '';
 
             return view('pages.submission_requests.edit')
                 ->with('submissionRequest', $submissionRequest)
@@ -889,8 +919,7 @@ class SubmissionRequestController extends BaseController
         $submissionRequest = SubmissionRequest::find($id);
 
         if (empty($submissionRequest)) {
-            //Flash::error('Submission Request not found');
-            return redirect(route('tf-bi-portal.submissionRequests.index'));
+            return redirect(route('tf-bi-portal.submissionRequests.index'))->withError('Submission Request not found!');
         }
 
         if ($submissionRequest->status=='recalled'){
@@ -900,9 +929,16 @@ class SubmissionRequestController extends BaseController
         }
 
         $current_user = auth()->user();
+        $current_user_roles = $current_user->roles->pluck('name')->toArray();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+        
+        // checking if current user has the permission to process this update
+        if (!($submissionRequest->can_user_operate_intervention($current_user_roles, $request->get('intervention_title')))) {
+            return redirect()->back()->withError('User does not have permission to modify the Submission Request!')->withInput();
+        }
 
-        if (($submissionRequest->status=='not-submitted' || $submitted_request_data->request_status??''=='recalled') && ($submissionRequest->is_aip_request==true || ($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention($request->intervention_title)))) {
+
+        if (!($submissionRequest->status=='not-submitted' || $submitted_request_data->request_status??''=='recalled') && ($submissionRequest->is_aip_request==true || ($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention($request->intervention_title)))) {
 
             $input = $request->all();
             $input['intervention_year1'] = 0;

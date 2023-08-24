@@ -144,34 +144,6 @@ class SubmissionRequest extends Model
         return $this->hasMany(EloquentAttachable::class, 'attachable_id', 'id');
     }
 
-    public function can_do_submission(){
-
-        if(auth()->user()->hasAnyRole(['BI-desk-officer','BI-head-of-institution'])){
-
-            return true;
-        }
-
-        if(auth()->user()->hasAnyRole(['BI-astd-desk-officer'])){
-
-            return true;
-        }
-
-        if(auth()->user()->hasAnyRole(['BI-works'])){
-
-            return true;
-        }
-        if(auth()->user()->hasAnyRole(['BI-librarian'])){
-
-            return true;
-        }
-
-        if(auth()->user()->hasAnyRole(['BI-ict'])){
-
-            return true;
-        }
-
-        return false;
-    }
 
     public static function get_specific_attachment($submission_request_id, $item_label) {
         $submission_request = self::find($submission_request_id);
@@ -298,6 +270,95 @@ class SubmissionRequest extends Model
 
         return $final_tranche_interventions[strtolower($intervention_name)] ?? null;
     }
+
+
+    // returns all interventions operable by role
+    public function set_roles_interventions() {
+        return [
+            'BI-desk-officer' => [
+                'ict support',
+                'zonal intervention',
+                'library development',
+                'equipment fabrication',
+                'advocacy and publicity',
+                'entrepreneurship centre',
+                'academic research journal',
+                'academic manuscript into books',
+                'academic manuscript development',
+                'physical infrastructure and program upgrade',
+            ],
+
+            'BI-ict' => [
+                'ict support',
+                'zonal intervention',
+            ],
+
+            'BI-librarian' => [
+                'library development',
+                'advocacy and publicity',
+                'academic research journal',
+                'academic manuscript into books',
+                'academic manuscript development',
+            ],
+
+            'BI-works' => [
+                'equipment fabrication',
+                'physical infrastructure and program upgrade',
+            ],
+
+            'BI-physical-planning-dept' => [
+                'equipment fabrication',
+                'physical infrastructure and program upgrade',
+            ],
+
+            'BI-astd-desk-officer' => [
+                'teaching practice',
+                'conference attendance',
+                'tetfund scholarship',
+                'tetfund scholarship for academic staff',
+            ],
+        ];
+    }
+
+
+    // checking if User roles can operate on specified intervention
+    public function can_user_operate_intervention($roles=[], $intervention_name=null) {
+        $returned_flag = false;
+        $roles_intervention = self::set_roles_interventions();
+
+        if(is_array($roles) && count($roles)>0 && !empty($intervention_name)) {
+            foreach ($roles as $role) {
+                $get_role_interventions = $roles_intervention[$role]??null;
+                $lower_case_intervention_name = strtolower($intervention_name);
+
+                if(!empty($get_role_interventions) && in_array($lower_case_intervention_name, $get_role_interventions)) {
+                    $returned_flag = true;
+                    break;
+                }
+            }
+        }
+
+        return $returned_flag;
+    }
+
+
+    // return array of interventions that can be operated by user role
+    public function get_user_can_operate_interventions($roles=[]) {
+        $returned_user_interventions = [];
+        $roles_intervention = self::set_roles_interventions();
+
+        if(is_array($roles) && count($roles) > 0) {
+            foreach ($roles as $role) {
+                $get_role_interventions = $roles_intervention[$role]??null;
+                if(!empty($get_role_interventions)) {
+                    $returned_user_interventions = array_merge($returned_user_interventions, $get_role_interventions);
+                }
+            }
+        }
+
+        return array_unique($returned_user_interventions);
+    }
+
 
     // all monitoring request interventions
      public function monitoring_evaluation_interventions ($intervention_name) {
