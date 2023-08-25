@@ -115,7 +115,8 @@ New Submission
             let all_none_astd_interventions_id = [];
             let all_intervention_records = '{!! json_encode($intervention_types) ?? [] !!}';
             let roles = JSON.parse('{!! json_encode(auth()->user()->getRoleNames()) ?? [] !!}');
-           console.log(roles);
+            // console.log(roles);
+
             // hide 4 intervention years input fields
             $("#intervention_year2").val('');
             $("#intervention_year2").attr('disabled', true);
@@ -150,9 +151,8 @@ New Submission
 
                     all_astd_interventions_id.length = 0; /* resetting array to empty */
                     
-                    @if(auth()->user()->hasRole('BI-desk-officer','BI-head-of-institution'))
-                        $.each(JSON.parse(all_intervention_records), function(key, intervention) {
-            
+                    @if($current_user->hasAnyRole(['BI-desk-officer','BI-head-of-institution']))
+                        $.each(JSON.parse(all_intervention_records), function(key, intervention) {            
                             // appending intervention lines options
                             if (intervention.type == selected_intevention_type) {
                                 intervention_line_html += "<option value='"+ intervention.id +"'>"+ intervention.name +"</option>";
@@ -166,11 +166,9 @@ New Submission
                             }
                         });
                     @else
-
                         $.each(JSON.parse(all_intervention_records), function(key, intervention) {
+
                             // appending intervention lines options
-                            console.log(selected_intevention_type)
-                            console.log(intervention.type);
                             let role_string = roles.join(',')
                             if(intervention.name == "ICT Support" && role_string.includes("BI-ict") && intervention.type == selected_intevention_type){
                                 intervention_line_html += "<option value='"+ intervention.id +"'>"+ intervention.name +"</option>";
@@ -180,7 +178,7 @@ New Submission
                                 intervention_line_html += "<option value='"+ intervention.id +"'>"+ intervention.name +"</option>";
                                 all_none_astd_interventions_id[intervention.id] = intervention.name;
                              
-                            }else if(intervention.name == "Physical Infrastructure // Program Upgrade" && role_string.includes("BI-works") && intervention.type == selected_intevention_type ){
+                            }else if(intervention.name == "Physical Infrastructure / Program Upgrade" && role_string.includes("BI-works") && intervention.type == selected_intevention_type ){
                                 intervention_line_html += "<option value='"+ intervention.id +"'>"+ intervention.name +"</option>";
                                 all_none_astd_interventions_id[intervention.id] = intervention.name;
                               
@@ -189,8 +187,6 @@ New Submission
                                 all_astd_interventions_id[intervention.id] = intervention.name;
                                
                             }
-
-                         
                             
                         });
                 

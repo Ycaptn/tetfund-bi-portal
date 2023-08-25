@@ -155,6 +155,7 @@ class SubmissionRequestController extends BaseController
 
         return view('pages.submission_requests.create')
             ->with("years", $years)
+            ->with("current_user", $current_user)
             ->with("intervention_types", $intervention_types_server_response);
     }
 
@@ -344,7 +345,7 @@ class SubmissionRequestController extends BaseController
         $current_user = auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
-        if($current_user->hasAnyRole(['BI-desk-officer','BI-ict','BI-astd-desk-officer','BI-head-of-institution','BI-librarian','BI-works']) == false) {
+        if(!($current_user->hasAnyRole(['BI-desk-officer','BI-head-of-institution']))) {
             return redirect()->back()->with('error', 'Please, Kindly Contact the Institution TETFund Desk Officer or any other users who has the priviledge to make a submission for the selected intervention');
         }
         
