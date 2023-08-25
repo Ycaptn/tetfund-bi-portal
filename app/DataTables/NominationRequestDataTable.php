@@ -25,7 +25,7 @@ class NominationRequestDataTable extends DataTable
      */
     public function query(NominationRequest $model)
     {   
-        if (Auth()->user()->hasRole(['admin'])) {
+        if (Auth()->user()->hasAnyRole(['admin'])) {
             return $model->newQuery()->with('user')
                 ->where('beneficiary_id', $this->beneficiary_id);
         }
@@ -73,7 +73,7 @@ class NominationRequestDataTable extends DataTable
                 $query_filter['committee_head_checked_status'] = 'approved';
                 $query_filter['is_desk_officer_check_after_average_committee_members_checked'] = 0;
 
-            } else if (request()->view_type == 'hoi_approved' && Auth()->user()->hasAnyRole(['BI-desk-officer', 'BI-head-of-institution'])) {
+            } else if (request()->view_type == 'hoi_approved' && Auth()->user()->hasAnyRole(['BI-desk-officer', 'BI-astd-desk-officer', 'BI-head-of-institution'])) {
 
                 $query_filter['is_head_of_institution_check'] = 1;
                 $query_filter['head_of_institution_checked_status'] = 'approved';
@@ -115,7 +115,7 @@ class NominationRequestDataTable extends DataTable
             ->columns($this->getColumns())
             ->minifiedAjax();
 
-        if (!Auth()->user()->hasRole(['admin'])) {
+        if (!Auth()->user()->hasAnyRole(['admin'])) {
             $builder = $builder->addAction(['width' => '120px', 'printable' => false]);
         }
 
@@ -144,7 +144,7 @@ class NominationRequestDataTable extends DataTable
             Column::make('email')->name('user.email'),
         ];
 
-        if (Auth()->user()->hasRole(['admin'])) {
+        if (Auth()->user()->hasAnyRole(['admin'])) {
             array_push($columns, Column::make('type')->name('type'));
         }
 
@@ -203,7 +203,7 @@ class NominationRequestDataTable extends DataTable
             return "N/A";
         });
 
-        if (Auth()->user()->hasRole(['admin'])) {
+        if (Auth()->user()->hasAnyRole(['admin'])) {
             return $dataTable;
         } else {
             return $dataTable->addColumn('action', 'tf-bi-portal::pages.nomination_requests.default_datatables_actions');

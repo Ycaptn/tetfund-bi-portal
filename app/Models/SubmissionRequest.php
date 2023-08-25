@@ -229,7 +229,7 @@ class SubmissionRequest extends Model
             'academic research journal' => '85%',
             'academic manuscript into books' => '85%',
             'academic manuscript development' => '85%',
-            'physical infrastructure and program upgrade' => '50%',
+            'physical infrastructure / program upgrade' => '50%',
         ];
         return $first_tranche_interventions[strtolower($intervention_name)] ?? null;
     }
@@ -238,7 +238,7 @@ class SubmissionRequest extends Model
     public function second_tranche_intervention_percentage ($intervention_name) {
         $second_tranche_interventions = [
             'equipment fabrication' => '35%',
-            'physical infrastructure and program upgrade' => '35%',
+            'physical infrastructure / program upgrade' => '35%',
         ];
 
         return $second_tranche_interventions[strtolower($intervention_name)] ?? null;
@@ -265,7 +265,7 @@ class SubmissionRequest extends Model
             'academic research journal' => '15%',
             'academic manuscript into books' => '15%',
             'academic manuscript development' => '15%',
-            'physical infrastructure and program upgrade' => '15%',
+            'physical infrastructure / program upgrade' => '15%',
         ];
 
         return $final_tranche_interventions[strtolower($intervention_name)] ?? null;
@@ -277,15 +277,36 @@ class SubmissionRequest extends Model
         return [
             'BI-desk-officer' => [
                 'ict support',
+                'teaching practice',
                 'zonal intervention',
+                'tetfund scholarship',
                 'library development',
+                'conference attendance',
                 'equipment fabrication',
                 'advocacy and publicity',
                 'entrepreneurship centre',
                 'academic research journal',
                 'academic manuscript into books',
                 'academic manuscript development',
-                'physical infrastructure and program upgrade',
+                'tetfund scholarship for academic staff',
+                'physical infrastructure / program upgrade',
+            ],
+
+            'BI-head-of-institution' => [
+                'ict support',
+                'teaching practice',
+                'zonal intervention',
+                'tetfund scholarship',
+                'library development',
+                'conference attendance',
+                'equipment fabrication',
+                'advocacy and publicity',
+                'entrepreneurship centre',
+                'academic research journal',
+                'academic manuscript into books',
+                'academic manuscript development',
+                'tetfund scholarship for academic staff',
+                'physical infrastructure / program upgrade',
             ],
 
             'BI-ict' => [
@@ -303,12 +324,12 @@ class SubmissionRequest extends Model
 
             'BI-works' => [
                 'equipment fabrication',
-                'physical infrastructure and program upgrade',
+                'physical infrastructure / program upgrade',
             ],
 
             'BI-physical-planning-dept' => [
                 'equipment fabrication',
-                'physical infrastructure and program upgrade',
+                'physical infrastructure / program upgrade',
             ],
 
             'BI-astd-desk-officer' => [
@@ -332,6 +353,26 @@ class SubmissionRequest extends Model
                 $lower_case_intervention_name = strtolower($intervention_name);
 
                 if(!empty($get_role_interventions) && in_array($lower_case_intervention_name, $get_role_interventions)) {
+                    $returned_flag = true;
+                    break;
+                }
+            }
+        }
+
+        return $returned_flag;
+    }
+
+
+    // checking if a user can operate any intervention
+    public function can_user_operate_any_intervention($roles=[]) {
+        $returned_flag = false;
+        $roles_intervention = self::set_roles_interventions();
+
+        if(is_array($roles) && count($roles)>0) {
+            foreach ($roles as $role) {
+                $get_role_interventions = $roles_intervention[$role]??null;
+
+                if(!empty($get_role_interventions)) {
                     $returned_flag = true;
                     break;
                 }
@@ -370,7 +411,7 @@ class SubmissionRequest extends Model
             'advocacy and publicity',
             'academic research journal',
             'academic manuscript into books',
-            'physical infrastructure and program upgrade',
+            'physical infrastructure / program upgrade',
         ];
 
         return in_array(strtolower($intervention_name), $monitoring_evaluation_interventions);

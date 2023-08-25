@@ -103,7 +103,7 @@ class SubmissionRequestController extends BaseController
                         ->addDataOrder('created_at', 'DESC')
                         ->enablePagination(true)
                         ->enableFilter(true)
-                        ->addFilterRelatedFields('tf_iterum_intervention_line_key_id', $intervention_ids_user_can_do)
+                        // ->addFilterRelatedFields('tf_iterum_intervention_line_key_id', $intervention_ids_user_can_do)
                         ->addFilterGroupRangeSelect('Amount Requested', 'request_amount', 1,1000000000,"<")
                         ->addFilterGroupDateRangeSelect('Date Submitted', 'created_at')
                         ->addFilterGroupMultipleSelect(
@@ -123,8 +123,8 @@ class SubmissionRequestController extends BaseController
 
         return view('pages.submission_requests.card_view_index')
                     ->with('current_user', $current_user)
-                    ->with('months_list', BaseController::monthsList())
-                    ->with('states_list', BaseController::statesList())
+                    ->with('current_user_roles', $current_user_roles)
+                    ->with('submission_request_obj', new SubmissionRequest())
                     ->with('cdv_submission_requests', $cdv_submission_requests)
                     ->with('beneficiary_type_intervention_lines', $intervention_lines);
     }

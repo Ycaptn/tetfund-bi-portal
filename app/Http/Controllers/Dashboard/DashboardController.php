@@ -31,21 +31,8 @@ class DashboardController extends BaseController
     public function index(Organization $org, Request $request) {
 
         $current_user = Auth()->user();
+        $current_user_roles = $current_user->roles->pluck('name')->toArray();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
-        $active_submissions = SubmissionRequest::whereIn('status', ['not-submitted', 'submitted', 'pending-recall', 'recalled'])
-                        ->where([
-                            'is_monitoring_request' => false,
-                            'beneficiary_id' => optional($beneficiary_member)->beneficiary_id
-                        ])
-                        ->orderBy('created_at', 'DESC')
-                        ->get();
-        $approved_submissions = SubmissionRequest::whereIn('status', ['approved'])
-                            ->where([
-                            'is_monitoring_request' => false,
-                            'beneficiary_id' => optional($beneficiary_member)->beneficiary_id
-                            ])->orderBy('created_at', 'DESC')
-                            ->get();
-
 
         // get some array of data from server
         $payload_data_to_rerieve = [
@@ -65,9 +52,44 @@ class DashboardController extends BaseController
                 ],
         ];
 
+
         // array of server data
         $tetFundServer = new TETFundServer();   /* server class constructor */
         $collection = $tetFundServer->getSomeDataArrayFromServer($payload_data_to_rerieve);
+
+        // get beneficiary intervention lines
+        $intervention_types = $collection->getAllInterventionLines??[];
+        $intervention_lines = collect($intervention_types)->pluck('name', 'id')->toArray();
+
+        // array of interventions current user roles can operate
+        $get_user_can_do_interventions = SubmissionRequest::get_user_can_operate_interventions($current_user_roles);
+
+        // interventions IDs current user can do
+        $intervention_ids_user_can_do = [];
+        if(!empty($get_user_can_do_interventions) && !empty($intervention_lines)) {
+            foreach ($intervention_lines as $key => $intervention_line) {
+                if(in_array(strtolower($intervention_line), $get_user_can_do_interventions)) {
+                    // echo $get_user_can_do_interventions;
+                    array_push($intervention_ids_user_can_do, $key);
+                }
+            }
+        }
+
+        $active_submissions = SubmissionRequest::whereIn('tf_iterum_intervention_line_key_id', $intervention_ids_user_can_do)
+                        ->whereIn('status', ['not-submitted', 'submitted', 'pending-recall', 'recalled'])
+                        ->where([
+                            'is_monitoring_request' => false,
+                            'beneficiary_id' => optional($beneficiary_member)->beneficiary_id
+                        ])->orderBy('created_at', 'DESC') ->get();
+
+
+        $approved_submissions = SubmissionRequest::whereIn('status', ['approved'])
+                            ->whereIn('tf_iterum_intervention_line_key_id', $intervention_ids_user_can_do)
+                            ->where([
+                                'is_monitoring_request' => false,
+                                'beneficiary_id' => optional($beneficiary_member)->beneficiary_id
+                            ])->orderBy('created_at', 'DESC')->get();
+
 
         // get upcoming monitoring requests
         $upcoming_monitorings = array_filter($collection->getMonitoringRequestData??[],function($v){
@@ -83,18 +105,17 @@ class DashboardController extends BaseController
         // merging all communications
         $official_communications = array_merge($official_ben_communications, $official_ben_request_communications);
 
-        // get beneficiary intervention lines
-        $intervention_types = $collection->getAllInterventionLines??[];
-
         return view('dashboard.index')
                     ->with('organization', $org)
                     ->with('current_user', $current_user)
-                    ->with('intervention_types', $intervention_types)
+                    ->with('current_user_roles', $current_user_roles)
                     ->with('active_submissions', $active_submissions)
-                    ->with('upcoming_monitorings', $upcoming_monitorings)
-                    ->with('beneficiary', optional($beneficiary_member)->beneficiary)
+                    ->with('intervention_types', $intervention_types)
                     ->with('approved_submissions',$approved_submissions)
-                    ->with('official_communications', $official_communications);
+                    ->with('upcoming_monitorings', $upcoming_monitorings)
+                    ->with('submission_request_obj', new SubmissionRequest())
+                    ->with('official_communications', $official_communications)
+                    ->with('beneficiary', optional($beneficiary_member)->beneficiary);
     }
 
     public function displayMonitoringDashboard(Organization $org, Request $request) {

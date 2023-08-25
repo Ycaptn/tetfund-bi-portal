@@ -44,9 +44,9 @@ Beneficiary Dashboard
                 </div>
             </div>
         </div>
-    </div>
+    </div> 
 
-    @if($current_user->hasAnyRole(['BI-desk-officer','BI-ict','BI-astd-desk-officer','BI-head-of-institution','BI-librarian','BI-works']))
+    @if($submission_request_obj->can_user_operate_any_intervention($current_user_roles))
         <div class="card radius-5 border-top border-0 border-3 border-success">
             <div class="card-body">
                 <div class="row">
@@ -103,7 +103,7 @@ Beneficiary Dashboard
                     </h4>
                     <div id="acc_platforms_div" class="accordion-collapse collapse" aria-labelledby="acc_platforms" data-bs-parent="#acc_main" style="">
                         <div class="accordion-body">
-                            @if(auth()->user()->hasAnyRole(['BI-admin', 'BI-astd-desk-officer','BI-desk-officer', 'BI-head-of-institution']) )
+                            @if($submission_request_obj->can_user_operate_any_intervention($current_user_roles))
                                 @include('tf-bi-portal::dashboard.partials.official_communications')
                             @else
                                 <div class="text-center text-danger">
@@ -128,7 +128,7 @@ Beneficiary Dashboard
                     </h4>
                     <div id="acc_org_sites_div" class="accordion-collapse collapse" aria-labelledby="acc_org_sites" data-bs-parent="#acc_main" style="">
                         <div class="accordion-body">
-                            @if(auth()->user()->hasAnyRole(['BI-admin','Bi-astd-desk-officer','BI-ict','BI-works', 'BI-desk-officer', 'BI-head-of-institution']) )
+                            @if($submission_request_obj->can_user_operate_any_intervention($current_user_roles))
                                 @include('tf-bi-portal::dashboard.partials.upcoming_monitorings')
                             @else
                                 <div class="text-center text-danger">

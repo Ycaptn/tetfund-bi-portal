@@ -143,12 +143,12 @@
                                 <small class="text-center text-decoration-underline">
                                     <a  target="__blank"
                                         href="{{ route('tf-bi-portal.submissionRequests.show', $bi_request_communications->beneficiary_request->id??'0') }}?sub_menu_items=communications#">
-                                        For Beneficiary Submission
+                                        -- Beneficiary Submission
                                     </a>
                                 </small>
                             @elseif(isset($bi_request_communications->interven_benef_type_id))
                                 <small class="text-center text-danger">
-                                    For Beneficiary Institution
+                                    -- Beneficiary Institution
                                 </small>
                             @endif        
                         </td>
