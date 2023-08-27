@@ -262,13 +262,21 @@ class SubmissionRequestController extends BaseController
         $attachment_inputs = $request->all();
         $submissionRequest = SubmissionRequest::find($request->id);
 
+        if (empty($submissionRequest)) {
+            return redirect()->route('tf-bi-portal.submissionRequests.index')->withError('Oops... The submission request was not found');
+        }
+
         // intervention checklist group name
         $checklist_group_name = self::generateCheckListGroupName($request->intervention_line_name??'', $submissionRequest);
 
         // get audit checklist for tranches applicable
-        $additional_checklists_pay_load = ['_method' => 'POST'];
+        $additional_checklists_payload = [
+                '_method' => 'POST',
+                'applicable_years' => $submissionRequest->getInterventionYears()
+            ];
+
         if ($submissionRequest->is_second_tranche_request || $submissionRequest->is_final_tranche_request) {
-            $additional_checklists_pay_load['checklist_group_name_audit'] = self::generateCheckListGroupName($request->intervention_line_name??'', $submissionRequest, true);
+            $additional_checklists_payload['checklist_group_name_audit'] = self::generateCheckListGroupName($request->intervention_line_name??'', $submissionRequest, true);
         }
 
         // retriveing related checklist records for PI intevention at AIP stages  
@@ -278,7 +286,7 @@ class SubmissionRequestController extends BaseController
         
         // get checklist for specified intervention
         $tetFundServer = new TETFundServer();   /* server class constructor */
-        $checklist_items = $tetFundServer->getInterventionChecklistData($checklist_group_name, $additional_checklists_pay_load);
+        $checklist_items = (array)$tetFundServer->getInterventionChecklistData($checklist_group_name, $additional_checklists_payload);
         
         //mapping checklist id to item_label 
         foreach ($checklist_items as $checklist){
@@ -672,7 +680,7 @@ class SubmissionRequestController extends BaseController
             $tetFundServer = new TETFundServer();   
             $submitted_request_data = $tetFundServer->getSubmissionRequestData($submissionRequest->tf_iterum_portal_key_id, $checklist_group_name_surfix);
 
-            $checklist_items = $submitted_request_data->checklist_items;
+            $checklist_items = (array)$submitted_request_data->checklist_items;
       
             $bi_request_released_communications = $submitted_request_data->releasedBICommunication;
 
@@ -734,9 +742,9 @@ class SubmissionRequestController extends BaseController
             $checklist_group_name = self::generateCheckListGroupName($intervention_types_server_response->name ?? '', $submissionRequest);
 
             // get audit checklist for tranches applicable
-            $additional_checklists_pay_load = ['_method' => 'POST'];
+            $additional_checklists_payload = ['_method' => 'POST'];
             if ($submissionRequest->is_second_tranche_request || $submissionRequest->is_final_tranche_request) {
-                $additional_checklists_pay_load['checklist_group_name_audit'] = self::generateCheckListGroupName($intervention_types_server_response->name??'', $submissionRequest, true);
+                $additional_checklists_payload['checklist_group_name_audit'] = self::generateCheckListGroupName($intervention_types_server_response->name??'', $submissionRequest, true);
             }
 
             // retriveing related checklist records for PI intevention at AIP stages  
@@ -749,7 +757,8 @@ class SubmissionRequestController extends BaseController
             // get some array of data from server
             $data_to_rerieve_payload = [
                 'getInterventionChecklistData' => [
-                    'request' => $additional_checklists_pay_load,
+                    'applicable_years' => $years,
+                    'request' => $additional_checklists_payload,
                     'checklist_group_name' => $checklist_group_name
                 ]
             ];
@@ -777,7 +786,7 @@ class SubmissionRequestController extends BaseController
             $some_server_data_array = $tetFundServer->getSomeDataArrayFromServer($data_to_rerieve_payload);
 
             // get checklist for specified intervention
-            $checklist_items = $some_server_data_array->getInterventionChecklistData??[];
+            $checklist_items = (array)$some_server_data_array->getInterventionChecklistData??[];
 
             //Get the funding data and total_funds for the selected intervention year(s) if non-astd.
             $submission_allocations = $is_astd_intervention==true ? $some_server_data_array->getASTDFundAvailabilityData : $some_server_data_array->getFundAvailabilityData??null;
