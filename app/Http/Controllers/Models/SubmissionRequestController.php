@@ -1002,7 +1002,7 @@ class SubmissionRequestController extends BaseController
             SubmissionRequestUpdated::dispatch($submissionRequest);
             return redirect(route('tf-bi-portal.submissionRequests.show', $submissionRequest->id))->with('success', 'Submission Request updated successfully.')->with('submissionRequest', $submissionRequest);
         }
-        dd($submissionRequest);
+        
         return redirect(route('tf-bi-portal.submissionRequests.index'));
     }
 
