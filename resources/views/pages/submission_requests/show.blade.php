@@ -254,14 +254,79 @@ Submission
 </div>
 @stop
 
+
 @push('page_scripts')
     <script type="text/javascript">
+        $(document).ready(function() {
+            // Trigger on cheking or uncheking procurement request application type
+            $('#has_construction').on('change', function(e) {
+                e.preventDefault();
+                let has_construction_val = $(this).is(":checked") ? true : false;
+                updateApplicablerequestTypesStatus('has_construction', has_construction_val);
+            });
 
-        //Show Modal for Allocation Details Preview
-        $(document).on('click', ".btn-show-submissionRequestAllocationAmount", function(e) {
-            $('#mdl-submissionRequestAllocationAmount-modal').modal('show');
+
+            // Trigger on cheking or uncheking procurement request application type
+            $('#has_procurement').on('change', function(e) {
+                e.preventDefault();
+                let has_procurement_val = $(this).is(":checked") ? true : false;
+                updateApplicablerequestTypesStatus('has_procurement', has_procurement_val);
+            });
+
+
+            //Show Modal for Allocation Details Preview
+            $('.btn-show-submissionRequestAllocationAmount').on('click', function(e) {
+                $('#mdl-submissionRequestAllocationAmount-modal').modal('show');
+            });
+
         });
 
+
+        function updateApplicablerequestTypesStatus(type, value) {
+            swal({
+                title: '<div class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br>Updating...',
+                text: 'Please wait while applicable request type is being updated <br><br> Do not refresh this page! ',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                html: true
+            });
+
+            let formData = new FormData();
+            formData.append('_method', 'POST');
+            formData.append('applicable_type_key', type);
+            formData.append('applicale_type_value', value);
+            formData.append('_token', $('input[name="_token"]').val());
+            
+            $.ajax({
+                url: "{{ route('tf-bi-portal-api.submission_requests.applicable_request_type', $submissionRequest->id) }}",
+                type: "POST",
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                success: function(result) {
+                    if(result.errors) {
+                        console.log(result.errors)
+                        swal("Error", "Oops an error occurred. Please try again.", "error");
+                    } else {
+                        swal({
+                            title: "Updated",
+                            text: "Applicable request type updated successfully",
+                            type: "success",
+                            confirmButtonClass: "btn-success",
+                            confirmButtonText: "OK",
+                            closeOnConfirm: false
+                        });
+
+                        location.reload(true);
+                    }
+                },
+            });
+        }
+
+
+        // trigger on making final submission
         function onSubmitAction() {
             event.preventDefault();
             swal({

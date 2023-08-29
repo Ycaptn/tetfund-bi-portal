@@ -629,4 +629,26 @@ class SubmissionRequestAPIController extends AppBaseController
 
         return $this->sendResponse($ongoingSubmission, 'Ongoing submission request saved successfully.');
     }
+    
+
+    public function applicable_request_type(Request $request, $id) {
+        $submissionRequest = SubmissionRequest::find($id);
+
+        if (empty($submissionRequest)) {
+            return $this->sendError('The Submission Request was not found!');
+        }
+
+        // save the artifact val
+        $artifact = $submissionRequest->store_artifact([
+                    'key' => $request->get('applicable_type_key'),
+                    'value' => $request->get('applicale_type_value'),
+                ]);
+
+        if (empty($artifact)) {
+            return $this->sendError('Oops, Could not update or save applicable request type!');
+        }
+
+        return $this->sendResponse($artifact, 'Applicable request type successfully updated.');
+
+    }
 }

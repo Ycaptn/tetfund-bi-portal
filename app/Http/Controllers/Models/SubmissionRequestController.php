@@ -746,11 +746,6 @@ class SubmissionRequestController extends BaseController
             if ($submissionRequest->is_second_tranche_request || $submissionRequest->is_final_tranche_request) {
                 $additional_checklists_payload['checklist_group_name_audit'] = self::generateCheckListGroupName($intervention_types_server_response->name??'', $submissionRequest, true);
             }
-
-            // retriveing related checklist records for PI intevention at AIP stages  
-            if ($submissionRequest->is_aip_request && isset($intervention_types_server_response->name) && str_contains(strtolower($intervention_types_server_response->name), "physical infrastructure")) {
-                $intervention_name = $intervention_types_server_response->name;
-            }
             
             $years = $submissionRequest->getInterventionYears();
 
@@ -829,9 +824,21 @@ class SubmissionRequestController extends BaseController
                 ]);
         }
 
+        // retriveing related checklist records for PI intevention at AIP stages  
+        if ($submissionRequest->is_aip_request && isset($intervention_types_server_response->name) && str_contains(strtolower($intervention_types_server_response->name), "physical infrastructure")) {
+
+            $has_procurement_artifact = $submissionRequest->artifact('has_procurement');
+            $has_construction_artifact = $submissionRequest->artifact('has_construction');
+
+            $has_procurement_flag = empty($has_procurement_artifact) || optional($has_procurement_artifact)->value=='true' ? true : false;
+            $has_construction_flag = empty($has_construction_artifact) || optional($has_construction_artifact)->value=='true' ? true : false;
+        }
+
         return view('pages.submission_requests.show')
             ->with('intervention', $intervention_types_server_response->intervention ?? $intervention_types_server_response)
             ->with('submissionRequest', $submissionRequest)
+            ->with('has_procurement_flag', $has_procurement_flag??false)
+            ->with('has_construction_flag', $has_construction_flag??false)
             ->with('parentAIPSubmissionRequest', $submissionRequest->is_aip_request || 
                     ($submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($intervention_types_server_response->intervention->name ?? $intervention_types_server_response->name ?? '')) ? 
                     $submissionRequest : 
