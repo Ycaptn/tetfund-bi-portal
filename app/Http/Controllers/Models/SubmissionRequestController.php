@@ -2,31 +2,31 @@
 
 namespace App\Http\Controllers\Models;
 
-use App\Models\SubmissionRequest;
-use App\Models\NominationRequest;
-
-use App\Events\SubmissionRequestCreated;
-use App\Events\SubmissionRequestUpdated;
-use App\Events\SubmissionRequestDeleted;
-
-use App\Http\Requests\CreateSubmissionRequestRequest;
-use App\Http\Requests\UpdateSubmissionRequestRequest;
-use App\Http\Requests\ProcessAttachmentsSubmissionRequest;
-
-use App\DataTables\SubmissionRequestDataTable;
-use App\DataTables\BindedNominationsDataTable;
-
-use Hasob\FoundationCore\Controllers\BaseController;
-use Hasob\FoundationCore\Models\Organization;
-use Hasob\FoundationCore\View\Components\CardDataView;
-
 use Log;
-
 use Illuminate\Support\Str;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Managers\TETFundServer;
+
 use App\Models\BeneficiaryMember;
+use App\Models\NominationRequest;
+use App\Models\SubmissionRequest;
+
+use App\Events\SubmissionRequestCreated;
+use App\Events\SubmissionRequestDeleted;
+
+use App\Events\SubmissionRequestUpdated;
+use Hasob\FoundationCore\Models\Organization;
+use App\DataTables\BindedNominationsDataTable;
+
+use App\DataTables\SubmissionRequestDataTable;
+
+use Hasob\FoundationCore\Controllers\BaseController;
+use App\Http\Requests\CreateSubmissionRequestRequest;
+use App\Http\Requests\UpdateSubmissionRequestRequest;
+use Hasob\FoundationCore\View\Components\CardDataView;
+use App\Http\Requests\ProcessAttachmentsSubmissionRequest;
 
 
 class SubmissionRequestController extends BaseController
@@ -955,7 +955,7 @@ class SubmissionRequestController extends BaseController
         }
 
 
-        if (!($submissionRequest->status=='not-submitted' || $submitted_request_data->request_status??''=='recalled') && ($submissionRequest->is_aip_request==true || ($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention($request->intervention_title)))) {
+        if (($submissionRequest->status=='not-submitted' || $submitted_request_data->request_status??''=='recalled') && ($submissionRequest->is_aip_request==true || ($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention($request->intervention_title)))) {
 
             $input = $request->all();
             $input['intervention_year1'] = 0;
@@ -1003,11 +1003,13 @@ class SubmissionRequestController extends BaseController
             $input['title'] = $input['intervention_title']. ' - ' .$type_surfix. ' (' .implode(', ', $years_unique) .')';
 
             $submissionRequest->fill($input);
+            
             $submissionRequest->save();
             
             SubmissionRequestUpdated::dispatch($submissionRequest);
             return redirect(route('tf-bi-portal.submissionRequests.show', $submissionRequest->id))->with('success', 'Submission Request updated successfully.')->with('submissionRequest', $submissionRequest);
         }
+        
         return redirect(route('tf-bi-portal.submissionRequests.index'));
     }
 
