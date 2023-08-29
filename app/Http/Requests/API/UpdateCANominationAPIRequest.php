@@ -71,7 +71,7 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
             'bank_account_number' => 'required|digits:10',
             'bank_name' => 'required|max:100',
             'bank_sort_code' => 'required|max:100',
-            'bank_verification_number' => 'required|digits:12',
+           // 'bank_verification_number' => 'required|digits:12',
             'intl_passport_number' => 'required_unless:tf_iterum_portal_country_id,'.$this->country_nigeria_id.'|max:100',
             'national_id_number' => 'required|numeric',
             'conference_fee_amount_local' => "required|numeric|min:0|max:{$this->max_conference_fee_amt}",
@@ -127,7 +127,7 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
             'bank_name' => 'Bank Name',
             'bank_sort_code' => 'Bank Sort Code',
             'intl_passport_number' => 'Intl Passport Number',
-            'bank_verification_number' => 'Bank Verification Number',
+           // 'bank_verification_number' => 'Bank Verification Number',
             'national_id_number' => 'National Id Number',
  
             'organizer_name' => 'Organizer Name',

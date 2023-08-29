@@ -255,7 +255,7 @@
     </p>
 </div>
 
-<!-- Bank Verification Number Field -->
+{{-- <!-- Bank Verification Number Field -->
 <div id="div_tSASNomination_bank_verification_number" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
@@ -269,7 +269,7 @@
         @endif
         </span>
     </p>
-</div>
+</div> --}}
 
 <!-- National Id Number Field -->
 <div id="div_tSASNomination_national_id_number" class="col-sm-12 col-md-6 col-lg-3 mb-10">

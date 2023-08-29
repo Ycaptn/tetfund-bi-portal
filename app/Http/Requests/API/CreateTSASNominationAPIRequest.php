@@ -56,7 +56,7 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'bank_account_number' => 'required|digits:10',
             'bank_name' => 'required|max:100',
             'bank_sort_code' => 'required|max:100',
-            'bank_verification_number' => 'required|digits:12',
+         //   'bank_verification_number' => 'required|digits:12',
 
             'passport_photo' => 'required|file|mimes:pdf,png,jpeg,jpg|max:5240',
             'admission_letter' => 'required|file|mimes:pdf|max:5240',
@@ -113,7 +113,7 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'bank_name' => 'Bank Name',
             'bank_sort_code' => 'Bank Sort Code',
             'intl_passport_number' => 'Intl Passport Number',
-            'bank_verification_number' => 'Bank Verification Number',
+         //   'bank_verification_number' => 'Bank Verification Number',
             'admission_letter' => 'Admission Letter',
             'health_report' => 'Health Report',
             'curriculum_vitae' => 'Curriculum Vitae',
