@@ -273,13 +273,13 @@
     </div>
 </div>
 
-<!-- Bank Verification Number Field -->
+{{-- <!-- Bank Verification Number Field -->
 <div id="div-bank_verification_number_ca" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="bank_verification_number_ca" class="col-sm-11 col-form-label">Bank Verification Number:</label>
     <div class="col-sm-12">
         {!! Form::text('bank_verification_number_ca', null, ['id'=>'bank_verification_number_ca', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
     </div>
-</div>
+</div> --}}
 
 <!-- Intl Passport Number Field -->
 <div id="div-intl_passport_number_ca" class="form-group mb-3 col-md-6 col-lg-4" style="display: none;">

@@ -99,7 +99,7 @@ class CreateCANominationRequest extends AppBaseFormRequest
             'bank_name' => 'Bank Name',
             'bank_sort_code' => 'Bank Sort Code',
             'intl_passport_number' => 'Intl Passport Number',
-            'bank_verification_number' => 'Bank Verification Number',
+           // 'bank_verification_number' => 'Bank Verification Number',
             'national_id_number' => 'National Id Number',
  
             'organizer_name' => 'Organizer Name',

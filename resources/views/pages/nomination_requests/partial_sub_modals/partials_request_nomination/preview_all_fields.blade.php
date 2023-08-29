@@ -394,10 +394,10 @@
         </div>
     </div>
     
-    <div class="col-sm-12 col-md-4 mb-3">
+   {{--  <div class="col-sm-12 col-md-4 mb-3">
         <label class="col-sm-12"><b>Bank Verification Number:</b></label>
         <div class="col-sm-12 ">
             <i id="bank_verification_number_data_tsas"></i>
         </div>
-    </div>
+    </div> --}}
 </div>

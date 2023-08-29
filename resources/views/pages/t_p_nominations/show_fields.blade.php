@@ -239,7 +239,7 @@
     </p>
 </div>
 
-<!-- Bank Verification Number Field -->
+{{-- <!-- Bank Verification Number Field -->
 <div id="div_tPNomination_bank_verification_number" class="col-sm-12 col-md-4 col-lg-3 mb-10">
     <p>
         <strong>
@@ -254,7 +254,7 @@
         </span>
     </p>
 </div>
-
+ --}}
 <!-- National Id Number Field -->
 <div id="div_tPNomination_national_id_number" class="col-sm-12 col-md-4 col-lg-3 mb-10">
     <p>

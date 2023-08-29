@@ -128,6 +128,7 @@ class NominationRequestAPIController extends BaseController
         }
         
         $input = $request->all();
+        
 
         // nomination request creation
         $current_user = auth()->user();
@@ -161,10 +162,11 @@ class NominationRequestAPIController extends BaseController
             //hitting TSAS API Controller
             $nominationRequestAPIControllerOBJ = new TSASNominationAPIController();  
             $input = $nominationRequestAPIControllerOBJ->set_tsas_nominee_amounts($input, $bi_beneficiary);
-        }        
+        }  
+          
 
         $nominationRequest = new NominationRequest();   
-        $nominationRequest->organization_id = $current_user->organization_id;
+        $nominationRequest->organization_id = $request->organization_id;
         $nominationRequest->user_id = $current_user->id;
         $nominationRequest->beneficiary_id =$bi_beneficiary_id;
         $nominationRequest->type = $request->nomination_type;
@@ -196,7 +198,7 @@ class NominationRequestAPIController extends BaseController
 
         /*Create Nomination Request and send invitation email*/    
         $nominationRequest = new NominationRequest();
-        $nominationRequest->organization_id = $current_user->organization_id;
+        $nominationRequest->organization_id = $request->organization_id;
         $nominationRequest->user_id = $current_user->id;
         $nominationRequest->beneficiary_id =$bi_beneficiary_id;
         $nominationRequest->type = $request_arr['nomination_type'];
