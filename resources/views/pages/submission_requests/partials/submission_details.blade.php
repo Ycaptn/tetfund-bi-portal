@@ -300,6 +300,31 @@
                     Please note that your <b>{{$submissionRequest->is_aip_request==true ? ($submissionRequest->is_astd_intervention($intervention->name)==true ? 'Request for Funding' : 'Approval-In-Principle (AIP)') : $submissionRequest->type.' Request' }}</b> is yet to be submitted to TETFund.
                 </small>
             @endif
+
+            @if($submissionRequest->is_aip_request && str_contains(strtolower($intervention->name), "physical infrastructure") && ($submissionRequest->status=='not-submitted' || $submissionRequest->status=='not-submitted'))
+                <div class="col-sm-12 mt-3">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <b class="text-success">
+                                <span class="fa fa-cubes fa-1x"></span> APPLICABLE REQUEST TYPE
+                            </b>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label">
+                                <input type="checkbox" id="has_construction" value="construction" {{($has_construction_flag??'') ? "checked='checked" : ''}} >Construction
+                            </label>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label">
+                                <input type="checkbox" id="has_procurement" value="procurement" {{($has_procurement_flag??'') ? "checked='checked" : '' }} >Procurement
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
         </div>
     </div>
 

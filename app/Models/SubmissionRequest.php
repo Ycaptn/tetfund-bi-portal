@@ -48,13 +48,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class SubmissionRequest extends Model
 {
-    use GuidId;
-    use OrganizationalConstraint;
-    
-    use SoftDeletes;
-    use Attachable;
-
+    use GuidId;    
     use HasFactory;
+    use Attachable;
+    use SoftDeletes;
+    use Artifactable;
+    use OrganizationalConstraint;
 
     public $table = 'tf_bi_submission_requests';
     
