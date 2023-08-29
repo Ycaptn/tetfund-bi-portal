@@ -825,7 +825,7 @@ class SubmissionRequestController extends BaseController
         }
 
         // retriveing related checklist records for PI intevention at AIP stages  
-        if ($submissionRequest->is_aip_request && isset($intervention_types_server_response->name) && str_contains(strtolower($intervention_types_server_response->name), "physical infrastructure")) {
+        if ($submissionRequest->is_aip_request && isset($intervention_types_server_response->name) && (str_contains(strtolower($intervention_types_server_response->name), "physical infrastructure") || str_contains(strtolower($intervention_types_server_response->name), "zonal intervention") && in_array(2023,$years) )) {
 
             $has_procurement_artifact = $submissionRequest->artifact('has_procurement');
             $has_construction_artifact = $submissionRequest->artifact('has_construction');
