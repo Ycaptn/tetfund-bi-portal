@@ -281,7 +281,7 @@ class SubmissionRequestController extends BaseController
 
 
         // applicable request type
-        if ($submissionRequest->is_aip_request && (str_contains(strtolower($intrvention_name), "physical infrastructure") || str_contains(strtolower($intrvention_name), "zonal intervention") && in_array(2023,$years) )) {
+        if ($submissionRequest->is_aip_request && (str_contains(strtolower($request->intervention_line_name), "physical infrastructure") || str_contains(strtolower($request->intervention_line_name), "zonal intervention") && in_array(2023,$years) )) {
 
             $applicable_types = $this->getAppplicableRequestType($submissionRequest, $request->intervention_line_name??'');
 
