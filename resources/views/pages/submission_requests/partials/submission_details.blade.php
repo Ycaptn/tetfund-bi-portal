@@ -301,7 +301,7 @@
                 </small>
             @endif
 
-            @if($submissionRequest->is_aip_request && (str_contains(strtolower($intervention->name), "physical infrastructure") || (str_contains(strtolower($intervention->name), "zonal intervention")) && str_contains($years_str, '2023') ) && ($submissionRequest->status=='not-submitted' || $submissionRequest->status=='not-submitted'))
+            @if($submissionRequest->is_aip_request && (str_contains(strtolower($intervention->name), "physical infrastructure") || (str_contains(strtolower($intervention->name), "zonal intervention")) && str_contains($years_str, '2023')) && $submissionRequest->status=='not-submitted')
                 <div class="col-sm-12 mt-3">
                     <div class="row">
                         <div class="col-sm-12">

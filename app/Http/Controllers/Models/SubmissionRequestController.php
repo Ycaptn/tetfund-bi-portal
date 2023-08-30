@@ -279,10 +279,16 @@ class SubmissionRequestController extends BaseController
             $additional_checklists_payload['checklist_group_name_audit'] = self::generateCheckListGroupName($request->intervention_line_name??'', $submissionRequest, true);
         }
 
-        // retriveing related checklist records for PI intevention at AIP stages  
-        if ($submissionRequest->is_aip_request && str_contains(strtolower($request->intervention_line_name), "physical infrastructure")) {
-            $intervention_name = $request->intervention_line_name;
+
+        // applicable request type
+        if ($submissionRequest->is_aip_request && (str_contains(strtolower($intrvention_name), "physical infrastructure") || str_contains(strtolower($intrvention_name), "zonal intervention") && in_array(2023,$years) )) {
+
+            $applicable_types = $this->getAppplicableRequestType($submissionRequest, $request->intervention_line_name??'');
+
+            $additional_checklists_payload['has_procurement'] = $applicable_types['has_procurement'];
+            $additional_checklists_payload['has_construction'] = $applicable_types['has_construction'];
         }
+
         
         // get checklist for specified intervention
         $tetFundServer = new TETFundServer();   /* server class constructor */
@@ -656,6 +662,25 @@ class SubmissionRequestController extends BaseController
     }
     
 
+
+    // returns PI applicable request type
+    public function getAppplicableRequestType($submissionRequest, $intrvention_name) {
+        $returned_arr = [];
+
+        if (str_contains(strtolower($intrvention_name), "physical infrastructure") || str_contains(strtolower($intrvention_name), "zonal intervention")) {
+
+            $has_procurement_artifact = $submissionRequest->artifact('has_procurement');
+            $has_construction_artifact = $submissionRequest->artifact('has_construction');
+
+            $returned_arr['has_procurement'] = empty($has_procurement_artifact) || optional($has_procurement_artifact)->value=='true' ? true : false;
+            $returned_arr['has_construction'] = empty($has_construction_artifact) || optional($has_construction_artifact)->value=='true' ? true : false;
+        }
+
+        return $returned_arr;
+    }
+
+
+
     // show details for submission request
     public function show(Organization $org, Request $request, $id) {
         /** @var SubmissionRequest $submissionRequest */
@@ -757,6 +782,17 @@ class SubmissionRequestController extends BaseController
                     'checklist_group_name' => $checklist_group_name
                 ]
             ];
+            
+
+            // applicable request type
+            if ($submissionRequest->is_aip_request && (str_contains(strtolower($intervention_types_server_response->name??''), "physical infrastructure") || str_contains(strtolower($intervention_types_server_response->name??''), "zonal intervention") && in_array(2023,$years) )) {
+                
+                $applicable_request_types = $this->getAppplicableRequestType($submissionRequest, $intervention_types_server_response->name??'');
+
+                $data_to_rerieve_payload['getInterventionChecklistData']['has_procurement'] = $applicable_request_types['has_procurement'];
+                $data_to_rerieve_payload['getInterventionChecklistData']['has_construction'] = $applicable_request_types['has_construction'];
+            }
+
 
             // decide fund availability type to be retrived
             $is_astd_intervention = false;
@@ -824,21 +860,18 @@ class SubmissionRequestController extends BaseController
                 ]);
         }
 
-        // retriveing related checklist records for PI intevention at AIP stages  
-        if ($submissionRequest->is_aip_request && isset($intervention_types_server_response->name) && (str_contains(strtolower($intervention_types_server_response->name), "physical infrastructure") || str_contains(strtolower($intervention_types_server_response->name), "zonal intervention") && in_array(2023,$years) )) {
+        // retriveing related checklist records for PI intevention at AIP stages
+        $applicable_request_types = $this->getAppplicableRequestType($submissionRequest, $intervention_types_server_response->name??'');
 
-            $has_procurement_artifact = $submissionRequest->artifact('has_procurement');
-            $has_construction_artifact = $submissionRequest->artifact('has_construction');
+        $has_procurement_flag = $applicable_request_types['has_procurement']??false;
+        $has_construction_flag = $applicable_request_types['has_construction']??false;
 
-            $has_procurement_flag = empty($has_procurement_artifact) || optional($has_procurement_artifact)->value=='true' ? true : false;
-            $has_construction_flag = empty($has_construction_artifact) || optional($has_construction_artifact)->value=='true' ? true : false;
-        }
 
         return view('pages.submission_requests.show')
             ->with('intervention', $intervention_types_server_response->intervention ?? $intervention_types_server_response)
             ->with('submissionRequest', $submissionRequest)
-            ->with('has_procurement_flag', $has_procurement_flag??false)
-            ->with('has_construction_flag', $has_construction_flag??false)
+            ->with('has_procurement_flag', $has_procurement_flag)
+            ->with('has_construction_flag', $has_construction_flag)
             ->with('parentAIPSubmissionRequest', $submissionRequest->is_aip_request || 
                     ($submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($intervention_types_server_response->intervention->name ?? $intervention_types_server_response->name ?? '')) ? 
                     $submissionRequest : 
