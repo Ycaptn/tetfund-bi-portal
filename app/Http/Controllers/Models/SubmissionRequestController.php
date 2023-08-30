@@ -379,7 +379,17 @@ class SubmissionRequestController extends BaseController
 
         // initializing submission payload
         $pay_load = $submissionRequest->toArray();
-   
+
+        // applicable request type
+        if ($submissionRequest->is_aip_request && (str_contains(strtolower(optional($request)->intervention_name), "physical infrastructure") || str_contains(strtolower(optional($request)->intervention_name), "zonal intervention") && in_array(2023,$years) )) {
+            
+            $applicable_request_types = $this->getAppplicableRequestType($submissionRequest, optional($request)->intervention_name);
+
+            $pay_load['has_procurement'] = $applicable_request_types['has_procurement'];
+            $pay_load['has_construction'] = $applicable_request_types['has_construction'];
+        }
+
+
         $guessed_intervention_name = explode('-', $submissionRequest->title);
         if ($submissionRequest->is_aip_request==true || ($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention(trim($guessed_intervention_name[0])))) {
             
@@ -786,7 +796,7 @@ class SubmissionRequestController extends BaseController
 
             // applicable request type
             if ($submissionRequest->is_aip_request && (str_contains(strtolower($intervention_types_server_response->name??''), "physical infrastructure") || str_contains(strtolower($intervention_types_server_response->name??''), "zonal intervention") && in_array(2023,$years) )) {
-                
+
                 $applicable_request_types = $this->getAppplicableRequestType($submissionRequest, $intervention_types_server_response->name??'');
 
                 $data_to_rerieve_payload['getInterventionChecklistData']['has_procurement'] = $applicable_request_types['has_procurement'];
