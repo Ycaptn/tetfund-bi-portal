@@ -62,8 +62,8 @@ New Submission
                                     <th width="25%">
                                         Total Amount Requested
                                     </th>
-                                    <th width="15%">
-                                        Conference Date
+                                    <th width="15%" id="nomination_table_label">
+                                        Date
                                     </th>
                                     <th width="20%" class="text-center">
                                         Request Date
@@ -216,20 +216,24 @@ New Submission
                     let line_type_short = '';
                     let nomination_label = '';
                     let relationship_name = 'user';
+                    let nomination_table_label = '';
                     if (intevention_line_name.includes('Teaching Practice')) {
                         line_type_short = 'tp';
                         relationship_name = 'tp_submission';
                         nomination_label = 'TP NOMINATION';
+                        nomination_table_label = 'Program Date';
                         hide_3_intervention_years();
                     } else if(intevention_line_name.includes('Conference Attendance')) {
                         line_type_short = 'ca';
                         relationship_name = 'ca_submission';
                         nomination_label = 'CA NOMINATION';
+                        nomination_table_label = 'Conference Date';
                         hide_3_intervention_years();
                     } else if (intevention_line_name.includes('TETFund Scholarship')) {
                         line_type_short = 'tsas';
                         relationship_name = 'tsas_submission';
                         nomination_label = 'TSAS NOMINATION';
+                        nomination_table_label = 'Program Date';
                         hide_3_intervention_years();
                     }
 
@@ -245,10 +249,14 @@ New Submission
                                 $.each(response.data, function(key, nominee) {
                                     console.log(nominee);
                                   
-                                    let conference_start_date = new Date(nominee[relationship_name]['conference_start_date']);
+                                    let start_date = new Date(nominee[relationship_name]['program_start_date']);
+
+                                    if(relationship_name == 'ca_submission') {
+                                        start_date = new Date(nominee[relationship_name]['conference_start_date']);
+                                    }
                                  
                                     let additionl_msg = '';
-                                    let month_diff = getMonthDifference(today, conference_start_date);
+                                    let month_diff = getMonthDifference(today, start_date);
 
                                     if(month_diff < 3 && relationship_name == "ca_submission"){
                                         additionl_msg = "<br><span class='text-danger'> submission grace period passed <span>";
@@ -265,7 +273,7 @@ New Submission
                                             maximumFractionDigits: 2
                                         });
                                 
-                                    html_to_return += `"<tr><td> ${s_n_counter} </td><td> ${nominee[relationship_name]['first_name']} ${middle_name}  ${nominee[relationship_name]['last_name']} </td>  <td> &#8358 ${formated_total_request_amount} </td> <td> ${conference_start_date.toDateString()} ${additionl_msg} </td>  <td> ${formated_date} </td>  </tr>"`;
+                                    html_to_return += `"<tr><td> ${s_n_counter} </td><td> ${nominee[relationship_name]['first_name']} ${middle_name}  ${nominee[relationship_name]['last_name']} </td>  <td> &#8358 ${formated_total_request_amount} </td> <td> ${start_date.toDateString()} ${additionl_msg} </td>  <td> ${formated_date} </td>  </tr>"`;
 
                                     s_n_counter += 1;
                                     if(relationship_name == "ca_submission"){
@@ -288,6 +296,7 @@ New Submission
                                 html_to_return += "<tr><td colspan='2'><b> &nbsp; &nbsp; &nbsp; Grand Total</b></td>  <td colspan='2'><b> &#8358 "+ formated_requested_total +"</b></td></tr>";
 
                                 $('#nomination_type').text(nomination_label);
+                                $('#nomination_table_label').text(nomination_table_label);
                                 $('#div_current_nomination_details_submitted').show();
                                 $('#current_nomination_details_submitted').html(html_to_return);
                                 $('#amount_requested').val(requested_amount);
