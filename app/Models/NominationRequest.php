@@ -181,18 +181,13 @@ class NominationRequest extends Model
 
     // get all world institutions list
     public static function worldAcademicInstitutions() {
-        $array_institutions = [];
         $filePath = public_path('dist/world_institutions/all_world_institutions_main.txt');
         
         try {
-            $file = fopen($filePath, "r");
-            if ($file) {
-                while (($line = fgets($file)) !== false) {
-                    array_push($array_institutions, trim($line));
-                }
-
-                fclose($file);
-            }
+            $array_institutions = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            if ($array_institutions === false) {
+                throw new \Exception("Error reading the file.");
+            }            
         } catch (\Exception $e) {
             return "An error occurred: " . $e->getMessage();
         }
