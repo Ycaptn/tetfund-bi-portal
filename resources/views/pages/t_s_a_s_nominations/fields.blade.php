@@ -124,7 +124,14 @@
 <div id="div-institution_name_tsas" class="form-group mb-3 col-md-6">
     <label for="institution_name_tsas" class="col-sm-11 col-form-label">Institution Name:</label>
     <div class="col-sm-12">
-        {!! Form::text('institution_name_tsas', null, ['id'=>'institution_name_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+        {!! Form::text('institution_name_tsas', null, ['id'=>'institution_name_tsas', 'class'=>'form-control', 'list'=>'institutions', 'placeholder'=>'required field']) !!}
+        <datalist id='institutions'>
+            @if(isset($world_institutions))
+                @foreach($world_institutions as $institution)
+                    <option value="{{ $institution }}">
+                @endforeach
+            @endif
+        </datalist>
     </div>
 </div>
 

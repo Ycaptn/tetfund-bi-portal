@@ -65,6 +65,7 @@ class NominationRequestController extends BaseController
         $countries = $countries_institutions_and_conferences->countries;  // fetch countries
         $institutions = $countries_institutions_and_conferences->institutions;  // fetch institutions
         $conferences = $countries_institutions_and_conferences->conferences;  // fetch conferences
+        $world_institutions = NominationRequest::worldAcademicInstitutions();
 
         $all_beneficiary_users = User::join('tf_bi_beneficiary_members', 'fc_users.id', '=', 'tf_bi_beneficiary_members.beneficiary_user_id')
             ->where('tf_bi_beneficiary_members.beneficiary_id', $beneficiary_member->beneficiary_id)
@@ -75,11 +76,12 @@ class NominationRequestController extends BaseController
 
         return view('pages.nomination_requests.card_view_index')
                 ->with('countries', $countries)
-                ->with('conferences', $conferences)
                 ->with('beneficiary', $beneficiary)
+                ->with('conferences', $conferences)
                 ->with('institutions', $institutions)
                 ->with('current_user', $current_user)
                 ->with('nigerian_states', $nigerian_states)
+                ->with('world_institutions', $world_institutions)
                 ->with('beneficiary_member', $beneficiary_member)
                 ->with('all_beneficiary_users', $all_beneficiary_users)
                 ->with('bi_submission_requests', $bi_submission_requests)
@@ -141,16 +143,18 @@ class NominationRequestController extends BaseController
         $countries = $countries_institutions_and_conferences->countries;  // fetch countries
         $institutions = $countries_institutions_and_conferences->institutions;  // fetch institutions
         $conferences = $countries_institutions_and_conferences->conferences;  // fetch conferences
+        $world_institutions = $nominationRequest->worldAcademicInstitutions();
            
         return view('pages.nomination_requests.show')
             ->with('countries', $countries)
             ->with('conferences', $conferences)
-            ->with('current_user', $current_user)
             ->with('institutions', $institutions)
+            ->with('current_user', $current_user)
             ->with('beneficiary', $bi_beneficiary)
             ->with('beneficiaries', $bi_beneficiaries)
             ->with('nigerian_states', $nigerian_states)
             ->with('nominationRequest', $nominationRequest)
+            ->with('world_institutions', $world_institutions)
             ->with('beneficiary_member', $beneficiary_member)
             ->with('nomination_request_attachments', $nomination_request_attachments);
     }

@@ -149,32 +149,54 @@ class NominationRequest extends Model
         return $this->hasMany(EloquentAttachable::class, 'attachable_id', 'id');
     }
 
-    // get specific attachement for a nomination request
-    public static function get_specific_attachment($nomination_request_id, $item_label) {
+    
+    // get all attachments a nomination request
+    public static function get_all_attachments($nomination_request_id) {
         $nomination_request = self::find($nomination_request_id);
         if ($nomination_request != null) {
-            $attachements = $nomination_request->get_attachments();
-            if ($attachements != null) {
-                foreach($attachements as $attachement){
-                    if ($attachement->label == $item_label || str_contains($attachement->label, $item_label)) {
-                        return $attachement;
-                        break;
-                    }
-                }    
+            $attachments = $nomination_request->get_attachments();
+            if ($attachments != null) {
+                return $attachments;
             }
         }
         return null;
     }
 
-    // get all attachements a nomination request
-    public static function get_all_attachments($nomination_request_id) {
-        $nomination_request = self::find($nomination_request_id);
-        if ($nomination_request != null) {
-            $attachements = $nomination_request->get_attachments();
-            if ($attachements != null) {
-                return $attachements;
+
+    // get specific attachment for a nomination request
+    public static function get_specific_attachment($nomination_request_id, $item_label) {
+        $attachments = self::get_all_attachments($nomination_request_id);
+        if ($attachments != null) {
+            foreach($attachments as $attachment) {
+                if ($attachment->label == $item_label || str_contains($attachment->label, $item_label)) {
+                    return $attachment;
+                    break;
+                }
             }
         }
+
         return null;
+    }
+
+
+    // get all world institutions list
+    public static function worldAcademicInstitutions() {
+        $array_institutions = [];
+        $filePath = public_path('dist/world_institutions/all_world_institutions_main.txt');
+        
+        try {
+            $file = fopen($filePath, "r");
+            if ($file) {
+                while (($line = fgets($file)) !== false) {
+                    array_push($array_institutions, trim($line));
+                }
+
+                fclose($file);
+            }
+        } catch (\Exception $e) {
+            return "An error occurred: " . $e->getMessage();
+        }
+
+        return $array_institutions;
     }
 }
