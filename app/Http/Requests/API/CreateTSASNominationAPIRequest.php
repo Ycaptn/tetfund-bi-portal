@@ -50,7 +50,7 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'degree_type' => 'required|max:100',
             'program_title' => 'required|string|max:100',
             'is_science_program' => "required_if:tf_iterum_portal_country_id,=,". $this->country_nigeria_id . $is_science_validations,
-            'program_start_date' => 'required|date|after:'.date('d-M-Y', strtotime('+6 months')),
+            'program_start_date' => 'required|date|after:'. ($this->country_nigeria_id==$this->tf_iterum_portal_country_id ? 'today' : date('d-M-Y', strtotime('+6 months'))),
             'program_end_date' => 'required|date|after:program_start_date',
             'bank_account_name' => 'required|min:2|max:190',
             'bank_account_number' => 'required|digits:10',

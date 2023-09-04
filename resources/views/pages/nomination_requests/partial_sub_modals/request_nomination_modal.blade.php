@@ -131,10 +131,13 @@ $(document).ready(function() {
         // $('#conference_id_select_ca').html(conferences_filtered);
     });
 
-    //toggle different institutions based on the selected country for TSAS and International Passport
+
+    // toggle TSAS different input fields based on the selected country
     $(document).on('change', "#country_id_select_tsas", function(e) {
         let selected_country = $('#country_id_select_tsas').val();
         let institutions_filtered = "<option value=''>-- None selected --</option>";
+        let todayDate = "{{ date('Y-m-d') }}";
+        let sixMonthsAhead = "{{ date('Y-m-d', strtotime(date('Y-m-d') . ' +6 months')) }}";
         
         // actions if Nigeria is selected
         if (selected_country == country_nigeria_id || selected_country == '') {
@@ -143,6 +146,10 @@ $(document).ready(function() {
             $('#div-intl_passport_number_tsas').hide();
             $('#div-international_passport_bio_page_tsas').hide();
             $('#is_science_program_tsas').val('');
+            $('#tsas_program_start_date_notice').hide();
+            $("#program_start_date_tsas").attr("min", todayDate);
+            $("#program_end_date_tsas").attr("min", todayDate);
+
             if(selected_country == '') {
                 $('#div-is_science_program_tsas').hide();
             } else {
@@ -154,14 +161,18 @@ $(document).ready(function() {
             $('#div-intl_passport_number_tsas').show();
             $('#is_science_program_tsas').val('1');
             $('#div-is_science_program_tsas').hide();
+            $('#tsas_program_start_date_notice').show();
+            $("#program_start_date_tsas").attr("min", sixMonthsAhead);
+            $("#program_end_date_tsas").attr("min", sixMonthsAhead);
         }
 
-        $.each(JSON.parse(institutions), function(key, institution) {
-            if (institution.country_id == selected_country) {
-                institutions_filtered += "<option value='"+ institution.id +"'>"+ institution.name +"</option>";
-            }
-        });
-        $('#institution_id_select_tsas').html(institutions_filtered);
+        // institutions based on the selected country
+        // $.each(JSON.parse(institutions), function(key, institution) {
+        //     if (institution.country_id == selected_country) {
+        //         institutions_filtered += "<option value='"+ institution.id +"'>"+ institution.name +"</option>";
+        //     }
+        // });
+        // $('#institution_id_select_tsas').html(institutions_filtered);
     });
 
     //Show Modal for New Nomination Invitation Entry
