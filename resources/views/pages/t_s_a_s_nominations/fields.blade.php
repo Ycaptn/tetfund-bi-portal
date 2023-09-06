@@ -10,6 +10,32 @@
     $attendee_member_type = isset($beneficiary_member->member_type) && in_array($beneficiary_member->member_type, ['academic', 'non-academic']) ? $beneficiary_member->member_type : '';
     $attendee_member_type_flag = isset($beneficiary_member->member_type) && in_array($beneficiary_member->member_type, ['academic', 'non-academic']) ? ($beneficiary_member->member_type=='academic' ? '1' : '0') : '';
     $attendee_grade_level = isset($beneficiary_member->grade_level) ? $beneficiary_member->grade_level : '';
+
+    $banks = [
+            array('id' => '1','name' => 'Access Bank','code'=>'044'),
+            array('id' => '2','name' => 'Citibank','code'=>'023'),
+            array('id' => '3','name' => 'Diamond Bank','code'=>'063'),
+            array('id' => '4','name' => 'Dynamic Standard Bank','code'=>''),
+            array('id' => '5','name' => 'Ecobank Nigeria','code'=>'050'),
+            array('id' => '6','name' => 'Fidelity Bank Nigeria','code'=>'070'),
+            array('id' => '7','name' => 'First Bank of Nigeria','code'=>'011'),
+            array('id' => '8','name' => 'First City Monument Bank','code'=>'214'),
+            array('id' => '9','name' => 'Guaranty Trust Bank','code'=>'058'),
+            array('id' => '10','name' => 'Heritage Bank Plc','code'=>'030'),
+            array('id' => '11','name' => 'Jaiz Bank','code'=>'301'),
+            array('id' => '12','name' => 'Keystone Bank Limited','code'=>'082'),
+            array('id' => '13','name' => 'Providus Bank Plc','code'=>'101'),
+            array('id' => '14','name' => 'Polaris Bank','code'=>'076'),
+            array('id' => '15','name' => 'Stanbic IBTC Bank Nigeria Limited','code'=>'221'),
+            array('id' => '16','name' => 'Standard Chartered Bank','code'=>'068'),
+            array('id' => '17','name' => 'Sterling Bank','code'=>'232'),
+            array('id' => '18','name' => 'Suntrust Bank Nigeria Limited','code'=>'100'),
+            array('id' => '19','name' => 'Union Bank of Nigeria','code'=>'032'),
+            array('id' => '20','name' => 'United Bank for Africa','code'=>'033'),
+            array('id' => '21','name' => 'Unity Bank Plc','code'=>'215'),
+            array('id' => '22','name' => 'Wema Bank','code'=>'035'),
+            array('id' => '23','name' => 'Zenith Bank','code'=>'057')
+        ];
 @endphp
 
 
@@ -257,17 +283,23 @@
 <div id="div-bank_name_tsas" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="bank_name_tsas" class="col-sm-11 col-form-label">Bank Name:</label>
     <div class="col-sm-12">
-        {!! Form::text('bank_name_tsas', null, ['id'=>'bank_name_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
+        <select name="bank_name_tsas" id="bank_name_tsas" class="form-select" required>
+            <option value="">Select a Bank</option>
+            @foreach ($banks as $bank)
+                <option value="{{ $bank['name'] }}" data-val-code="{{$bank['code']}}">{{ $bank['name'] }}</option>        
+            @endforeach
+        </select>
+       {{--  {!! Form::text('bank_name_tsas', null, ['id'=>'bank_name_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!} --}}
     </div>
 </div>
 
-<!-- Bank Sort Code Field -->
+{{-- <!-- Bank Sort Code Field -->
 <div id="div-bank_sort_code_tsas" class="form-group mb-3 col-md-6 col-lg-4">
     <label for="bank_sort_code_tsas" class="col-sm-11 col-form-label">Bank Sort Code:</label>
     <div class="col-sm-12">
         {!! Form::text('bank_sort_code_tsas', null, ['id'=>'bank_sort_code_tsas', 'class' => 'form-control', 'placeholder'=>'required field']) !!}
     </div>
-</div>
+</div> --}}
 
 {{-- <!-- Bank Verification Number Field -->
 <div id="div-bank_verification_number_tsas" class="form-group mb-3 col-md-6 col-lg-4">

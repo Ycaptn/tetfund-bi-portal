@@ -32,9 +32,9 @@ if ($('#bank_account_name_tsas').length && $('#bank_account_name_tsas').val().tr
 
 if ($('#bank_account_number_tsas').length && $('#bank_account_number_tsas').val().trim().length > 0){	formData.append('bank_account_number',$('#bank_account_number_tsas').val());	}
 
-if ($('#bank_name_tsas').length && $('#bank_name_tsas').val().trim().length > 0){	formData.append('bank_name',$('#bank_name_tsas').val());	}
+if ($('#bank_name_tsas').length && $('#bank_name_tsas').val().trim().length > 0){	formData.append('bank_name',$('#bank_name_tsas').val()); formData.append('bank_sort_code',$('#bank_name_tsas').attr('data-val-code'))	}
 
-if ($('#bank_sort_code_tsas').length && $('#bank_sort_code_tsas').val().trim().length > 0){	formData.append('bank_sort_code',$('#bank_sort_code_tsas').val());	}
+{{-- if ($('#bank_sort_code_tsas').length && $('#bank_sort_code_tsas').val().trim().length > 0){	formData.append('bank_sort_code',$('#bank_sort_code_tsas').val());	} --}}
 
 if ($('#intl_passport_number_tsas').length && $('#intl_passport_number_tsas').val().trim().length > 0){	formData.append('intl_passport_number',$('#intl_passport_number_tsas').val());	}
 

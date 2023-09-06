@@ -31,9 +31,9 @@ if ($('#bank_account_name_tp').length && $('#bank_account_name_tp').val().trim()
 
 if ($('#bank_account_number_tp').length && $('#bank_account_number_tp').val().trim().length > 0){	formData.append('bank_account_number',$('#bank_account_number_tp').val());	}
 
-if ($('#bank_name_tp').length && $('#bank_name_tp').val().trim().length > 0){	formData.append('bank_name',$('#bank_name_tp').val());	}
+if ($('#bank_name_tp').length && $('#bank_name_tp').val().trim().length > 0){	formData.append('bank_name',$('#bank_name_tp').val());	formData.append('bank_sort_code',$('#bank_name_tp').attr('data-val-code'))}
 
-if ($('#bank_sort_code_tp').length && $('#bank_sort_code_tp').val().trim().length > 0){	formData.append('bank_sort_code',$('#bank_sort_code_tp').val());	}
+{{-- if ($('#bank_sort_code_tp').length && $('#bank_sort_code_tp').val().trim().length > 0){	formData.append('bank_sort_code',$('#bank_sort_code_tp').val());	} --}}
 
 if ($('#bank_verification_number_tp').length && $('#bank_verification_number_tp').val().trim().length > 0){
 	formData.append('bank_verification_number',$('#bank_verification_number_tp').val());
