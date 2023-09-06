@@ -455,8 +455,8 @@ $(document).ready(function() {
         if ($('#name_suffix_ca').length && $('#name_suffix_ca').val().trim().length > 0){   formData.append('name_suffix',$('#name_suffix_ca').val());  }
         if ($('#bank_account_name_ca').length && $('#bank_account_name_ca').val().trim().length > 0){   formData.append('bank_account_name',$('#bank_account_name_ca').val());  }
         if ($('#bank_account_number_ca').length && $('#bank_account_number_ca').val().trim().length > 0){   formData.append('bank_account_number',$('#bank_account_number_ca').val());  }
-        if ($('#bank_name_ca').length && $('#bank_name_ca').val().trim().length > 0){   formData.append('bank_name',$('#bank_name_ca').val());  }
-        if ($('#bank_sort_code_ca').length && $('#bank_sort_code_ca').val().trim().length > 0){ formData.append('bank_sort_code',$('#bank_sort_code_ca').val());    }
+        if ($('#bank_name_ca').length && $('#bank_name_ca').val().trim().length > 0){   formData.append('bank_name',$('#bank_name_ca').val());  formData.append('bank_sort_code',$('#bank_name_ca').attr('data-val-code'));}
+       /*  if ($('#bank_sort_code_ca').length && $('#bank_sort_code_ca').val().trim().length > 0){ formData.append('bank_sort_code',$('#bank_sort_code_ca').val());    } */
         formData.append('intl_passport_number',$('#intl_passport_number_ca').val());
         if ($('#bank_verification_number_ca').length && $('#bank_verification_number_ca').val().trim().length > 0){
             formData.append('bank_verification_number',$('#bank_verification_number_ca').val());

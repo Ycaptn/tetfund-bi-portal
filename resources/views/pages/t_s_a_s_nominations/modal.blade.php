@@ -229,7 +229,6 @@ $(document).ready(function() {
     		$('#bank_account_name_tsas').val(response.data.bank_account_name);
     		$('#bank_account_number_tsas').val(response.data.bank_account_number);
     		$('#bank_name_tsas').val(response.data.bank_name);
-    		$('#bank_sort_code_tsas').val(response.data.bank_sort_code);
     		$('#intl_passport_number_tsas').val(response.data.intl_passport_number);
             $('#institution_name_tsas').val(response.data.institution_name);
             $('#institution_state_tsas').val(response.data.intitution_state);
@@ -411,8 +410,8 @@ $(document).ready(function() {
 		if ($('#name_suffix_tsas').length){	formData.append('name_suffix',$('#name_suffix_tsas').val());	}
 		if ($('#bank_account_name_tsas').length){	formData.append('bank_account_name',$('#bank_account_name_tsas').val());	}
 		if ($('#bank_account_number_tsas').length){	formData.append('bank_account_number',$('#bank_account_number_tsas').val());	}
-		if ($('#bank_name_tsas').length){	formData.append('bank_name',$('#bank_name_tsas').val());	}
-		if ($('#bank_sort_code_tsas').length){	formData.append('bank_sort_code',$('#bank_sort_code_tsas').val());	}
+		if ($('#bank_name_tsas').length){	formData.append('bank_name',$('#bank_name_tsas').val()); formData.append('bank_sort_code',$('#bank_name_tsas').attr('data-val-code'));	}
+		/* if ($('#bank_sort_code_tsas').length){	formData.append('bank_sort_code',$('#bank_sort_code_tsas').val());	} */
 		if ($('#intl_passport_number_tsas').length){	formData.append('intl_passport_number',$('#intl_passport_number_tsas').val());	}
 		if ($('#bank_verification_number_tsas').length){	formData.append('bank_verification_number',$('#bank_verification_number_tsas').val());	}
 		if ($('#national_id_number_tsas').length){	formData.append('national_id_number',$('#national_id_number_tsas').val());	}

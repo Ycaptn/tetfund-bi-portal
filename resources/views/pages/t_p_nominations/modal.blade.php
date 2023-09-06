@@ -325,8 +325,8 @@ $(document).ready(function() {
 		if ($('#name_suffix_tp').length){	formData.append('name_suffix',$('#name_suffix_tp').val());	}
 		if ($('#bank_account_name_tp').length){	formData.append('bank_account_name',$('#bank_account_name_tp').val());	}
 		if ($('#bank_account_number_tp').length){	formData.append('bank_account_number',$('#bank_account_number_tp').val());	}
-		if ($('#bank_name_tp').length){	formData.append('bank_name',$('#bank_name_tp').val());	}
-		if ($('#bank_sort_code_tp').length){	formData.append('bank_sort_code',$('#bank_sort_code_tp').val());	}
+		if ($('#bank_name_tp').length){	formData.append('bank_name',$('#bank_name_tp').val());	formData.append('bank_sort_code',$('#bank_name_tp').attr('data-val-code'));}
+		/* if ($('#bank_sort_code_tp').length){	formData.append('bank_sort_code',$('#bank_sort_code_tp').val());	} */
 		if ($('#bank_verification_number_tp').length){	formData.append('bank_verification_number',$('#bank_verification_number_tp').val());	}
 		if ($('#national_id_number_tp').length){	formData.append('national_id_number',$('#national_id_number_tp').val());	}		
         if ($('#is_science_program_tp').length){ formData.append('is_science_program',$('#is_science_program_tp').val());   }
