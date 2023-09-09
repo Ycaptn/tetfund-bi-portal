@@ -62,13 +62,10 @@
                             for($yr=1;$yr<5;$yr++){
                                 $property = "intervention_year{$yr}";
                                 if (!empty($data_item->$property)){ $years_requested []= $data_item->$property; }
-                            }
-
-                            $type_surfix = \App\Models\SubmissionRequest::is_astd_intervention($data_collection[$data_item->tf_iterum_intervention_line_key_id]??'')==true ? 'Request For Fund' : $data_item->type;
-                            
+                            }                            
                         @endphp
                         
-                        {{ $data_collection[$data_item->tf_iterum_intervention_line_key_id]??'' }} - {{ $type_surfix }} - {{ implode(", ", $years_requested) }}
+                        {{ $data_collection[$data_item->tf_iterum_intervention_line_key_id]??'' }} - {{ $data_item->type }} - {{ implode(", ", $years_requested) }}
                     </p>
                     @if (!empty($data_item->amount_requested))
                         <p class="card-text mb-0 small">

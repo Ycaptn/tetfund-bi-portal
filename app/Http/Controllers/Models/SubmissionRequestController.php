@@ -609,6 +609,9 @@ class SubmissionRequestController extends BaseController
 
         if ($submissionRequest->is_aip_request == true)  {
             $checklist_group_name = $intervention_line_name.' - AIPCheckList';
+            if(strtolower($submissionRequest->type) == 'request for fund') {
+                $checklist_group_name = $intervention_line_name.' - FundRequestCheckList';
+            }
         } elseif ($submissionRequest->is_first_tranche_request == true) {
             $checklist_group_name = $intervention_line_name.' - FirstTranchePaymentCheckList';
         } elseif ($submissionRequest->is_second_tranche_request == true && $is_audit_checklist==false) {
