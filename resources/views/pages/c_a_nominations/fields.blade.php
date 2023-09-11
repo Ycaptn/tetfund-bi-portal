@@ -238,12 +238,12 @@
 </div>
 
 @php
-    $threeMonthsAhead = date('Y-m-d', strtotime(date('Y-m-d') . ' +3 months'));
+    $threeMonthsAhead = date('Y-m-d', strtotime(date('Y-m-d') . ' +2 months'));
 @endphp
 
 <!-- Conference Start Date Field -->
 <div id="div-conference_start_date_ca" class="form-group mb-3 col-md-6 col-lg-4">
-    <label for="conference_start_date_ca" class="col-sm-12 col-form-label">Conference Start Date :<i class="text-danger">-- (3 months before commencement)</i></label>
+    <label for="conference_start_date_ca" class="col-sm-12 col-form-label">Conference Start Date :<i class="text-danger">-- (2 months before commencement)</i></label>
     <div class="col-sm-12">
         {!! Form::date('conference_start_date_ca', null, ['id'=>'conference_start_date_ca', 'class'=>'form-control', 'min'=>$threeMonthsAhead]) !!}
     </div>

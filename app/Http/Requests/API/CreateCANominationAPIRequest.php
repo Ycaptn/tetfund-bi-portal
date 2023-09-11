@@ -59,7 +59,7 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             'has_paper_presentation' => "required|string|max:50|in:0,1",
             'accepted_paper_title' => 'required_if:has_paper_presentation,=,1|nullable|string|max:190',
             'is_academic_staff' => "required|string|max:50|in:0,1",
-            'conference_start_date' => 'required|date|after:' . date('d-M-Y', strtotime('+3 months')),
+            'conference_start_date' => 'required|date|after:' . date('d-M-Y', strtotime('+2 months')),
             'conference_end_date' => 'required|date|after_or_equal:conference_start_date|before:' . $plus_5_days,
             'name_title' => 'nullable|string|max:50',
             'name_suffix' => 'nullable|string|max:100',
