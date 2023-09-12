@@ -217,7 +217,7 @@
 			</li>
 			@endif
 
-			@if (optional(Auth()->user())->hasAnyRole(['BI-desk-officer']))
+			@if (optional(Auth()->user())->hasAnyRole(['BI-desk-officer','BI-astd-desk-officer']))
 			<li>
 				<a href="{{ route('tf-bi-portal.desk-officer') }}" class="">
 					<div class="parent-icon"><i class='bx bx-devices'></i>
