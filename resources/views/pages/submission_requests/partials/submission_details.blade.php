@@ -113,8 +113,8 @@
             <div style="padding-left:5px">
                 {{-- display when intervention is conference attendance --}}
                 @if(str_contains(strtolower($intervention->name), 'conference attendance'))
-                    <i class="fa fa-arrow-right fa-fw"></i> <b>Academic Staffs Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_academic_staff_available_fund : 0), 2) }} <br/>
-                    <i class="fa fa-arrow-right fa-fw"></i> <b>None-Academic Staffs Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_non_academic_staff_available_fund : 0), 2) }} <br/>
+                    <i class="fa fa-arrow-right fa-fw"></i> <b>Academic Staffs Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_academic_staff_balance : 0), 2) }} <br/>
+                    <i class="fa fa-arrow-right fa-fw"></i> <b>None-Academic Staffs Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_none_academic_staff_balance : 0), 2) }} <br/>
 
                 {{-- display when intervention is tetfunbd scholarship for academic staffs --}}
                 @elseif(str_contains(strtolower($intervention->name), 'tetfund scholarship'))
