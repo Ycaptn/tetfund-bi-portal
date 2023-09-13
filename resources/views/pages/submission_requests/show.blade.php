@@ -119,10 +119,10 @@ Submission
                                     </strong>
                                 </li>
                            
-                            @elseif (isset($astd_allocations_details) && $submissionRequest->is_astd_intervention(optional($intervention)->name)==true)
+                            @elseif (isset($allocations_details) && $submissionRequest->is_astd_intervention(optional($intervention)->name)==true)
                                 
                                 {{-- error for requested fund mismatched to allocated fund for all ASTD interventions --}}
-                                @if($submissionRequest->amount_requested > $astd_allocations_details->total_available_fund)
+                                @if($submissionRequest->amount_requested > $allocations_details->total_available_fund)
                                     <li>Fund requested cannot be greater than 
                                         <strong>
                                             <a title="Preview allocation amount details" data-val='{{$submissionRequest->id}}' href="#" class="btn-show-submissionRequestAllocationAmount text-primary"> 

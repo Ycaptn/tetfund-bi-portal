@@ -204,9 +204,7 @@ $(document).ready(function() {
                      @endif
         }
 
-        let astd_inteventions_keys = Object.keys(all_astd_interventions_id);
         $('#intervention_line').html(intervention_line_html);
-        $('#astd_interventions_ids').val(astd_inteventions_keys.join(','));
     });
 
     // triggered on changing intervention line
@@ -218,12 +216,12 @@ $(document).ready(function() {
             show_3_intervention_years();
         }
 
-        // settings to formulate intervention_title
+        // settings to formulate intervention_name
         let confirmed_selected_line = all_none_astd_interventions_id[selected_intervention_line]!=null ?
                 all_none_astd_interventions_id[selected_intervention_line] : 
                 all_astd_interventions_id[selected_intervention_line];
       
-        $('#intervention_title').val(confirmed_selected_line);
+        $('#intervention_name').val(confirmed_selected_line);
     });
 
     // saving ongoing submission request
@@ -289,8 +287,8 @@ $(document).ready(function() {
                     formData.append('ongoing_submission_stage', $('#ongoing-submission-stage').val());
                 }
 
-                if ($('#intervention_title').val().trim().length > 0) {
-                    formData.append('title', $('#intervention_title').val());
+                if ($('#intervention_name').val().trim().length > 0) {
+                    formData.append('title', $('#intervention_name').val());
                 }
 
                 if ($('#intervention_line').val().trim().length > 0) {

@@ -118,5 +118,5 @@
 	    </div>
     </div>
 
-    <input type='hidden' id="intervention_title" value="" />
+    <input type='hidden' id="intervention_name" value="" />
 </div>

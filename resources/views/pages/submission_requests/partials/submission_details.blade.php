@@ -101,38 +101,42 @@
             <i class="fa fa-crosshairs fa-fw"></i> <b>Intervention Year(s) &nbsp; - &nbsp; </b> &nbsp; {{ $years_str }} <br/>
 
             {{-- ammount figures to be displayed based on ASTD and Non-ASTD interventions --}}
-            @if($submissionRequest->is_astd_intervention($intervention->name)==true)
+            @if($submissionRequest->is_astd_intervention($intervention->name)==true || ($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention(optional($intervention)->name)))
             
-            <hr style="margin: 0; border: none; border-top: 1px solid #000;">
-                <i class="fa fa-money fa-fw"></i> <b>Total Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_allocated_fund : 0), 2) }} &nbsp; <b><i><small>({{ $astd_allocations_details->allocation_end_year }} - {{ $astd_allocations_details->allocation_start_year }})</small></i></b> <br/>
+                <hr style="margin: 0; border: none; border-top: 1px solid #000;">
+                
+                <i class="fa fa-money fa-fw"></i> <b>Total Allocated Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($allocations_details) ? $allocations_details->total_allocated_fund : 0), 2) }} &nbsp; <b><i><small>({{ $allocations_details->allocation_end_year }} - {{ $allocations_details->allocation_start_year }})</small></i></b> <br/>
 
-                <i class="fa fa-money fa-fw"></i> <b>Current Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_available_fund : 0), 2) }} <br/>
-            <hr style="margin: 0; border: none; border-top: 1px solid #000;">
+                <i class="fa fa-money fa-fw"></i> <b>Current Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($allocations_details) ? $allocations_details->total_available_fund : 0), 2) }} <br/>
+            
+                <hr style="margin: 0; border: none; border-top: 1px solid #000;">
                 
                 
-            <div style="padding-left:5px">
-                {{-- display when intervention is conference attendance --}}
-                @if(str_contains(strtolower($intervention->name), 'conference attendance'))
-                    <i class="fa fa-arrow-right fa-fw"></i> <b>Academic Staffs Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_academic_staff_balance : 0), 2) }} <br/>
-                    <i class="fa fa-arrow-right fa-fw"></i> <b>None-Academic Staffs Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_none_academic_staff_balance : 0), 2) }} <br/>
+                <div style="padding-left:5px">
+                    {{-- display when intervention is conference attendance --}}
+                    @if(str_contains(strtolower($intervention->name), 'conference attendance'))
+                        <i class="fa fa-arrow-right fa-fw"></i> <b>Academic Staffs Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($allocations_details) ? $allocations_details->total_academic_staff_balance : 0), 2) }} <br/>
+                        <i class="fa fa-arrow-right fa-fw"></i> <b>None-Academic Staffs Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($allocations_details) ? $allocations_details->total_none_academic_staff_balance : 0), 2) }} <br/>
 
-                {{-- display when intervention is tetfunbd scholarship for academic staffs --}}
-                @elseif(str_contains(strtolower($intervention->name), 'tetfund scholarship'))
-                        <i class="fa fa-arrow-right fa-fw"></i> <b>Local Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_local_balance : 0), 2) }} <br/>
-                        <i class="fa fa-arrow-right fa-fw"></i> <b>Foreign Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_foreign_balance : 0), 2) }} <br/>
-                        <i class="fa fa-arrow-right fa-fw"></i> <b>Post. Doc. Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_post_doc_balance : 0), 2) }} <br/>
-                        <i class="fa fa-arrow-right fa-fw"></i> <b>Bench-Work Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($astd_allocations_details) ? $astd_allocations_details->total_work_bench_balance : 0), 2) }} <br/>
-                @endif
-            </div>
+                    {{-- display when intervention is tetfunbd scholarship for academic staffs --}}
+                    @elseif(str_contains(strtolower($intervention->name), 'tetfund scholarship'))
+                            <i class="fa fa-arrow-right fa-fw"></i> <b>Local Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($allocations_details) ? $allocations_details->total_local_balance : 0), 2) }} <br/>
+                            <i class="fa fa-arrow-right fa-fw"></i> <b>Foreign Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($allocations_details) ? $allocations_details->total_foreign_balance : 0), 2) }} <br/>
+                            <i class="fa fa-arrow-right fa-fw"></i> <b>Post. Doc. Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($allocations_details) ? $allocations_details->total_post_doc_balance : 0), 2) }} <br/>
+                            <i class="fa fa-arrow-right fa-fw"></i> <b>Bench-Work Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($allocations_details) ? $allocations_details->total_work_bench_balance : 0), 2) }} <br/>
+                    @endif
+                </div>
 
-            <hr style="margin: 0; border: none; border-top: 1px solid #000;">
+                <hr style="margin: 0; border: none; border-top: 1px solid #000;">
+                
                 <i class="fa fa-money fa-fw"></i> <b>Total Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>                
 
-                @if(isset($astd_allocations_details->total_available_fund))
-                    <i class="fa fa-money fa-fw"></i> <b>Expected Balance After Disbursement &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($astd_allocations_details->total_available_fund - $submissionRequest->amount_requested, 2) }} <br/>
+                @if(isset($allocations_details->total_available_fund))
+                    <i class="fa fa-money fa-fw"></i> <b>Expected Balance After Disbursement &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($allocations_details->total_available_fund - $submissionRequest->amount_requested, 2) }} <br/>
                 @endif
-            <hr style="margin: 0; border: none; border-top: 1px solid #000;">
-
+            
+                <hr style="margin: 0; border: none; border-top: 1px solid #000;">
+            
             @else
                 <i class="fa fa-money fa-fw"></i> <b>Total Available Amount &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format((isset($fund_available) ? $fund_available : 0), 2) }} <br/>
                 <i class="fa fa-money fa-fw"></i> <b>Amount Requested &nbsp; - &nbsp; </b> &nbsp; &#8358; {{ number_format($submissionRequest->amount_requested, 2) }} <br/>

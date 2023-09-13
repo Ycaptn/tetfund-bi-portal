@@ -113,6 +113,7 @@ New Submission
             let year = d.getFullYear();
             let all_astd_interventions_id = [];
             let all_none_astd_interventions_id = [];
+            let all_first_tranche_based_intervention_id = [];
             let all_intervention_records = '{!! json_encode($intervention_types) ?? [] !!}';
             let roles = JSON.parse('{!! json_encode(auth()->user()->getRoleNames()) ?? [] !!}');
             // console.log(roles);
@@ -162,6 +163,10 @@ New Submission
                             if (intervention.name.includes('Teaching Practice') || intervention.name.includes('Conference Attendance') || intervention.name.includes('TETFund Scholarship')) {
                                 all_astd_interventions_id[intervention.id] = intervention.name;
                             } else {
+                                if(intervention.name.includes('Equipment Fabrication') || intervention.name.includes('Advocacy And Publicity') ||  intervention.name.includes('Academic Manuscript') ||  intervention.name.includes('Academic Research Journal')) {
+                                    all_first_tranche_based_intervention_id[intervention.id] = intervention.name;
+                                }
+
                                 all_none_astd_interventions_id[intervention.id] = intervention.name;
                             }
                         });
@@ -193,9 +198,7 @@ New Submission
                      @endif
                 }
 
-                let astd_inteventions_keys = Object.keys(all_astd_interventions_id);
                 $('#intervention_line').html(intervention_line_html);
-                $('#astd_interventions_ids').val(astd_inteventions_keys.join(','));
             });
 
             function getMonthDifference(startDate, endDate) {
@@ -304,6 +307,8 @@ New Submission
                             }
                         });
                     }
+                } else if (selected_intervention_line != '' && selected_intervention_line in all_first_tranche_based_intervention_id) {
+                    hide_3_intervention_years();
                 } else {
                     $('#amount_requested').val('');
                     $('#amount_requested_digit').val('');
@@ -315,12 +320,12 @@ New Submission
                     $("#year_plural").show();
                 }
 
-                // settings to formulate intervention_title
+                // settings to formulate intervention_name
                 let confirmed_selected_line = all_none_astd_interventions_id[selected_intervention_line]!=null ?
                         all_none_astd_interventions_id[selected_intervention_line] : 
                         all_astd_interventions_id[selected_intervention_line];
               
-                $('#intervention_title').val(confirmed_selected_line);
+                $('#intervention_name').val(confirmed_selected_line);
             });
 
         });

@@ -33,7 +33,7 @@ class UpdateSubmissionRequestRequest extends AppBaseFormRequest
             //'organization_id' => 'required',
             'intervention_type' => 'required|string|max:100',
             'tf_iterum_intervention_line_key_id' => 'required|string|max:300',
-            'intervention_title' => 'required|string|max:300',
+            'intervention_name' => 'required|string|max:300',
             'intervention_year1' => "nullable|numeric|in:". implode(',', $years),
             'intervention_year2' => "nullable|numeric|in:". implode(',', $years),
             'intervention_year3' => "nullable|numeric|in:". implode(',', $years),
@@ -53,7 +53,7 @@ class UpdateSubmissionRequestRequest extends AppBaseFormRequest
         return [
             'intervention_type'=>'Intervention Type',
             'tf_iterum_intervention_line_key_id'=>'Intervention Line',
-            'intervention_title'=>'Intervention Title',
+            'intervention_name'=>'Intervention Title',
             'intervention_year1'=>'Intervention Year 1',
             'intervention_year2'=>'Intervention Year 2',
             'intervention_year3'=>'Intervention Year 3',
@@ -66,7 +66,7 @@ class UpdateSubmissionRequestRequest extends AppBaseFormRequest
     public function messages() {
         return [
             'intervention_years.required' => 'Selected atleast one (1) or more :attribute to proceed.',
-            'intervention_title.required' => '- PLEASE SELECT AN INTERVENTION LINE TO PROCEED. -'
+            'intervention_name.required' => '- PLEASE SELECT AN INTERVENTION LINE TO PROCEED. -'
         ];
     }
 }

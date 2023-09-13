@@ -29,8 +29,6 @@
             </div>
         </div>
     </div>
-    
-    <input type="hidden" id="astd_interventions_ids" name="astd_interventions_ids" value="0">
 
     <div id='request_type_div' class="form-group mb-3">
         {{-- <label class="col-lg-12 control-label">Intervention Line</label> --}}
@@ -109,6 +107,6 @@
         </div>
     </div>
 
-    <input type='hidden' id="intervention_title" name="intervention_title" value="{{ (isset($submissionRequest) && empty(old('intervention_title'))) ? $submissionRequest->title : old('intervention_title') }}" />
+    <input type='hidden' id="intervention_name" name="intervention_name" value="{{ (isset($submissionRequest) && empty(old('intervention_name'))) ? $submissionRequest->title : old('intervention_name') }}" />
 
 

@@ -136,9 +136,7 @@ Edit Submission Request
                     show_3_intervention_years();
                 }
 
-                let astd_inteventions_keys = Object.keys(all_astd_interventions_id);
                 $('#intervention_line').html(intervention_line_html);
-                $('#astd_interventions_ids').val(astd_inteventions_keys.join(','));
             @endif
 
             // triggered on changing intervention type
@@ -161,11 +159,8 @@ Edit Submission Request
 
                     });
                 }
+                
                 $('#intervention_line').html(intervention_line_html);
-
-                let astd_inteventions_keys = Object.keys(all_astd_interventions_id);
-                $('#intervention_line').html(intervention_line_html);
-                $('#astd_interventions_ids').val(astd_inteventions_keys.join(','));
             });
 
             // triggered on changing intervention line
@@ -178,12 +173,12 @@ Edit Submission Request
                     show_3_intervention_years();
                 }
               
-                // settings to fomulate intervention_title
+                // settings to fomulate intervention_name
                 let confirmed_selected_line = all_none_astd_interventions_id[view_selected_intervention_line]!=null ?
                         all_none_astd_interventions_id[view_selected_intervention_line] : 
                         all_astd_interventions_id[view_selected_intervention_line];
               
-                $('#intervention_title').val(confirmed_selected_line);
+                $('#intervention_name').val(confirmed_selected_line);
             });
 
         });
