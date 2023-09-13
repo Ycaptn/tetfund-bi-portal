@@ -359,7 +359,7 @@ class SubmissionRequestController extends BaseController
         $current_user = auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
 
-        if(!($current_user->hasAnyRole(['BI-desk-officer','BI-head-of-institution']))) {
+        if(!$submissionRequest->can_user_operate_intervention($current_user->getRoleNames()->toArray(), $request->get('intervention_name'))) {
             return redirect()->back()->with('error', 'Please, Kindly Contact the Institution TETFund Desk Officer or any other users who has the priviledge to make a submission for the selected intervention');
         }
         
