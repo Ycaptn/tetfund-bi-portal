@@ -137,11 +137,12 @@ class SubmissionRequestController extends BaseController
     public function create(Organization $org) {
         $current_user = auth()->user();
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', $current_user->id)->first();
+        $beneficiary = optional($beneficiary_member)->beneficiary;
         $submissionRequest = new SubmissionRequest();
 
         $pay_load = [
             '_method' => 'GET',
-            'beneficiary_type' => $beneficiary_member->beneficiary->type ?? null,
+            'beneficiary_type' => optional($beneficiary)->type,
             'interventions_to_skip' => $submissionRequest->interventions_denied_submission()
         ];
 
@@ -155,6 +156,7 @@ class SubmissionRequestController extends BaseController
 
         return view('pages.submission_requests.create')
             ->with("years", $years)
+            ->with("beneficiary", $beneficiary)
             ->with("current_user", $current_user)
             ->with("intervention_types", $intervention_types_server_response);
     }
@@ -265,13 +267,16 @@ class SubmissionRequestController extends BaseController
             return redirect()->route('tf-bi-portal.submissionRequests.index')->withError('Oops... The submission request was not found');
         }
 
+        // intervention years
+        $intervention_years = $submissionRequest->getInterventionYears();
+
         // intervention checklist group name
         $checklist_group_name = self::generateCheckListGroupName($request->intervention_line_name??'', $submissionRequest);
 
         // get audit checklist for tranches applicable
         $additional_checklists_payload = [
                 '_method' => 'POST',
-                'applicable_years' => $submissionRequest->getInterventionYears()
+                'applicable_years' => $intervention_years
             ];
 
         if ($submissionRequest->is_second_tranche_request || $submissionRequest->is_final_tranche_request) {
@@ -280,7 +285,8 @@ class SubmissionRequestController extends BaseController
 
 
         // applicable request type
-        if ($submissionRequest->is_aip_request && (str_contains(strtolower($request->intervention_line_name), "physical infrastructure") || str_contains(strtolower($request->intervention_line_name), "zonal intervention") && in_array(2023,$years) )) {
+        $lower_case_intervention_name = strtolower($request->intervention_line_name??'');
+        if ($submissionRequest->is_aip_request && (str_contains($lower_case_intervention_name, "physical infrastructure") || str_contains($lower_case_intervention_name, "zonal intervention")) && in_array(2023, $intervention_years)) {
 
             $applicable_types = $this->getAppplicableRequestType($submissionRequest, $request->intervention_line_name??'');
 
@@ -380,7 +386,8 @@ class SubmissionRequestController extends BaseController
         $pay_load = $submissionRequest->toArray();
 
         // applicable request type
-        if ($submissionRequest->is_aip_request && (str_contains(strtolower(optional($request)->intervention_name), "physical infrastructure") || str_contains(strtolower(optional($request)->intervention_name), "zonal intervention") && in_array(2023,$years) )) {
+        $lower_case_intervention_name = strtolower(optional($request)->intervention_name);
+        if ($submissionRequest->is_aip_request && (str_contains($lower_case_intervention_name, "physical infrastructure") || str_contains($lower_case_intervention_name, "zonal intervention")) && in_array(2023,$years)) {
             
             $applicable_request_types = $this->getAppplicableRequestType($submissionRequest, optional($request)->intervention_name);
 
@@ -820,7 +827,8 @@ class SubmissionRequestController extends BaseController
             
 
             // applicable request type
-            if ($submissionRequest->is_aip_request && (str_contains(strtolower($intervention_types_server_response->name??''), "physical infrastructure") || str_contains(strtolower($intervention_types_server_response->name??''), "zonal intervention") && in_array(2023,$years) )) {
+            $lower_case_intervention_name = strtolower($intervention_types_server_response->name??'');
+            if ($submissionRequest->is_aip_request && (str_contains($lower_case_intervention_name, "physical infrastructure") || str_contains($lower_case_intervention_name, "zonal intervention")) && in_array(2023,$years)) {
 
                 $applicable_request_types = $this->getAppplicableRequestType($submissionRequest, $intervention_types_server_response->name??'');
 

@@ -46,6 +46,9 @@ $orgRoutes = function() {
                 // sychronization processing
                 Route::get('synchronize_beneficiary_list', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'synchronize_beneficiary_list'])->name('synchronize_beneficiary_list');
                
+               // get intervention funds allocation data
+                Route::post('bi_intervention_allocated_funds_data', [\App\Http\Controllers\Dashboard\DashboardController::class, 'getBiInterventionAllocatedFundsData'])->name('get_bi_intervention_allocated_funds_data');
+
                 // beneficiary member management
                 Route::post('store_beneficiary_member', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'store_beneficiary_member'])->name('store_beneficiary_member');
                 Route::get('show_beneficiary_member/{id}', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'show_beneficiary_member'])->name('show_beneficiary_member');

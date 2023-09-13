@@ -204,6 +204,62 @@ class DashboardController extends BaseController
                 ->with('current_user', $current_user);
     }
 
+    public function getBiInterventionAllocatedFundsData(Organization $org, Request $request) {
+        // decide fund availability type to be retrived
+        $years = [];
+        $is_astd_intervention = false;
+        $is_first_tranche_intervention = false;
+
+        // get selected intervention years
+        for ($i = 1; $i <= 4 ; ++$i) {
+            $intervention_year = $request->get('intervention_year'.$i);
+            if(!empty($intervention_year)) {
+                array_push($years, $intervention_year);
+            }
+        }
+
+        if (SubmissionRequest::is_astd_intervention(optional($request)->intervention_name)) {
+            $is_astd_intervention = true;
+            $data_to_rerieve_payload['getASTDFundAvailabilityData'] = [
+                'beneficiary_id' => $request->get('tf_beneficiary_id')??'',
+                'intervention_name' => $request->get('intervention_name')??'',
+                'intervention_line_id' => $request->get('tf_intervention_id')??'',
+                // 'allocation_details'=>true
+            ];
+
+        } elseif (SubmissionRequest::is_start_up_first_tranche_intervention(optional($request)->intervention_name)) {
+
+            $is_first_tranche_intervention = true;
+            $data_to_rerieve_payload['getFirstTranchBasedFundAvailabilityData'] = [
+                'beneficiary_id' => $request->get('tf_beneficiary_id')??'',
+                'intervention_name' => $request->get('intervention_name')??'',
+                'intervention_line_id' => $request->get('tf_intervention_id')??'',
+                // 'allocation_details'=>true
+            ];
+
+        } else {
+            $data_to_rerieve_payload['getFundAvailabilityData'] = [
+                    'beneficiary_id' => $request->get('tf_beneficiary_id')??'',
+                    'years' => $years,
+                    'tf_iterum_intervention_line_key_id' => $request->get('tf_intervention_id')??'',
+                    // 'allocation_details'=>true
+                ];
+        }
+
+        $tetFundServer = new TETFundServer();   /* server class constructor */
+        $some_server_data_array = $tetFundServer->getSomeDataArrayFromServer($data_to_rerieve_payload);
+
+        //Get the funding data and total_funds for the selected intervention year(s) if non-astd.
+        $submission_allocations = $some_server_data_array->getFundAvailabilityData??null;
+        if ($is_astd_intervention==true) {
+            $submission_allocations = $some_server_data_array->getASTDFundAvailabilityData??null;
+        } elseif ($is_first_tranche_intervention==true) {
+            $submission_allocations = $some_server_data_array->getFirstTranchBasedFundAvailabilityData??null;
+        }
+
+        return $this->sendResponse($submission_allocations, 'The Beneficiary Intervention Allocation Has Been Retrived Successfully.');
+    }
+
     public function displayDeskOfficerAdminDashboard(Organization $org, BeneficiaryMemberDatatable $beneficiaryMembersDatatable) {
         $current_user = Auth()->user();
 

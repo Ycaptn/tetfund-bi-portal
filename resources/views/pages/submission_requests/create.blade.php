@@ -38,12 +38,16 @@ New Submission
             {!! Form::open(['route' => 'tf-bi-portal.submissionRequests.store','class'=>'form-horizontal', 'onsubmit'=>'filter_removing_comma()' ]) !!}
             
                 @include('pages.submission_requests.fields')
-
                 <hr />
 
                 <div class="col-lg-offset-3 col-lg-12">
-                    {!! Form::submit('Save New Request', ['class' => 'btn btn-primary', 'id'=>'btn_submit_request']) !!}
-                    <a href="{{ route('tf-bi-portal.submissionRequests.index') }}" class="btn btn-default btn-warning">Cancel Submission</a>
+                    <button class="btn btn-primary" id="btn_submit_request" type="submit">
+                        <span class='fa fa-save'></span> Save New Request
+                    </button>
+
+                    <a href="{{ route('tf-bi-portal.submissionRequests.index') }}" class="btn btn-default btn-warning">
+                        <span class="fa fa-times"></span> Cancel Submission
+                    </a>
                 </div>
 
                 <div class="form-group mb-3" style="display: none;" id="div_current_nomination_details_submitted">
@@ -81,6 +85,7 @@ New Submission
                     </div>
                 </div>
             {!! Form::close() !!}
+            @include('pages.submission_requests.partials.modal_intervention_allocation_balance')
         </div>
     </div>
 @stop
@@ -213,8 +218,9 @@ New Submission
             $('#intervention_line').on('change', function() {
                 let selected_intervention_line = $(this).val();
                 $('#div_current_nomination_details_submitted').hide();
+                
                 if (selected_intervention_line != '' && selected_intervention_line in all_astd_interventions_id) {
-
+                    $('#btn-get-intervention-allocation-details').hide();
                     let intevention_line_name = all_astd_interventions_id[selected_intervention_line];
                     let line_type_short = '';
                     let nomination_label = '';
@@ -309,7 +315,9 @@ New Submission
                     }
                 } else if (selected_intervention_line != '' && selected_intervention_line in all_first_tranche_based_intervention_id) {
                     hide_3_intervention_years();
+                    $('#btn-get-intervention-allocation-details').show();
                 } else {
+                    $('#btn-get-intervention-allocation-details').hide();
                     $('#amount_requested').val('');
                     $('#amount_requested_digit').val('');
                     $("#intervention_year1").val('');

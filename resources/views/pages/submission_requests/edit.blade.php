@@ -45,8 +45,13 @@ Edit Submission Request
 
             <div class="col-lg-offset-3 col-lg-9">
                 <hr/>
-                {!! Form::submit('Update Request', ['class' => 'btn btn-primary']) !!}
-                <a href="{{ route('tf-bi-portal.submissionRequests.index') }}" class="btn btn-warning btn-default">Cancel</a>
+                <button class="btn btn-primary" id="btn_submit_request" type="submit">
+                    <span class='fa fa-save'></span> Update Request
+                </button>
+                
+                <a href="{{ route('tf-bi-portal.submissionRequests.index') }}" class="btn btn-warning btn-default">
+                    <span class="fa fa-times"></span> Cancel
+                </a>
             </div>
         {!! Form::close() !!}                
 

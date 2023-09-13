@@ -196,7 +196,7 @@ class SubmissionRequest extends Model
             'academic manuscript into books',
         ];
 
-        return in_array(strtolower($intervention_name), $start_up_first_tranche_interventions);
+        return in_array(strtolower($intervention_name??''), $start_up_first_tranche_interventions);
     }
 
     // all interventions that should be denied submission processing
@@ -213,7 +213,7 @@ class SubmissionRequest extends Model
             'tetfund scholarship for academic staff'
         ];
 
-        return in_array(strtolower($intervention_name), $astd_interventions);
+        return in_array(strtolower($intervention_name??''), $astd_interventions);
     }
 
     // all first tranche interventions percentage
