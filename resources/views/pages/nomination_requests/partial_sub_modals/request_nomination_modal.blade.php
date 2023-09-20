@@ -58,6 +58,10 @@ $(document).ready(function() {
     let conferences = '{!! json_encode($conferences) !!}';
     let institutions = '{!! json_encode($institutions) !!}';
     let country_nigeria_id = '{!! $country_nigeria_id !!}';
+    @php
+        echo "var world_institutions =". json_encode($world_institutions) . ";\n";
+        echo "var nigeria_institutions =". json_encode($nigeria_institutions) . ";\n";
+    @endphp
 
     // toggle TSAS international passport attachement input filed
     $('#intl_passport_number_tsas').on('keyup', function() {
@@ -149,6 +153,12 @@ $(document).ready(function() {
             $('#tsas_program_start_date_notice').hide();
             $("#program_start_date_tsas").attr("min", todayDate);
             $("#program_end_date_tsas").attr("min", todayDate);
+        
+            $('#institutions').empty();
+
+            nigeria_institutions.forEach(element => {
+                $('#institutions').append(`<option value="${element.full_name}"> </option>`);
+            });
 
             if(selected_country == '') {
                 $('#div-is_science_program_tsas').hide();
@@ -156,6 +166,11 @@ $(document).ready(function() {
                 $('#div-is_science_program_tsas').show();
             }
         } else {
+            $('#institutions').empty();
+            world_institutions.forEach(element => {
+                $('#institutions').append(`<option value="${element}"> </option>`);
+            });
+        
             $('#institution_state_tsas').val('');
             $('#div-institution_state_tsas').hide();
             $('#div-intl_passport_number_tsas').show();
