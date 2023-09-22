@@ -523,7 +523,7 @@ class SubmissionRequestController extends BaseController
                     $today = strtotime(now());
                     $conference_start_date = strtotime($item->ca_submission->conference_start_date);    
                     $month_difference = ($conference_start_date - $today) / (3600 *24 *30);
-                    return ($month_difference >= 3);
+                    return ($month_difference >= 2);
                 });
                 $final_nominations_arr = $filtered_nomination_arr;
             }

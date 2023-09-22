@@ -66,6 +66,7 @@ class NominationRequestController extends BaseController
         $institutions = $countries_institutions_and_conferences->institutions;  // fetch institutions
         $conferences = $countries_institutions_and_conferences->conferences;  // fetch conferences
         $world_institutions = NominationRequest::worldAcademicInstitutions();
+        $nigeria_institutions = Beneficiary::orderBy('full_name',"ASC")->get()->toArray();
 
         $all_beneficiary_users = User::join('tf_bi_beneficiary_members', 'fc_users.id', '=', 'tf_bi_beneficiary_members.beneficiary_user_id')
             ->where('tf_bi_beneficiary_members.beneficiary_id', $beneficiary_member->beneficiary_id)
@@ -85,7 +86,8 @@ class NominationRequestController extends BaseController
                 ->with('beneficiary_member', $beneficiary_member)
                 ->with('all_beneficiary_users', $all_beneficiary_users)
                 ->with('bi_submission_requests', $bi_submission_requests)
-                ->with('cdv_nomination_requests', $cdv_nomination_requests);
+                ->with('cdv_nomination_requests', $cdv_nomination_requests)
+                ->with('nigeria_institutions',$nigeria_institutions);
     }
 
     /**
