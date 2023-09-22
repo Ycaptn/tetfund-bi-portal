@@ -21,7 +21,7 @@
 
 
 <div class="card radius-5">
-    <div class="card-body">
+    <div class="card-body text-justify">
         <div>
             <h5 class="card-title">Quick Links</h5>
         </div>
@@ -44,7 +44,7 @@
 </div>
 
 <div class="card radius-5">
-    <div class="card-body">
+    <div class="card-body text-justify">
         <div>
             <h5 class="card-title">Intervention Guidelines</h5>
         </div>
@@ -65,7 +65,7 @@
 </div>
 @if (optional(Auth()->user())->hasAnyRole(['BI-staff']))
 <div class="card radius-5">
-    <div class="card-body">
+    <div class="card-body text-justify">
         <div>
             <h5 class="card-title">Beneficiary Staff</h5>
         </div>
@@ -79,8 +79,8 @@
 @endif
 
 @if (optional(Auth()->user())->hasAnyRole(['BI-ict']))
-<div class="card radius-5">
-    <div class="card-body">
+<div class="card radius-5 ">
+    <div class="card-body text-justify">
         <div>
             <h5 class="card-title">Director ICT</h5>
         </div>

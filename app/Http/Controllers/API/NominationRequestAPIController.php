@@ -170,9 +170,17 @@ class NominationRequestAPIController extends BaseController
         $nominationRequest->user_id = $current_user->id;
         $nominationRequest->beneficiary_id =$bi_beneficiary_id;
         $nominationRequest->type = $request->nomination_type;
-        $nominationRequest->details_submitted = 1;
         $nominationRequest->request_date = date('Y-m-d H:i:s');
         $nominationRequest->status = 'approved';
+        $nominationRequest->details_submitted = true;
+        $nominationRequest->is_desk_officer_check = true;
+        $nominationRequest->is_average_committee_members_check = true;
+        $nominationRequest->committee_head_checked_status = 'approved';
+        $nominationRequest->committee_head_checked_comment = 'Default System Nomination Comment';
+        $nominationRequest->is_desk_officer_check_after_average_committee_members_checked = true;
+        $nominationRequest->is_head_of_institution_check = true;
+        $nominationRequest->head_of_institution_checked_status = 'approved';
+        $nominationRequest->head_of_institution_checked_comment = 'Default System Nomination Comment';
         $nominationRequest->save();
 
         // handle nomination request details submission

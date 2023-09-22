@@ -272,44 +272,69 @@ $(document).ready(function() {
                 @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_append_ca_form_data')
             }
         }
-       
+        
+        swal({
+            title: "Are you sure you want to submit nomination details?",
+            text: "This will be submitted once you confirm by clicking YES.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, submit",
+            cancelButtonText: "Nom don't submit",
+            closeOnConfirm: false,
+            closeOnCancel: true
+        }, function(isConfirm) {
+            if (isConfirm) {
+                swal({
+                    title: '<div class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br>Submitting...',
+                    text: 'Please wait while Nomination Details is being submitted <br><br> Do not refresh this page! ',
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    html: true
+                });
 
-        $.ajax({
-            url: "{{ route('tf-bi-portal-api.nomination_requests.store_nomination_request_and_details') }}",
-            type: "POST",
-            data: formData,
-            cache: false,
-            processData:false,
-            contentType: false,
-            dataType: 'json',
-            success: function(result){
-                if(result.errors){
-                    $('#div-requestNomination-modal-error').html('');
-                    $('#div-requestNomination-modal-error').show();
-                    
-                    $.each(result.errors, function(key, value){
-                        $('#div-requestNomination-modal-error').append('<li class="">'+value+'</li>');
-                    });
-                }else{
-                    $('#div-requestNomination-modal-error').hide();
-                    swal({
-                        title: "Saved",
-                        text: result.message,
-                        type: "success"
-                    });
-                    location.reload(true);
-                }
+                $.ajax({
+                    url: "{{ route('tf-bi-portal-api.nomination_requests.store_nomination_request_and_details') }}",
+                    type: "POST",
+                    data: formData,
+                    cache: false,
+                    processData:false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function(result){
+                        if(result.errors){
+                            $('#div-requestNomination-modal-error').html('');
+                            $('#div-requestNomination-modal-error').show();
+                            swal.close();
+                            
+                            $.each(result.errors, function(key, value){
+                                $('#div-requestNomination-modal-error').append('<li class="">'+value+'</li>');
+                            });
+                        }else{
+                            $('#div-requestNomination-modal-error').hide();
+                            swal({
+                                title: "Submitted",
+                                text: result.message,
+                                type: "success"
+                            });
+                            location.reload(true);
+                        }
 
+                        $("#spinner-request_nomination").hide();
+                        $("#btn-save-mdl-requestNomination-modal").attr('disabled', false);
+                        
+                    }, error: function(data){
+                        console.log(data);
+                        swal("Error", "Oops an error occurred. Please try again.", "error");
+
+                        $("#spinner-request_nomination").hide();
+                        $("#btn-save-mdl-requestNomination-modal").attr('disabled', false);
+
+                    }
+                });
+            } else {
                 $("#spinner-request_nomination").hide();
                 $("#btn-save-mdl-requestNomination-modal").attr('disabled', false);
-                
-            }, error: function(data){
-                console.log(data);
-                swal("Error", "Oops an error occurred. Please try again.", "error");
-
-                $("#spinner-request_nomination").hide();
-                $("#btn-save-mdl-requestNomination-modal").attr('disabled', false);
-
             }
         });
     });
