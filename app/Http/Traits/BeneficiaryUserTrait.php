@@ -29,6 +29,7 @@ trait BeneficiaryUserTrait {
                     "phone" => $pay_load_data['telephone'],
                     "email" => $pay_load_data['email'],
                     "gender" => ucfirst(substr($pay_load_data['gender'], 0, 1)),
+                    "type" => $pay_load_data['user_type']??'STUDENT',
                 ]);          
             }
         }
