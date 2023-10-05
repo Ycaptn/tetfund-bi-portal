@@ -79,8 +79,11 @@ $(document).ready(function() {
             $('#div-international_passport_bio_page_tsas').hide();
             $('#is_science_program_tsas').val('');
             $('#tsas_program_start_date_notice').hide();
-            $("#program_start_date_tsas").attr("min", todayDate);
-            $("#program_end_date_tsas").attr("min", todayDate);
+            // $("#program_start_date_tsas").attr("min", todayDate);
+            $("#program_start_date_tsas").removeAttr("min");
+            // $("#program_end_date_tsas").attr("min", todayDate);
+            $("#program_end_date_tsas").removeAttr("min");
+
             if(selected_country == '') {
                 $('#div-is_science_program_tsas').hide();
             } else {
