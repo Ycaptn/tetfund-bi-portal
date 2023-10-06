@@ -467,9 +467,39 @@ class NominationRequestAPIController extends BaseController
      * @param  \App\NominationRequest  $nominationRequest
      * @return \Illuminate\Http\Response
      */
-    public function destroy(NominationRequest $nominationRequest)
+    public function destroy(Request $request, $id)
     {
-        //
+        /** @var NominationRequest $nominationRequest */
+        $nominationRequest = NominationRequest::find($id);
+
+        if (empty($nominationRequest)) {
+            return $this->sendError('Nomination request not found');
+        }
+
+        $nominationRequestDetails = null;
+        if ($nominationRequest->type == 'tsas') {
+            $nominationRequestDetails = $nominationRequest->tsas_submission;
+        } elseif ($nominationRequest->type == 'ca') {
+            $nominationRequestDetails = $nominationRequest->ca_submission;
+        } elseif ($nominationRequest->type == 'tp') {
+            $nominationRequestDetails = $nominationRequest->tp_submission;
+        }
+
+        if ($nominationRequestDetails != null) {
+            $nominationRequestDetails->delete();
+        }
+
+
+        $attachments = $nominationRequest->get_all_attachments($nominationRequest->id);
+        if (!empty($attachments) && count($attachments) > 0) {
+            foreach ($attachments as $attachment) {
+                $nominationRequest->delete_attachment($attachment->label);
+            }
+        }
+
+        $nominationRequest->delete();
+        // NominationRequestDeleted::dispatch($nominationRequest);
+        return $this->sendSuccess('Nomination request deleted successfully');
     }
 
     // general function processing forwarding of nomination details

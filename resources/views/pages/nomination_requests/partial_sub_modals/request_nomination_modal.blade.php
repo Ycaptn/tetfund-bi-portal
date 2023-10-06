@@ -356,6 +356,81 @@ $(document).ready(function() {
         });
     });
 
+
+    //Delete action
+    $(document).on('click', ".btn-delete-mdl-nomination_request-modal", function(e) {
+        e.preventDefault();
+        $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+         //check for internet status 
+        if (!window.navigator.onLine) {
+            $('.offline-request_nomination').fadeIn(300);
+            return;
+        }else{
+            $('.offline-request_nomination').fadeOut(300);
+        }
+
+        let itemId = $(this).attr('data-val');
+        swal({
+            title: "Are you sure you want to delete this Nomination request?",
+            text: "You will not be able to recover this Nomination request if deleted.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            closeOnConfirm: false,
+            closeOnCancel: true
+        }, function(isConfirm) {
+            if (isConfirm) {
+
+                let endPointUrl = "{{ route('tf-bi-portal-api.nomination_requests.destroy','') }}/"+itemId;
+
+                swal({
+                    title: '<div id="spinner-beneficiaries" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br> Please wait...',
+                    text: 'Deleting Nomination request Details <br><br> Do not refresh this page! ',
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    html: true
+                });
+
+                let formData = new FormData();
+                formData.append('_token', $('input[name="_token"]').val());
+                formData.append('_method', 'DELETE');
+                formData.append('id', itemId);
+                
+                $.ajax({
+                    url:endPointUrl,
+                    type: "POST",
+                    data: formData,
+                    cache: false,
+                    processData:false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function(result){
+                        if(result.errors){
+                            console.log(result.errors);
+                            swal("Error", "Oops an error occurred. Please try again.", "error");
+                        }else{
+                            swal({
+                                title: "Deleted",
+                                text: "Nomination request deleted successfully",
+                                type: "success",
+                                confirmButtonClass: "btn-success",
+                                confirmButtonText: "OK",
+                                closeOnConfirm: false
+                            });
+                            location.reload(true);
+                        }
+                    }, error: function(errors) {
+                        console.log(errors);
+                        swal("Error", "Oops an error occurred. Please try again.", "error");
+                    }
+                });
+            }
+        });
+    });
+
 });
 </script>
 @endpush
