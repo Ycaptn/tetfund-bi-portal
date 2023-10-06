@@ -143,7 +143,7 @@ class TSASNominationAPIController extends AppBaseController
         } 
 
         TSASNominationCreated::dispatch($tSASNomination);
-        return $this->sendResponse($tSASNomination->toArray(), 'T S A S Nomination saved successfully');
+        return $this->sendResponse($tSASNomination->toArray(), 'TSAS Nomination submitted successfully');
     }
 
     /**

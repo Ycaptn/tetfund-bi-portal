@@ -15,27 +15,8 @@
                         </div>
                     @endif
                 </a>
-                <div class="d-flex align-items-center">
-                    @if(isset($data_item) && $data_item->status == 'not-submitted')
-                        <div class="ms-auto"> 
-                            <a data-toggle="tooltip" 
-                                title="Edit"
-                                data-val='{{$data_item->id}}'
-                                href="{{route('tf-bi-portal.nomination_requests.edit', $data_item->id)}}" 
-                                class="btn-edit-mdl-nomination_request-modal me-1" href="#">
-                                <i class="bx bxs-edit"></i>
-                            </a>
-                            <a data-toggle="tooltip" 
-                                title="Delete" 
-                                data-val='{{$data_item->id}}' 
-                                class="btn-delete-mdl-nomination_request-modal me-1" href="#">
-                                <i class="bx bxs-trash-alt" style="color: red;"></i>
-                            </a>
-                        </div>
-                    @endif
-                </div>
             </div>
-            <div class="col-xs-12 col-md-11">
+            <div class="col-xs-12 col-md-9">
                 <div class="card-body">
                     <a href='{{$detail_page_url}}'>
                         <h3 class="h6 card-title mb-0">
@@ -73,6 +54,28 @@
                         Created: {{ \Carbon\Carbon::parse($data_item->created_at)->format('l jS F Y') }} - {!! \Carbon\Carbon::parse($data_item->created_at)->diffForHumans() !!}
                     </p>
                 </div>
+            </div>
+
+            <div class="col-sm-12 col-md-2 align-items-center">
+                @if(isset($data_item) && ($data_item->status == 'not-submitted' || empty($data_item->bi_submission_request_id)))
+                    <div class="ms-auto"> 
+                        {{-- <a data-toggle="tooltip" 
+                            title="Edit"
+                            data-val='{{$data_item->id}}'
+                            href="{{route('tf-bi-portal.nomination_requests.edit', $data_item->id)}}" 
+                            class="btn-edit-mdl-nomination_request-modal me-1" href="#">
+                            <i class="bx bxs-edit"></i>
+                        </a> --}}
+                        <small>
+                            <a data-toggle="tooltip" 
+                                title="Delete" 
+                                data-val='{{$data_item->id}}' 
+                                class="btn-delete-mdl-nomination_request-modal m-2 btn btn-sm btn-danger float-end" href="#">
+                                <i class="bx bxs-trash-alt"></i> Delete
+                            </a>
+                        </small>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

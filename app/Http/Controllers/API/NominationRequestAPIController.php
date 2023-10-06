@@ -170,9 +170,17 @@ class NominationRequestAPIController extends BaseController
         $nominationRequest->user_id = $current_user->id;
         $nominationRequest->beneficiary_id =$bi_beneficiary_id;
         $nominationRequest->type = $request->nomination_type;
-        $nominationRequest->details_submitted = 1;
         $nominationRequest->request_date = date('Y-m-d H:i:s');
         $nominationRequest->status = 'approved';
+        $nominationRequest->details_submitted = true;
+        $nominationRequest->is_desk_officer_check = true;
+        $nominationRequest->is_average_committee_members_check = true;
+        $nominationRequest->committee_head_checked_status = 'approved';
+        $nominationRequest->committee_head_checked_comment = 'Default System Nomination Comment';
+        $nominationRequest->is_desk_officer_check_after_average_committee_members_checked = true;
+        $nominationRequest->is_head_of_institution_check = true;
+        $nominationRequest->head_of_institution_checked_status = 'approved';
+        $nominationRequest->head_of_institution_checked_comment = 'Default System Nomination Comment';
         $nominationRequest->save();
 
         // handle nomination request details submission
@@ -459,9 +467,39 @@ class NominationRequestAPIController extends BaseController
      * @param  \App\NominationRequest  $nominationRequest
      * @return \Illuminate\Http\Response
      */
-    public function destroy(NominationRequest $nominationRequest)
+    public function destroy(Request $request, $id)
     {
-        //
+        /** @var NominationRequest $nominationRequest */
+        $nominationRequest = NominationRequest::find($id);
+
+        if (empty($nominationRequest)) {
+            return $this->sendError('Nomination request not found');
+        }
+
+        $nominationRequestDetails = null;
+        if ($nominationRequest->type == 'tsas') {
+            $nominationRequestDetails = $nominationRequest->tsas_submission;
+        } elseif ($nominationRequest->type == 'ca') {
+            $nominationRequestDetails = $nominationRequest->ca_submission;
+        } elseif ($nominationRequest->type == 'tp') {
+            $nominationRequestDetails = $nominationRequest->tp_submission;
+        }
+
+        if ($nominationRequestDetails != null) {
+            $nominationRequestDetails->delete();
+        }
+
+
+        $attachments = $nominationRequest->get_all_attachments($nominationRequest->id);
+        if (!empty($attachments) && count($attachments) > 0) {
+            foreach ($attachments as $attachment) {
+                $nominationRequest->delete_attachment($attachment->label);
+            }
+        }
+
+        $nominationRequest->delete();
+        // NominationRequestDeleted::dispatch($nominationRequest);
+        return $this->sendSuccess('Nomination request deleted successfully');
     }
 
     // general function processing forwarding of nomination details

@@ -151,8 +151,10 @@ $(document).ready(function() {
             $('#div-international_passport_bio_page_tsas').hide();
             $('#is_science_program_tsas').val('');
             $('#tsas_program_start_date_notice').hide();
-            $("#program_start_date_tsas").attr("min", todayDate);
-            $("#program_end_date_tsas").attr("min", todayDate);
+            // $("#program_start_date_tsas").attr("min", todayDate);
+            $("#program_start_date_tsas").removeAttr("min");
+            // $("#program_end_date_tsas").attr("min", todayDate);
+            $("#program_end_date_tsas").removeAttr("min");
         
             $('#institutions').empty();
 
@@ -287,44 +289,144 @@ $(document).ready(function() {
                 @include('pages.nomination_requests.partial_sub_modals.partials_request_nomination.js_append_ca_form_data')
             }
         }
-       
+        
+        swal({
+            title: "Are you sure you want to submit nomination details?",
+            text: "This will be submitted once you confirm by clicking YES.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, submit",
+            cancelButtonText: "Nom don't submit",
+            closeOnConfirm: false,
+            closeOnCancel: true
+        }, function(isConfirm) {
+            if (isConfirm) {
+                swal({
+                    title: '<div class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br>Submitting...',
+                    text: 'Please wait while Nomination Details is being submitted <br><br> Do not refresh this page! ',
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    html: true
+                });
 
-        $.ajax({
-            url: "{{ route('tf-bi-portal-api.nomination_requests.store_nomination_request_and_details') }}",
-            type: "POST",
-            data: formData,
-            cache: false,
-            processData:false,
-            contentType: false,
-            dataType: 'json',
-            success: function(result){
-                if(result.errors){
-                    $('#div-requestNomination-modal-error').html('');
-                    $('#div-requestNomination-modal-error').show();
-                    
-                    $.each(result.errors, function(key, value){
-                        $('#div-requestNomination-modal-error').append('<li class="">'+value+'</li>');
-                    });
-                }else{
-                    $('#div-requestNomination-modal-error').hide();
-                    swal({
-                        title: "Saved",
-                        text: result.message,
-                        type: "success"
-                    });
-                    location.reload(true);
-                }
+                $.ajax({
+                    url: "{{ route('tf-bi-portal-api.nomination_requests.store_nomination_request_and_details') }}",
+                    type: "POST",
+                    data: formData,
+                    cache: false,
+                    processData:false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function(result){
+                        if(result.errors){
+                            $('#div-requestNomination-modal-error').html('');
+                            $('#div-requestNomination-modal-error').show();
+                            swal.close();
+                            
+                            $.each(result.errors, function(key, value){
+                                $('#div-requestNomination-modal-error').append('<li class="">'+value+'</li>');
+                            });
+                        }else{
+                            $('#div-requestNomination-modal-error').hide();
+                            swal({
+                                title: "Submitted",
+                                text: result.message,
+                                type: "success"
+                            });
+                            location.reload(true);
+                        }
 
+                        $("#spinner-request_nomination").hide();
+                        $("#btn-save-mdl-requestNomination-modal").attr('disabled', false);
+                        
+                    }, error: function(data){
+                        console.log(data);
+                        swal("Error", "Oops an error occurred. Please try again.", "error");
+
+                        $("#spinner-request_nomination").hide();
+                        $("#btn-save-mdl-requestNomination-modal").attr('disabled', false);
+
+                    }
+                });
+            } else {
                 $("#spinner-request_nomination").hide();
                 $("#btn-save-mdl-requestNomination-modal").attr('disabled', false);
+            }
+        });
+    });
+
+
+    //Delete action
+    $(document).on('click', ".btn-delete-mdl-nomination_request-modal", function(e) {
+        e.preventDefault();
+        $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}});
+
+         //check for internet status 
+        if (!window.navigator.onLine) {
+            $('.offline-request_nomination').fadeIn(300);
+            return;
+        }else{
+            $('.offline-request_nomination').fadeOut(300);
+        }
+
+        let itemId = $(this).attr('data-val');
+        swal({
+            title: "Are you sure you want to delete this Nomination request?",
+            text: "You will not be able to recover this Nomination request if deleted.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            closeOnConfirm: false,
+            closeOnCancel: true
+        }, function(isConfirm) {
+            if (isConfirm) {
+
+                let endPointUrl = "{{ route('tf-bi-portal-api.nomination_requests.destroy','') }}/"+itemId;
+
+                swal({
+                    title: '<div id="spinner-beneficiaries" class="spinner-border text-primary" role="status"> <span class="visually-hidden">  Loading...  </span> </div> <br><br> Please wait...',
+                    text: 'Deleting Nomination request Details <br><br> Do not refresh this page! ',
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    html: true
+                });
+
+                let formData = new FormData();
+                formData.append('_token', $('input[name="_token"]').val());
+                formData.append('_method', 'DELETE');
+                formData.append('id', itemId);
                 
-            }, error: function(data){
-                console.log(data);
-                swal("Error", "Oops an error occurred. Please try again.", "error");
-
-                $("#spinner-request_nomination").hide();
-                $("#btn-save-mdl-requestNomination-modal").attr('disabled', false);
-
+                $.ajax({
+                    url:endPointUrl,
+                    type: "POST",
+                    data: formData,
+                    cache: false,
+                    processData:false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function(result){
+                        if(result.errors){
+                            console.log(result.errors);
+                            swal("Error", "Oops an error occurred. Please try again.", "error");
+                        }else{
+                            swal({
+                                title: "Deleted",
+                                text: "Nomination request deleted successfully",
+                                type: "success",
+                                confirmButtonClass: "btn-success",
+                                confirmButtonText: "OK",
+                                closeOnConfirm: false
+                            });
+                            location.reload(true);
+                        }
+                    }, error: function(errors) {
+                        console.log(errors);
+                        swal("Error", "Oops an error occurred. Please try again.", "error");
+                    }
+                });
             }
         });
     });
