@@ -145,10 +145,11 @@
                                 data-val='{{$nominationRequest->tsas_submission->id}}'
                             @endif
                             href='#'
-                            class="col-sm-12 col-md-4 mr-3 text-primary btn-show-{{$nominationRequest->type}}" href="#">
+                            class="col-sm-12 col-md-4 btn btn-info btn-sm m-2 btn-show-{{$nominationRequest->type}}" href="#">
                             <i class="fa fa-eye"></i>View
                     </button>
-                    @if($nominationRequest->is_desk_officer_check == 0)
+                    {{-- @if($nominationRequest->is_desk_officer_check == 0) --}}
+                    @if(empty($nominationRequest->bi_submission_request_id))
                         <button title="Edit Nomination Details"
                                 @if($nominationRequest->type == 'tp')
                                     data-val='{{$nominationRequest->tp_submission->id}}'
@@ -158,10 +159,10 @@
                                     data-val='{{$nominationRequest->tsas_submission->id}}'
                                 @endif
                                 href='#'
-                                class="col-sm-12 col-md-4 mr-3 text-primary btn-edit-{{$nominationRequest->type}}" href="#">
+                                class="col-sm-12 col-md-4 btn btn-primary btn-sm m-2 btn-edit-{{$nominationRequest->type}}" href="#">
                                <i class="fa fa-pencil-square-o"></i>Edit
                         </button>
-                        <button title="Delete Nomination Details"
+                        {{-- <button title="Delete Nomination Details"
                                 @if($nominationRequest->type == 'tp')
                                     data-val='{{$nominationRequest->tp_submission->id}}'
                                 @elseif($nominationRequest->type == 'ca')
@@ -172,7 +173,7 @@
                                 href='#'
                                 class="col-sm-12 col-md-4 mr-3 text-danger btn-delete-{{$nominationRequest->type}}" href="#">
                                 <i class="fa fa-trash"></i>Delete
-                        </button>
+                        </button> --}}
                     @else
                         <i class="text-danger">REVIEW IN PROGRESS...</i>
                     @endif
