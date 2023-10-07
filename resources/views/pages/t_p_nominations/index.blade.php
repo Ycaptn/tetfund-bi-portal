@@ -53,7 +53,8 @@ All T P Nomination
         @endif
     @else
         @if($current_user->hasAnyRole($tp_nomination_sent_to))
-            Newly Submitted
+            {{-- Newly Submitted --}}
+            Removed From Submission List
         @elseif($current_user->hasRole('BI-head-of-institution'))
             Nomination Approval
         @elseif($current_user->hasAnyRole(['BI-TP-committee-member', 'BI-TP-committee-head']))
@@ -100,13 +101,14 @@ All T P Nomination
                                     <a  href="{{ route('tf-bi-portal.t_p_nominations.index') }}"
                                         class="mb-3 nav-link {{ (!isset(request()->view_type)) ? 'active' : ''}}"
                                         title="Preview newly submitted nomination details by scholars" ><i class="fas fa-bell"></i><b><sup class="fa-layers-counter text-danger" style="background-color:white; border-radius: 20%;">{{number_format($count_array_returned['desk_officer_newly_submitted'] ?? 0)}}</sup></b>
-                                        Newly Submitted
+                                        {{-- Newly Submitted --}}
+                                        Removed From Submission List
                                     </a>
                                 </li>
                             @endif
 
-                            @if ($current_user->hasRole($tp_committee_considered_sent_to))
-                                {{-- appears for desk officer to preview committee considered nomination --}}
+                            {{-- appears for desk officer to preview committee considered nomination --}}
+                            {{-- @if ($current_user->hasRole($tp_committee_considered_sent_to))
                                 <li class="nav-item" role="presentation">
                                     <a  href="{{ route('tf-bi-portal.t_p_nominations.index') }}?view_type=committee_approved"
                                         class="mb-3 nav-link {{ (isset(request()->view_type) && request()->view_type == 'committee_approved') ? 'active' : ''}}"
@@ -114,7 +116,7 @@ All T P Nomination
                                         Committee Considered Nomination
                                     </a>
                                 </li>
-                            @endif
+                            @endif --}}
 
                             @if ($current_user->hasAnyRole(['BI-TP-committee-member', 'BI-TP-committee-head']))
                                 {{-- appears for all tp commitee me to preview newly submitted nomination --}}
@@ -163,17 +165,17 @@ All T P Nomination
                     </div>
 
                     <div class="col-sm-3">
-                        @if($current_user->hasRole($tp_nomination_sent_to) && !isset(request()->view_type) && intval($count_array_returned['desk_officer_newly_submitted']) > 0)
+                        {{-- @if($current_user->hasRole($tp_nomination_sent_to) && !isset(request()->view_type) && intval($count_array_returned['desk_officer_newly_submitted']) > 0) --}}
                             {{-- appears to desk-officer to forward all tp nominations to committee --}}
-                            <div class="col-sm-12">
+                            {{-- <div class="col-sm-12">
                                 <a  class="btn btn-sm btn-danger pull-right move_all_for_consideration text-white"
                                     data-val="tp"
                                     title="Move all TP Nomination(s) to TPNomination col-sm-12Committee for Consideration" >
                                     <span class="fa fa-paper-plane"></span><sup>*</sup>
                                     Move All for Consideration
                                 </a>
-                            </div>
-                        @endif
+                            </div> --}}
+                        {{-- @endif --}}
 
                         @if($current_user->hasRole($tp_committee_considered_sent_to) && isset(request()->view_type) && request()->view_type == 'committee_approved' && intval($count_array_returned['desk_officer_committee_considered']) > 0)
                             {{-- appears for desk-officer to forward all tp nominations for approval --}}
@@ -196,22 +198,20 @@ All T P Nomination
 
     @include('tf-bi-portal::pages.t_p_nominations.modal')
     
-    @if($current_user->hasRole($tp_nomination_sent_to))
-        @if(!isset(request()->view_type))
-            @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_to_committee_modal')
-        @endif
-    @endif
+    {{-- @if($current_user->hasRole($tp_nomination_sent_to) && !isset(request()->view_type))
+        @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_to_committee_modal')
+    @endif --}}
         
     @if($current_user->hasAnyRole($tp_committee_considered_sent_to) && isset(request()->view_type) && request()->view_type == 'committee_approved')
         @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_nomination_to_hoi_modal')
     @endif
     
-    @if($current_user->hasAnyRole($tp_approved_nomination_sent_to) && isset(request()->view_type) && request()->view_type == 'hoi_approved')
-        @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.hoi_approval_for_nomination_modal')
-    @elseif ($current_user->hasRole('BI-head-of-institution'))
+    {{-- @if($current_user->hasAnyRole($tp_approved_nomination_sent_to) && isset(request()->view_type) && request()->view_type == 'hoi_approved') --}}
+        {{-- @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.hoi_approval_for_nomination_modal') --}}
+    {{-- @elseif ($current_user->hasRole('BI-head-of-institution')) --}}
         {{-- include approval for Head of Institution --}}
-        @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.hoi_approval_for_nomination_modal')
-    @endif
+        {{-- @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.hoi_approval_for_nomination_modal') --}}
+    {{-- @endif --}}
 
     {{-- include approval by voting if user is an tp committee menber --}}
     @if ($current_user->hasAnyRole(['BI-TP-committee-head', 'BI-TP-committee-member']))
@@ -222,6 +222,12 @@ All T P Nomination
     @if ($current_user->hasRole('BI-TP-committee-head'))
         @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.head_committee_to_members_vote_modal')
     @endif
+
+    {{-- include for removing and adding of nominations to submission list --}}
+    @if ($current_user->hasAnyRole(['BI-head-of-institution', 'BI-desk-officer', 'BI-astd-desk-officer']))
+        @include('tf-bi-portal::pages.nomination_requests.partial_sub_modals.desk_officer_add_or_remove_nomination_from_submission_list_modal')
+    @endif
+
 @stop
 
 @section('side-panel')

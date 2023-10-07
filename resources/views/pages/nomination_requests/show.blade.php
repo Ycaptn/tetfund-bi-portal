@@ -71,7 +71,7 @@ Nomination Request Details {{-- {{$nominationRequest->title}} --}}
                             @if($nominationRequest->status == 'approved' && $nominationRequest->head_of_institution_checked_status == 'approved')
                                 Considered for Submission
                             @elseif($nominationRequest->status == 'declined' || $nominationRequest->head_of_institution_checked_status == 'declined')
-                                Nomination Detials Rejected
+                                <i>This <b>Nomination Request</b> has either been suspended or rejected</b>, Pls contact your institution Desk Officer if necessary.</i>
                             @else
                                 Pending Consideration
                             @endif   

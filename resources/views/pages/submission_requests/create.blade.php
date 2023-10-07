@@ -286,7 +286,7 @@ New Submission
 
                                     s_n_counter += 1;
                                     if(relationship_name == "ca_submission"){
-                                        if(month_diff >= 3){
+                                        if(month_diff >= 2){
                                             requested_amount += parseFloat(total_request_amount);
                                         }
                                         

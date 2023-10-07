@@ -195,13 +195,13 @@
 						</li>
 					@endif
 
-					@if (optional(Auth()->user())->hasAnyRole(['BI-desk-officer']))
+					{{-- @if (optional(Auth()->user())->hasAnyRole(['BI-desk-officer']))
 						<li>
 							<a href="{{ route('tf-bi-portal.nomination_settings.index') }}" class="">
 								<div class="menu-title"> <span class="fa fa-tools"></span> ASTD Settings </div>
 							</a>
 						</li>
-					@endif
+					@endif --}}
 					
 			    </ul>
 			</li>

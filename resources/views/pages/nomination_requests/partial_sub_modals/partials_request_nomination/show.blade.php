@@ -113,14 +113,14 @@
                         @endif
 
                         @if($nominationRequest->status == 'approved' && $nominationRequest->head_of_institution_checked_status == 'approved')
-                            <span class="fa fa-check-square"></span>
                             <strong>
+                                <span class="fa fa-check-square"></span>
                                 CONSIDERED FOR SUBMISSION
                             </strong><br>
                         @elseif($nominationRequest->status == 'declined' || $nominationRequest->head_of_institution_checked_status == 'declined')
-                            <span class="fa fa-times"></span>
                             <strong class="text-danger">
-                                NOMINATION DETAILS REJECTED
+                                <span class="fa fa-times"></span>
+                                NOMINATION SUSPENDED OR REJECTED
                             </strong><br>
                         @else
                             <span class="fa fa-calendar-o text-danger"></span>

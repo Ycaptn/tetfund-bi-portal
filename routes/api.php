@@ -49,6 +49,9 @@ $orgRoutes = function() {
                // get intervention funds allocation data
                 Route::post('bi_intervention_allocated_funds_data', [\App\Http\Controllers\Dashboard\DashboardController::class, 'getBiInterventionAllocatedFundsData'])->name('get_bi_intervention_allocated_funds_data');
 
+                // nomination request selection or removal route
+                Route::put('nomination_requests/remove_or_select_nomination_for_submission/{id}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'removeOrSelectNominationFromSubmissionList'])->name('remove_or_select_nomination_for_submission');
+
                 // beneficiary member management
                 Route::post('store_beneficiary_member', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'store_beneficiary_member'])->name('store_beneficiary_member');
                 Route::get('show_beneficiary_member/{id}', [\App\Http\Controllers\API\BeneficiaryAPIController::class, 'show_beneficiary_member'])->name('show_beneficiary_member');

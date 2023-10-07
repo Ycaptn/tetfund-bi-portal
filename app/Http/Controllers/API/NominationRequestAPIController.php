@@ -601,4 +601,32 @@ class NominationRequestAPIController extends BaseController
         
         return $this->sendResponse($request->all(), "Nomination Request has been " . $nominationRequest->status . " successfully");
     }
+
+
+    public function removeOrSelectNominationFromSubmissionList(Request $request, $id) {
+        $nominationRequest = NominationRequest::find($id);
+
+        if(empty($nominationRequest)) {
+            return $this->sendError("The Nomination Request record was not found.");
+        }
+
+        if(!in_array($request->get('itemActionType'), ['select', 'unselect'])) {
+            return $this->sendError("The action type for this nomination request is invalid.");
+        }
+
+        if ($request->get('itemActionType') == 'select') {
+            $nominationRequest->is_desk_officer_check = true;
+            $nominationRequest->committee_head_checked_status = 'approved';
+            $nominationRequest->head_of_institution_checked_status = 'approved';
+
+        } elseif ($request->get('itemActionType')  == 'unselect') {
+            $nominationRequest->is_desk_officer_check = false;
+            $nominationRequest->committee_head_checked_status = 'declined';
+            $nominationRequest->head_of_institution_checked_status = 'declined';
+        }
+
+        $nominationRequest->save();
+
+        return $this->sendSuccess("The nomination request has been {$request->get('itemActionType')}ed successfully.");
+    }
 }
