@@ -38,7 +38,9 @@ Beneficiary Dashboard
             <div class="ms-3">
                 <div class="text-success">
                     <ul class="mb-0">
-                        <li class="mb-2">Welcome to the upgraded TETFund Beneficiary Submission Portal for processing of submissions for <b>Physical Infrastructure, Library, ASTD, Academic Manuscripts, ICT Support, and other Special Interventions</b>.</li>
+                        <li class="mb-2">Welcome to the upgraded TETFund Beneficiary Submission Portal for processing of submissions for <b>Physical Infrastructure, Library, ASTD, Academic Manuscripts, ICT Support, and other Special Interventions</b>. <br>
+                            If you have difficulties process your Interventions kindly contact <br> 07084559694 (ASTD Intervention), 07030086349 (LD, AMB Intervention), 08037776194, 08140148722 (ICT Intervention).
+                        </li>
                         <li>For <b>National Research Fund (NRF)</b> submissions, please use the <a href="https://nrf.tetfund.gov.ng" style="color:blue;" target="_blank">NRF Portal</a> to process your submissions.</li>
                     </ul>
                 </div>
