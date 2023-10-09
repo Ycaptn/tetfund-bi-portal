@@ -321,6 +321,10 @@ class SubmissionRequest extends Model
                 'academic manuscript development',
             ],
 
+            'BI-amb-desk-officer' => [
+                'academic manuscript into books',
+            ],
+
             'BI-works' => [
                 'equipment fabrication',
                 'physical infrastructure / program upgrade',

@@ -229,6 +229,10 @@ class SubmissionRequestAPIController extends AppBaseController
             return $this->sendError('Submission Request not found');
         }
 
+        // if(!$submissionRequest->can_user_operate_intervention($current_user->getRoleNames()->toArray(), $request->get('intervention_name'))) {
+        //     return $this->sendError('Please, Kindly Contact the TETFund Desk Officer or intervention directors, as only them has the Privilege to Submit This Request');
+        // }
+
         if($current_user->hasRole('BI-desk-officer') == false) {
             return $this->sendError('Please, Kindly Contact the TETFund Desk Officer or intervention directors, as only them has the Privilege to Submit This Request');
         }
