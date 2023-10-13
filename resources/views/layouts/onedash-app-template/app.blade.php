@@ -84,7 +84,7 @@
 		    <!--start content-->
 			<main class="page-content mt-0">
 
-				<div class="page-breadcrumb d-none d-sm-flex align-items-center">
+				<div class="page-breadcrumb d-flex align-items-center">
 					<div class="breadcrumb-title pe-3">
 						@yield('page_title')
 					</div>
