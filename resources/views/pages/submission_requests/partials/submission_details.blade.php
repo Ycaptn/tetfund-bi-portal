@@ -174,7 +174,7 @@
                     {{-- Recall Submission request--}}
                     @if(($submissionRequest->status=='not-submitted' || $submissionRequest->status=='submitted' || $submissionRequest->status=='recalled') && 
                     ($submissionRequest->is_aip_request || $submissionRequest->is_first_tranche_request || $submissionRequest->is_second_tranche_request || $submissionRequest->is_third_tranche_request || $submissionRequest->is_final_tranche_request ) && 
-                    !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==false && $submitted_request_data->has_generated_disbursement_memo==false && ($submitted_request_data->request_status!='pending-recall'|| $submitted_request_data->request_status!='recalled'))
+                    !empty($submitted_request_data) && $submitted_request_data->has_generated_aip==false && $submitted_request_data->has_generated_disbursement_memo==false && ($submitted_request_data->request_status=='pending-recall'|| $submitted_request_data->request_status!='recalled'))
                         @include('tf-bi-portal::pages.submission_requests.partials.recall_submission_request')
                     @endif
 

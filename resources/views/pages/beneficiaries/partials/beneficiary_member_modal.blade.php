@@ -202,6 +202,15 @@
             //Show Modal for Bulk New beneficiary members Entry
             $(document).on('click', "#btn-bulk-new-beneficiary-members", function(e) {
                 e.preventDefault();
+
+                 //check for internet status 
+                if (!window.navigator.onLine) {
+                        $('.offline-flag').fadeIn(300);
+                        return;
+                    }else{
+                        $('.offline-flag').fadeOut(300);
+                    }
+
                 $('#div-bulk-new-beneficiary-members-modal-error').hide();
                 $('#mdl-bulk-new-beneficiary-members-modal').modal('show');
                 $('#form-bulk-new-beneficiary-members-modal').trigger("reset");

@@ -35,6 +35,15 @@ class BeneficiaryUserCreatedJob implements ShouldQueue
      */
     public function handle()
     {
-        Notification::send($this->user, new BeneficiaryUserCreatedNotification($this->user, $this->input));
+        // catch email notification error
+        try {
+            //code...
+            Notification::send($this->user, new BeneficiaryUserCreatedNotification($this->user, $this->input));
+        } catch (\Throwable $th) {
+            //throw $th;
+            \Log::error($th->getMessage());
+        }
+
+       
     }
 }
