@@ -56,7 +56,7 @@ class BindedNominationsDataTable extends DataTable
                     $today = strtotime(now());
                     $conference_start_date = strtotime($query->ca_submission->conference_start_date);    
                     $month_difference = ($conference_start_date - $today) / (3600 *24 *30);
-                    if($month_difference < 2){
+                    if($month_difference < 1){
                         return '₦ ' . number_format($query->total_requested_amount, '2').'<br><span class="text-danger"> submission grace period passed </span>';
                     }else{
                         return '₦ ' . number_format($query->total_requested_amount, '2');

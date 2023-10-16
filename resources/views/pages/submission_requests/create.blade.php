@@ -267,7 +267,7 @@ New Submission
                                     let additionl_msg = '';
                                     let month_diff = getMonthDifference(today, start_date);
 
-                                    if(month_diff < 2 && relationship_name == "ca_submission"){
+                                    if(month_diff < 1 && relationship_name == "ca_submission"){
                                         additionl_msg = "<br><span class='text-danger'> submission grace period passed <span>";
                                     }
 
