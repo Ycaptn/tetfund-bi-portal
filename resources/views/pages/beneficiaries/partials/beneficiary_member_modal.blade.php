@@ -518,7 +518,7 @@
                 $('#div_beneficiary_member_show_fields').hide();
                 $('#div_beneficiary_member_fields').show();
                 $('#btn-dismiss-beneficiary-member-preview-modal').hide();
-                $("#bi_staff_email").attr('disabled', true);
+              //  $("#bi_staff_email").attr('disabled', true);
                 $('#btn-save-beneficiary-member-modal').show();
 
                 $('#form-beneficiary-member-modal').trigger("reset");
