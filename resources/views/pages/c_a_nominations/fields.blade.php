@@ -238,7 +238,7 @@
 </div>
 
 @php
-    $threeMonthsAhead = date('Y-m-d', strtotime(date('Y-m-d') . ' +3 months'));
+    $threeMonthsAhead = date('Y-m-d', strtotime(date('Y-m-d') . ' +1 months'));
 @endphp
 
 <!-- Conference Start Date Field -->

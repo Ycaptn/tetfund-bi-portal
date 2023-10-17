@@ -171,7 +171,7 @@ class BeneficiaryAPIController extends AppBaseController
             'password' => $this->generateStrongPassword(),
             "gender" => strtolower($request->bi_staff_gender),
             'organization_id' => $request->organization_id ?? null,
-            'beneficiary_bi_id' => $beneficiary->id,
+            'beneficiary_id' => $beneficiary->id,
             'member_type' => $request->bi_member_type,
             'grade_level' => $request->bi_grade_level,
             'academic_member_level' => $request->bi_academic_member_level,
@@ -380,7 +380,7 @@ class BeneficiaryAPIController extends AppBaseController
                     //     'organization_id' => auth()->user()->organization_id,
                     //     //'organization_id' => $get_server_beneficiary->organization_id,
                     //     "gender" => 'male',
-                    //     'beneficiary_bi_id' => $beneficiary_obj->id,
+                    //     'beneficiary_id' => $beneficiary_obj->id,
                     //     'beneficiary_tetfund_iterum_id' => $get_server_beneficiary->id,
                     //     'beneficiary_synchronization' => true
                     // ];
@@ -405,7 +405,7 @@ class BeneficiaryAPIController extends AppBaseController
                             if (empty($bi_user_exist) || $bi_user_exist == null) {
 
                                 $additional_payload = [
-                                    'beneficiary_bi_id' => $beneficiary_obj->id,
+                                    'beneficiary_id' => $beneficiary_obj->id,
                                     'beneficiary_tetfund_iterum_id' => $get_server_beneficiary->id,
                                 ];
 
@@ -510,7 +510,7 @@ class BeneficiaryAPIController extends AppBaseController
                             'password' => $this->generateStrongPassword(),
                             "gender" => in_array($data_4, ['male', 'female']) ? $data_4 : null,
                             'organization_id' => $org->id ?? null,
-                            'beneficiary_bi_id' => $beneficiary->id,
+                            'beneficiary_id' => $beneficiary->id,
                             'grade_level' => trim($data['5']),
                             'member_type' => in_array($data_6, ['academic', 'non-academic']) ? $data_6 : null,
                             'beneficiary_tetfund_iterum_id' => $beneficiary->tf_iterum_portal_key_id,
@@ -521,8 +521,13 @@ class BeneficiaryAPIController extends AppBaseController
                         $validator = Validator::make(['email' => $pay_load['email']], [
                             'email' => 'required|email',
                         ]);
-
-                        if (!empty(User::where('email', $pay_load['email'])->first()) || $validator->fails()) {
+                        $user = User::where('email', $pay_load['email'])->first();
+                        $is_validation_failed = $validator->fails();
+                        // if user exist and all other validation check passes then if has beneficiary memebership
+                        if(!empty($user) && !$is_validation_failed){
+                            $this->syncBeneficiaryMember($user,$pay_load);
+                        }
+                        if (!empty($user) || $is_validation_failed) {
                             continue;                        
                         }
 
@@ -548,6 +553,14 @@ class BeneficiaryAPIController extends AppBaseController
         File::delete($path_to_file);
 
         return $this->sendResponse($newly_created_users, 'Bulk upload completed successfully');
+    }
+
+    public function syncBeneficiaryMember(User $user,array $data){
+        $beneficiary_membership = BeneficiaryMember::where("beneficiary_user_id", $user->id)->first();
+       
+        if(empty($beneficiary_membership)){
+            BeneficiaryMember::create(array_merge($data, ["beneficiary_user_id" => $user->id]));
+        }
     }
 
     public function syncBimsTetfundId(Organization $org, Request $request){
