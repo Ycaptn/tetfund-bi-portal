@@ -194,7 +194,7 @@ Submission
                                         <a class="nav-link {{(request()->sub_menu_items=="nominations_binded")?'active':''}}" href="{{ route('tf-bi-portal.submissionRequests.show', $submissionRequest->id) }}?sub_menu_items=nominations_binded" >
                                             <div class="d-flex align-items-center">
                                                 <div class="tab-icon">
-                                                    <i class="bx bx-user-plus font-18 me-1"></i>
+                                                    <i class="fa fa-users font-18 me-1"></i>
                                                 </div>
                                                 <div class="tab-title">Nominations</div>
                                             </div>

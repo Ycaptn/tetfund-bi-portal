@@ -40,7 +40,7 @@ Nomination Requests
         <a data-toggle="tooltip" 
             title="Request Nomination" 
             class="btn btn-sm btn-primary  btn-new-mdl-request_nomination-modal me-1" href="#">
-            <i class="bx bx-book-add mr-1"></i> Submit Request Nomination
+            <i class="bx bx-book-add mr-1"></i> Request For Nomination
         </a>
     @endif
 @stop

@@ -513,7 +513,10 @@ class SubmissionRequestController extends BaseController
         if ($submissionRequest->is_astd_intervention(optional($request)->intervention_name)==true) {
             $final_nominations_arr = NominationRequest::with($nomination_table)
                     ->with('attachables.attachment')
-                    ->where('bi_submission_request_id', null)
+                    ->where(function($query) use ($submissionRequest) {
+                        return $query->whereNull('bi_submission_request_id')
+                            ->orWhere('bi_submission_request_id', $submissionRequest->id);
+                    })
                     ->where('beneficiary_id', $beneficiary_member->beneficiary_id)
                     ->where('type', $intervention_name)
                     ->where('head_of_institution_checked_status', 'approved')
@@ -530,7 +533,6 @@ class SubmissionRequestController extends BaseController
             $pay_load['final_nominations_arr'] = $final_nominations_arr;
             $pay_load['nomination_table'] = $nomination_table;
         }
-
 
         $tetFundServer = new TETFundServer();   /* server class constructor */
         $final_submission_to_tetfund = $tetFundServer->processSubmissionRequest($pay_load, $tf_beneficiary_id);

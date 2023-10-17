@@ -57,7 +57,11 @@
             </div>
 
             <div class="col-sm-12 col-md-2 align-items-center">
-                @if(isset($data_item) && ($data_item->status == 'not-submitted' || empty($data_item->bi_submission_request_id)))
+                @php
+                    $nominationRequestParentSubmission = $data_item->submission_request;
+                @endphp
+
+                @if(isset($data_item) && ($data_item->status == 'not-submitted' || empty($data_item->bi_submission_request_id)) || (!empty($nominationRequestParentSubmission) && $nominationRequestParentSubmission->status == 'recalled' ))
                     <div class="ms-auto"> 
                         {{-- <a data-toggle="tooltip" 
                             title="Edit"

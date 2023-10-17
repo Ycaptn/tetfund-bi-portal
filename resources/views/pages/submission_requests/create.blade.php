@@ -136,8 +136,8 @@ New Submission
                 $('#amount_requested_digit').digits();
             });
 
-            // hiding 3 intervention years
-            function hide_3_intervention_years() {
+            // function to always disable intervention years
+            function disable_3_intervention_years(disable_requested_amount = false) {
                 $(".intervention_year1").val(year);
                 $("#intervention_year1").attr('disabled', true);
                 $("#intervention_year2").val('');
@@ -147,6 +147,7 @@ New Submission
                 $("#intervention_year4").val('');
                 $("#intervention_year4").attr('disabled', true);
                 $("#year_plural").hide();
+                $("#amount_requested_digit").attr('disabled', (disable_requested_amount==true) ? true : false);
             }
 
             // triggered on changing intervention type
@@ -205,7 +206,8 @@ New Submission
 
                 $('#intervention_line').html(intervention_line_html);
             });
-
+    
+            // get months difference between two dates
             function getMonthDifference(startDate, endDate) {
                 let diff = (endDate.getTime() - startDate.getTime());
               
@@ -231,19 +233,19 @@ New Submission
                         relationship_name = 'tp_submission';
                         nomination_label = 'TP NOMINATION';
                         nomination_table_label = 'Program Date';
-                        hide_3_intervention_years();
+                        disable_3_intervention_years(true);
                     } else if(intevention_line_name.includes('Conference Attendance')) {
                         line_type_short = 'ca';
                         relationship_name = 'ca_submission';
                         nomination_label = 'CA NOMINATION';
                         nomination_table_label = 'Conference Date';
-                        hide_3_intervention_years();
+                        disable_3_intervention_years(true);
                     } else if (intevention_line_name.includes('TETFund Scholarship')) {
                         line_type_short = 'tsas';
                         relationship_name = 'tsas_submission';
                         nomination_label = 'TSAS NOMINATION';
                         nomination_table_label = 'Program Date';
-                        hide_3_intervention_years();
+                        disable_3_intervention_years(true);
                     }
 
                     if (line_type_short != '') {
@@ -314,7 +316,9 @@ New Submission
                         });
                     }
                 } else if (selected_intervention_line != '' && selected_intervention_line in all_first_tranche_based_intervention_id) {
-                    hide_3_intervention_years();
+                    disable_3_intervention_years();
+                    $('#amount_requested').val('');
+                    $('#amount_requested_digit').val('');
                     $('#btn-get-intervention-allocation-details').show();
                 } else {
                     $('#btn-get-intervention-allocation-details').hide();
@@ -325,6 +329,7 @@ New Submission
                     $("#intervention_year2").attr('disabled', false);
                     $("#intervention_year3").attr('disabled', false);
                     $("#intervention_year4").attr('disabled', false);
+                    $("#amount_requested_digit").attr('disabled', false);
                     $("#year_plural").show();
                 }
 
