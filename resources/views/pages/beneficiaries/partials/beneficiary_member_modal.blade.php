@@ -548,11 +548,14 @@
                         $('#bi_academic_member_level').val('');
                         $('#div_bi_academic_member_level').hide();
                     }
-
+                    $('#bi_staff_email').attr('disabled',true);
                     // handling data for role(s)
                     if(response.data.user_roles != '') {
                         $.each(response.data.user_roles, function(key, value){
                             $('#userRole_' + value).prop('checked', true);
+                            if(value.toLowerCase() == "bi-staff"){
+                                $('#bi_staff_email').attr('disabled',false);
+                            }
                         });
                     }
 
