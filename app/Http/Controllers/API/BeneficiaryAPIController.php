@@ -231,6 +231,7 @@ class BeneficiaryAPIController extends AppBaseController
         if (empty($beneficiary_member)) {
             return $this->sendError('Beneficiary member is not found');
         }
+        
 
         $allRoles = Role::where('guard_name', 'web')
             ->where('name', '!=', 'admin')
@@ -260,6 +261,7 @@ class BeneficiaryAPIController extends AppBaseController
         $beneficiary_member->last_name = $request->bi_staff_lname;
         $beneficiary_member->telephone = $request->bi_telephone;
         $beneficiary_member->gender = $request->bi_staff_gender;
+        $beneficiary_member->email = $request->bi_staffs_email;
         $beneficiary_member->syncRoles($selectedRoles);
         $beneficiary_member->save(); /* save to DB */
 
