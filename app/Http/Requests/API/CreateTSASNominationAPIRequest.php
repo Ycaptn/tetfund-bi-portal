@@ -81,6 +81,8 @@ class CreateTSASNominationAPIRequest extends AppBaseFormRequest
             'intitution_state.required_if' => 'The :attribute field is required when selected Country is Nigeria.',
             'is_science_program.required_if' => 'The :attribute field is required when selected Country is Nigeria.',
             'intl_passport_number.required_unless' => 'The :attribute field is required when the selected country isn\'t Nigeria.',
+            'gender.in' => 'Invalid gender. Please update your profile',
+            'telephone.digits' => 'Invalid telephone number. Please update your profile',
         ];
     }
 

@@ -51,8 +51,11 @@ class CreateNominationRequestAPIRequest extends AppBaseFormRequest
 
     public function messages() {
         return [
-            'bi_submission_request_id.required' => 'The Bind Nomination to one Submission selection is required.'
+            'bi_submission_request_id.required' => 'The Bind Nomination to one Submission selection is required.',
+            'gender.in' => 'Invalid gender. Please update your profile',
+            'telephone.digits' => 'Invalid telephone number. Please update your profile',
         ];
     }
+
 
 }

@@ -98,8 +98,11 @@ class CreateCANominationAPIRequest extends AppBaseFormRequest
             'accepted_paper_title.required_if' => 'The :attribute field is required.',
             'intl_passport_number.required_unless' => 'The :attribute field is required when the selected country isn\'t Nigeria.',
             'conference_fee_amount_local.max' => 'The Conference Fee Amount must not be greater than '.$amt_format,
+            'gender.in' => 'Invalid gender. Please update your profile',
+            'telephone.digits' => 'Invalid telephone number. Please update your profile',
         ];
     }
+
 
     public function attributes()
     {

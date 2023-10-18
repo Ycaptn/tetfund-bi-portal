@@ -103,7 +103,9 @@ class UpdateCANominationAPIRequest extends AppBaseFormRequest
             'paper_presentation.required_if' => 'The Presentation Paper attachment is required.',
             'accepted_paper_title.required_if' => 'The :attribute field is required.',
             'intl_passport_number.required_unless' => 'The :attribute field is required when the selected country isn\'t Nigeria.',
-            'conference_fee_amount_local.max' => 'The Conference Fee Amount must not be greater than ₦'.number_format($this->max_conference_fee_amt, 2)
+            'conference_fee_amount_local.max' => 'The Conference Fee Amount must not be greater than ₦'.number_format($this->max_conference_fee_amt, 2),
+            'gender.in' => 'Invalid gender. Please update your profile',
+            'telephone.digits' => 'Invalid telephone number. Please update your profile',
         ];
     }
     
