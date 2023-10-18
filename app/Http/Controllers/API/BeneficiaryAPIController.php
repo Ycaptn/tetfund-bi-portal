@@ -261,7 +261,7 @@ class BeneficiaryAPIController extends AppBaseController
         $beneficiary_member->last_name = $request->bi_staff_lname;
         $beneficiary_member->telephone = $request->bi_telephone;
         $beneficiary_member->gender = $request->bi_staff_gender;
-        $beneficiary_member->email = $request->bi_staffs_email;
+        $beneficiary_member->email = $request->bi_staff_email;
         $beneficiary_member->syncRoles($selectedRoles);
         $beneficiary_member->save(); /* save to DB */
 
