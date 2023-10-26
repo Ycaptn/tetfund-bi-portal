@@ -92,7 +92,7 @@
                 </select>
             </div>
         </div> 
-        @if($current_user->hasRole('BI-desk-officer'))
+        @if($current_user->hasAnyRole(['BI-desk-officer','admin']))
             <div class="row col-sm-12 mb-3 mt-3">
                 <hr><strong>USER ROLE(s)</strong><hr>
                 
