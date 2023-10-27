@@ -324,6 +324,16 @@ class TSASNominationAPIController extends AppBaseController
         $pay_load = [ '_method' => 'GET', 'get_country_zone_through_country' => true];
         $tetFundServer = new TETFundServer();
         $tsas_amount_settings = $tetFundServer->get_all_data_list_from_server('tetfund-astd-api/tsas_country_zones/'.$input['tf_iterum_portal_country_id'], $pay_load);
+
+        // difference between program start and end date in months
+        $program_start_date = new \DateTime($input['program_start_date']); 
+        $program_end_date = new \DateTime($input['program_end_date']);
+
+        $date_interval = $program_start_date->diff($program_end_date);
+        $months_interval = ($date_interval->y * 12) + $date_interval->m;
+        if($months_interval == 0) {
+            $months_interval = 1;
+        }
         
         if(is_array($tsas_amount_settings) && count($tsas_amount_settings) == 0){
             return false;
@@ -366,7 +376,7 @@ class TSASNominationAPIController extends AppBaseController
 
                 // setting amount if TSAS is Bench-Work request
                 $input['tuition_amount'] = floatval($tsas_amount_settings->bw_tuition_amt ?? 0) * $exchange_rate_to_naira;
-                $input['stipend_amount'] = floatval($tsas_amount_settings->bw_stipend_amt ?? 0) * $exchange_rate_to_naira;
+                $input['stipend_amount'] = (floatval($tsas_amount_settings->bw_stipend_amt ?? 0) * $exchange_rate_to_naira) * $months_interval;
                 $input['passage_amount'] = floatval($tsas_amount_settings->bw_passage_amt ?? 0) * $exchange_rate_to_naira;
                 $input['medical_amount'] = floatval($tsas_amount_settings->bw_medical_health_ins_amt ?? 0) * $exchange_rate_to_naira;
                 $input['warm_clothing_amount'] = floatval($tsas_amount_settings->bw_warm_clothing_amt ?? 0) * $exchange_rate_to_naira;
@@ -380,7 +390,7 @@ class TSASNominationAPIController extends AppBaseController
 
                 // setting amount if TSAS is Post-Doc request
                 $input['tuition_amount'] = floatval($tsas_amount_settings->postdoc_tuition_amt ?? 0) * $exchange_rate_to_naira;
-                $input['stipend_amount'] = floatval($tsas_amount_settings->postdoc_stipend_amt ?? 0) * $exchange_rate_to_naira;
+                $input['stipend_amount'] = (floatval($tsas_amount_settings->postdoc_stipend_amt ?? 0) * $exchange_rate_to_naira) * $months_interval;
                 $input['passage_amount'] = floatval($tsas_amount_settings->postdoc_passage_amt ?? 0) * $exchange_rate_to_naira;
                 $input['medical_amount'] = floatval($tsas_amount_settings->postdoc_medical_health_ins_amt ?? 0) * $exchange_rate_to_naira;
                 $input['warm_clothing_amount'] = floatval($tsas_amount_settings->postdoc_warm_clothing_amt ?? 0) * $exchange_rate_to_naira;
