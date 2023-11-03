@@ -166,7 +166,7 @@ class NominationRequestAPIController extends BaseController
           
 
         $nominationRequest = new NominationRequest();   
-        $nominationRequest->organization_id = $request->organization_id;
+        $nominationRequest->organization_id = $bi_beneficiary_member->organization_id;
         $nominationRequest->user_id = $current_user->id;
         $nominationRequest->beneficiary_id =$bi_beneficiary_id;
         $nominationRequest->type = $request->nomination_type;
@@ -187,6 +187,7 @@ class NominationRequestAPIController extends BaseController
         $input['user_id'] = $current_user->id;
         $input['nomination_request_id'] = $nominationRequest->id;
         $input['beneficiary_institution_id'] = $bi_beneficiary_id;
+        $input['organization_id'] = $bi_beneficiary_member->id;
 
         $nomination_details = $nominationRequestOBJ->create($input);
         
