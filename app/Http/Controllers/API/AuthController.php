@@ -177,6 +177,7 @@ class AuthController extends AppBaseController
             'bi_staff' => 'BI-staff',
             'bi_student' => 'BI-student',
             'bi_astd_desk_officer' => "BI-astd-desk-officer",
+            'bi_amb_desk_officer' => "BI-amb-desk-officer",
         ];
       
 

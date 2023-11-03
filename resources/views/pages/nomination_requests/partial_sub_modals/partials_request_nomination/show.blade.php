@@ -1,3 +1,7 @@
+    @php
+        $nominationRequestParentSubmission = $nominationRequest->submission_request;
+    @endphp
+
     @if($nominationRequest->status == 'pending')
         {{-- pending nomination request --}}
         
@@ -106,28 +110,43 @@
                 <div class="col-sm-12">
                     <span class="pull-right">
                         @if($nominationRequest->tsas_submission != null || $nominationRequest->ca_submission != null || $nominationRequest->tp_submission != null)
-                            <span class="fa fa-check-square"></span>
                             <strong class="text-success">
-                                SUBMITTED NOMINATION DATA
+                                <span class="fa fa-check-square"></span>
+                                Submitted Nomination Data
                             </strong><br>
                         @endif
 
                         @if($nominationRequest->status == 'approved' && $nominationRequest->head_of_institution_checked_status == 'approved')
-                            <strong>
+                            <strong class="text-success">
                                 <span class="fa fa-check-square"></span>
-                                CONSIDERED FOR SUBMISSION
+                                Considered For Submission
                             </strong><br>
                         @elseif($nominationRequest->status == 'declined' || $nominationRequest->head_of_institution_checked_status == 'declined')
                             <strong class="text-danger">
                                 <span class="fa fa-times"></span>
-                                NOMINATION SUSPENDED OR REJECTED
+                                Nomination Suspended or Rejected
                             </strong><br>
                         @else
                             <span class="fa fa-calendar-o text-danger"></span>
                             <strong class="text-danger">
-                                PENDING CONSIDERATION
+                                Pending Consideration
                             </strong><br>
-                        @endif                        
+                        @endif
+
+                        @if(!empty($nominationRequest->bi_submission_request_id))
+
+                            @if(!empty($nominationRequestParentSubmission) && $nominationRequestParentSubmission->status == 'recalled' )
+                                <strong class="">
+                                    <span class="fa fa-info-circle"></span>
+                                    Recalled From TETFund
+                                </strong><br>
+                            @else
+                                <strong class="text-success">
+                                    <span class="fa fa-check-square"></span>
+                                    Submitted to TETFund
+                                </strong><br>
+                            @endif              
+                        @endif              
                     </span>
                 </div>
                 <br>
@@ -149,7 +168,7 @@
                             <i class="fa fa-eye"></i>View
                     </button>
                     {{-- @if($nominationRequest->is_desk_officer_check == 0) --}}
-                    @if(empty($nominationRequest->bi_submission_request_id))
+                    @if(empty($nominationRequest->bi_submission_request_id) || (!empty($nominationRequestParentSubmission) && $nominationRequestParentSubmission->status == 'recalled' ))
                         <button title="Edit Nomination Details"
                                 @if($nominationRequest->type == 'tp')
                                     data-val='{{$nominationRequest->tp_submission->id}}'
@@ -174,8 +193,6 @@
                                 class="col-sm-12 col-md-4 mr-3 text-danger btn-delete-{{$nominationRequest->type}}" href="#">
                                 <i class="fa fa-trash"></i>Delete
                         </button> --}}
-                    @else
-                        <i class="text-danger">REVIEW IN PROGRESS...</i>
                     @endif
                 @else
                     <button title="completed and submit {{ $nomination_type_str }} nomination form" 

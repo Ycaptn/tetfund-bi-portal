@@ -95,7 +95,9 @@ class BindedNominationsDataTable extends DataTable
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function query(NominationRequest $model)
-    {
+    {   
+        $submission_original_status = $this->submission_request->getRawOriginal('status');
+        
         return $model->newQuery()->with('user')
             ->where('beneficiary_id', $this->user_beneficiary->id)
             ->where('type', $this->intervention_name)
@@ -118,11 +120,17 @@ class BindedNominationsDataTable extends DataTable
             ->when((isset($this->organization) && $this->organization != null), function ($que) {
                 return $que->where("tf_bi_nomination_requests.organization_id", $this->organization->id);
             })
-            ->when($this->submission_request->status != 'not-submitted', function ($que) {
+            ->when(($submission_original_status != 'not-submitted' && $submission_original_status != 'recalled'), function ($que) {
                 return $que->where('tf_bi_nomination_requests.bi_submission_request_id', $this->submission_request->id)
                         ->where('is_set_for_final_submission', 1);
             })
-            ->when($this->submission_request->status == 'not-submitted', function ($que) {
+            ->when($submission_original_status == 'recalled', function ($query) {
+                return $query->where(function($que) {
+                    $que->whereNull('tf_bi_nomination_requests.bi_submission_request_id')
+                        ->orWhere('tf_bi_nomination_requests.bi_submission_request_id', $this->submission_request->id);
+                });
+            })
+            ->when($submission_original_status == 'not-submitted', function ($que) {
                 return $que->whereNull('tf_bi_nomination_requests.bi_submission_request_id')
                         ->where('is_set_for_final_submission', 0);
             });

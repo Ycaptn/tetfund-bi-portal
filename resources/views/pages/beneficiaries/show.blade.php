@@ -20,6 +20,9 @@ Beneficiary
     <i class="fa fa-angle-double-left"></i> Back to Beneficiary List
 </a>
 @stop
+@php
+    $current_user = auth()->user();
+@endphp
 
 @section('page_title_buttons')
 

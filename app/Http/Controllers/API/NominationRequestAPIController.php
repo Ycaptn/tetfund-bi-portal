@@ -94,7 +94,7 @@ class NominationRequestAPIController extends BaseController
                 'password' => $this->generateStrongPassword(),
                 "gender" => ucwords($request->bi_staff_gender),
                 'organization_id' => $current_user->organization_id,
-                'beneficiary_bi_id' => $bi_beneficiary_id,
+                'beneficiary_id' => $bi_beneficiary_id,
                 'beneficiary_tetfund_iterum_id' => $bi_beneficiary->tf_iterum_portal_key_id,
                 'user_roles_arr' => ['BI-staff']
             ];

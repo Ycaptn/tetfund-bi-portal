@@ -126,7 +126,7 @@
 				</a>
 			</li>
 			
-			@if (optional(Auth()->user())->hasAnyRole(['BI-desk-officer','BI-ict','BI-astd-desk-officer','BI-head-of-institution','BI-librarian','BI-works']))
+			@if (optional(Auth()->user())->hasAnyRole(['BI-desk-officer','BI-ict','BI-astd-desk-officer','BI-head-of-institution','BI-librarian','BI-works','BI-physical-planning-dept','BI-amb-desk-officer']))
 			<li>
 				<a href="{{ route('tf-bi-portal.fund-availability') }}" class="">
 					<div class="parent-icon"><i class='bx bx-wallet'></i>
@@ -136,7 +136,7 @@
 			</li>
 			@endif
 
-			@if (optional(Auth()->user())->hasAnyRole(['BI-desk-officer','BI-ict','BI-astd-desk-officer','BI-head-of-institution','BI-librarian','BI-works']))
+			@if (optional(Auth()->user())->hasAnyRole(['BI-desk-officer','BI-ict','BI-astd-desk-officer','BI-head-of-institution','BI-librarian','BI-works','BI-physical-planning-dept','BI-amb-desk-officer']))
 			<li>
 				<a href="{{ route('tf-bi-portal.submissionRequests.index') }}" class="">
 					<div class="parent-icon"><i class='bx bx-layer-plus'></i>
@@ -207,7 +207,7 @@
 			</li>
 			@endif
 
-			@if (optional(Auth()->user())->hasAnyRole(['BI-desk-officer','BI-ict','BI-astd-desk-officer','BI-head-of-institution','BI-librarian','BI-works']))
+			@if (optional(Auth()->user())->hasAnyRole(['BI-desk-officer','BI-ict','BI-astd-desk-officer','BI-head-of-institution','BI-librarian','BI-works','BI-physical-planning-dept','BI-amb-desk-officer']))
 			<li>
 				<a href="{{ route('tf-bi-portal.monitoring') }}" class="">
 					<div class="parent-icon"><i class='bx bx-location-plus'></i>

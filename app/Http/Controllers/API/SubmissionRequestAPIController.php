@@ -134,6 +134,7 @@ class SubmissionRequestAPIController extends AppBaseController
             $relationship = 'tsas_submission';
         }
 
+        $submission_request_id = $request->get('submission_request_id');
         $beneficiary_member = BeneficiaryMember::where('beneficiary_user_id', auth()->user()->id)->first();
         $related_nomination_request = NominationRequest::with($relationship)
                             ->where('type', $type)
@@ -143,7 +144,10 @@ class SubmissionRequestAPIController extends AppBaseController
                             ->where('is_desk_officer_check', true)
                             ->where('is_average_committee_members_check', true)
                             ->orderBy('updated_at', 'DESC')
-                            ->whereNull('bi_submission_request_id')
+                            ->where(function($query) use ($submission_request_id) {
+                                $query->whereNull('bi_submission_request_id')
+                                    ->orWhere('bi_submission_request_id', $submission_request_id);
+                            })
                             ->get();
 
         return $this->sendResponse($related_nomination_request->toArray(), 'All Nominmation requests retrieved successfully!');

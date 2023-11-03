@@ -104,4 +104,12 @@ class CreateTPNominationAPIRequest extends AppBaseFormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'gender.in' => 'Invalid gender. Please update your profile',
+            'telephone.digits' => 'Invalid telephone number. Please update your profile',
+        ];
+    }
+
 }

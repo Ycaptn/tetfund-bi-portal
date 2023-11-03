@@ -53,6 +53,42 @@ Edit Submission Request
                     <span class="fa fa-times"></span> Cancel
                 </a>
             </div>
+
+
+            <div class="form-group mb-3" style="display: none;" id="div_current_nomination_details_submitted">
+                <br><hr>
+                <div class="col-lg-12 text-center"><b>ALL SUBMITTED <span id="nomination_type"></span> DETAILS </b></div>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th width="10%">
+                                    S/N
+                                </th>
+                                <th width="35%">
+                                    Nominees' Fullname
+                                </th>
+                                <th width="25%">
+                                    Total Amount Requested
+                                </th>
+                                <th width="15%" id="nomination_table_label">
+                                    Date
+                                </th>
+                                <th width="20%" class="text-center">
+                                    Request Date
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="current_nomination_details_submitted">
+                            <tr>
+                               <td colspan="5" class="text-danger text-center">
+                                   <i>No record found!</i>year
+                               </td> 
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         {!! Form::close() !!}                
 
     </div>
@@ -64,9 +100,7 @@ Edit Submission Request
     <div class="card-body">
         <div><h5 class="card-title">More Information</h5></div>
         <p class="small">
-            This is the help message.
-            This is the help message.
-            This is the help message.
+            Modify and track your submissions to TETFund from this window. You may begin new submissions by clicking the new submission button.
         </p>
     </div>
 </div>
@@ -90,8 +124,8 @@ Edit Submission Request
             let all_intervention_records = '{!! json_encode($intervention_types) ?? [] !!}';
             let selected_intervention_line = JSON.parse('{!! json_encode($selected_intervention_line) !!}');
 
-            // function to always hide intervention years
-            function hide_3_intervention_years() {
+            // function to always disable intervention years
+            function disable_3_intervention_years(disable_requested_amount = false) {
                 $("#intervention_year2").val('');
                 $("#intervention_year2").attr('disabled', true);
                 $("#intervention_year3").val('');
@@ -99,22 +133,132 @@ Edit Submission Request
                 $("#intervention_year4").val('');
                 $("#intervention_year4").attr('disabled', true);
                 $("#year_plural").hide();
+                $("#amount_requested_digit").attr('disabled', (disable_requested_amount==true) ? true : false);
             }
 
             $('#amount_requested_digit').keyup(function(event){
                 $('#amount_requested_digit').digits();
             });
 
-            // function to always show intervention years
-            function show_3_intervention_years() {
+            // function to always enable intervention years
+            function enable_3_intervention_years(enable_requested_amount = false) {
                 $("#intervention_year2").attr('disabled', false);
                 $("#intervention_year3").attr('disabled', false);
                 $("#intervention_year4").attr('disabled', false);
+                $("#amount_requested_digit").attr('disabled', (enable_requested_amount==true) ? true : false);
                 $("#year_plural").hide();
             }
 
 
+            // get months difference between two dates
+            function getMonthDifference(startDate, endDate) {
+                let diff = (endDate.getTime() - startDate.getTime());
+              
+                return (
+                    diff / (1000 *3600 * 24 * 30)
+                );
+            }
 
+
+            // function to display ASTD nomination list
+            function display_astd_nomination_list(intevention_line_name) {
+
+                let line_type_short = '';
+                let nomination_label = '';
+                let relationship_name = 'user';
+                let nomination_table_label = '';
+                if (intevention_line_name.includes('Teaching Practice')) {
+                    line_type_short = 'tp';
+                    relationship_name = 'tp_submission';
+                    nomination_label = 'TP NOMINATION';
+                    nomination_table_label = 'Program Date';
+                } else if(intevention_line_name.includes('Conference Attendance')) {
+                    line_type_short = 'ca';
+                    relationship_name = 'ca_submission';
+                    nomination_label = 'CA NOMINATION';
+                    nomination_table_label = 'Conference Date';
+                } else if (intevention_line_name.includes('TETFund Scholarship')) {
+                    line_type_short = 'tsas';
+                    relationship_name = 'tsas_submission';
+                    nomination_label = 'TSAS NOMINATION';
+                    nomination_table_label = 'Program Date';
+                }
+
+                if (line_type_short != '') {
+
+                    let html_to_return = '';
+                    let additional_params = "?submission_request_id={{ $submissionRequest->id }}";
+
+                    $.get( "{{ route('tf-bi-portal-api.submission_requests.get_all_related_nomination_request', '') }}/"+line_type_short+additional_params).done(function( response ) {
+                       
+                       console.log(response);
+                        if (response.data) {
+                            let s_n_counter = 1;
+                            let requested_amount = 0.00;
+                            let today = new Date();
+                           
+                            $.each(response.data, function(key, nominee) {
+                                console.log(nominee);
+                              
+                                let start_date = new Date(nominee[relationship_name]['program_start_date']);
+
+                                if(relationship_name == 'ca_submission') {
+                                    start_date = new Date(nominee[relationship_name]['conference_start_date']);
+                                }
+                             
+                                let additionl_msg = '';
+                                let month_diff = getMonthDifference(today, start_date);
+
+                                if(month_diff < 2 && relationship_name == "ca_submission"){
+                                    additionl_msg = "<br><span class='text-danger'> submission grace period passed <span>";
+                                }
+
+                                let formated_date = new Date(nominee[relationship_name]['updated_at']).toDateString();
+
+                                let middle_name = (nominee[relationship_name]['middle_name']) ? nominee[relationship_name]['middle_name'] : '';
+
+                                let total_request_amount = nominee[relationship_name]['total_requested_amount'] ? nominee[relationship_name]['total_requested_amount'] : "0.00";
+
+                                let formated_total_request_amount = parseFloat(total_request_amount).toLocaleString('en-US', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    });
+                            
+                                html_to_return += `"<tr><td> ${s_n_counter} </td><td> ${nominee[relationship_name]['first_name']} ${middle_name}  ${nominee[relationship_name]['last_name']} </td>  <td> &#8358 ${formated_total_request_amount} </td> <td> ${start_date.toDateString()} ${additionl_msg} </td>  <td> ${formated_date} </td>  </tr>"`;
+
+                                s_n_counter += 1;
+                                if(relationship_name == "ca_submission"){
+                                    if(month_diff >= 2){
+                                        requested_amount += parseFloat(total_request_amount);
+                                    }
+                                    
+                                }else{
+                                    requested_amount += parseFloat(total_request_amount);
+                                }
+                                
+
+                            }); 
+                            
+                            let formated_requested_total = requested_amount.toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            });
+
+                            html_to_return += "<tr><td colspan='2'><b> &nbsp; &nbsp; &nbsp; Grand Total</b></td>  <td colspan='2'><b> &#8358 "+ formated_requested_total +"</b></td></tr>";
+
+                            $('#nomination_type').text(nomination_label);
+                            $('#nomination_table_label').text(nomination_table_label);
+                            $('#div_current_nomination_details_submitted').show();
+                            $('#current_nomination_details_submitted').html(html_to_return);
+                            $('#amount_requested').val(requested_amount);
+                            $('#amount_requested_digit').val(formated_requested_total);
+                        }
+                    });
+                }
+            }
+
+
+            // execute this by default on page load
             @if (!isset(request()->tf_iterum_intervention_line_key_id))
                 let intervention_line_html = "<option value=''>Select an Intervention Line</option>";
                 all_astd_interventions_id.length = 0; /* resetting array to empty */
@@ -127,7 +271,7 @@ Edit Submission Request
                     }
 
                     // setting all astd interventions into the array
-                    if (intervention.name.includes('Teaching Practice') || intervention.name.includes('Conference Attendance') || intervention.name.includes('TETFund scholarship')) {
+                    if (intervention.name.includes('Teaching Practice') || intervention.name.includes('Conference Attendance') || intervention.name.includes('TETFund Scholarship')) {
                         all_astd_interventions_id[intervention.id] = intervention.name;
                     } else {
                         all_none_astd_interventions_id[intervention.id] = intervention.name;
@@ -135,10 +279,13 @@ Edit Submission Request
                 });
 
                 //hiding intervention years
-                if (selected_intervention_line.name && (selected_intervention_line.name.includes('Teaching Practice') || selected_intervention_line.name.includes('Conference Attendance') || selected_intervention_line.name.includes('TETFund scholarship'))) {
-                    hide_3_intervention_years();
+                if (selected_intervention_line.name && (selected_intervention_line.name.includes('Teaching Practice') || selected_intervention_line.name.includes('Conference Attendance') || selected_intervention_line.name.includes('TETFund Scholarship'))) {
+                    
+                    disable_3_intervention_years(true);
+                    display_astd_nomination_list(selected_intervention_line.name);
+
                 } else {
-                    show_3_intervention_years();
+                    enable_3_intervention_years();
                 }
 
                 $('#intervention_line').html(intervention_line_html);
@@ -158,7 +305,7 @@ Edit Submission Request
                         }
 
                         // setting all astd interventions into the array
-                        if (intervention.name.includes('Teaching Practice') || intervention.name.includes('Conference Attendance') || intervention.name.includes('TETFund scholarship')) {
+                        if (intervention.name.includes('Teaching Practice') || intervention.name.includes('Conference Attendance') || intervention.name.includes('TETFund Scholarship')) {
                             all_astd_interventions_id[intervention.id] = intervention.name;
                         }
 
@@ -171,11 +318,14 @@ Edit Submission Request
             // triggered on changing intervention line
             $('#intervention_line').on('change', function() {
                 let view_selected_intervention_line = $(this).val();
-                
+
                 if (view_selected_intervention_line!='' && view_selected_intervention_line in all_astd_interventions_id) {
-                    hide_3_intervention_years();
+                    disable_3_intervention_years(true);
+                    display_astd_nomination_list(all_astd_interventions_id[view_selected_intervention_line]);
                 } else {
-                    show_3_intervention_years();
+                    enable_3_intervention_years();
+                    $('#current_nomination_details_submitted').html('');
+                    $('#div_current_nomination_details_submitted').hide();
                 }
               
                 // settings to fomulate intervention_name

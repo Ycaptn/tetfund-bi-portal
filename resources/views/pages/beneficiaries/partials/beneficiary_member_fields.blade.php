@@ -92,24 +92,37 @@
                 </select>
             </div>
         </div> 
+        @if($current_user->hasAnyRole(['BI-desk-officer','admin']))
+            <div class="row col-sm-12 mb-3 mt-3">
+                <hr><strong>USER ROLE(s)</strong><hr>
+                
+                @if(isset($roles) && count($roles) > 0)
+                    @foreach($roles as $role)
+                        @if($role == "admin")
+                            @continue;
+                        @endif
 
-        <div class="row col-sm-12 mb-3 mt-3">
-            <hr><strong>USER ROLE(s)</strong><hr>
-            
-            @if(isset($roles) && count($roles) > 0)
-                @foreach($roles as $role)
-                    @if($role == "admin")
-                        @continue;
-                    @endif
+                        <div class="form-group col-sm-4">
+                            <input type="checkbox" name="userRole_{{ $role }}" id="userRole_{{ $role }}">
+                            <label class="form-label" for="userRole_{{ $role }}">{{ $role }}</label>
+                        </div>
 
-                    <div class="form-group col-sm-4">
-                        <input type="checkbox" name="userRole_{{ $role }}" id="userRole_{{ $role }}">
-                        <label class="form-label" for="userRole_{{ $role }}">{{ $role }}</label>
-                    </div>
+                    @endforeach
+                @endif
+            </div> 
+        @endif
 
-                @endforeach
-            @endif
-        </div> 
+        @if($current_user->hasRole('BI-astd-desk-officer') && !$current_user->hasRole('BI-desk-officer'))
+           {{--  <div class="row col-sm-12 mb-3 mt-3">
+                <hr><strong>USER ROLE(s)</strong><hr>
+                
+                <div class="form-group col-sm-4"> --}}
+                    <input type="checkbox" class="d-none" name="userRole_BI-staff" id="userRole_BI-staff" checked>
+                   {{--  <label class="form-label" for="userRole_BI-staff">BI-staff</label> --}}
+            {{--     </div>
+
+            </div> --}} 
+        @endif
 
     </div>
 </div>

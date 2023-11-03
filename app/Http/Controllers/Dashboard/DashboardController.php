@@ -157,11 +157,25 @@ class DashboardController extends BaseController
         }
 
         $cdv_submission_requests = new CardDataView(SubmissionRequest::class, "pages.monitoring.card_view_item", $intervention_lines);
+        
+        $current_user_roles = $current_user->roles->pluck('name')->toArray();
+        $get_user_can_do_interventions = SubmissionRequest::get_user_can_operate_interventions($current_user_roles);
+
+        $intervention_ids_user_can_do = [];
+        if(!empty($get_user_can_do_interventions) && !empty($intervention_lines)) {
+            foreach ($intervention_lines as $key => $intervention_line) {
+                if(in_array(strtolower($intervention_line), $get_user_can_do_interventions)) {
+                    array_push($intervention_ids_user_can_do, $key);
+                }
+            }
+        }
+
         $cdv_submission_requests->setDataQuery([
                     'organization_id' => $org->id,
                     'beneficiary_id' => $beneficiary_member->beneficiary_id, 
                     'is_monitoring_request' => true 
                 ])
+                ->addFilterRelatedFields('tf_iterum_intervention_line_key_id', $intervention_ids_user_can_do)
                 ->addDataGroup('All','deleted_at',null)
                 ->addDataGroup('Not Submitted','status','not-submitted')
                 ->addDataGroup('Submitted','status','submitted')

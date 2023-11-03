@@ -53,7 +53,7 @@ trait BeneficiaryUserTrait {
                 'organization_id'=>$pay_load_data['organization_id'],
                 'beneficiary_user_id'=>$zUser->id,
                 'beneficiary_user_email'=>$zUser->email,
-                'beneficiary_id'=>$pay_load_data['beneficiary_bi_id'],
+                'beneficiary_id'=>$pay_load_data['beneficiary_id'],
                 'beneficiary_tetfund_iterum_id'=>$pay_load_data['beneficiary_tetfund_iterum_id'],
                 'member_type' => $pay_load_data['member_type']??null,
                 'grade_level' => $pay_load_data['grade_level']??null,
@@ -125,7 +125,7 @@ trait BeneficiaryUserTrait {
                     'organization_id' => $zUser->organization_id,
                     'beneficiary_user_id' => $zUser->id,
                     'beneficiary_user_email' => $zUser->email,
-                    'beneficiary_id' => $additional_payload['beneficiary_bi_id'],
+                    'beneficiary_id' => $additional_payload['beneficiary_id'],
                     'beneficiary_tetfund_iterum_id' => $additional_payload['beneficiary_tetfund_iterum_id']
                 ];
 

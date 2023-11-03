@@ -56,6 +56,6 @@ class AppServiceProvider extends ServiceProvider
             'BI-amb-desk-officer'              =>  [],
         ]);
 
-        Schema::defaultStringLength(125);
+        Schema::defaultStringLength(191);
     }
 }
