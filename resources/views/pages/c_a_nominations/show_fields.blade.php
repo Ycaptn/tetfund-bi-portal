@@ -288,7 +288,7 @@
     </p>
 </div>
 
-<!-- Accepted Paper Title Field -->
+{{-- <!-- Accepted Paper Title Field -->
 <div id="div_cANomination_accepted_paper_title" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>
         <strong>
@@ -303,7 +303,7 @@
         </span>
     </p>
 </div>
-
+ --}}
 <!-- Attendee Department Name Field -->
 <div id="div_cANomination_attendee_department_name" class="col-sm-12 col-md-6 col-lg-3 mb-10">
     <p>

@@ -215,12 +215,12 @@
         </div>
     </div>
 
-    <div class="col-sm-12 col-md-4 mb-3">
+ {{--    <div class="col-sm-12 col-md-4 mb-3">
         <label class="col-sm-12"><b>Abstract Title:</b></label>
         <div class="col-sm-12 ">
             <i id="accepted_paper_title_data_ca"></i>
         </div>
-    </div>
+    </div> --}}
 
     <div class="col-sm-12 col-md-4 mb-3">
         <label class="col-sm-12"><b>Attendee Department Name:</b></label>

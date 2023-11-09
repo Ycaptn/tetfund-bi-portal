@@ -52,7 +52,7 @@ All C A Nomination
             @endif
         @endif
     @else
-        @if($current_user->hasRole($ca_nomination_sent_to))
+        @if($current_user->hasAnyRole($ca_nomination_sent_to))
             {{-- Newly Submitted --}}
             Removed From Submission List
         @elseif($current_user->hasRole('BI-head-of-institution'))
@@ -94,7 +94,7 @@ All C A Nomination
                 <div class="row">
                     <div class="col-sm-9">
                         <ul class="nav nav-tabs nav-primary" role="tablist">
-                            @if($current_user->hasRole($ca_nomination_sent_to))
+                            @if($current_user->hasAnyRole($ca_nomination_sent_to))
                                 {{-- appears for desk officer to preview newly submitted nomination --}}
                                 <li class="nav-item" role="presentation">
                                     <a  href="{{ route('tf-bi-portal.c_a_nominations.index') }}"
