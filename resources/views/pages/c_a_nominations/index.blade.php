@@ -30,7 +30,7 @@ All C A Nomination
         if (array_key_exists('ca_approved_nomination_sent_to', $astd_settings)) {
             $ca_approved_nomination_sent_to = [$astd_settings['ca_approved_nomination_sent_to']->value];
         } else {
-            $ca_approved_nomination_sent_to = ['BI-desk-officer', 'BI-head-of-institution'];
+            $ca_approved_nomination_sent_to = ['BI-desk-officer','BI-astd-desk-officer', 'BI-head-of-institution'];
         }
         
         
