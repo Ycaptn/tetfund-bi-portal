@@ -326,7 +326,8 @@ class CANominationAPIController extends AppBaseController
                 
                 // setting amount column if conference is foreign
                 $input['dta_amount'] = floatval(($ca_amount_settings->estacode_amt??0) * $ca_amount_settings->dollar_exchange_rate_to_naira) * $days;
-                $input['conference_fee_amount_local'] = floatval($input['conference_fee_amount_local'] ?? 0);
+                $input['conference_fee_amount'] = floatval($input['conference_fee_amount_local'] ?? 0);
+                $input['conference_fee_amount_local'] = floatval(($input['conference_fee_amount_local']??0) * $ca_amount_settings->dollar_exchange_rate_to_naira) * $days;
                 $input['local_runs_amount'] = floatval($ca_amount_settings->foreign_visa_processing_except_ecowas_amt??0);
 
                 $passage_amount = 0.00;                    
