@@ -48,7 +48,7 @@ Submission
             <i class="fa fa-pencil-square-o"></i> Edit Submission Request
         </a>
 
-        @if (str_contains(strtolower(optional($intervention)->name), 'teaching practice'))
+        {{-- @if (str_contains(strtolower(optional($intervention)->name), 'teaching practice'))
             &nbsp;
             <a data-toggle="tooltip" 
                 title="Preview the last uploaded minute of meeting by TPNomination Committee"
@@ -79,7 +79,7 @@ Submission
                 class="btn btn-sm btn-danger btn-committee-last-minute-of-meeting-modal">
                 <i class="fa fa-clock"></i> TSASNomination Committee Last Minute of Meeting
             </a>&nbsp;
-        @endif
+        @endif --}}
     @endif
 
 @stop
