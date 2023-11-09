@@ -115,7 +115,7 @@ class CANominationController extends BaseController
                     'current_user' => $current_user,
                     'all_existing_submissions' => (isset($all_existing_submissions)) ? $all_existing_submissions : [],
                     'count_array_returned' => $count_array_returned,
-                    'astd_settings' => $astd_settings
+                    'astd_settings' => []//$astd_settings
                 ]);
     }
 
