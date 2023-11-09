@@ -659,4 +659,18 @@ class SubmissionRequestAPIController extends AppBaseController
         return $this->sendResponse($artifact, 'Applicable request type successfully updated.');
 
     }
+
+    public function deleteSubmissionRequest(Request $request, $tf_iterum_portal_key_id){
+
+        $submission_request = SubmissionRequest::where('tf_iterum_portal_key_id',$tf_iterum_portal_key_id)->first();
+        \Log::info("$submission_request");
+        if(empty($submission_request)){
+
+            return $this->sendError('Beneficiary Request not found!');
+        }
+      
+        $submission_request->delete();
+
+        return $this->sendSuccess('Beneficiary Request deleted successfully!');
+    }
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Hasob\FoundationCore\Middleware\IdentifyOrganization;
 
 
 $orgRoutes = function() {
@@ -66,6 +67,9 @@ $orgRoutes = function() {
                 Route::post('/submission_requests/process-ongoing-submission', [\App\Http\Controllers\API\SubmissionRequestAPIController::class, 'processOngoingSubmission'])->name('submission_requests.process-ongoing-submission');
                 Route::post('submission_requests/request_actions/{id}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'request_actions'])->name('submission_requests.request_actions');
                 Route::post('submission_requests/applicable_request_type/{id}', [\App\Http\Controllers\API\SubmissionRequestAPIController::class, 'applicable_request_type'])->name('submission_requests.applicable_request_type');
+
+                //delete submssion request by iterum portal id
+                Route::delete('submission/{tf_iterum_portal_key_id}', [App\Http\Controllers\API\SubmissionRequestAPIController::class, 'deleteSubmissionRequest']);   
                 
                 Route::resource('nomination_requests', \App\Http\Controllers\API\NominationRequestAPIController::class);
                 Route::get('nomination_requests/show_selected_email/{email}', [\App\Http\Controllers\API\NominationRequestAPIController::class, 'show_selected_email'])->name('nomination_requests.show_selected_email');
