@@ -81,14 +81,14 @@ class BeneficiaryMemberDatatable extends DataTable
                                 'fc_users.deleted_at'=>null,
                                 'tf_bi_beneficiary_members.deleted_at'=>null])
                     ->orderBy('fc_users.created_at', 'DESC')
-                    ->select('fc_users.*', 'tf_bi_beneficiary_members.member_type', 'tf_bi_beneficiary_members.grade_level', 'tf_bi_beneficiary_members.academic_member_level');
+                    ->select('fc_users.id','fc_users.first_name','fc_users.last_name','fc_users.email','fc_users.telephone','fc_users.is_disabled','fc_users.created_at','fc_users.updated_at','tf_bi_beneficiary_members.member_type', 'tf_bi_beneficiary_members.grade_level', 'tf_bi_beneficiary_members.academic_member_level');
         }
 
         return $model->newQuery()->join('fc_users', 'tf_bi_beneficiary_members.beneficiary_user_id', '=', 'fc_users.id')
                     ->where([   'fc_users.deleted_at'=>null,
                                 'tf_bi_beneficiary_members.deleted_at'=>null])
                     ->orderBy('fc_users.created_at', 'DESC')
-                    ->select('fc_users.*', 'tf_bi_beneficiary_members.member_type', 'tf_bi_beneficiary_members.grade_level', 'tf_bi_beneficiary_members.academic_member_level');
+                    ->select('fc_users.id','fc_users.first_name','fc_users.last_name','fc_users.email','fc_users.telephone','fc_users.is_disabled','fc_users.created_at','fc_users.updated_at', 'tf_bi_beneficiary_members.member_type', 'tf_bi_beneficiary_members.grade_level', 'tf_bi_beneficiary_members.academic_member_level');
     }
 
     /**
