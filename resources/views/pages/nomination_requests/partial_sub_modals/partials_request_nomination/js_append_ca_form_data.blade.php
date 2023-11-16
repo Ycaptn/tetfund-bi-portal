@@ -64,11 +64,12 @@ if ($('#is_academic_staff_ca').length){ formData.append('is_academic_staff',$('#
 
 {{-- determining paper presentation --}}
 if ($('#is_academic_staff_ca').length){
-	if ($('#is_academic_staff_ca').val()=='1' || ($('#is_academic_staff_ca').val()=='0' && $('#is_conference_workshop_ca').val()=='0') ) {
+	{{-- if ($('#is_academic_staff_ca').val()=='1' || ($('#is_academic_staff_ca').val()=='0' && $('#is_conference_workshop_ca').val()=='0') ) {
 		formData.append('has_paper_presentation', '1');
 	} else {
 		formData.append('has_paper_presentation', '0');
-	}
+	} --}}
+	formData.append('has_paper_presentation', '0');
 }
 
 if ($('#conference_start_date_ca').length){ formData.append('conference_start_date',$('#conference_start_date_ca').val());   }
