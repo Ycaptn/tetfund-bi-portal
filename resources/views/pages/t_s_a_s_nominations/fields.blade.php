@@ -148,7 +148,7 @@
 
 <!-- Institution Field -->
 <div id="div-institution_name_tsas" class="form-group mb-3 col-md-6">
-    <label for="institution_name_tsas" class="col-sm-11 col-form-label">Institution Name:</label>
+    <label for="institution_name_tsas" class="col-sm-11 col-form-label">Institution Name (<small class="text-danger">where tenable</small>):</label>
     <div class="col-sm-12">
         {!! Form::text('institution_name_tsas', null, ['id'=>'institution_name_tsas', 'class'=>'form-control', 'list'=>'institutions', 'placeholder'=>'required field']) !!}
         <datalist id='institutions'>
@@ -163,7 +163,7 @@
 
 <!-- Institution State Field -->
 <div id="div-institution_state_tsas" class="form-group mb-3 col-md-6 col-lg-4" style="display: none;">
-    <label for="institution_state_tsas" class="col-sm-11 col-form-label">Institution State:</label>
+    <label for="institution_state_tsas" class="col-sm-11 col-form-label">Institution State (<small class="text-danger">where tenable</small>):</label>
     <div class="col-sm-12">
         <select id="institution_state_tsas" class="form-select">
             <option value=''>-- None selected --</option>
