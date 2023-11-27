@@ -1,12 +1,14 @@
 {{-- input fields default values --}}
 @php
+  
     //first_name
-    $first_name = (isset($nominationRequest->user->first_name) ? $nominationRequest->user->first_name : ($current_user->hasRole('BI-staff') ? $current_user->first_name : '') );
-    $middle_name = (isset($nominationRequest->user->middle_name) ? $nominationRequest->user->middle_name : ($current_user->hasRole('BI-staff') ? $current_user->middle_name : '') );
-    $last_name = (isset($nominationRequest->user->last_name) ? $nominationRequest->user->last_name : ($current_user->hasRole('BI-staff') ? $current_user->last_name : '') );
-    $email = (isset($nominationRequest->user->email) ? $nominationRequest->user->email : ($current_user->hasRole('BI-staff') ? $current_user->email : '') );
-    $telephone = (isset($nominationRequest->user->telephone) ? $nominationRequest->user->telephone : ($current_user->hasRole('BI-staff') ? $current_user->telephone : '') );
-    $gender = (isset($nominationRequest->user->gender) ? strtolower($nominationRequest->user->gender) : ($current_user->hasRole('BI-staff') ? strtolower($current_user->gender) : '') );
+   
+    $first_name = $current_user->first_name ;
+    $middle_name =  $current_user->middle_name ;
+    $last_name = $current_user->last_name ;
+    $email = $current_user->email;
+    $telephone = $current_user->telephone ;
+    $gender =  strtolower($current_user->gender);
     $attendee_member_type = isset($beneficiary_member->member_type) && in_array($beneficiary_member->member_type, ['academic', 'non-academic']) ? $beneficiary_member->member_type : '';
     $attendee_member_type_flag = isset($beneficiary_member->member_type) && in_array($beneficiary_member->member_type, ['academic', 'non-academic']) ? ($beneficiary_member->member_type=='academic' ? '1' : '0') : '';
     $attendee_grade_level = isset($beneficiary_member->grade_level) ? $beneficiary_member->grade_level : '';
@@ -61,7 +63,7 @@
             {!! Form::hidden('first_name_tsas', $first_name, ['id'=>'first_name_tsas', 'class'=>'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
 
             <!-- Middle Name Field -->
-            {!! Form::hidden('middle_name_tsas', $nominationRequest->user->middle_name ?? '', ['id'=>'middle_name_tsas', 'class'=>'form-control', 'placeholder'=>'optional field', 'disabled'=>'disabled']) !!}
+            {!! Form::hidden('middle_name_tsas', $middle_name ?? '', ['id'=>'middle_name_tsas', 'class'=>'form-control', 'placeholder'=>'optional field', 'disabled'=>'disabled']) !!}
 
             <!-- Last Name Field -->
             {!! Form::hidden('last_name_tsas', $last_name, ['id'=>'last_name_tsas', 'class'=>'form-control', 'placeholder'=>'required field', 'disabled'=>'disabled']) !!}
