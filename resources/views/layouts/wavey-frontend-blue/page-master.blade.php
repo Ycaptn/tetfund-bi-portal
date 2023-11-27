@@ -45,6 +45,9 @@
         @stack('page_css')
 
         <style>
+            .bg-blue-header {
+                background-color: #72aaf3;
+            }
             .header-hero::before {
                 content: '';
                 z-index: -1;
@@ -82,6 +85,40 @@
 >
     <header class="header-area h-screen">
         <div class ="w-full h-screen">
+
+            <div class="p-1 bg-blue-header  hidden w-full duration-300 shadow md:opacity-100 md:w-auto collapse navbar-collapse md:block top-100 mt-full md:static md:bg-transparent md:shadow-none">
+                <div class="row">
+                    <div class="w-full">
+                        <div class="flex items-center justify-between">
+                            
+                            <a class="text-white text-xs duration-300 hover:text-blue-900" rel="nofollow" target="_blank" href="https://www.tetfund.gov.ng">
+                                Sponsored by TETFund
+                            </a>
+                            
+                            <div class="text-white absolute right-0 z-30">
+                                <a class="m-2 text-white text-xs duration-300 hover:text-blue-900" rel="nofollow" target="_blank" href="https://bims.tetfund.gov.ng">
+                                    BIMS
+                                </a>
+                                &#x2022;
+                                <a class="m-2 text-white text-xs duration-300 hover:text-blue-900" rel="nofollow" target="_blank" href="http://www.tetfund.gov.ng">
+                                    TERAS for Students
+                                </a>
+                                &#x2022;
+                                <a class="m-2 text-white text-xs duration-300 hover:text-blue-900" rel="nofollow" target="_blank" href="http://www.tetfund.gov.ng">
+                                    TERAS for Researchers
+                                </a>
+                                &#x2022;
+                                <a class="m-2 text-white text-xs duration-300 hover:text-blue-900" rel="nofollow" target="_blank" href="http://www.tetfund.gov.ng">
+                                    TERAS for Institutions
+                                </a>
+                            </div>
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <div class="navigation">
                 <div class="container">
                         <div class="w-full">
