@@ -221,13 +221,13 @@ $(document).ready(function() {
         $.get( "{{ route('tf-bi-portal-api.t_s_a_s_nominations.show','') }}/"+itemId+"?_method=GET").done(function( response ) {     
 
 			$('#txt-tSASNomination-primary-id').val(response.data.id);
-            $('#email_tsas').val(response.data.email);
-    		$('#telephone_tsas').val(response.data.telephone);
-    		$('#gender_tsas').val(response.data.gender);
-    		$('#name_title_tsas').val(response.data.name_title);
-    		$('#first_name_tsas').val(response.data.first_name);
-    		$('#middle_name_tsas').val(response.data.middle_name);
-    		$('#last_name_tsas').val(response.data.last_name);
+            $('#email_tsas').val(response.data.user.email);
+    		$('#telephone_tsas').val(response.data.user.telephone);
+    		$('#gender_tsas').val(response.data.user.gender.toLowerCase());
+    		$('#name_title_tsas').val(response.data.user.title);
+    		$('#first_name_tsas').val(response.data.user.first_name);
+    		$('#middle_name_tsas').val(response.data.user.middle_name);
+    		$('#last_name_tsas').val(response.data.user.last_name);
     		$('#name_suffix_tsas').val(response.data.name_suffix);
     		$('#bank_account_name_tsas').val(response.data.bank_account_name);
     		$('#bank_account_number_tsas').val(response.data.bank_account_number);
