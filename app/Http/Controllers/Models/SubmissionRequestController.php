@@ -438,12 +438,17 @@ class SubmissionRequestController extends BaseController
             if (isset($fund_availability->total_funds) && $fund_availability->total_funds != floatval($submissionRequest->amount_requested) && $submissionRequest->is_aip_request==true && !$submissionRequest->is_astd_intervention($request->get('intervention_name'))) {
             
                 //error for requested fund mismatched to allocated fund non-astd interventions
-                array_push($errors_array, "Fund requested must be equal to the Allocated amount.");
+                array_push($errors_array, "The Fund requested must be equal to the Allocated amount.");
                           
             } else if (isset($fund_availability->total_available_fund) && floatval($submissionRequest->amount_requested) > $fund_availability->total_available_fund && ($submissionRequest->is_astd_intervention($request->get('intervention_name')) || ($submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($request->get('intervention_name'))))) {
                 
                 //error for requested fund mismatched to allocated fund for all ASTD interventions
-                array_push($errors_array, "Fund requested cannot be greater than allocated/available amount.");
+                array_push($errors_array, "The Fund requested cannot be greater than allocated/available amount.");
+            }
+
+            // error if ASTD requested ammounts is equal to zero
+            if (floatval($submissionRequest->amount_requested)<=0  && $submissionRequest->is_astd_intervention($request->get('intervention_name'))) {
+                array_push($errors_array, "The Fund requested cannot be less or equal to ZERO (0).");
             }
 
             //error when at least one selected allocation year is found
@@ -456,6 +461,7 @@ class SubmissionRequestController extends BaseController
                 }
             }
 
+            // error if the allocation has been utilised.
             if ($submissionRequest->is_aip_request==true && !$submissionRequest->is_astd_intervention(optional($request)->intervention_name) && !($submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($request->get('intervention_name'))) && isset($fund_availability->allocation_records) && count($fund_availability->allocation_records) > 0) {
                 foreach($fund_availability->allocation_records as $allocation) {
                     if($allocation->utilization_status != null && $allocation->utilization_status == 'utilized') {
@@ -473,29 +479,7 @@ class SubmissionRequestController extends BaseController
             array_push($errors_array, "The request submission must contain all required Attachment(s).");
         }
 
-        //checking errors status
-        if (count($errors_array) > 0) {
-            return redirect()->back()->withErrors($errors_array);
-        }
-        
-        //processing submission to tetfund server
-        $tf_beneficiary_id = $beneficiary->tf_iterum_portal_key_id;
-        $pay_load['tf_beneficiary_id'] = $tf_beneficiary_id;
-        $pay_load['_method'] = 'POST';
-        $pay_load['submission_user'] = $current_user;
-
-        // resetting value for requested amount when is a fiorst tranch base intervention
-        if($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention(optional($request)->intervention_name)) {
-           
-            $first_tranche_percentage = $submissionRequest->first_tranche_intervention_percentage(optional($request)->intervention_name);
-            $percentage = $first_tranche_percentage!=null ? str_replace('%', '', $first_tranche_percentage) : 0;
-            // $pay_load['amount_requested'] = ($percentage * $submissionRequest->amount_requested)/100 ?? 0;
-        }
-
-        // add attachment records to payload
-        $submission_attachment_array = $submissionRequest->get_all_attachments($input['submission_request_id']);
-        $pay_load['submission_attachment_array'] = ($submission_attachment_array != null) ? $submission_attachment_array : [];
-        // add nomination details and attachements to payload
+        // add ASTD nomination details and attachements to payload
         $intervention_name = '';
         $nomination_table = '';
         if (str_contains(strtolower(optional($request)->intervention_name), 'teaching practice')) {
@@ -521,18 +505,50 @@ class SubmissionRequestController extends BaseController
                     ->where('type', $intervention_name)
                     ->where('head_of_institution_checked_status', 'approved')
                     ->get();
-            if($nomination_table == "ca_submission"){
-                $filtered_nomination_arr = $final_nominations_arr->filter(function($item){
-                    $today = strtotime(now());
-                    $conference_start_date = strtotime($item->ca_submission->conference_start_date);    
-                    $month_difference = ($conference_start_date - $today) / (3600 *24 *30);
-                    return ($month_difference >= 2);
-                });
-                $final_nominations_arr = $filtered_nomination_arr;
+
+            if(!$final_nominations_arr->isEmpty()) {
+                // skip when nomination grace period for submission has elapse
+                if($nomination_table == "ca_submission"){
+                    $filtered_nomination_arr = $final_nominations_arr->filter(function($item){
+                        $today = strtotime(now());
+                        $conference_start_date = strtotime($item->ca_submission->conference_start_date);    
+                        $month_difference = ($conference_start_date - $today) / (3600 *24 *30);
+                        return ($month_difference >= 2);
+                    });
+                    $final_nominations_arr = $filtered_nomination_arr;
+                }
+
+                $pay_load['final_nominations_arr'] = $final_nominations_arr;
+                $pay_load['nomination_table'] = $nomination_table;
+            } else {
+                // error if no nomination request records found.
+                array_push($errors_array, "This submission was rejected because no nomination request records were found. Nominees should login and submit their request through the portal.");
             }
-            $pay_load['final_nominations_arr'] = $final_nominations_arr;
-            $pay_load['nomination_table'] = $nomination_table;
         }
+
+
+        //checking errors status
+        if (count($errors_array) > 0) {
+            return redirect()->back()->withErrors($errors_array);
+        }
+        
+        //processing submission to tetfund server
+        $tf_beneficiary_id = $beneficiary->tf_iterum_portal_key_id;
+        $pay_load['tf_beneficiary_id'] = $tf_beneficiary_id;
+        $pay_load['_method'] = 'POST';
+        $pay_load['submission_user'] = $current_user;
+
+        // resetting value for requested amount when is a fiorst tranch base intervention
+        if($submissionRequest->is_first_tranche_request==true && $submissionRequest->is_start_up_first_tranche_intervention(optional($request)->intervention_name)) {
+           
+            $first_tranche_percentage = $submissionRequest->first_tranche_intervention_percentage(optional($request)->intervention_name);
+            $percentage = $first_tranche_percentage!=null ? str_replace('%', '', $first_tranche_percentage) : 0;
+            // $pay_load['amount_requested'] = ($percentage * $submissionRequest->amount_requested)/100 ?? 0;
+        }
+
+        // add attachment records to payload
+        $submission_attachment_array = $submissionRequest->get_all_attachments($input['submission_request_id']);
+        $pay_load['submission_attachment_array'] = ($submission_attachment_array != null) ? $submission_attachment_array : [];
 
         $tetFundServer = new TETFundServer();   /* server class constructor */
         $final_submission_to_tetfund = $tetFundServer->processSubmissionRequest($pay_load, $tf_beneficiary_id);
