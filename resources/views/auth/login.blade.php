@@ -182,7 +182,7 @@
                 <p class="pt-6 text-sm" style="color:green; font-size:80%">
                     For <b>National Research Fund (NRF)</b> submissions, please use the <a href="https://nrf.tetfund.gov.ng" style="color:green;" target="_blank"><b><u>NRF Portal</u></b></a> to process your submissions. 
                     <span style="color:red;display:inline;">
-                    For technical support, kindly contact <b>TETFund ICT support department on 0803-777-6194 or 0814-014-8722 or 0805-198-4832</b> or by email at portal.support@tetfund.gov.ng
+                    For Technical usage support: <br> ICT Support Intervention (08037776194, 08140148722, 08051984832), TSAS ,CA, TP (07064559694), Library Development (07030086349), AMB Intervention (07062539752) </b>.
                     </span>
                 </p>
     
