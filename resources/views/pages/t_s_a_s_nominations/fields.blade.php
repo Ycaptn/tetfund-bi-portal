@@ -87,7 +87,10 @@
                 - {{$email}} 
             </i><br>
             <i class="gender">
-                - {{ ucfirst($gender) }}                
+                - {!! $gender ? ucfirst($gender) : 
+                    "<span class='text-danger small'>Please modify your 
+                        <a target='__blank' href='/fc/profile?edit=1' class='font-weight-bold text-decoration-underline text-danger'><b>profile</b></a> to select a gender</span>" 
+                    !!}                
             </i>
         </div>
     </div>

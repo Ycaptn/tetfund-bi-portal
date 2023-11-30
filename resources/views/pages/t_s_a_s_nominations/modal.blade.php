@@ -223,7 +223,7 @@ $(document).ready(function() {
 			$('#txt-tSASNomination-primary-id').val(response.data.id);
             $('#email_tsas').val(response.data.user.email);
     		$('#telephone_tsas').val(response.data.user.telephone);
-    		$('#gender_tsas').val(response.data.user.gender.toLowerCase());
+    		$('#gender_tsas').val(response.data.user.gender ? response.data.user.gender.toLowerCase() : '');
     		$('#name_title_tsas').val(response.data.user.title);
     		$('#first_name_tsas').val(response.data.user.first_name);
     		$('#middle_name_tsas').val(response.data.user.middle_name);
