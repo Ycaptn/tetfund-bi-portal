@@ -275,16 +275,16 @@ $(document).ready(function() {
     		$('#attendee_grade_level_ca').val(response.data.attendee_grade_level);
             $('#conference_fee_amount_local_ca').val(response.data.conference_fee_amount_local);
             
-            if (response.data.has_paper_presentation) {
+            // if (response.data.has_paper_presentation) {
                 $('#div-accepted_paper_title_ca').show();
                 $('#div-paper_presentation_ca').show();
                 $('#is_conference_workshop_ca').val('0');
-            } else {
-                $('#accepted_paper_title_ca').val('');
-                $('#div-accepted_paper_title_ca').hide();
-                $('#div-paper_presentation_ca').hide();
-                $('#is_conference_workshop_ca').val('1');
-            }
+            // } else {
+                // $('#accepted_paper_title_ca').val('');
+                // $('#div-accepted_paper_title_ca').hide();
+                // $('#div-paper_presentation_ca').hide();
+                // $('#is_conference_workshop_ca').val('1');
+            // }
 
             initially_selected_beneficiary_institution_id = response.data.beneficiary_institution_id;
             initially_selected_conference_id = response.data.conference_id;
