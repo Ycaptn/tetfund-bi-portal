@@ -207,7 +207,7 @@ class NominationRequestAPIController extends BaseController
 
         /*Create Nomination Request and send invitation email*/    
         $nominationRequest = new NominationRequest();
-        $nominationRequest->organization_id = $request->organization_id;
+        $nominationRequest->organization_id = $current_user->organization_id;
         $nominationRequest->user_id = $current_user->id;
         $nominationRequest->beneficiary_id =$bi_beneficiary_id;
         $nominationRequest->type = $request_arr['nomination_type'];
