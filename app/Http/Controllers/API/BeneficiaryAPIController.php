@@ -513,7 +513,7 @@ class BeneficiaryAPIController extends AppBaseController
                             "gender" => in_array($data_4, ['male', 'female']) ? $data_4 : null,
                             'organization_id' => $org->id ?? null,
                             'beneficiary_id' => $beneficiary->id,
-                            'grade_level' => trim($data['5']),
+                            'grade_level' => (int) trim($data['5']),
                             'member_type' => in_array($data_6, ['academic', 'non-academic']) ? $data_6 : null,
                             'beneficiary_tetfund_iterum_id' => $beneficiary->tf_iterum_portal_key_id,
                             'user_roles_arr' => ['bi-staff'],
