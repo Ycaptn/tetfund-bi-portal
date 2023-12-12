@@ -156,7 +156,8 @@ All C A Nomination
                                     <a  href="{{ route('tf-bi-portal.c_a_nominations.index') }}?view_type=hoi_approved"
                                     class="mb-3 nav-link {{ (isset(request()->view_type) && request()->view_type == 'hoi_approved') ? 'active' : ''}}"
                                     title="Preview CA Nomination(s) that have been considered approved by Head of Institution" ><i class="fas fa-bell"></i><b><sup class="fa-layers-counter text-danger" style="background-color:white; border-radius: 20%;">{{number_format($count_array_returned['desk_officer_hoi_approved'] ?? 0)}}</sup></b>
-                                        Approved Nomination
+                                        {{-- Approved Nomination --}}
+                                        Nominations Approved For Submission
                                     </a>
                                 </li>                            
                             @endif
