@@ -29,7 +29,7 @@ All T S A S Nomination
         if (array_key_exists('tsas_approved_nomination_sent_to', $astd_settings)) {
             $tsas_approved_nomination_sent_to = [$astd_settings['tsas_approved_nomination_sent_to']->value];
         } else {
-            $tsas_approved_nomination_sent_to = ['BI-desk-officer', 'BI-head-of-institution'];
+            $tsas_approved_nomination_sent_to = ['BI-desk-officer','BI-astd-desk-officer', 'BI-head-of-institution'];
         }
         
         

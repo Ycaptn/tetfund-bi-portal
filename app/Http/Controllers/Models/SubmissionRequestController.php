@@ -440,11 +440,12 @@ class SubmissionRequestController extends BaseController
                 //error for requested fund mismatched to allocated fund non-astd interventions
                 array_push($errors_array, "The Fund requested must be equal to the Allocated amount.");
                           
-            } else if (isset($fund_availability->total_available_fund) && floatval($submissionRequest->amount_requested) > $fund_availability->total_available_fund && ($submissionRequest->is_astd_intervention($request->get('intervention_name')) || ($submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($request->get('intervention_name'))))) {
-                
-                //error for requested fund mismatched to allocated fund for all ASTD interventions
-                array_push($errors_array, "The Fund requested cannot be greater than allocated/available amount.");
             }
+            /* else if (isset($fund_availability->total_available_fund) && floatval($submissionRequest->amount_requested) > $fund_availability->total_available_fund && ($submissionRequest->is_astd_intervention($request->get('intervention_name')) || ($submissionRequest->is_first_tranche_request && $submissionRequest->is_start_up_first_tranche_intervention($request->get('intervention_name'))))) {
+                
+                //error for requested fund greater than available amount for all ASTD interventions
+                array_push($errors_array, "The Fund requested cannot be greater than allocated/available amount.");
+            } */
 
             // error if ASTD requested ammounts is equal to zero
             if (floatval($submissionRequest->amount_requested)<=0  && $submissionRequest->is_astd_intervention($request->get('intervention_name'))) {
