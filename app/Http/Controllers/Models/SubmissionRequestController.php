@@ -750,6 +750,12 @@ class SubmissionRequestController extends BaseController
             $tetFundServer = new TETFundServer();   
             $submitted_request_data = $tetFundServer->getSubmissionRequestData($submissionRequest->tf_iterum_portal_key_id, $checklist_group_name_surfix);
 
+            if(empty($submitted_request_data)){
+               
+                $request->session()->flash('error', "Unable to fetch submission request data. Please retry again.");
+                return redirect()->back();
+            }
+            
             $checklist_items = (array)$submitted_request_data->checklist_items;
       
             $bi_request_released_communications = $submitted_request_data->releasedBICommunication;
