@@ -519,6 +519,16 @@ class SubmissionRequestController extends BaseController
                     $final_nominations_arr = $filtered_nomination_arr;
                 }
 
+                $invalid_nomination_data = $final_nominations_arr->filter(function($item){
+                   
+                    return ($item->email == null);
+                });
+
+                foreach ($invalid_nomination_data as $key => $invalid_nomination) {
+                    # code...
+                    array_push($errors_array, "This nomination data for ".optional($invalid_nomination->user)->full_name." is incomplete");
+                }
+
                 $pay_load['final_nominations_arr'] = $final_nominations_arr;
                 $pay_load['nomination_table'] = $nomination_table;
             } else {
