@@ -508,6 +508,7 @@ class SubmissionRequestController extends BaseController
                     ->get();
 
             if(!$final_nominations_arr->isEmpty()) {
+                $invalid_nomination_data = [];
                 // skip when nomination grace period for submission has elapse
                 if($nomination_table == "ca_submission"){
                     $filtered_nomination_arr = $final_nominations_arr->filter(function($item){
@@ -517,12 +518,27 @@ class SubmissionRequestController extends BaseController
                         return ($month_difference >= 2);
                     });
                     $final_nominations_arr = $filtered_nomination_arr;
-                }
 
-                $invalid_nomination_data = $final_nominations_arr->filter(function($item){
-                   
-                    return ($item->email == null);
-                });
+                    $invalid_nomination_data = $final_nominations_arr->filter(function($item){
+                    
+                        return empty($item->ca_submission->email);
+                    });
+
+                }else if($nomination_table == "tsas_submission"){
+
+                    $invalid_nomination_data = $final_nominations_arr->filter(function($item){
+                    
+                        return empty($item->tsas_submission->email);
+                    });
+
+                }else  if($nomination_table == 'tp_submission'){
+                    # code...
+                    $invalid_nomination_data = $final_nominations_arr->filter(function($item){
+                    
+                        return empty($item->tp_submission->email);
+                    });
+                }
+                
 
                 foreach ($invalid_nomination_data as $key => $invalid_nomination) {
                     # code...
