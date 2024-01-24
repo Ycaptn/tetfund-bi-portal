@@ -1,0 +1,41 @@
+version: "3"
+services:
+  app:
+    build:
+      context: .
+    container_name: app
+    restart: unless-stopped
+    volumes:
+      -  .:/var/www/tetfund
+    ports:
+      - "80:80"
+    depends_on:
+      - mysql
+    command: [ "sh", "-c", "chmod +x ./entrypoint.app.sh && exec ./entrypoint.app.sh" ]
+    networks:
+      - tetfund
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    container_name: mysql
+    tty: true
+    restart: unless-stopped
+    environment:
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+    networks: 
+    - tetfund
+    
+
+networks:
+  tetfund:
+    driver: bridge
+

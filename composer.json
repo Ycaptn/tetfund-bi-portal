@@ -44,12 +44,12 @@
     },
     "repositories": [
         {
-            "type": "path",
-            "url": "../hasob-foundation-core-bs-5"
+           "type": "vcs",
+            "url": "https://github.com/Ycaptn/hasob-foundation-core-bs-5.git"
         },
         {
-            "type": "path",
-            "url": "../tetfund-bims-module"
+            "type": "vcs",
+            "url": "https://github.com/Ycaptn/tetfund-bims-module.git"
         }
     ],
     "autoload-dev": {
